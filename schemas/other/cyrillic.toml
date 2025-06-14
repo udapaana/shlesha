@@ -1,0 +1,65 @@
+# Cyrillic Base Schema
+# Standard Cyrillic script
+# Used for Russian and other Slavic languages, occasionally for Sanskrit
+
+[metadata]
+name = "Cyrillic"
+description = "Standard Cyrillic script (Unicode)"
+author = "Shlesha Project"
+version = "1.0"
+base_encoding = "Unicode"
+standard = "Unicode 15.0"
+iso15924 = "Cyrl"
+
+[vowels]
+# Cyrillic vowels
+A = "а"           # U+0430
+YA = "я"          # U+044F
+E = "е"           # U+0435
+YE = "ё"          # U+0451
+I = "и"           # U+0438
+I_KRATKOYE = "й"  # U+0439
+O = "о"           # U+043E
+U = "у"           # U+0443
+Y = "ы"           # U+044B
+E_OBOROT = "э"    # U+044D
+YU = "ю"          # U+044E
+
+[consonants]
+# Cyrillic consonants
+BE = "б"          # U+0431
+VE = "в"          # U+0432
+GE = "г"          # U+0433
+DE = "д"          # U+0434
+ZHE = "ж"         # U+0436
+ZE = "з"          # U+0437
+KA = "к"          # U+043A
+EL = "л"          # U+043B
+EM = "м"          # U+043C
+EN = "н"          # U+043D
+PE = "п"          # U+043F
+ER = "р"          # U+0440
+ES = "с"          # U+0441
+TE = "т"          # U+0442
+EF = "ф"          # U+0444
+HA = "х"          # U+0445
+TSE = "ц"         # U+0446
+CHE = "ч"         # U+0447
+SHA = "ш"         # U+0448
+SHCHA = "щ"       # U+0449
+
+[special_marks]
+HARD_SIGN = "ъ"   # U+044A
+SOFT_SIGN = "ь"   # U+044C
+
+[digits]
+ZERO = "0"
+ONE = "1"
+TWO = "2"
+THREE = "3"
+FOUR = "4"
+FIVE = "5"
+SIX = "6"
+SEVEN = "7"
+EIGHT = "8"
+NINE = "9"

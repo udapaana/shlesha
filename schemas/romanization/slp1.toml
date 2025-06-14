@@ -1,0 +1,139 @@
+# SLP1 Base Schema
+# Sanskrit Library Phonetic Basic encoding
+# Based on Vidyut-lipi standards
+
+[metadata]
+name = "SLP1"
+scheme_id = "slp1"
+description = "Sanskrit Library Phonetic Basic encoding (ASCII-safe)"
+author = "Udapaana Project (based on Vidyut-lipi)"
+version = "2.0"
+base_encoding = "ASCII"
+standard = "Sanskrit Library"
+supports_vedic_accents = false
+
+[vowels]
+# Independent vowel forms
+A = "a"
+AA = "A"
+I = "i"
+II = "I"
+U = "u"
+UU = "U"
+RI = "f"
+RII = "F"
+LI = "x"
+LII = "X"
+E = "e"
+AI = "E"
+O = "o"
+AU = "O"
+
+[vowel_marks]
+# Dependent vowel forms (same as independent for SLP1)
+AA_MATRA = "A"
+I_MATRA = "i"
+II_MATRA = "I"
+U_MATRA = "u"
+UU_MATRA = "U"
+RI_MATRA = "f"
+RII_MATRA = "F"
+LI_MATRA = "x"
+LII_MATRA = "X"
+E_MATRA = "e"
+AI_MATRA = "E"
+O_MATRA = "o"
+AU_MATRA = "O"
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "k"
+KHA = "K"
+GA = "g"
+GHA = "G"
+NGA = "N"
+
+CA = "c"
+CHA = "C"
+JA = "j"
+JHA = "J"
+NYA = "Y"
+
+TTA = "w"
+TTHA = "W"
+DDA = "q"
+DDHA = "Q"
+NNA = "R"
+
+TA = "t"
+THA = "T"
+DA = "d"
+DHA = "D"
+NA = "n"
+
+PA = "p"
+PHA = "P"
+BA = "b"
+BHA = "B"
+MA = "m"
+
+YA = "y"
+RA = "r"
+LA = "l"
+LLA = "L"
+VA = "v"
+
+SHA = "S"
+SSA = "z"
+SA = "s"
+HA = "h"
+
+[special_marks]
+VIRAMA = ""        # No explicit representation
+ANUSVARA = "M"
+VISARGA = "H"
+AVAGRAHA = "'"
+OM = "oM"          # SLP1 representation of ॐ
+NUKTA = ""         # Nukta represented by modified character
+CANDRABINDU = "~"  # SLP1 uses tilde for candrabindu
+
+[digits]
+ZERO = "0"
+ONE = "1"
+TWO = "2"
+THREE = "3"
+FOUR = "4"
+FIVE = "5"
+SIX = "6"
+SEVEN = "7"
+EIGHT = "8"
+NINE = "9"
+
+[punctuation]
+DANDA = "|"
+DOUBLE_DANDA = "||"
+ABBREVIATION_SIGN = "."
+
+[additional_consonants]
+# Additional consonants for borrowed sounds
+QA = "q"           # Note: conflicts with ḍa, context dependent
+KHHA = "K"         # Same as kha in base SLP1
+GHHA = "G"         # Same as gha in base SLP1
+ZA = "j"           # Note: conflicts with ja, context dependent
+RRA = "q"          # Flap r (same as ḍa)
+RHRA = "Q"         # Same as ḍha
+FA = "P"           # Same as pha
+YYA = "y"          # Same as ya
+
+[ligatures]
+# Common ligatures
+KSHA = "kz"        # क्ष = k + virama + ṣ
+JNYA = "jY"        # ज्ञ = j + virama + ñ
+
+[notes]
+# SLP1 limitations and conflicts
+conflicts = [
+    "q maps to both ḍa and qa (context dependent)",
+    "Extended consonants often conflict with base set",
+    "Some borrowed sounds not distinguishable"
+]

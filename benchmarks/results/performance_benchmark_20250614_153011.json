@@ -1,0 +1,139 @@
+{
+  "timestamp": 1749895208.781116,
+  "benchmarks": {
+    "shlesha": {
+      "small": {
+        "engine": "shlesha",
+        "text_size": "small",
+        "runs": 3,
+        "avg_execution_time": 0.0037388347166900835,
+        "avg_memory_used": -0.048177083333333336,
+        "avg_chars_per_second": 4821.583681744352,
+        "success_rate": 100.0
+      },
+      "medium": {
+        "engine": "shlesha",
+        "text_size": "medium",
+        "runs": 3,
+        "avg_execution_time": 0.009715125042324265,
+        "avg_memory_used": 0.0026041666666666665,
+        "avg_chars_per_second": 58697.14019188686,
+        "success_rate": 100.0
+      },
+      "large": {
+        "engine": "shlesha",
+        "text_size": "large",
+        "runs": 3,
+        "avg_execution_time": 0.06885123462416232,
+        "avg_memory_used": 0.014322916666666666,
+        "avg_chars_per_second": 83044.93699155816,
+        "success_rate": 100.0
+      },
+      "xlarge": {
+        "engine": "shlesha",
+        "text_size": "xlarge",
+        "runs": 3,
+        "avg_execution_time": 0.5292072063311934,
+        "avg_memory_used": 0.0026041666666666665,
+        "avg_chars_per_second": 98165.87673673923,
+        "success_rate": 100.0
+      }
+    },
+    "aksharamukha": {
+      "small": {
+        "engine": "aksharamukha",
+        "text_size": "small",
+        "error": "Aksharamukha not installed. Install with: pip install aksharamukha",
+        "success_rate": 0
+      },
+      "medium": {
+        "engine": "aksharamukha",
+        "text_size": "medium",
+        "error": "Aksharamukha not installed. Install with: pip install aksharamukha",
+        "success_rate": 0
+      },
+      "large": {
+        "engine": "aksharamukha",
+        "text_size": "large",
+        "error": "Aksharamukha not installed. Install with: pip install aksharamukha",
+        "success_rate": 0
+      },
+      "xlarge": {
+        "engine": "aksharamukha",
+        "text_size": "xlarge",
+        "error": "Aksharamukha not installed. Install with: pip install aksharamukha",
+        "success_rate": 0
+      }
+    },
+    "dharmamitra": {
+      "small": {
+        "engine": "dharmamitra",
+        "text_size": "small",
+        "runs": 3,
+        "avg_execution_time": 0.047835777319657304,
+        "avg_memory_used": 1.3463541666666667,
+        "avg_chars_per_second": 201990.12920493094,
+        "success_rate": 100.0
+      },
+      "medium": {
+        "engine": "dharmamitra",
+        "text_size": "medium",
+        "runs": 3,
+        "avg_execution_time": 0.0007550753264998397,
+        "avg_memory_used": 0.0,
+        "avg_chars_per_second": 755896.6498619815,
+        "success_rate": 100.0
+      },
+      "large": {
+        "engine": "dharmamitra",
+        "text_size": "large",
+        "runs": 3,
+        "avg_execution_time": 0.007109062008870144,
+        "avg_memory_used": 0.016927083333333332,
+        "avg_chars_per_second": 801988.0885604895,
+        "success_rate": 100.0
+      },
+      "xlarge": {
+        "engine": "dharmamitra",
+        "text_size": "xlarge",
+        "runs": 3,
+        "avg_execution_time": 0.0654090514096121,
+        "avg_memory_used": 0.4830729166666667,
+        "avg_chars_per_second": 794433.7436983366,
+        "success_rate": 100.0
+      }
+    },
+    "vidyut_lipi": {
+      "small": {
+        "engine": "vidyut_lipi",
+        "text_size": "small",
+        "error": "vidyut-lipi not available (neither Python bindings nor CLI)",
+        "success_rate": 0
+      },
+      "medium": {
+        "engine": "vidyut_lipi",
+        "text_size": "medium",
+        "error": "vidyut-lipi not available (neither Python bindings nor CLI)",
+        "success_rate": 0
+      },
+      "large": {
+        "engine": "vidyut_lipi",
+        "text_size": "large",
+        "error": "vidyut-lipi not available (neither Python bindings nor CLI)",
+        "success_rate": 0
+      },
+      "xlarge": {
+        "engine": "vidyut_lipi",
+        "text_size": "xlarge",
+        "error": "vidyut-lipi not available (neither Python bindings nor CLI)",
+        "success_rate": 0
+      }
+    }
+  },
+  "summary": {
+    "fastest_engine": "dharmamitra",
+    "most_memory_efficient": "dharmamitra",
+    "most_reliable": "shlesha",
+    "engine_rankings": {}
+  }
+}

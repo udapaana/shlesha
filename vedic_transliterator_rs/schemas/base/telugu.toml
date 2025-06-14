@@ -1,0 +1,626 @@
+[metadata]
+name = "base-telugu"
+description = "Base Telugu script mappings - Sanskrit transliteration to Telugu"
+script = "telugu"
+version = "2.0"
+
+[mappings]
+# Independent vowels
+A = "అ"
+AA = "ఆ"
+I = "ఇ"
+II = "ఈ"
+U = "ఉ"
+UU = "ఊ"
+RI = "ఋ"
+RII = "ౠ"
+LI = "ఌ"
+LII = "ౡ"
+E = "ఎ"
+AI = "ఐ"
+O = "ఒ"
+AU = "ఔ"
+
+# Consonants with inherent 'a'
+KA = "క"
+KHA = "ఖ"
+GA = "గ"
+GHA = "ఘ"
+NGA = "ఙ"
+CA = "చ"
+CHA = "ఛ"
+JA = "జ"
+JHA = "ఝ"
+NYA = "ఞ"
+TTA = "ట"
+TTHA = "ఠ"
+DDA = "డ"
+DDHA = "ఢ"
+NNA = "ణ"
+TA = "త"
+THA = "థ"
+DA = "ద"
+DHA = "ధ"
+NA = "న"
+PA = "ప"
+PHA = "ఫ"
+BA = "బ"
+BHA = "భ"
+MA = "మ"
+YA = "య"
+RA = "ర"
+LA = "ల"
+VA = "వ"
+SHA = "శ"
+SSA = "ష"
+SA = "స"
+HA = "హ"
+
+# Telugu-specific consonants
+LLA = "ళ"
+RRA = "ఱ"
+
+# Dependent vowel signs (matras)
+AA_SIGN = "ా"
+I_SIGN = "ి"
+II_SIGN = "ీ"
+U_SIGN = "ు"
+UU_SIGN = "ూ"
+RI_SIGN = "ృ"
+RII_SIGN = "ౄ"
+LI_SIGN = "ౢ"
+LII_SIGN = "ౣ"
+E_SIGN = "ె"
+AI_SIGN = "ై"
+O_SIGN = "ొ"
+AU_SIGN = "ౌ"
+
+# Combined consonant-vowel forms (ka series)
+KAA = "కా"
+KI = "కి"
+KII = "కీ"
+KU = "కు"
+KUU = "కూ"
+KRI = "కృ"
+KRII = "కౄ"
+KE = "కె"
+KAI = "కై"
+KO = "కొ"
+KAU = "కౌ"
+
+# kha series
+KHAA = "ఖా"
+KHI = "ఖి"
+KHII = "ఖీ"
+KHU = "ఖు"
+KHUU = "ఖూ"
+KHRI = "ఖృ"
+KHE = "ఖె"
+KHAI = "ఖై"
+KHO = "ఖొ"
+KHAU = "ఖౌ"
+
+# ga series
+GAA = "గా"
+GI = "గి"
+GII = "గీ"
+GU = "గు"
+GUU = "గూ"
+GRI = "గృ"
+GE = "గె"
+GAI = "గై"
+GO = "గొ"
+GAU = "గౌ"
+
+# gha series
+GHAA = "ఘా"
+GHI = "ఘి"
+GHII = "ఘీ"
+GHU = "ఘు"
+GHUU = "ఘూ"
+GHRI = "ఘృ"
+GHE = "ఘె"
+GHAI = "ఘై"
+GHO = "ఘొ"
+GHAU = "ఘౌ"
+
+# nga series
+NGAA = "ఙా"
+NGI = "ఙి"
+NGII = "ఙీ"
+NGU = "ఙు"
+NGUU = "ఙూ"
+NGE = "ఙె"
+NGAI = "ఙై"
+NGO = "ఙొ"
+NGAU = "ఙౌ"
+
+# ca series
+CAA = "చా"
+CI = "చి"
+CII = "చీ"
+CU = "చు"
+CUU = "చూ"
+CRI = "చృ"
+CE = "చె"
+CAI = "చై"
+CO = "చొ"
+CAU = "చౌ"
+
+# cha series
+CHAA = "ఛా"
+CHI = "ఛి"
+CHII = "ఛీ"
+CHU = "ఛు"
+CHUU = "ఛూ"
+CHE = "ఛె"
+CHAI = "ఛై"
+CHO = "ఛొ"
+CHAU = "ఛౌ"
+
+# ja series
+JAA = "జా"
+JI = "జి"
+JII = "జీ"
+JU = "జు"
+JUU = "జూ"
+JRI = "జృ"
+JE = "జె"
+JAI = "జై"
+JO = "జొ"
+JAU = "జౌ"
+
+# jha series
+JHAA = "ఝా"
+JHI = "ఝి"
+JHII = "ఝీ"
+JHU = "ఝు"
+JHUU = "ఝూ"
+JHE = "ఝె"
+JHAI = "ఝై"
+JHO = "ఝొ"
+JHAU = "ఝౌ"
+
+# nya series
+NYAA = "ఞా"
+NYI = "ఞి"
+NYII = "ఞీ"
+NYU = "ఞు"
+NYUU = "ఞూ"
+NYE = "ఞె"
+NYAI = "ఞై"
+NYO = "ఞొ"
+NYAU = "ఞౌ"
+
+# tta series
+TTAA = "టా"
+TTI = "టి"
+TTII = "టీ"
+TTU = "టు"
+TTUU = "టూ"
+TTRI = "టృ"
+TTE = "టె"
+TTAI = "టై"
+TTO = "టొ"
+TTAU = "టౌ"
+
+# ttha series
+TTHAA = "ఠా"
+TTHI = "ఠి"
+TTHII = "ఠీ"
+TTHU = "ఠు"
+TTHUU = "ఠూ"
+TTHE = "ఠె"
+TTHAI = "ఠై"
+TTHO = "ఠొ"
+TTHAU = "ఠౌ"
+
+# dda series
+DDAA = "డా"
+DDI = "డి"
+DDII = "డీ"
+DDU = "డు"
+DDUU = "డూ"
+DDRI = "డృ"
+DDE = "డె"
+DDAI = "డై"
+DDO = "డొ"
+DDAU = "డౌ"
+
+# ddha series
+DDHAA = "ఢా"
+DDHI = "ఢి"
+DDHII = "ఢీ"
+DDHU = "ఢు"
+DDHUU = "ఢూ"
+DDHE = "ఢె"
+DDHAI = "ఢై"
+DDHO = "ఢొ"
+DDHAU = "ఢౌ"
+
+# nna series
+NNAA = "ణా"
+NNI = "ణి"
+NNII = "ణీ"
+NNU = "ణు"
+NNUU = "ణూ"
+NNRI = "ణృ"
+NNE = "ణె"
+NNAI = "ణై"
+NNO = "ణొ"
+NNAU = "ణౌ"
+
+# ta series
+TAA = "తా"
+TI = "తి"
+TII = "తీ"
+TU = "తు"
+TUU = "తూ"
+TRI = "తృ"
+TE = "తె"
+TAI = "తై"
+TO = "తొ"
+TAU = "తౌ"
+
+# tha series
+THAA = "థా"
+THI = "థి"
+THII = "థీ"
+THU = "థు"
+THUU = "థూ"
+THE = "థె"
+THAI = "థై"
+THO = "థొ"
+THAU = "థౌ"
+
+# da series
+DAA = "దా"
+DI = "దි"
+DII = "దీ"
+DU = "దు"
+DUU = "దూ"
+DRI = "దృ"
+DE = "దె"
+DAI = "దై"
+DO = "దొ"
+DAU = "దౌ"
+
+# dha series
+DHAA = "ధా"
+DHI = "ధి"
+DHII = "ధీ"
+DHU = "ధు"
+DHUU = "ధూ"
+DHE = "ధె"
+DHAI = "ధై"
+DHO = "ధొ"
+DHAU = "ధౌ"
+
+# na series
+NAA = "నా"
+NI = "ని"
+NII = "నీ"
+NU = "ను"
+NUU = "నూ"
+NRI = "నృ"
+NE = "నె"
+NAI = "నై"
+NO = "నొ"
+NAU = "నౌ"
+
+# pa series
+PAA = "పా"
+PI = "పి"
+PII = "పీ"
+PU = "పు"
+PUU = "పూ"
+PRI = "పృ"
+PE = "పె"
+PAI = "పై"
+PO = "పొ"
+PAU = "పౌ"
+
+# pha series
+PHAA = "ఫా"
+PHI = "ఫి"
+PHII = "ఫీ"
+PHU = "ఫు"
+PHUU = "ఫూ"
+PHE = "ఫె"
+PHAI = "ఫై"
+PHO = "ఫొ"
+PHAU = "ఫౌ"
+
+# ba series
+BAA = "బా"
+BI = "బి"
+BII = "బీ"
+BU = "బు"
+BUU = "బూ"
+BRI = "బృ"
+BE = "బె"
+BAI = "బై"
+BO = "బొ"
+BAU = "బౌ"
+
+# bha series
+BHAA = "భా"
+BHI = "భి"
+BHII = "భీ"
+BHU = "భు"
+BHUU = "భూ"
+BHRI = "భృ"
+BHE = "భె"
+BHAI = "భై"
+BHO = "భొ"
+BHAU = "భౌ"
+
+# ma series
+MAA = "మా"
+MI = "మి"
+MII = "మీ"
+MU = "ము"
+MUU = "మూ"
+MRI = "మృ"
+ME = "మె"
+MAI = "మై"
+MO = "మొ"
+MAU = "మౌ"
+
+# ya series
+YAA = "యా"
+YI = "యి"
+YII = "యీ"
+YU = "యు"
+YUU = "యూ"
+YE = "యె"
+YAI = "యై"
+YO = "యొ"
+YAU = "యౌ"
+
+# ra series
+RAA = "రా"
+RI2 = "రి"
+RII2 = "రీ"
+RU = "రు"
+RUU2 = "రూ"
+RRI = "రృ"
+RE = "రె"
+RAI = "రై"
+RO = "రొ"
+RAU = "రౌ"
+
+# la series
+LAA = "లా"
+LI2 = "లి"
+LII2 = "లీ"
+LU = "లు"
+LUU2 = "లూ"
+LRI = "లృ"
+LE = "లె"
+LAI = "లై"
+LO = "లొ"
+LAU = "లౌ"
+
+# lla series (Telugu-specific)
+LLAA = "ళా"
+LLI = "ళి"
+LLII = "ళీ"
+LLU = "ళు"
+LLUU = "ళూ"
+LLE = "ళె"
+LLAI = "ళై"
+LLO = "ళొ"
+LLAU = "ళౌ"
+
+# rra series (Telugu-specific)
+RRAA = "ఱా"
+RRI2 = "ఱి"
+RRII = "ఱీ"
+RRU = "ఱు"
+RRUU = "ఱూ"
+
+# va series
+VAA = "వా"
+VI = "వి"
+VII = "వీ"
+VU = "వు"
+VUU = "వూ"
+VRI = "వృ"
+VE = "వె"
+VAI = "వై"
+VO = "వొ"
+VAU = "వౌ"
+
+# sha series
+SHAA = "శా"
+SHI = "శి"
+SHII = "శీ"
+SHU = "శు"
+SHUU = "శూ"
+SHRI = "శృ"
+SHE = "శె"
+SHAI = "శై"
+SHO = "శొ"
+SHAU = "శౌ"
+
+# ssa series
+SSAA = "షా"
+SSI = "షి"
+SSII = "షీ"
+SSU = "షు"
+SSUU = "షూ"
+SSRI = "షృ"
+SSE = "షె"
+SSAI = "షై"
+SSO = "షొ"
+SSAU = "షౌ"
+
+# sa series
+SAA = "సా"
+SI = "సి"
+SII = "సీ"
+SU = "సు"
+SUU = "సూ"
+SRI = "సృ"
+SE = "సె"
+SAI = "సై"
+SO = "సొ"
+SAU = "సౌ"
+
+# ha series
+HAA = "హా"
+HI = "హి"
+HII = "హీ"
+HU = "హు"
+HUU = "హూ"
+HRI = "హృ"
+HE = "హె"
+HAI = "హై"
+HO = "హొ"
+HAU = "హౌ"
+
+# Conjuncts
+KSHA = "క్ష"
+KSHAA = "క్షా"
+KSHI = "క్షి"
+KSHII = "క్షీ"
+KSHU = "క్షు"
+KSHUU = "క్షూ"
+KSHE = "క్షె"
+KSHAI = "క్షై"
+KSHO = "క్షొ"
+KSHAU = "క్షౌ"
+
+JNYA = "జ్ఞ"
+JNYAA = "జ్ఞా"
+JNYI = "జ్ఞి"
+JNYII = "జ్ఞీ"
+JNYU = "జ్ఞు"
+JNYUU = "జ్ఞూ"
+JNYE = "జ్ఞె"
+JNYAI = "జ్ఞై"
+JNYO = "జ్ఞొ"
+JNYAU = "జ్ఞౌ"
+
+# Pure consonants (halant forms)
+K = "క్"
+KH = "ఖ్"
+G = "గ్"
+GH = "ఘ్"
+NG = "ఙ్"
+C = "చ్"
+CH = "ఛ్"
+J = "జ్"
+JH = "ఝ్"
+NY = "ఞ్"
+TT = "ట్"
+TTH = "ఠ్"
+DD = "డ్"
+DDH = "ఢ్"
+NN = "ణ్"
+T = "త్"
+TH = "థ్"
+D = "ద్"
+DH = "ధ్"
+N = "న్"
+P = "ప్"
+PH = "ఫ్"
+B = "బ్"
+BH = "భ్"
+M = "మ్"
+Y = "య్"
+R = "ర్"
+L = "ల్"
+LL = "ళ్"
+RR = "ఱ్"
+V = "వ్"
+SH = "శ్"
+SS = "ష్"
+S = "స్"
+H = "హ్"
+
+# Modifiers
+ANUSVARA = "ం"
+VISARGA = "ః"
+HALANT = "్"
+AVAGRAHA = "ఽ"
+CANDRABINDU = "ఁ"
+NUKTA = "़"
+
+# Vedic accents (Devanagari fallback - standard Indic convention)
+UDATTA = "॑"         # No Telugu equivalent - use Devanagari
+ANUDATTA = "॒"       # No Telugu equivalent - use Devanagari  
+SVARITA = "॓"        # No Telugu equivalent - use Devanagari
+
+# Vedic-specific marks (Devanagari fallback)
+JIHVAMULIYA = "ᳵ"    # No Telugu equivalent - use Devanagari
+UPADHMANIYA = "ᳶ"    # No Telugu equivalent - use Devanagari
+PLUTA = "ऽ"          # No Telugu equivalent - use Devanagari
+VEDIC_TONE_KARSHANA = "॔"  # No Telugu equivalent - use Devanagari
+
+# Additional accent markers (preserve as-is when no native equivalent)
+TILDE = "~"          # ASCII marker - preserve
+CIRCUMFLEX = "ˆ"     # ASCII marker - preserve
+LLA_DEVANAGARI = "ळ" # Map Devanagari LLA to Telugu LLA
+
+# Private Use Area Vedic accents (Devanagari fallback principle)
+"\uE300" = "॑"       # Fallback to Devanagari udatta
+"\uE301" = "॒"       # Fallback to Devanagari anudatta
+"\uE302" = "॓"       # Fallback to Devanagari svarita
+"\uE303" = "॑"       # Fallback to Devanagari udatta variant
+"\uE305" = "॒"       # Fallback to Devanagari anudatta variant
+"\uE322" = "॒"       # Fallback to Devanagari anudatta
+"\uE324" = "॑"       # Fallback to Devanagari udatta
+"\uE338" = "॒"       # Fallback to Devanagari anudatta
+"\uE339" = "॑"       # Fallback to Devanagari udatta
+"\uE33A" = "॓"       # Fallback to Devanagari svarita
+"\uE33C" = "॒"       # Fallback to Devanagari anudatta
+"\uE33D" = "॑"       # Fallback to Devanagari udatta
+"\uE347" = "॓"       # Fallback to Devanagari svarita
+
+# Additional Devanagari characters with no Telugu equivalent
+DEVANAGARI_QA = "क़"  # Nukta characters - keep Devanagari
+DEVANAGARI_KHHA = "ख़"
+DEVANAGARI_GHHA = "ग़"
+DEVANAGARI_ZA = "ज़"
+DEVANAGARI_RRA = "ड़"
+DEVANAGARI_RHRA = "ढ़"
+DEVANAGARI_FA = "फ़"
+DEVANAGARI_YYA = "य़"
+
+# Archaic/rare Devanagari characters
+DEVANAGARI_CANDRA_A = "ऍ"  # No Telugu equivalent
+DEVANAGARI_SHORT_A = "ऎ"   # No Telugu equivalent
+DEVANAGARI_CANDRA_E = "ऑ"  # No Telugu equivalent
+DEVANAGARI_SHORT_O = "ऒ"   # No Telugu equivalent
+
+# Sacred syllables
+OM = "ఓం"
+
+# Punctuation
+DANDA = "।"
+DOUBLE_DANDA = "॥"
+SPACE = " "
+NEWLINE = "\n"
+PERIOD = "."
+COMMA = ","
+HYPHEN = "-"
+COLON = ":"
+SEMICOLON = ";"
+LPAREN = "("
+RPAREN = ")"
+LBRACKET = "["
+RBRACKET = "]"
+
+# Telugu digits
+DIGIT_0 = "౦"
+DIGIT_1 = "౧"
+DIGIT_2 = "౨"
+DIGIT_3 = "౩"
+DIGIT_4 = "౪"
+DIGIT_5 = "౫"
+DIGIT_6 = "౬"
+DIGIT_7 = "౭"
+DIGIT_8 = "౮"
+DIGIT_9 = "౯"

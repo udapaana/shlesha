@@ -1,0 +1,116 @@
+# Gujarati Base Schema
+# Standard Gujarati script without Vedic extensions
+# Used for Gujarati language and Sanskrit
+
+[metadata]
+name = "Gujarati"
+description = "Standard Gujarati script (Unicode)"
+author = "Shlesha Project"
+version = "1.0"
+base_encoding = "Unicode"
+standard = "Unicode 15.0"
+iso15924 = "Gujr"
+
+[vowels]
+# Independent vowel forms
+A = "અ"          # U+0A85
+AA = "આ"         # U+0A86
+I = "ઇ"          # U+0A87
+II = "ઈ"         # U+0A88
+U = "ઉ"          # U+0A89
+UU = "ઊ"         # U+0A8A
+RI = "ઋ"         # U+0A8B
+RII = "ૠ"        # U+0AE0
+LI = "ઌ"         # U+0A8C
+LII = "ૡ"        # U+0AE1
+E = "એ"          # U+0A8F
+AI = "ઐ"         # U+0A90
+O = "ઓ"          # U+0A93
+AU = "ઔ"         # U+0A94
+
+[vowel_marks]
+# Dependent vowel forms (matras)
+AA_MATRA = "ા"    # U+0ABE
+I_MATRA = "િ"     # U+0ABF
+II_MATRA = "ી"    # U+0AC0
+U_MATRA = "ુ"     # U+0AC1
+UU_MATRA = "ૂ"    # U+0AC2
+RI_MATRA = "ૃ"    # U+0AC3
+RII_MATRA = "ૄ"   # U+0AC4
+LI_MATRA = "ૢ"    # U+0AE2
+LII_MATRA = "ૣ"   # U+0AE3
+E_MATRA = "ે"     # U+0AC7
+AI_MATRA = "ૈ"    # U+0AC8
+O_MATRA = "ો"     # U+0ACB
+AU_MATRA = "ૌ"    # U+0ACC
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "ક"          # U+0A95
+KHA = "ખ"         # U+0A96
+GA = "ગ"          # U+0A97
+GHA = "ઘ"         # U+0A98
+NGA = "ઙ"         # U+0A99
+
+CA = "ચ"          # U+0A9A
+CHA = "છ"         # U+0A9B
+JA = "જ"          # U+0A9C
+JHA = "ઝ"         # U+0A9D
+NYA = "ઞ"         # U+0A9E
+
+TTA = "ટ"         # U+0A9F
+TTHA = "ઠ"        # U+0AA0
+DDA = "ડ"         # U+0AA1
+DDHA = "ઢ"        # U+0AA2
+NNA = "ણ"         # U+0AA3
+
+TA = "ત"          # U+0AA4
+THA = "થ"         # U+0AA5
+DA = "દ"          # U+0AA6
+DHA = "ધ"         # U+0AA7
+NA = "ન"          # U+0AA8
+
+PA = "પ"          # U+0AAA
+PHA = "ફ"         # U+0AAB
+BA = "બ"          # U+0AAC
+BHA = "ભ"         # U+0AAD
+MA = "મ"          # U+0AAE
+
+YA = "ય"          # U+0AAF
+RA = "ર"          # U+0AB0
+LA = "લ"          # U+0AB2
+LLA = "ળ"         # U+0AB3
+VA = "વ"          # U+0AB5
+SHA = "શ"         # U+0AB6
+SSA = "ષ"         # U+0AB7
+SA = "સ"          # U+0AB8
+HA = "હ"          # U+0AB9
+
+[special_marks]
+VIRAMA = "્"       # U+0ACD (halant)
+ANUSVARA = "ં"     # U+0A82
+VISARGA = "ઃ"      # U+0A83
+CANDRABINDU = "ઁ"  # U+0A81
+NUKTA = "઼"        # U+0ABC
+AVAGRAHA = "ઽ"     # U+0ABD
+
+[digits]
+ZERO = "૦"         # U+0AE6
+ONE = "૧"          # U+0AE7
+TWO = "૨"          # U+0AE8
+THREE = "૩"        # U+0AE9
+FOUR = "૪"         # U+0AEA
+FIVE = "૫"         # U+0AEB
+SIX = "૬"          # U+0AEC
+SEVEN = "૭"        # U+0AED
+EIGHT = "૮"        # U+0AEE
+NINE = "૯"         # U+0AEF
+
+[punctuation]
+DANDA = "।"        # U+0964
+DOUBLE_DANDA = "॥"  # U+0965
+
+[ligatures]
+# Common ligatures
+KSHA = "ક્ષ"       # ક્ + ષ
+JNYA = "જ્ઞ"       # જ્ + ઞ

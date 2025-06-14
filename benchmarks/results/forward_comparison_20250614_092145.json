@@ -1,0 +1,669 @@
+{
+  "timestamp": 1749873105.1588118,
+  "focus": "Forward transliteration (Devanagari → Roman scripts)",
+  "schemes_tested": [
+    "iast",
+    "slp1",
+    "iso15919"
+  ],
+  "categories": {
+    "rigveda_samples": {
+      "अग्निमीळे पुरोहितं यज्ञस्य देवमृत्विजम्": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "agnimīḷe purohitaṃ yajñasya devamṛtvijam",
+            "confidence": "10%",
+            "time": 0.01565074920654297,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "agnimīḻe purohitaṃ yajñasya devamṛtvijam",
+            "confidence": "100%",
+            "time": 0.12020182609558105,
+            "error": null
+          },
+          "similarity": 97.5
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "agnimILe purohitaM yajYasya devamftvijam",
+            "confidence": "10%",
+            "time": 0.015877962112426758,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "agnimILe purohitaM yajYasya devamftvijam",
+            "confidence": "100%",
+            "time": 0.0002853870391845703,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.016156911849975586,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "agnimīḷē purōhitaṁ yajñasya dēvamr̥tvijam",
+            "confidence": "100%",
+            "time": 0.0003840923309326172,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      },
+      "होतारं रत्नधातमम्": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "hotāraṃ ratnadhātamam",
+            "confidence": "10%",
+            "time": 0.01767873764038086,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "hotāraṃ ratnadhātamam",
+            "confidence": "100%",
+            "time": 0.0001850128173828125,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "hotAraM ratnaDAtamam",
+            "confidence": "10%",
+            "time": 0.015678882598876953,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "hotAraM ratnaDAtamam",
+            "confidence": "100%",
+            "time": 9.012222290039062e-05,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.016283750534057617,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "hōtāraṁ ratnadhātamam",
+            "confidence": "100%",
+            "time": 0.00019502639770507812,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      },
+      "अग्निः पूर्वेभिर्ऋषिभिरीड्यो नूतनैरुत": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "agniḥ pūrvebhirṛṣibhirīḍyo nūtanairuta",
+            "confidence": "10%",
+            "time": 0.017039775848388672,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "agniḥ pūrvebhirṛṣibhirīḍyo nūtanairuta",
+            "confidence": "100%",
+            "time": 0.0002300739288330078,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "agniH pUrveBirfziBirIqyo nUtanEruta",
+            "confidence": "10%",
+            "time": 0.01596212387084961,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "agniH pUrveBirfziBirIqyo nUtanEruta",
+            "confidence": "100%",
+            "time": 0.00012803077697753906,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.01587820053100586,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "agniḥ pūrvēbhirr̥ṣibhirīḍyō nūtanairuta",
+            "confidence": "100%",
+            "time": 0.00022792816162109375,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      }
+    },
+    "complex_vedic": {
+      "त्वष्ट्रग्रुत्स्म्यृत्स्न्यः": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "tvaṣṭragrutsmya[RI_SIGN]tsnyaḥ",
+            "confidence": "10%",
+            "time": 0.015315055847167969,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "tvaṣṭragrutsmyṛtsnyaḥ",
+            "confidence": "100%",
+            "time": 0.0001957416534423828,
+            "error": null
+          },
+          "similarity": 46.666666666666664
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "tvazwragrutsmya[RI_SIGN]tsnyaH",
+            "confidence": "10%",
+            "time": 0.017305850982666016,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "tvazwragrutsmyftsnyaH",
+            "confidence": "100%",
+            "time": 0.00011014938354492188,
+            "error": null
+          },
+          "similarity": 46.666666666666664
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.016404151916503906,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "tvaṣṭragrutsmyr̥tsnyaḥ",
+            "confidence": "100%",
+            "time": 0.0001971721649169922,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      },
+      "द्वन्द्वमोहनिर्मुक्ता ज्ञानयज्ञेन पावितः": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "dvandvamohanirmuktā jñānayajñena pāvitaḥ",
+            "confidence": "10%",
+            "time": 0.015522956848144531,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "dvandvamohanirmuktā jñānayajñena pāvitaḥ",
+            "confidence": "100%",
+            "time": 0.00033974647521972656,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "dvandvamohanirmuktA jYAnayajYena pAvitaH",
+            "confidence": "10%",
+            "time": 0.01566910743713379,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "dvandvamohanirmuktA jYAnayajYena pAvitaH",
+            "confidence": "100%",
+            "time": 0.0001380443572998047,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.015774965286254883,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "dvandvamōhanirmuktā jñānayajñēna pāvitaḥ",
+            "confidence": "100%",
+            "time": 0.0002307891845703125,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      },
+      "स्वप्रकाशस्वरूपाणां ब्रह्मादीनां च सत्तया": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "svaprakāśasvarūpāṇāṃ brahmādīnāṃ ca sattayā",
+            "confidence": "10%",
+            "time": 0.015810012817382812,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "svaprakāśasvarūpāṇāṃ brahmādīnāṃ ca sattayā",
+            "confidence": "100%",
+            "time": 0.0002231597900390625,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "svaprakASasvarUpARAM brahmAdInAM ca sattayA",
+            "confidence": "10%",
+            "time": 0.015810012817382812,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "svaprakASasvarUpARAM brahmAdInAM ca sattayA",
+            "confidence": "100%",
+            "time": 0.00013709068298339844,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.016494035720825195,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "svaprakāśasvarūpāṇāṁ brahmādīnāṁ ca sattayā",
+            "confidence": "100%",
+            "time": 0.0002608299255371094,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      }
+    },
+    "special_vedic_chars": {
+      "ॐ भूर्भुवः स्वः": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "oṃ bhūrbhuvaḥ svaḥ",
+            "confidence": "10%",
+            "time": 0.017683982849121094,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "oṃ bhūrbhuvaḥ svaḥ",
+            "confidence": "100%",
+            "time": 0.00018310546875,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "oM BUrBuvaH svaH",
+            "confidence": "10%",
+            "time": 0.0161440372467041,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "AUM BUrBuvaH svaH",
+            "confidence": "100%",
+            "time": 8.487701416015625e-05,
+            "error": null
+          },
+          "similarity": 0.0
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.01691412925720215,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "ōṁ bhūrbhuvaḥ svaḥ",
+            "confidence": "100%",
+            "time": 0.00027871131896972656,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      },
+      "ॠकारलृकार उच्चारणम्": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "ṝkāralṛkāra uccāraṇam",
+            "confidence": "10%",
+            "time": 0.015733003616333008,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "ṝkāralṛkāra uccāraṇam",
+            "confidence": "100%",
+            "time": 0.00018215179443359375,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "FkAralfkAra uccAraRam",
+            "confidence": "10%",
+            "time": 0.01534581184387207,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "FkAralfkAra uccAraRam",
+            "confidence": "100%",
+            "time": 8.893013000488281e-05,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.016501188278198242,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "r̥̄kāralr̥kāra uccāraṇam",
+            "confidence": "100%",
+            "time": 0.0001900196075439453,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      },
+      "गायत्री छन्दः त्रिष्टुप्": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "gāyatrī chandaḥ triṣṭup",
+            "confidence": "10%",
+            "time": 0.01538395881652832,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "gāyatrī chandaḥ triṣṭup",
+            "confidence": "100%",
+            "time": 0.00021696090698242188,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "gAyatrI CandaH trizwup",
+            "confidence": "10%",
+            "time": 0.01698589324951172,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "gAyatrI CandaH trizwup",
+            "confidence": "100%",
+            "time": 0.00010704994201660156,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.016620159149169922,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "gāyatrī chandaḥ triṣṭup",
+            "confidence": "100%",
+            "time": 0.00019598007202148438,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      }
+    },
+    "numbers_and_marks": {
+      "अध्याय १० मन्त्र ५२": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "adhyāya 10 mantra 52",
+            "confidence": "10%",
+            "time": 0.016197681427001953,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "adhyāya 10 mantra 52",
+            "confidence": "100%",
+            "time": 0.00019097328186035156,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "aDyAya 10 mantra 52",
+            "confidence": "10%",
+            "time": 0.01561594009399414,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "aDyAya 10 mantra 52",
+            "confidence": "100%",
+            "time": 9.083747863769531e-05,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.01579880714416504,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "adhyāya 10 mantra 52",
+            "confidence": "100%",
+            "time": 0.0002009868621826172,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      },
+      "यजुर्वेद अध्याय ४०।": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "yajurveda adhyāya 40|",
+            "confidence": "10%",
+            "time": 0.016016244888305664,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "yajurveda adhyāya 40|",
+            "confidence": "100%",
+            "time": 0.00018310546875,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "yajurveda aDyAya 40|",
+            "confidence": "10%",
+            "time": 0.015383720397949219,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "yajurveda aDyAya 40.",
+            "confidence": "100%",
+            "time": 9.703636169433594e-05,
+            "error": null
+          },
+          "similarity": 95.0
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.0160980224609375,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "yajurvēda adhyāya 40।",
+            "confidence": "100%",
+            "time": 0.00018715858459472656,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      },
+      "ऋग्वेद मण्डल १०॥५॥": {
+        "iast": {
+          "shlesha": {
+            "success": true,
+            "result": "ṛgveda maṇḍala 10||5||",
+            "confidence": "10%",
+            "time": 0.017805814743041992,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "ṛgveda maṇḍala 10||5||",
+            "confidence": "100%",
+            "time": 0.0001800060272216797,
+            "error": null
+          },
+          "similarity": 100.0
+        },
+        "slp1": {
+          "shlesha": {
+            "success": true,
+            "result": "fgveda maRqala 10||5||",
+            "confidence": "10%",
+            "time": 0.015898704528808594,
+            "error": null
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "fgveda maRqala 10..5..",
+            "confidence": "100%",
+            "time": 0.00010204315185546875,
+            "error": null
+          },
+          "similarity": 81.81818181818183
+        },
+        "iso15919": {
+          "shlesha": {
+            "success": false,
+            "result": null,
+            "confidence": null,
+            "time": 0.01565694808959961,
+            "error": "Warning: Failed to load iso15919 scheme: TOML parse error at line 95, column 1\n   |\n95 | LI = \"li\"\n   | ^\nduplicate key `LI` in table `mappings`\n\nError: ProcessingError(\"Unknown script: iso15919\")\n"
+          },
+          "dharmamitra": {
+            "success": true,
+            "result": "r̥gvēda maṇḍala 10॥5॥",
+            "confidence": "100%",
+            "time": 0.0002219676971435547,
+            "error": null
+          },
+          "similarity": 0.0
+        }
+      }
+    }
+  },
+  "summary": {
+    "shlesha": {
+      "total": 36,
+      "success": 24,
+      "avg_time": 0.016146500905354817,
+      "avg_confidence": 10.0
+    },
+    "dharmamitra": {
+      "total": 36,
+      "success": 36,
+      "avg_time": 0.003520614571041531
+    },
+    "average_similarity": 94.24571805006588
+  }
+}

@@ -1,0 +1,120 @@
+# Kannada Base Schema
+# Standard Kannada script
+# Used for Kannada language and Sanskrit
+
+[metadata]
+name = "Kannada"
+description = "Standard Kannada script (Unicode)"
+author = "Shlesha Project"
+version = "1.0"
+base_encoding = "Unicode"
+standard = "Unicode 15.0"
+iso15924 = "Knda"
+
+[vowels]
+# Independent vowel forms
+A = "ಅ"          # U+0C85
+AA = "ಆ"         # U+0C86
+I = "ಇ"          # U+0C87
+II = "ಈ"         # U+0C88
+U = "ಉ"          # U+0C89
+UU = "ಊ"         # U+0C8A
+RI = "ಋ"         # U+0C8B
+RII = "ೠ"        # U+0CE0
+LI = "ಌ"         # U+0C8C
+LII = "ೡ"        # U+0CE1
+E = "ಎ"          # U+0C8E
+EE = "ಏ"         # U+0C8F
+AI = "ಐ"         # U+0C90
+O = "ಒ"          # U+0C92
+OO = "ಓ"         # U+0C93
+AU = "ಔ"         # U+0C94
+
+[vowel_marks]
+# Dependent vowel forms (matras)
+AA_MATRA = "ಾ"    # U+0CBE
+I_MATRA = "ಿ"     # U+0CBF
+II_MATRA = "ೀ"    # U+0CC0
+U_MATRA = "ು"     # U+0CC1
+UU_MATRA = "ೂ"    # U+0CC2
+RI_MATRA = "ೃ"    # U+0CC3
+RII_MATRA = "ೄ"   # U+0CC4
+LI_MATRA = "ೢ"    # U+0CE2
+LII_MATRA = "ೣ"   # U+0CE3
+E_MATRA = "ೆ"     # U+0CC6
+EE_MATRA = "ೇ"    # U+0CC7
+AI_MATRA = "ೈ"    # U+0CC8
+O_MATRA = "ೊ"     # U+0CCA
+OO_MATRA = "ೋ"    # U+0CCB
+AU_MATRA = "ೌ"    # U+0CCC
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "ಕ"          # U+0C95
+KHA = "ಖ"         # U+0C96
+GA = "ಗ"          # U+0C97
+GHA = "ಘ"         # U+0C98
+NGA = "ಙ"         # U+0C99
+
+CA = "ಚ"          # U+0C9A
+CHA = "ಛ"         # U+0C9B
+JA = "ಜ"          # U+0C9C
+JHA = "ಝ"         # U+0C9D
+NYA = "ಞ"         # U+0C9E
+
+TTA = "ಟ"         # U+0C9F
+TTHA = "ಠ"        # U+0CA0
+DDA = "ಡ"         # U+0CA1
+DDHA = "ಢ"        # U+0CA2
+NNA = "ಣ"         # U+0CA3
+
+TA = "ತ"          # U+0CA4
+THA = "ಥ"         # U+0CA5
+DA = "ದ"          # U+0CA6
+DHA = "ಧ"         # U+0CA7
+NA = "ನ"          # U+0CA8
+
+PA = "ಪ"          # U+0CAA
+PHA = "ಫ"         # U+0CAB
+BA = "ಬ"          # U+0CAC
+BHA = "ಭ"         # U+0CAD
+MA = "ಮ"          # U+0CAE
+
+YA = "ಯ"          # U+0CAF
+RA = "ರ"          # U+0CB0
+RRA = "ಱ"         # U+0CB1
+LA = "ಲ"          # U+0CB2
+LLA = "ಳ"         # U+0CB3
+VA = "ವ"          # U+0CB5
+SHA = "ಶ"         # U+0CB6
+SSA = "ಷ"         # U+0CB7
+SA = "ಸ"          # U+0CB8
+HA = "ಹ"          # U+0CB9
+
+[special_marks]
+VIRAMA = "್"       # U+0CCD (halant)
+ANUSVARA = "ಂ"     # U+0C82
+VISARGA = "ಃ"      # U+0C83
+NUKTA = "಼"        # U+0CBC
+AVAGRAHA = "ಽ"     # U+0CBD
+
+[digits]
+ZERO = "೦"         # U+0CE6
+ONE = "೧"          # U+0CE7
+TWO = "೨"          # U+0CE8
+THREE = "೩"        # U+0CE9
+FOUR = "೪"         # U+0CEA
+FIVE = "೫"         # U+0CEB
+SIX = "೬"          # U+0CEC
+SEVEN = "೭"        # U+0CED
+EIGHT = "೮"        # U+0CEE
+NINE = "೯"         # U+0CEF
+
+[punctuation]
+DANDA = "।"        # U+0964
+DOUBLE_DANDA = "॥"  # U+0965
+
+[ligatures]
+# Common ligatures
+KSHA = "ಕ್ಷ"       # ಕ್ + ಷ
+JNYA = "ಜ್ಞ"       # ಜ್ + ಞ

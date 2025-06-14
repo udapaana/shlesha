@@ -1,0 +1,133 @@
+# ISO 15919 Base Schema
+# International standard for transliteration of Devanagari and related scripts
+# Based on Vidyut-lipi standards
+
+[metadata]
+name = "ISO15919"
+description = "International standard for transliteration of Devanagari and related scripts"
+author = "Udapaana Project (based on Vidyut-lipi)"
+version = "2.0"
+base_encoding = "Unicode"
+standard = "ISO 15919:2001"
+supports_vedic_accents = false
+
+[vowels]
+# Independent vowel forms
+A = "a"
+AA = "ā"
+I = "i"
+II = "ī"
+U = "u"
+UU = "ū"
+RI = "r̥"
+RII = "r̥̄"
+LI = "l̥"
+LII = "l̥̄"
+E = "ē"
+AI = "ai"
+O = "ō"
+AU = "au"
+
+[vowel_marks]
+# Dependent vowel forms (same as independent for ISO)
+AA_MATRA = "ā"
+I_MATRA = "i"
+II_MATRA = "ī"
+U_MATRA = "u"
+UU_MATRA = "ū"
+RI_MATRA = "r̥"
+RII_MATRA = "r̥̄"
+LI_MATRA = "l̥"
+LII_MATRA = "l̥̄"
+E_MATRA = "ē"
+AI_MATRA = "ai"
+O_MATRA = "ō"
+AU_MATRA = "au"
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "ka"
+KHA = "kha"
+GA = "ga"
+GHA = "gha"
+NGA = "ṅa"
+
+CA = "ca"
+CHA = "cha"
+JA = "ja"
+JHA = "jha"
+NYA = "ña"
+
+TTA = "ṭa"
+TTHA = "ṭha"
+DDA = "ḍa"
+DDHA = "ḍha"
+NNA = "ṇa"
+
+TA = "ta"
+THA = "tha"
+DA = "da"
+DHA = "dha"
+NA = "na"
+
+PA = "pa"
+PHA = "pha"
+BA = "ba"
+BHA = "bha"
+MA = "ma"
+
+YA = "ya"
+RA = "ra"
+LA = "la"
+VA = "va"
+
+SHA = "śa"
+SSA = "ṣa"
+SA = "sa"
+HA = "ha"
+
+[special_marks]
+VIRAMA = ""        # No representation (implicit)
+ANUSVARA = "ṁ"
+VISARGA = "ḥ"
+AVAGRAHA = "'"
+
+[digits]
+ZERO = "0"
+ONE = "1"
+TWO = "2"
+THREE = "3"
+FOUR = "4"
+FIVE = "5"
+SIX = "6"
+SEVEN = "7"
+EIGHT = "8"
+NINE = "9"
+
+[punctuation]
+DANDA = "."
+DOUBLE_DANDA = ".."
+ABBREVIATION_SIGN = "°"
+
+[additional_consonants]
+# Additional consonants for borrowed sounds
+QA = "qa"
+KHHA = "k͟ha"
+GHHA = "g͟ha"
+ZA = "za"
+RRA = "ṛa"
+RHRA = "ṛha"
+FA = "fa"
+YYA = "ẏa"
+
+[ligatures]
+# Common ligatures
+KSHA = "kṣa"
+JNYA = "jña"
+
+# Note: Key differences from IAST
+# E_LONG = "ē" (ISO uses macron, IAST uses simple e)
+# O_LONG = "ō" (ISO uses macron, IAST uses simple o)  
+# RI_NOTATION = "r̥" (ISO uses ring below, IAST uses dot below)
+# LI_NOTATION = "l̥" (ISO uses ring below, IAST uses dot below)
+# ANUSVARA_DOT = "ṁ" (ISO uses dot above, IAST often uses dot below)

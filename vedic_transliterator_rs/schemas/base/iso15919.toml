@@ -1,0 +1,145 @@
+[metadata]
+name = "base-iso15919"
+description = "ISO 15919:2001 transliteration standard for Indic scripts"
+encoding = "iso15919"
+version = "2.0"
+standard = "ISO 15919:2001"
+
+[mappings]
+# Vowels (ISO 15919 standard)
+A = "a"
+AA = "ā"
+I = "i"
+II = "ī"
+U = "u"
+UU = "ū"
+RI = "r̥"
+RII = "r̥̄"
+LI = "l̥"
+LII = "l̥̄"
+E = "ē"
+AI = "ai"
+O = "ō"
+AU = "au"
+
+# Consonants (ISO 15919 standard)
+KA = "ka"
+KHA = "kha"
+GA = "ga"
+GHA = "gha"
+NGA = "ṅa"
+CA = "ca"
+CHA = "cha"
+JA = "ja"
+JHA = "jha"
+NYA = "ña"
+TTA = "ṭa"
+TTHA = "ṭha"
+DDA = "ḍa"
+DDHA = "ḍha"
+NNA = "ṇa"
+TA = "ta"
+THA = "tha"
+DA = "da"
+DHA = "dha"
+NA = "na"
+PA = "pa"
+PHA = "pha"
+BA = "ba"
+BHA = "bha"
+MA = "ma"
+YA = "ya"
+RA = "ra"
+LA = "la"
+VA = "va"
+SHA = "śa"
+SSA = "ṣa"
+SA = "sa"
+HA = "ha"
+
+# Combined consonant-vowel forms (need comprehensive mappings)
+KAA = "kā"
+KI = "ki"
+KII = "kī"
+KU = "ku"
+KUU = "kū"
+KRI = "kr̥"
+KE = "kē"
+KAI = "kai"
+KO = "kō"
+KAU = "kau"
+
+# Additional consonant forms
+GAA = "gā"
+GI = "gi"
+GII = "gī"
+GU = "gu"
+GUU = "gū"
+GE = "gē"
+
+NAA = "nā"
+NI = "ni"
+NII = "nī"
+NU = "nu"
+NUU = "nū"
+NE = "nē"
+
+MAA = "mā"
+MI = "mi"
+MII = "mī"
+MU = "mu"
+MUU = "mū"
+ME = "mē"
+
+LAA = "lā"
+LI = "li"
+LII = "lī"
+LU = "lu"
+LUU = "lū"
+LE = "lē"
+
+# Special characters
+LLA = "ḷa"
+LLAA = "ḷā"
+LLI = "ḷi"
+LLII = "ḷī"
+LLU = "ḷu"
+LLUU = "ḷū"
+LLE = "ḷē"
+
+# Pure consonants
+K = "k"
+G = "g"
+N = "n"
+M = "m"
+L = "l"
+LL = "ḷ"
+
+# Special marks
+ANUSVARA = "ṁ"
+VISARGA = "ḥ"
+HALANT = ""
+AVAGRAHA = "'"
+CANDRABINDU = "m̐"
+
+# Vedic accents (ISO 15919 with combining marks)
+UDATTA = "́"         # U+0301 - Combining acute accent
+ANUDATTA = "̀"        # U+0300 - Combining grave accent
+SVARITA = "̂"         # U+0302 - Combining circumflex
+
+# Punctuation
+DANDA = "|"
+DOUBLE_DANDA = "||"
+SPACE = " "
+
+# Digits (Arabic numerals in ISO 15919)
+DIGIT_0 = "0"
+DIGIT_1 = "1"
+DIGIT_2 = "2"
+DIGIT_3 = "3"
+DIGIT_4 = "4"
+DIGIT_5 = "5"
+DIGIT_6 = "6"
+DIGIT_7 = "7"
+DIGIT_8 = "8"
+DIGIT_9 = "9"

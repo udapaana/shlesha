@@ -1,0 +1,81 @@
+# Arabic Base Schema
+# Standard Arabic script
+# Used for Arabic language and Arabic-based Sanskrit transliteration
+
+[metadata]
+name = "Arabic"
+description = "Standard Arabic script (Unicode)"
+author = "Shlesha Project"
+version = "1.0"
+base_encoding = "Unicode"
+standard = "Unicode 15.0"
+iso15924 = "Arab"
+
+[vowels]
+# Long vowels (consonants that represent vowels)
+ALIF = "ا"        # U+0627 (ā)
+WAW = "و"         # U+0648 (ū/o)
+YA = "ي"          # U+064A (ī/e)
+
+[vowel_marks]
+# Short vowel marks (diacritics)
+FATHA = "َ"        # U+064E (a)
+KASRA = "ِ"        # U+0650 (i)
+DAMMA = "ُ"        # U+064F (u)
+SUKUN = "ْ"        # U+0652 (no vowel)
+TANWIN_FATH = "ً"  # U+064B (an)
+TANWIN_KASR = "ٍ"  # U+064D (in)
+TANWIN_DAMM = "ٌ"  # U+064C (un)
+
+[consonants]
+# Basic Arabic consonants
+BA = "ب"          # U+0628
+TA = "ت"          # U+062A
+THA = "ث"         # U+062B
+JIM = "ج"         # U+062C
+HA_HOTI = "ح"     # U+062D
+KHA = "خ"         # U+062E
+DAL = "د"         # U+062F
+DHAL = "ذ"        # U+0630
+RA = "ر"          # U+0631
+ZAY = "ز"         # U+0632
+SIN = "س"         # U+0633
+SHIN = "ش"        # U+0634
+SAD = "ص"         # U+0635
+DAD = "ض"         # U+0636
+TA_MARBU = "ط"    # U+0637
+ZA_MARBU = "ظ"    # U+0638
+AYN = "ع"         # U+0639
+GHAYN = "غ"       # U+063A
+FA = "ف"          # U+0641
+QAF = "ق"         # U+0642
+KAF = "ك"         # U+0643
+LAM = "ل"         # U+0644
+MIM = "م"         # U+0645
+NUN = "ن"         # U+0646
+HA = "ه"          # U+0647
+HAMZA = "ء"       # U+0621
+
+[special_marks]
+SHADDA = "ّ"       # U+0651 (gemination)
+ALIF_WASLA = "ٱ"   # U+0671
+TA_MARBUTA = "ة"   # U+0629
+ALIF_MAKSURA = "ى" # U+0649
+MADDA = "ٓ"        # U+0653
+
+[digits]
+ZERO = "٠"         # U+0660
+ONE = "١"          # U+0661
+TWO = "٢"          # U+0662
+THREE = "٣"        # U+0663
+FOUR = "٤"         # U+0664
+FIVE = "٥"         # U+0665
+SIX = "٦"          # U+0666
+SEVEN = "٧"        # U+0667
+EIGHT = "٨"        # U+0668
+NINE = "٩"         # U+0669
+
+[punctuation]
+COMMA = "،"        # U+060C
+SEMICOLON = "؛"    # U+061B
+QUESTION = "؟"     # U+061F

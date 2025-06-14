@@ -1,0 +1,120 @@
+# Bengali (Bangla) Base Schema
+# Standard Bengali script without Vedic extensions
+# Used for Bengali, Assamese, and Sanskrit
+
+[metadata]
+name = "Bengali"
+description = "Standard Bengali (Bangla) script (Unicode)"
+author = "Shlesha Project"
+version = "1.0"
+base_encoding = "Unicode"
+standard = "Unicode 15.0"
+iso15924 = "Beng"
+
+[vowels]
+# Independent vowel forms
+A = "অ"          # U+0985
+AA = "আ"         # U+0986
+I = "ই"          # U+0987
+II = "ঈ"         # U+0988
+U = "উ"          # U+0989
+UU = "ঊ"         # U+098A
+RI = "ঋ"         # U+098B
+RII = "ৠ"        # U+09E0
+LI = "ঌ"         # U+098C
+LII = "ৡ"        # U+09E1
+E = "এ"          # U+098F
+AI = "ঐ"         # U+0990
+O = "ও"          # U+0993
+AU = "ঔ"         # U+0994
+
+[vowel_marks]
+# Dependent vowel forms (matras)
+AA_MATRA = "া"    # U+09BE
+I_MATRA = "ি"     # U+09BF
+II_MATRA = "ী"    # U+09C0
+U_MATRA = "ু"     # U+09C1
+UU_MATRA = "ূ"    # U+09C2
+RI_MATRA = "ৃ"    # U+09C3
+RII_MATRA = "ৄ"   # U+09C4
+LI_MATRA = "ৢ"    # U+09E2
+LII_MATRA = "ৣ"   # U+09E3
+E_MATRA = "ে"     # U+09C7
+AI_MATRA = "ৈ"    # U+09C8
+O_MATRA = "ো"     # U+09CB
+AU_MATRA = "ৌ"    # U+09CC
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "ক"          # U+0995
+KHA = "খ"         # U+0996
+GA = "গ"          # U+0997
+GHA = "ঘ"         # U+0998
+NGA = "ঙ"         # U+0999
+
+CA = "চ"          # U+099A
+CHA = "ছ"         # U+099B
+JA = "জ"          # U+099C
+JHA = "ঝ"         # U+099D
+NYA = "ঞ"         # U+099E
+
+TTA = "ট"         # U+099F
+TTHA = "ঠ"        # U+09A0
+DDA = "ড"         # U+09A1
+DDHA = "ঢ"        # U+09A2
+NNA = "ণ"         # U+09A3
+
+TA = "ত"          # U+09A4
+THA = "থ"         # U+09A5
+DA = "দ"          # U+09A6
+DHA = "ধ"         # U+09A7
+NA = "ন"          # U+09A8
+
+PA = "প"          # U+09AA
+PHA = "ফ"         # U+09AB
+BA = "ব"          # U+09AC
+BHA = "ভ"         # U+09AD
+MA = "ম"          # U+09AE
+
+YA = "য"          # U+09AF
+RA = "র"          # U+09B0
+LA = "ল"          # U+09B2
+SHA = "শ"         # U+09B6
+SSA = "ষ"         # U+09B7
+SA = "স"          # U+09B8
+HA = "হ"          # U+09B9
+
+[additional_consonants]
+# Bengali-specific consonants
+RRA = "ড়"         # U+09DC (ড + nukta)
+RHRA = "ঢ়"        # U+09DD (ঢ + nukta)
+YYA = "য়"         # U+09DF
+
+[special_marks]
+VIRAMA = "্"       # U+09CD (halant)
+ANUSVARA = "ং"     # U+0982
+VISARGA = "ঃ"      # U+0983
+CANDRABINDU = "ঁ"  # U+0981
+NUKTA = "়"        # U+09BC
+AVAGRAHA = "ঽ"     # U+09BD
+
+[digits]
+ZERO = "০"         # U+09E6
+ONE = "১"          # U+09E7
+TWO = "২"          # U+09E8
+THREE = "৩"        # U+09E9
+FOUR = "৪"         # U+09EA
+FIVE = "৫"         # U+09EB
+SIX = "৬"          # U+09EC
+SEVEN = "৭"        # U+09ED
+EIGHT = "৮"        # U+09EE
+NINE = "৯"         # U+09EF
+
+[punctuation]
+DANDA = "।"        # U+0964
+DOUBLE_DANDA = "॥"  # U+0965
+
+[ligatures]
+# Common ligatures
+KSHA = "ক্ষ"       # ক্ + ষ
+JNYA = "জ্ঞ"       # জ্ + ঞ

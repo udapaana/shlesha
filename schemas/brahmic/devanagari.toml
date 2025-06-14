@@ -1,0 +1,152 @@
+# Devanagari Base Schema
+# Standard Devanagari script without Vedic accents
+# Based on Vidyut-lipi standards
+
+[metadata]
+name = "Devanagari"
+scheme_id = "devanagari"
+description = "Standard Devanagari script (Unicode)"
+author = "Udapaana Project (based on Vidyut-lipi)"
+version = "2.0"
+base_encoding = "Unicode"
+standard = "Unicode 15.0"
+supports_vedic_accents = false
+
+[vowels]
+# Independent vowel forms
+A = "अ"          # U+0905
+AA = "आ"         # U+0906
+I = "इ"          # U+0907
+II = "ई"         # U+0908
+U = "उ"          # U+0909
+UU = "ऊ"         # U+090A
+RI = "ऋ"         # U+090B
+RII = "ॠ"        # U+0960
+LI = "ऌ"         # U+090C
+LII = "ॡ"        # U+0961
+E = "ए"          # U+090F
+AI = "ऐ"         # U+0910
+O = "ओ"          # U+0913
+AU = "औ"         # U+0914
+
+[vowel_marks]
+# Dependent vowel forms (matras)
+AA_MATRA = "ा"    # U+093E
+I_MATRA = "ि"     # U+093F
+II_MATRA = "ी"    # U+0940
+U_MATRA = "ु"     # U+0941
+UU_MATRA = "ू"    # U+0942
+RI_MATRA = "ृ"    # U+0943
+RII_MATRA = "ॄ"   # U+0944
+LI_MATRA = "ॢ"    # U+0962
+LII_MATRA = "ॣ"   # U+0963
+E_MATRA = "े"     # U+0947
+AI_MATRA = "ै"    # U+0948
+O_MATRA = "ो"     # U+094B
+AU_MATRA = "ौ"    # U+094C
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "क"          # U+0915
+KHA = "ख"         # U+0916
+GA = "ग"          # U+0917
+GHA = "घ"         # U+0918
+NGA = "ङ"         # U+0919
+
+CA = "च"          # U+091A
+CHA = "छ"         # U+091B
+JA = "ज"          # U+091C
+JHA = "झ"         # U+091D
+NYA = "ञ"         # U+091E
+
+TTA = "ट"         # U+091F
+TTHA = "ठ"        # U+0920
+DDA = "ड"         # U+0921
+DDHA = "ढ"        # U+0922
+NNA = "ण"         # U+0923
+
+TA = "त"          # U+0924
+THA = "थ"         # U+0925
+DA = "द"          # U+0926
+DHA = "ध"         # U+0927
+NA = "न"          # U+0928
+
+PA = "प"          # U+092A
+PHA = "फ"         # U+092B
+BA = "ब"          # U+092C
+BHA = "भ"         # U+092D
+MA = "म"          # U+092E
+
+YA = "य"          # U+092F
+RA = "र"          # U+0930
+LA = "ल"          # U+0932
+LLA = "ळ"         # U+0933 DEVANAGARI LETTER LLA
+VA = "व"          # U+0935
+
+SHA = "श"         # U+0936
+SSA = "ष"         # U+0937
+SA = "स"          # U+0938
+HA = "ह"          # U+0939
+
+[special_marks]
+VIRAMA = "्"       # U+094D (halant)
+ANUSVARA = "ं"     # U+0902
+VISARGA = "ः"      # U+0903
+AVAGRAHA = "ऽ"     # U+093D
+OM = "ॐ"          # U+0950 DEVANAGARI OM
+NUKTA = "़"        # U+093C DEVANAGARI SIGN NUKTA
+CANDRABINDU = "ँ"  # U+0901 DEVANAGARI SIGN CANDRABINDU
+
+[digits]
+ZERO = "०"         # U+0966
+ONE = "१"          # U+0967
+TWO = "२"          # U+0968
+THREE = "३"        # U+0969
+FOUR = "४"         # U+096A
+FIVE = "५"         # U+096B
+SIX = "६"          # U+096C
+SEVEN = "७"        # U+096D
+EIGHT = "८"        # U+096E
+NINE = "९"         # U+096F
+
+[punctuation]
+DANDA = "।"        # U+0964
+DOUBLE_DANDA = "॥"  # U+0965
+ABBREVIATION_SIGN = "॰"  # U+0970
+
+[additional_consonants]
+# Additional consonants for borrowed sounds
+QA = "क़"          # क + nukta
+KHHA = "ख़"        # ख + nukta
+GHHA = "ग़"        # ग + nukta
+ZA = "ज़"          # ज + nukta
+RRA = "ड़"         # ड + nukta
+RHRA = "ढ़"        # ढ + nukta
+FA = "फ़"          # फ + nukta
+YYA = "य़"         # य + nukta
+
+[ligatures]
+# Common ligatures (these are automatically generated in most cases)
+KSHA = "क्ष"       # क् + ष
+JNYA = "ज्ञ"       # ज् + ञ
+
+[compound_vowels]
+# Consonant + vowel combinations for proper parsing
+KA_I_MATRA = "कि"   # क + ि
+KA_II_MATRA = "की"  # क + ी  
+KA_U_MATRA = "कु"   # क + ु
+KA_UU_MATRA = "कू"  # क + ू
+KA_E_MATRA = "के"   # क + े
+KA_O_MATRA = "को"   # क + ो
+
+GA_I_MATRA = "गि"   # ग + ि
+NA_I_MATRA = "नि"   # न + ि
+MA_I_MATRA = "मि"   # म + ि
+MA_II_MATRA = "मी"  # म + ी
+
+PA_U_MATRA = "पु"   # प + ु
+RA_O_MATRA = "रो"   # र + ो
+HA_I_MATRA = "हि"   # ह + ि
+TA_ANUSVARA = "तं"  # त + ं
+
+LLA_E_MATRA = "ळे"  # ळ + े

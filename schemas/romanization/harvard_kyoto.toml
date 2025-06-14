@@ -1,0 +1,133 @@
+# Harvard-Kyoto Base Schema
+# ASCII-based transliteration system
+# Based on Vidyut-lipi standards
+
+[metadata]
+name = "HarvardKyoto"
+description = "Harvard-Kyoto ASCII transliteration system"
+author = "Udapaana Project (based on Vidyut-lipi)"
+version = "2.0"
+base_encoding = "ASCII"
+standard = "Harvard-Kyoto"
+supports_vedic_accents = false
+
+[vowels]
+# Independent vowel forms
+A = "a"
+AA = "A"
+I = "i"
+II = "I"
+U = "u"
+UU = "U"
+RI = "R"
+RII = "RR"          # or "lR"
+LI = "lR"
+LII = "lRR"         # or "lRR"
+E = "e"
+AI = "ai"
+O = "o"
+AU = "au"
+
+[vowel_marks]
+# Dependent vowel forms (same as independent for Harvard-Kyoto)
+AA_MATRA = "A"
+I_MATRA = "i"
+II_MATRA = "I"
+U_MATRA = "u"
+UU_MATRA = "U"
+RI_MATRA = "R"
+RII_MATRA = "RR"
+LI_MATRA = "lR"
+LII_MATRA = "lRR"
+E_MATRA = "e"
+AI_MATRA = "ai"
+O_MATRA = "o"
+AU_MATRA = "au"
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "k"
+KHA = "kh"
+GA = "g"
+GHA = "gh"
+NGA = "G"
+
+CA = "c"
+CHA = "ch"
+JA = "j"
+JHA = "jh"
+NYA = "J"
+
+TTA = "T"
+TTHA = "Th"
+DDA = "D"
+DDHA = "Dh"
+NNA = "N"
+
+TA = "t"
+THA = "th"
+DA = "d"
+DHA = "dh"
+NA = "n"
+
+PA = "p"
+PHA = "ph"
+BA = "b"
+BHA = "bh"
+MA = "m"
+
+YA = "y"
+RA = "r"
+LA = "l"
+VA = "v"
+
+SHA = "z"
+SSA = "S"
+SA = "s"
+HA = "h"
+
+[special_marks]
+VIRAMA = ""        # No explicit representation
+ANUSVARA = "M"
+VISARGA = "H"
+AVAGRAHA = "'"
+
+[digits]
+ZERO = "0"
+ONE = "1"
+TWO = "2"
+THREE = "3"
+FOUR = "4"
+FIVE = "5"
+SIX = "6"
+SEVEN = "7"
+EIGHT = "8"
+NINE = "9"
+
+[punctuation]
+DANDA = "|"
+DOUBLE_DANDA = "||"
+ABBREVIATION_SIGN = "."
+
+[additional_consonants]
+# Additional consonants for borrowed sounds
+QA = "q"
+KHHA = "kh"        # Same as kha
+GHHA = "gh"        # Same as gha
+ZA = "z"           # Same as śa in HK
+RRA = "rr"         # Flap r
+RHRA = "rrh"
+FA = "f"
+YYA = "yy"
+
+[ligatures]
+# Common ligatures
+KSHA = "kS"        # क्ष = k + virama + ṣ
+JNYA = "jJ"        # ज्ञ = j + virama + ñ
+
+[case_variants]
+# Harvard-Kyoto uses case to distinguish sounds
+ASPIRATED = "h"    # lowercase h for aspiration
+RETROFLEX = "T,Th,D,Dh,N,S"  # capitals for retroflexes
+PALATALS = "c,ch,j,jh,J,z"   # mixed case for palatals
+VELARS = "G,J"     # capitals for nasals

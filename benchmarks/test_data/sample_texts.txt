@@ -1,0 +1,26 @@
+# Sample Sanskrit Texts for Benchmarking
+# Format: source|devanagari|expected_iast
+
+# Rig Veda 1.1.1 (Classical)
+RV_1_1_1|अग्निमीळे पुरोहितं यज्ञस्य देवमृत्विजम्|agnimīḷe purohitaṃ yajñasya devamṛtvijam
+
+# Bhagavad Gita 2.47 (Classical)
+BG_2_47|कर्मण्येवाधिकारस्ते मा फलेषु कदाचन|karmaṇyevādhikāraste mā phaleṣu kadācana
+
+# Isha Upanishad 1 (Classical)
+ISHA_1|ईशावास्यमिदं सर्वं यत्किञ्च जगत्यां जगत्|īśāvāsyamidaṃ sarvaṃ yatkiñca jagatyāṃ jagat
+
+# Vedic with accents (if supported)
+VEDIC_ACCENTED|अ॒ग्निमी॑ळे पु॒रोहि॑तं य॒ज्ञस्य॑ दे॒वमृ॒त्विज॑म्|a̋gnimī́ḷe pura̋hítaṃ ya̋jñasyá deva̋mṛ̋tvijám
+
+# Complex conjuncts
+COMPLEX_1|द्वन्द्वमोहनिर्मुक्ता ज्ञानयज्ञेन पावितः|dvandvamohanirmuktā jñānayajñena pāvitaḥ
+
+# Rare characters
+RARE_1|ॐ मणिपद्मे हूँ स्वाहा|oṃ maṇipadme hūṃ svāhā
+
+# Numbers and punctuation
+NUMBERS|अध्याय १० श्लोक ११-१५।|adhyāya 10 śloka 11-15।
+
+# Long text sample (partial Gita verse)
+LONG_TEXT|श्रेयान्स्वधर्मो विगुणः परधर्मात्स्वनुष्ठितात् भयावहो विधर्मः|śreyānsvadhamo viguṇaḥ paradharmātsvanuṣṭhitāt bhayāvaho vidharmaḥ

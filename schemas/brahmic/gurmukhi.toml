@@ -1,0 +1,112 @@
+# Gurmukhi Base Schema
+# Standard Gurmukhi script
+# Used for Punjabi language
+
+[metadata]
+name = "Gurmukhi"
+description = "Standard Gurmukhi script (Unicode)"
+author = "Shlesha Project"
+version = "1.0"
+base_encoding = "Unicode"
+standard = "Unicode 15.0"
+iso15924 = "Guru"
+
+[vowels]
+# Independent vowel forms
+A = "ਅ"          # U+0A05
+AA = "ਆ"         # U+0A06
+I = "ਇ"          # U+0A07
+II = "ਈ"         # U+0A08
+U = "ਉ"          # U+0A09
+UU = "ਊ"         # U+0A0A
+E = "ਏ"          # U+0A0F
+AI = "ਐ"         # U+0A10
+O = "ਓ"          # U+0A13
+AU = "ਔ"         # U+0A14
+
+[vowel_marks]
+# Dependent vowel forms (matras)
+AA_MATRA = "ਾ"    # U+0A3E
+I_MATRA = "ਿ"     # U+0A3F
+II_MATRA = "ੀ"    # U+0A40
+U_MATRA = "ੁ"     # U+0A41
+UU_MATRA = "ੂ"    # U+0A42
+E_MATRA = "ੇ"     # U+0A47
+AI_MATRA = "ੈ"    # U+0A48
+O_MATRA = "ੋ"     # U+0A4B
+AU_MATRA = "ੌ"    # U+0A4C
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "ਕ"          # U+0A15
+KHA = "ਖ"         # U+0A16
+GA = "ਗ"          # U+0A17
+GHA = "ਘ"         # U+0A18
+NGA = "ਙ"         # U+0A19
+
+CA = "ਚ"          # U+0A1A
+CHA = "ਛ"         # U+0A1B
+JA = "ਜ"          # U+0A1C
+JHA = "ਝ"         # U+0A1D
+NYA = "ਞ"         # U+0A1E
+
+TTA = "ਟ"         # U+0A1F
+TTHA = "ਠ"        # U+0A20
+DDA = "ਡ"         # U+0A21
+DDHA = "ਢ"        # U+0A22
+NNA = "ਣ"         # U+0A23
+
+TA = "ਤ"          # U+0A24
+THA = "ਥ"         # U+0A25
+DA = "ਦ"          # U+0A26
+DHA = "ਧ"         # U+0A27
+NA = "ਨ"          # U+0A28
+
+PA = "ਪ"          # U+0A2A
+PHA = "ਫ"         # U+0A2B
+BA = "ਬ"          # U+0A2C
+BHA = "ਭ"         # U+0A2D
+MA = "ਮ"          # U+0A2E
+
+YA = "ਯ"          # U+0A2F
+RA = "ਰ"          # U+0A30
+LA = "ਲ"          # U+0A32
+VA = "ਵ"          # U+0A35
+SA = "ਸ"          # U+0A38
+HA = "ਹ"          # U+0A39
+
+[additional_consonants]
+# Gurmukhi-specific consonants
+LLA = "ਲ਼"         # U+0A32 + U+0A3C (ਲ + nukta)
+SHA = "ਸ਼"         # U+0A38 + U+0A3C (ਸ + nukta)
+KHHA = "ਖ਼"        # U+0A16 + U+0A3C (ਖ + nukta)
+GHHA = "ਗ਼"        # U+0A17 + U+0A3C (ਗ + nukta)
+ZA = "ਜ਼"          # U+0A1C + U+0A3C (ਜ + nukta)
+FA = "ਫ਼"          # U+0A2B + U+0A3C (ਫ + nukta)
+
+[special_marks]
+VIRAMA = "੍"       # U+0A4D (halant)
+ANUSVARA = "ਂ"     # U+0A02
+VISARGA = "ਃ"      # U+0A03
+CANDRABINDU = "ਁ"  # U+0A01
+NUKTA = "਼"        # U+0A3C
+ADDAK = "ੱ"        # U+0A71 (gemination mark)
+
+[digits]
+ZERO = "੦"         # U+0A66
+ONE = "੧"          # U+0A67
+TWO = "੨"          # U+0A68
+THREE = "੩"        # U+0A69
+FOUR = "੪"         # U+0A6A
+FIVE = "੫"         # U+0A6B
+SIX = "੬"          # U+0A6C
+SEVEN = "੭"        # U+0A6D
+EIGHT = "੮"        # U+0A6E
+NINE = "੯"         # U+0A6F
+
+[special_symbols]
+IK_ONKAR = "ੴ"     # U+0A74 (Ik Onkar symbol)
+
+[punctuation]
+DANDA = "।"        # U+0964
+DOUBLE_DANDA = "॥"  # U+0965

@@ -1,0 +1,617 @@
+{
+  "timestamp": 1749871890.75223,
+  "total_scripts": 15,
+  "successful_schemas": 0,
+  "script_families": {
+    "brahmic": {
+      "devanagari": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "\u0905\u0917\u094d\u0928\u093f\u092e\u0940\u0933\u0947 \u092a\u0941\u0930\u094b\u0939\u093f\u0924\u0902",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "\u0905\u0917\u094d\u0928\u093f\u092e\u0940\u0933\u0947 \u092a\u0941\u0930\u094b\u0939\u093f\u0924\u0902",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "NA",
+            "I_MATRA",
+            "MA",
+            "II_MATRA",
+            "LLA",
+            "E_MATRA",
+            "SPACE",
+            "PA",
+            "U_MATRA",
+            "RA",
+            "O_MATRA",
+            "HA",
+            "I_MATRA",
+            "TA",
+            "ANUSVARA"
+          ],
+          "languages": [
+            "Sanskrit",
+            "Hindi",
+            "Marathi"
+          ]
+        },
+        "overall_success": false
+      },
+      "bengali": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "\u0985\u0997\u09cd\u09a8\u09bf\u09ae\u09c0\u09b2\u09c7 \u09aa\u09c1\u09b0\u09cb\u09b9\u09bf\u09a4",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "\u0985\u0997\u09cd\u09a8\u09bf\u09ae\u09c0\u09b2\u09c7 \u09aa\u09c1\u09b0\u09cb\u09b9\u09bf\u09a4",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "VIRAMA",
+            "NA",
+            "I_MATRA",
+            "MA",
+            "II_MATRA",
+            "LA",
+            "E_MATRA",
+            "SPACE",
+            "PA",
+            "U_MATRA",
+            "RA",
+            "O_MATRA",
+            "HA",
+            "I_MATRA",
+            "TA"
+          ],
+          "languages": [
+            "Bengali",
+            "Assamese",
+            "Sanskrit"
+          ]
+        },
+        "overall_success": false
+      },
+      "gujarati": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "\u0a85\u0a97\u0acd\u0aa8\u0abf\u0aae\u0ac0\u0ab3\u0ac7 \u0aaa\u0ac1\u0ab0\u0acb\u0ab9\u0abf\u0aa4",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "\u0a85\u0a97\u0acd\u0aa8\u0abf\u0aae\u0ac0\u0ab3\u0ac7 \u0aaa\u0ac1\u0ab0\u0acb\u0ab9\u0abf\u0aa4",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "VIRAMA",
+            "NA",
+            "I_MATRA",
+            "MA",
+            "II_MATRA",
+            "LLA",
+            "E_MATRA",
+            "SPACE",
+            "PA",
+            "U_MATRA",
+            "RA",
+            "O_MATRA",
+            "HA",
+            "I_MATRA",
+            "TA"
+          ],
+          "languages": [
+            "Gujarati",
+            "Sanskrit"
+          ]
+        },
+        "overall_success": false
+      },
+      "gurmukhi": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "\u0a38\u0a24\u0a3f \u0a28\u0a3e\u0a2e\u0a41 \u0a15\u0a30\u0a24\u0a3e \u0a2a\u0a41\u0a30\u0a16\u0a41",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 19,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "\u0a38\u0a24\u0a3f \u0a28\u0a3e\u0a2e\u0a41 \u0a15\u0a30\u0a24\u0a3e \u0a2a\u0a41\u0a30\u0a16\u0a41",
+          "expected_tokens": [
+            "SA",
+            "TA",
+            "I_MATRA",
+            "SPACE",
+            "NA",
+            "AA_MATRA",
+            "MA",
+            "U_MATRA",
+            "SPACE",
+            "KA",
+            "RA",
+            "TA",
+            "AA_MATRA",
+            "SPACE",
+            "PA",
+            "U_MATRA",
+            "RA",
+            "KHA",
+            "U_MATRA"
+          ],
+          "languages": [
+            "Punjabi"
+          ]
+        },
+        "overall_success": false
+      },
+      "kannada": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "\u0c85\u0c97\u0ccd\u0ca8\u0cbf\u0cae\u0cc0\u0cb3\u0cc6 \u0caa\u0cc1\u0cb0\u0ccb\u0cb9\u0cbf\u0ca4",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "\u0c85\u0c97\u0ccd\u0ca8\u0cbf\u0cae\u0cc0\u0cb3\u0cc6 \u0caa\u0cc1\u0cb0\u0ccb\u0cb9\u0cbf\u0ca4",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "VIRAMA",
+            "NA",
+            "I_MATRA",
+            "MA",
+            "II_MATRA",
+            "LLA",
+            "E_MATRA",
+            "SPACE",
+            "PA",
+            "U_MATRA",
+            "RA",
+            "O_MATRA",
+            "HA",
+            "I_MATRA",
+            "TA"
+          ],
+          "languages": [
+            "Kannada",
+            "Sanskrit"
+          ]
+        },
+        "overall_success": false
+      },
+      "telugu": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "\u0c05\u0c17\u0c4d\u0c28\u0c3f\u0c2e\u0c40\u0c33\u0c47 \u0c2a\u0c41\u0c30\u0c4b\u0c39\u0c3f\u0c24",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "\u0c05\u0c17\u0c4d\u0c28\u0c3f\u0c2e\u0c40\u0c33\u0c47 \u0c2a\u0c41\u0c30\u0c4b\u0c39\u0c3f\u0c24",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "VIRAMA",
+            "NA",
+            "I_MATRA",
+            "MA",
+            "II_MATRA",
+            "LLA",
+            "E_MATRA",
+            "SPACE",
+            "PA",
+            "U_MATRA",
+            "RA",
+            "O_MATRA",
+            "HA",
+            "I_MATRA",
+            "TA"
+          ],
+          "languages": [
+            "Telugu",
+            "Sanskrit"
+          ]
+        },
+        "overall_success": false
+      }
+    },
+    "romanization": {
+      "iast": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "agnim\u012b\u1e37e purohita\u1e43",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "agnim\u012b\u1e37e purohita\u1e43",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "NA",
+            "I",
+            "MA",
+            "II",
+            "LLA",
+            "E",
+            "SPACE",
+            "PA",
+            "U",
+            "RA",
+            "O",
+            "HA",
+            "I",
+            "TA",
+            "ANUSVARA"
+          ],
+          "languages": [
+            "Sanskrit (IAST)"
+          ]
+        },
+        "overall_success": false
+      },
+      "harvard_kyoto": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "agnimILe purohitaM",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "agnimILe purohitaM",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "NA",
+            "I",
+            "MA",
+            "II",
+            "LLA",
+            "E",
+            "SPACE",
+            "PA",
+            "U",
+            "RA",
+            "O",
+            "HA",
+            "I",
+            "TA",
+            "ANUSVARA"
+          ],
+          "languages": [
+            "Sanskrit (HK)"
+          ]
+        },
+        "overall_success": false
+      },
+      "iso15919": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "agnim\u012bl\u0325e pur'\u014dhita\u1e41",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "agnim\u012bl\u0325e pur'\u014dhita\u1e41",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "NA",
+            "I",
+            "MA",
+            "II",
+            "LLA",
+            "E",
+            "SPACE",
+            "PA",
+            "U",
+            "RA",
+            "O",
+            "HA",
+            "I",
+            "TA",
+            "ANUSVARA"
+          ],
+          "languages": [
+            "Sanskrit (ISO)"
+          ]
+        },
+        "overall_success": false
+      },
+      "itrans": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "agnimILe purohitaM",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "agnimILe purohitaM",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "NA",
+            "I",
+            "MA",
+            "II",
+            "LLA",
+            "E",
+            "SPACE",
+            "PA",
+            "U",
+            "RA",
+            "O",
+            "HA",
+            "I",
+            "TA",
+            "ANUSVARA"
+          ],
+          "languages": [
+            "Sanskrit (ITRANS)"
+          ]
+        },
+        "overall_success": false
+      },
+      "slp1": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "agnimILe purohitaM",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "agnimILe purohitaM",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "NA",
+            "I",
+            "MA",
+            "II",
+            "LLA",
+            "E",
+            "SPACE",
+            "PA",
+            "U",
+            "RA",
+            "O",
+            "HA",
+            "I",
+            "TA",
+            "ANUSVARA"
+          ],
+          "languages": [
+            "Sanskrit (SLP1)"
+          ]
+        },
+        "overall_success": false
+      },
+      "velthuis": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "agnimiile purohita.m",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "agnimiile purohita.m",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "NA",
+            "I",
+            "MA",
+            "II",
+            "LLA",
+            "E",
+            "SPACE",
+            "PA",
+            "U",
+            "RA",
+            "O",
+            "HA",
+            "I",
+            "TA",
+            "ANUSVARA"
+          ],
+          "languages": [
+            "Sanskrit (Velthuis)"
+          ]
+        },
+        "overall_success": false
+      },
+      "wx": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "agnimILe purohitaM",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 17,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "agnimILe purohitaM",
+          "expected_tokens": [
+            "A",
+            "GA",
+            "NA",
+            "I",
+            "MA",
+            "II",
+            "LLA",
+            "E",
+            "SPACE",
+            "PA",
+            "U",
+            "RA",
+            "O",
+            "HA",
+            "I",
+            "TA",
+            "ANUSVARA"
+          ],
+          "languages": [
+            "Sanskrit (WX)"
+          ]
+        },
+        "overall_success": false
+      }
+    },
+    "other": {
+      "arabic": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "\u0627\u0644\u0633\u0644\u0627\u0645 \u0639\u0644\u064a\u0643\u0645",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 13,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "\u0627\u0644\u0633\u0644\u0627\u0645 \u0639\u0644\u064a\u0643\u0645",
+          "expected_tokens": [
+            "ALIF",
+            "LAM",
+            "SUKUN",
+            "ALIF",
+            "LAM",
+            "FATHA",
+            "MIM",
+            "SPACE",
+            "AYN",
+            "LAM",
+            "YA",
+            "KAF",
+            "MIM"
+          ],
+          "languages": [
+            "Arabic",
+            "Urdu",
+            "Persian"
+          ]
+        },
+        "overall_success": false
+      },
+      "cyrillic": {
+        "schema": {
+          "schema_exists": false,
+          "schema_valid": false,
+          "error": null
+        },
+        "tokenization": {
+          "input_text": "\u0417\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435",
+          "tokenization_success": false,
+          "token_count": 0,
+          "expected_tokens": 12,
+          "error": "Tokenizer not yet implemented"
+        },
+        "test_data": {
+          "sample": "\u0417\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435",
+          "expected_tokens": [
+            "ZE",
+            "DE",
+            "ER",
+            "A",
+            "VE",
+            "ES",
+            "TE",
+            "VE",
+            "U",
+            "I_KRATKOYE",
+            "TE",
+            "E"
+          ],
+          "languages": [
+            "Russian",
+            "Bulgarian",
+            "Serbian"
+          ]
+        },
+        "overall_success": false
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+[metadata]
+name = "samaveda-kauthuma-vedanidhi-devanagari"
+description = "Samaveda Kauthuma Shakha from Vedanidhi - Musical notation extensions"
+extends = "base-devanagari"
+source = "vedanidhi"
+veda = "samaveda"
+shakha = "kauthuma"
+accent_percentage = 94
+notes = "Samaveda-specific musical notation (stobhas, prolongations, scale degrees) - extends base Devanagari"
+
+[mappings]
+# === SAMAVEDA MUSICAL NOTATION ONLY ===
+# Base Devanagari mappings are inherited
+
+# Stobha syllables (musical syllables unique to Samaveda)
+AIYA = "ऐया"
+HAA_STOBHA = "हा"
+HAAI = "हाइ"
+HAI = "हइ"
+HAAYI = "हायि"
+AHA = "अह"
+AHAA = "अहा"
+AHHA = "अह्हा"
+OI = "ओइ"
+OYI = "ओयि"
+HOYI = "होयि"
+DA_MUSICAL = "डा"
+UVAA = "उवा"
+E_STOBHA = "ए"
+IDA = "इडा"
+
+# Complex stobha combinations
+HAAHAA = "हाहा"
+HAAHAAI = "हाहाइ"
+AIYAAHAA = "ऐयाहा"
+AIYAAHAAI = "ऐयाहाइ"
+
+# Scale degrees (using Devanagari numerals)
+SCALE_1 = "१"
+SCALE_2 = "२"
+SCALE_3 = "३"
+SCALE_4 = "४"
+SCALE_5 = "५"
+SCALE_23 = "२३"
+SCALE_234 = "२३४"
+SCALE_343 = "३४३"
+SCALE_2345 = "२३४५"
+
+# Musical prolongations
+PROLONGATION_1 = "१"
+PROLONGATION_2 = "२"
+PROLONGATION_3 = "३"
+PROLONGATION_4 = "४"
+PROLONGATION_5 = "५"
+
+# Special Samaveda marks
+SAMAVEDA_KAMPAA = "॒॑"  # Combined anudatta-udatta
+MUSICAL_PAUSE = "°"
+BREATH_MARK = "ऽ"
+SECTION_DIVIDER = "।।।"
+
+# Modified forms with accent marks (common in Samaveda)
+KAA_UDATTA = "का॑"
+GAA_UDATTA = "गा॑"
+JAA_UDATTA = "जा॑"
+TAA_UDATTA = "ता॑"
+NAA_UDATTA = "ना॑"
+MAA_UDATTA = "मा॑"
+YAA_UDATTA = "या॑"
+RAA_UDATTA = "रा॑"
+VAA_UDATTA = "वा॑"
+SAA_UDATTA = "सा॑"
+
+# Samaveda-specific conjuncts with modifications
+KSHA_ANUDATTA = "क्ष॒"
+JNYA_UDATTA = "ज्ञ॑"

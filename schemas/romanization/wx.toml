@@ -1,0 +1,88 @@
+# WX Base Schema
+# WX notation for Sanskrit and Indian languages
+# Developed by IIIT Hyderabad
+
+[metadata]
+name = "WX"
+description = "WX notation for Sanskrit and Indian languages"
+author = "Shlesha Project"
+version = "1.0"
+base_encoding = "ASCII"
+standard = "WX notation (IIIT-H)"
+
+[vowels]
+# Simple vowels
+A = "a"
+AA = "A"
+I = "i"
+II = "I"
+U = "u"
+UU = "U"
+RI = "q"
+RII = "Q"
+LI = "L"
+LII = "LL"
+E = "e"
+AI = "E"
+O = "o"
+AU = "O"
+
+[consonants]
+# Stops
+KA = "ka"
+KHA = "Ka"
+GA = "ga"
+GHA = "Ga"
+NGA = "fa"
+
+CA = "ca"
+CHA = "Ca"
+JA = "ja"
+JHA = "Ja"
+NYA = "Ya"
+
+TTA = "wa"
+TTHA = "Wa"
+DDA = "da"
+DDHA = "Da"
+NNA = "Ra"
+
+TA = "wa"
+THA = "Wa"
+DA = "xa"
+DHA = "Xa"
+NA = "na"
+
+PA = "pa"
+PHA = "Pa"
+BA = "ba"
+BHA = "Ba"
+MA = "ma"
+
+# Semivowels and fricatives
+YA = "ya"
+RA = "ra"
+LA = "la"
+VA = "va"
+SHA = "Sa"
+SSA = "za"
+SA = "sa"
+HA = "ha"
+
+[special_marks]
+VIRAMA = ""
+ANUSVARA = "M"
+VISARGA = "H"
+AVAGRAHA = "'"
+
+[digits]
+ZERO = "0"
+ONE = "1"
+TWO = "2"
+THREE = "3"
+FOUR = "4"
+FIVE = "5"
+SIX = "6"
+SEVEN = "7"
+EIGHT = "8"
+NINE = "9"

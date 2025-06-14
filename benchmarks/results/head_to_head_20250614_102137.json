@@ -1,0 +1,1027 @@
+{
+  "timestamp": 1749876318.30086,
+  "engines_tested": [
+    "shlesha",
+    "dharmamitra",
+    "aksharamukha"
+  ],
+  "categories": {
+    "basic": {
+      "अग्निमीळे पुरोहितं": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "aganaimaī[?ळ]e pauraohaitaṃ",
+            "time": 0.010116815567016602,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": false,
+            "forward_result": "aganaimaī[?ळ]e pauraohaitaṃ",
+            "accuracy": 0.0,
+            "error": "Command '['./vedic_transliterator', 'text', '--input', 'aganaimaī[?ळ]e pauraohaitaṃ', '--from', 'iast', '--to', 'devanagari']' timed out after 10 seconds"
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "agnimīḻe purohitaṃ",
+            "time": 318.76879382133484,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "agnimīḻe purohitaṃ",
+            "backward_result": "अग्निमीळे पुरोहितं",
+            "accuracy": 100.0,
+            "forward_time": 0.00010609626770019531,
+            "backward_time": 0.001967191696166992,
+            "total_time": 0.0020732879638671875
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0001690387725830078,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "तत्त्वमसि": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "tatatavamasai",
+            "time": 0.028712987899780273,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "tatatavamasai",
+            "backward_result": "तततवमसइ",
+            "accuracy": 22.22222222222222,
+            "forward_time": 0.018115758895874023,
+            "backward_time": 0.0175478458404541,
+            "total_time": 0.035663604736328125
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "tattvamasi",
+            "time": 0.0002682209014892578,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "tattvamasi",
+            "backward_result": "तत्त्वमसि",
+            "accuracy": 100.0,
+            "forward_time": 6.413459777832031e-05,
+            "backward_time": 0.0001239776611328125,
+            "total_time": 0.0001881122589111328
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0003330707550048828,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "सर्वं खल्विदं ब्रह्म": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "saravaṃ khalavaidaṃ barahama",
+            "time": 0.018555879592895508,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "saravaṃ khalavaidaṃ barahama",
+            "backward_result": "सरवं खलवइदं बरहम",
+            "accuracy": 10.0,
+            "forward_time": 0.01842808723449707,
+            "backward_time": 0.01850605010986328,
+            "total_time": 0.03693413734436035
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "sarvaṃ khalvidaṃ brahma",
+            "time": 0.00029397010803222656,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "sarvaṃ khalvidaṃ brahma",
+            "backward_result": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 100.0,
+            "forward_time": 9.584426879882812e-05,
+            "backward_time": 0.00015592575073242188,
+            "total_time": 0.00025177001953125
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.00033783912658691406,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      }
+    },
+    "complex_conjuncts": {
+      "द्वन्द्वमोहनिर्मुक्ता": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "davanadavamaohanairamaukataā",
+            "time": 0.018166065216064453,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "davanadavamaohanairamaukataā",
+            "backward_result": "दवनदवमओहनइरमउकतआ",
+            "accuracy": 4.761904761904762,
+            "forward_time": 0.01862502098083496,
+            "backward_time": 0.01771998405456543,
+            "total_time": 0.03634500503540039
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "dvandvamohanirmuktā",
+            "time": 0.0002639293670654297,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "dvandvamohanirmuktā",
+            "backward_result": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 100.0,
+            "forward_time": 9.179115295410156e-05,
+            "backward_time": 0.00011992454528808594,
+            "total_time": 0.0002117156982421875
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0003483295440673828,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "स्वप्रकाशस्वरूपाणां": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "savaparakaāśasavaraūpaāṇaāṃ",
+            "time": 0.017549991607666016,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "savaparakaāśasavaraūpaāṇaāṃ",
+            "backward_result": "सवपरकाशसवरूपाणां",
+            "accuracy": 5.263157894736842,
+            "forward_time": 0.012059926986694336,
+            "backward_time": 0.011121749877929688,
+            "total_time": 0.023181676864624023
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "svaprakāśasvarūpāṇāṃ",
+            "time": 0.00021195411682128906,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "svaprakāśasvarūpāṇāṃ",
+            "backward_result": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 100.0,
+            "forward_time": 5.507469177246094e-05,
+            "backward_time": 0.00010991096496582031,
+            "total_time": 0.00016498565673828125
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0002779960632324219,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "क्षत्रियाणां महारथ": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "kṣataraiyaāṇaāṃ mahaāratha",
+            "time": 0.015659570693969727,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "kṣataraiyaāṇaāṃ mahaāratha",
+            "backward_result": "क्षतरियाणां महारथ",
+            "accuracy": 22.22222222222222,
+            "forward_time": 0.015931129455566406,
+            "backward_time": 0.013972043991088867,
+            "total_time": 0.029903173446655273
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "kṣatriyāṇāṃ mahāratha",
+            "time": 0.0002579689025878906,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "kṣatriyāṇāṃ mahāratha",
+            "backward_result": "क्षत्रियाणां महारथ",
+            "accuracy": 100.0,
+            "forward_time": 6.198883056640625e-05,
+            "backward_time": 8.20159912109375e-05,
+            "total_time": 0.00014400482177734375
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0003871917724609375,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "त्वष्ट्र्ग्रुत्स्म्यृत्स्न्यः": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "tavaṣaṭaragarautasamayaṛtasanayaḥ",
+            "time": 0.01383519172668457,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "tavaṣaṭaragarautasamayaṛtasanayaḥ",
+            "backward_result": "तवषटरगरउतसमयृतसनयः",
+            "accuracy": 6.896551724137931,
+            "forward_time": 0.01435399055480957,
+            "backward_time": 0.011150836944580078,
+            "total_time": 0.02550482749938965
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "tvaṣṭrgrutsmyṛtsnyaḥ",
+            "time": 0.0002808570861816406,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "tvaṣṭrgrutsmyṛtsnyaḥ",
+            "backward_result": "त्वष्ट्र्ग्रुत्स्म्यृत्स्न्यः",
+            "accuracy": 100.0,
+            "forward_time": 0.00010800361633300781,
+            "backward_time": 0.0001289844512939453,
+            "total_time": 0.00023698806762695312
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0002560615539550781,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      }
+    },
+    "special_characters": {
+      "ॐ मणिपद्मे हूँ": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "[?ॐ] maṇaipadamae haū[?ँ]",
+            "time": 0.012712240219116211,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": false,
+            "forward_result": "[?ॐ] maṇaipadamae haū[?ँ]",
+            "accuracy": 0.0,
+            "error": "Command '['./vedic_transliterator', 'text', '--input', '[?ॐ] maṇaipadamae haū[?ँ]', '--from', 'iast', '--to', 'devanagari']' timed out after 10 seconds"
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "oṃ maṇipadme hū~",
+            "time": 0.00018715858459472656,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "oṃ maṇipadme hū~",
+            "backward_result": "ॐ मणिपद्मे हूँ",
+            "accuracy": 100.0,
+            "forward_time": 4.315376281738281e-05,
+            "backward_time": 0.0012028217315673828,
+            "total_time": 0.0012459754943847656
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.00026798248291015625,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "ॠकारलृकारौ": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "ṝkaāralaṛkaāraau",
+            "time": 0.012476921081542969,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "ṝkaāralaṛkaāraau",
+            "backward_result": "ॠकारलऋकारौ",
+            "accuracy": 90.0,
+            "forward_time": 0.01019906997680664,
+            "backward_time": 0.010150909423828125,
+            "total_time": 0.020349979400634766
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "ṝkāralṛkārau",
+            "time": 0.0001850128173828125,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "ṝkāralṛkārau",
+            "backward_result": "ॠकारलृकारौ",
+            "accuracy": 100.0,
+            "forward_time": 3.62396240234375e-05,
+            "backward_time": 6.985664367675781e-05,
+            "total_time": 0.00010609626770019531
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.00023126602172851562,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "क़ख़ग़ज़फ़": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "qax̌aġazafa",
+            "time": 0.010355949401855469,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "qax̌aġazafa",
+            "backward_result": "क़ख़ग़ज़फ़",
+            "accuracy": 100.0,
+            "forward_time": 0.01010274887084961,
+            "backward_time": 0.01016998291015625,
+            "total_time": 0.02027273178100586
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "qak͟haġazafa",
+            "time": 0.00018596649169921875,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "qak͟haġazafa",
+            "backward_result": "क़ख़ग़ज़फ़",
+            "accuracy": 0.0,
+            "forward_time": 3.314018249511719e-05,
+            "backward_time": 6.890296936035156e-05,
+            "total_time": 0.00010204315185546875
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.00023412704467773438,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "ऽऽऽ avagraha test": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "''' [?a][?v][?a][?g][?r][?a][?h][?a] [?t][?e][?s][?t]",
+            "time": 0.010489702224731445,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": false,
+            "forward_result": "''' [?a][?v][?a][?g][?r][?a][?h][?a] [?t][?e][?s][?t]",
+            "accuracy": 0.0,
+            "error": "Command '['./vedic_transliterator', 'text', '--input', \"''' [?a][?v][?a][?g][?r][?a][?h][?a] [?t][?e][?s][?t]\", '--from', 'iast', '--to', 'devanagari']' timed out after 10 seconds"
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "''' avagraha test",
+            "time": 0.00018906593322753906,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "''' avagraha test",
+            "backward_result": "ऽऽऽ अवग्रह तेस्त्",
+            "accuracy": 23.52941176470588,
+            "forward_time": 4.506111145019531e-05,
+            "backward_time": 7.176399230957031e-05,
+            "total_time": 0.00011682510375976562
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.00022125244140625,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      }
+    },
+    "numbers_punctuation": {
+      "अध्याय १० श्लोक ११-१५।": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "adhayaāya 10 śalaoka 11[?-]15|",
+            "time": 0.009850025177001953,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": false,
+            "forward_result": "adhayaāya 10 śalaoka 11[?-]15|",
+            "accuracy": 0.0,
+            "error": "Command '['./vedic_transliterator', 'text', '--input', 'adhayaāya 10 śalaoka 11[?-]15|', '--from', 'iast', '--to', 'devanagari']' timed out after 10 seconds"
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "adhyāya 10 śloka 11-15|",
+            "time": 0.00020360946655273438,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "adhyāya 10 śloka 11-15|",
+            "backward_result": "अध्याय १० श्लोक ११-१५।",
+            "accuracy": 100.0,
+            "forward_time": 5.817413330078125e-05,
+            "backward_time": 8.511543273925781e-05,
+            "total_time": 0.00014328956604003906
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.00023293495178222656,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "श्लोक ॥१॥ ॥२॥ ॥३॥": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "śalaoka ||1|| ||2|| ||3||",
+            "time": 0.009636163711547852,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "śalaoka ||1|| ||2|| ||3||",
+            "backward_result": "शलोक ॥१॥ ॥२॥ ॥३॥",
+            "accuracy": 5.88235294117647,
+            "forward_time": 0.00968313217163086,
+            "backward_time": 0.010050058364868164,
+            "total_time": 0.019733190536499023
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "śloka ||1|| ||2|| ||3||",
+            "time": 0.00018787384033203125,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "śloka ||1|| ||2|| ||3||",
+            "backward_result": "श्लोक ॥१॥ ॥२॥ ॥३॥",
+            "accuracy": 100.0,
+            "forward_time": 4.8160552978515625e-05,
+            "backward_time": 7.43865966796875e-05,
+            "total_time": 0.00012254714965820312
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0002219676971435547,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "संख्या: ० १ २ ३ ४ ५": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "saṃkhayaā[?:] 0 1 2 3 4 5",
+            "time": 0.011544227600097656,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": false,
+            "forward_result": "saṃkhayaā[?:] 0 1 2 3 4 5",
+            "accuracy": 0.0,
+            "error": "Command '['./vedic_transliterator', 'text', '--input', 'saṃkhayaā[?:] 0 1 2 3 4 5', '--from', 'iast', '--to', 'devanagari']' timed out after 10 seconds"
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "saṃkhyā: 0 1 2 3 4 5",
+            "time": 0.00025773048400878906,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "saṃkhyā: 0 1 2 3 4 5",
+            "backward_result": "संख्या: ० १ २ ३ ४ ५",
+            "accuracy": 100.0,
+            "forward_time": 4.9114227294921875e-05,
+            "backward_time": 7.486343383789062e-05,
+            "total_time": 0.0001239776611328125
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0002219676971435547,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      }
+    },
+    "vedic_style": {
+      "अग्निमीळे पुरोहितं यज्ञस्य देवमृत्विजम्": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "aganaimaī[?ळ]e pauraohaitaṃ yajñasaya daevamaṛtavaijama",
+            "time": 0.010261058807373047,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": false,
+            "forward_result": "aganaimaī[?ळ]e pauraohaitaṃ yajñasaya daevamaṛtavaijama",
+            "accuracy": 0.0,
+            "error": "Command '['./vedic_transliterator', 'text', '--input', 'aganaimaī[?ळ]e pauraohaitaṃ yajñasaya daevamaṛtavaijama', '--from', 'iast', '--to', 'devanagari']' timed out after 10 seconds"
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "agnimīḻe purohitaṃ yajñasya devamṛtvijam",
+            "time": 0.00022673606872558594,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "agnimīḻe purohitaṃ yajñasya devamṛtvijam",
+            "backward_result": "अग्निमीळे पुरोहितं यज्ञस्य देवमृत्विजम्",
+            "accuracy": 100.0,
+            "forward_time": 7.390975952148438e-05,
+            "backward_time": 9.822845458984375e-05,
+            "total_time": 0.00017213821411132812
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0002238750457763672,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "इन्द्रं मरुतो बृहस्पतिं वायुमश्विना": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "inadaraṃ marautao baṛhasapataiṃ vaāyaumaśavainaā",
+            "time": 0.010493993759155273,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "inadaraṃ marautao baṛhasapataiṃ vaāyaumaśavainaā",
+            "backward_result": "िनदरं मरुतओ बढ़सपतिं वायुमशविना",
+            "accuracy": 2.857142857142857,
+            "forward_time": 0.012926816940307617,
+            "backward_time": 0.00972890853881836,
+            "total_time": 0.022655725479125977
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "indraṃ maruto bṛhaspatiṃ vāyumaśvinā",
+            "time": 0.00021600723266601562,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "indraṃ maruto bṛhaspatiṃ vāyumaśvinā",
+            "backward_result": "इन्द्रं मरुतो बृहस्पतिं वायुमश्विना",
+            "accuracy": 100.0,
+            "forward_time": 6.985664367675781e-05,
+            "backward_time": 9.489059448242188e-05,
+            "total_time": 0.0001647472381591797
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0002167224884033203,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "प्र यत्ते धाम प्रथमं महित्वा": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "para yatatae dhaāma parathamaṃ mahaitavaā",
+            "time": 0.010005950927734375,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "para yatatae dhaāma parathamaṃ mahaitavaā",
+            "backward_result": "पर यतते धाम परथमं महइतवा",
+            "accuracy": 10.714285714285714,
+            "forward_time": 0.010335922241210938,
+            "backward_time": 0.010279178619384766,
+            "total_time": 0.020615100860595703
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "pra yatte dhāma prathamaṃ mahitvā",
+            "time": 0.00021791458129882812,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "pra yatte dhāma prathamaṃ mahitvā",
+            "backward_result": "प्र यत्ते धाम प्रथमं महित्वा",
+            "accuracy": 100.0,
+            "forward_time": 6.079673767089844e-05,
+            "backward_time": 8.988380432128906e-05,
+            "total_time": 0.0001506805419921875
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0002269744873046875,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      }
+    },
+    "long_compounds": {
+      "महाभारतकथासारसङ्ग्रहणम्": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "mahaābhaāratakathaāsaārasaṅagarahaṇama",
+            "time": 0.010332107543945312,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "mahaābhaāratakathaāsaārasaṅagarahaṇama",
+            "backward_result": "महाभारतकथासारसङगरहणम",
+            "accuracy": 65.21739130434783,
+            "forward_time": 0.01065683364868164,
+            "backward_time": 0.011350870132446289,
+            "total_time": 0.02200770378112793
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "mahābhāratakathāsārasaṅgrahaṇam",
+            "time": 0.00021004676818847656,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "mahābhāratakathāsārasaṅgrahaṇam",
+            "backward_result": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 100.0,
+            "forward_time": 5.984306335449219e-05,
+            "backward_time": 9.489059448242188e-05,
+            "total_time": 0.00015473365783691406
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.0002448558807373047,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "श्रीमद्भगवद्गीताशास्त्रस्वाध्यायप्रवचनम्": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "śaraīmadabhagavadagaītaāśaāsatarasavaādhayaāyaparavacanama",
+            "time": 0.01108098030090332,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "śaraīmadabhagavadagaītaāśaāsatarasavaādhayaāyaparavacanama",
+            "backward_result": "शरीमदभगवदगीतआशआसतरसवआधयआयपरवचनम",
+            "accuracy": 5.0,
+            "forward_time": 0.011296749114990234,
+            "backward_time": 0.010165929794311523,
+            "total_time": 0.021462678909301758
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "śrīmadbhagavadgītāśāstrasvādhyāyapravacanam",
+            "time": 0.0003440380096435547,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "śrīmadbhagavadgītāśāstrasvādhyāyapravacanam",
+            "backward_result": "श्रीमद्भगवद्गीताशास्त्रस्वाध्यायप्रवचनम्",
+            "accuracy": 100.0,
+            "forward_time": 8.296966552734375e-05,
+            "backward_time": 0.0001010894775390625,
+            "total_time": 0.00018405914306640625
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.00022983551025390625,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      },
+      "वेदान्तदर्शनप्रकाशिकाटीकाव्याख्यानम्": {
+        "shlesha": {
+          "forward": {
+            "success": true,
+            "result": "vaedaānatadaraśanaparakaāśaikaāṭaīkaāvayaākhayaānama",
+            "time": 0.012047767639160156,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "vaedaānatadaraśanaparakaāśaikaāṭaīkaāvayaākhayaānama",
+            "backward_result": "वेदआनतदरशनपरकआशिकआटीकआवयआखयआनम",
+            "accuracy": 11.11111111111111,
+            "forward_time": 0.010251045227050781,
+            "backward_time": 0.010008096694946289,
+            "total_time": 0.02025914192199707
+          }
+        },
+        "dharmamitra": {
+          "forward": {
+            "success": true,
+            "result": "vedāntadarśanaprakāśikāṭīkāvyākhyānam",
+            "time": 0.0002110004425048828,
+            "error": null
+          },
+          "round_trip": {
+            "forward_success": true,
+            "backward_success": true,
+            "forward_result": "vedāntadarśanaprakāśikāṭīkāvyākhyānam",
+            "backward_result": "वेदान्तदर्शनप्रकाशिकाटीकाव्याख्यानम्",
+            "accuracy": 100.0,
+            "forward_time": 7.200241088867188e-05,
+            "backward_time": 9.393692016601562e-05,
+            "total_time": 0.0001659393310546875
+          }
+        },
+        "aksharamukha": {
+          "forward": {
+            "success": false,
+            "result": null,
+            "time": 0.00021505355834960938,
+            "error": "Aksharamukha not available"
+          },
+          "round_trip": {
+            "accuracy": 0.0,
+            "error": "Aksharamukha not available"
+          }
+        }
+      }
+    }
+  },
+  "summary": {
+    "shlesha": {
+      "total_tests": 20,
+      "successful_tests": 20,
+      "success_rate": 100.0,
+      "average_accuracy": 18.10741713766439,
+      "average_time": 0.01319417953491211
+    },
+    "dharmamitra": {
+      "total_tests": 20,
+      "successful_tests": 20,
+      "success_rate": 100.0,
+      "average_accuracy": 91.17647058823529,
+      "average_time": 15.938659644126892
+    },
+    "aksharamukha": {
+      "total_tests": 20,
+      "successful_tests": 0,
+      "success_rate": 0.0,
+      "average_accuracy": 0,
+      "average_time": 0
+    }
+  }
+}

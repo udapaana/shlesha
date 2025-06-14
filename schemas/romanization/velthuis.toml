@@ -1,0 +1,88 @@
+# Velthuis Base Schema
+# Velthuis transliteration system for Sanskrit
+# ASCII-based system developed by Frans Velthuis
+
+[metadata]
+name = "Velthuis"
+description = "Velthuis ASCII transliteration system"
+author = "Shlesha Project"
+version = "1.0"
+base_encoding = "ASCII"
+standard = "Velthuis TeX"
+
+[vowels]
+# Simple vowels
+A = "a"
+AA = "aa"
+I = "i"
+II = "ii"
+U = "u"
+UU = "uu"
+RI = ".r"
+RII = ".rr" 
+LI = ".l"
+LII = ".ll"
+E = "e"
+AI = "ai"
+O = "o"
+AU = "au"
+
+[consonants]
+# Stops
+KA = "ka"
+KHA = "kha"
+GA = "ga"
+GHA = "gha"
+NGA = ".na"
+
+CA = "ca"
+CHA = "cha"
+JA = "ja"
+JHA = "jha"
+NYA = "~na"
+
+TTA = ".ta"
+TTHA = ".tha"
+DDA = ".da"
+DDHA = ".dha"
+NNA = ".na"
+
+TA = "ta"
+THA = "tha"
+DA = "da"
+DHA = "dha"
+NA = "na"
+
+PA = "pa"
+PHA = "pha"
+BA = "ba"
+BHA = "bha"
+MA = "ma"
+
+# Semivowels and fricatives
+YA = "ya"
+RA = "ra"
+LA = "la"
+VA = "va"
+SHA = "~sa"
+SSA = ".sa"
+SA = "sa"
+HA = "ha"
+
+[special_marks]
+VIRAMA = ""
+ANUSVARA = ".m"
+VISARGA = ".h"
+AVAGRAHA = "'"
+
+[digits]
+ZERO = "0"
+ONE = "1"
+TWO = "2"
+THREE = "3"
+FOUR = "4"
+FIVE = "5"
+SIX = "6"
+SEVEN = "7"
+EIGHT = "8"
+NINE = "9"

@@ -1,0 +1,144 @@
+# ITRANS Base Schema
+# Indian language transliteration standard
+# Based on Vidyut-lipi standards
+
+[metadata]
+name = "ITRANS"
+description = "Indian language transliteration standard (ASCII-friendly)"
+author = "Udapaana Project (based on Vidyut-lipi)"
+version = "2.0"
+base_encoding = "ASCII"
+standard = "ITRANS 5.30"
+supports_vedic_accents = false
+
+[vowels]
+# Independent vowel forms
+A = "a"
+AA = "aa"          # or "A"
+I = "i"
+II = "ii"          # or "I"
+U = "u"
+UU = "uu"          # or "U"
+RI = "RRi"         # or "R^i"
+RII = "RRI"        # or "R^I"
+LI = "LLi"         # or "L^i"
+LII = "LLI"        # or "L^I"
+E = "e"
+AI = "ai"
+O = "o"
+AU = "au"
+
+[vowel_marks]
+# Dependent vowel forms (same as independent for ITRANS)
+AA_MATRA = "aa"
+I_MATRA = "i"
+II_MATRA = "ii"
+U_MATRA = "u"
+UU_MATRA = "uu"
+RI_MATRA = "RRi"
+RII_MATRA = "RRI"
+LI_MATRA = "LLi"
+LII_MATRA = "LLI"
+E_MATRA = "e"
+AI_MATRA = "ai"
+O_MATRA = "o"
+AU_MATRA = "au"
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "k"
+KHA = "kh"
+GA = "g"
+GHA = "gh"
+NGA = "~N"         # or "N^"
+
+CA = "ch"          # Note: 'c' alone is not used
+CHA = "Ch"         # or "chh"
+JA = "j"
+JHA = "jh"
+NYA = "~n"         # or "JN"
+
+TTA = "T"
+TTHA = "Th"
+DDA = "D"
+DDHA = "Dh"
+NNA = "N"
+
+TA = "t"
+THA = "th"
+DA = "d"
+DHA = "dh"
+NA = "n"
+
+PA = "p"
+PHA = "ph"
+BA = "b"
+BHA = "bh"
+MA = "m"
+
+YA = "y"
+RA = "r"
+LA = "l"
+VA = "v"
+
+SHA = "sh"
+SSA = "Sh"         # or "shh"
+SA = "s"
+HA = "h"
+
+[special_marks]
+VIRAMA = ""        # No explicit representation or ".h"
+ANUSVARA = "M"     # or ".n"
+VISARGA = "H"      # or ".h"
+AVAGRAHA = ".a"
+
+[digits]
+ZERO = "0"
+ONE = "1"
+TWO = "2"
+THREE = "3"
+FOUR = "4"
+FIVE = "5"
+SIX = "6"
+SEVEN = "7"
+EIGHT = "8"
+NINE = "9"
+
+[punctuation]
+DANDA = "|"
+DOUBLE_DANDA = "||"
+ABBREVIATION_SIGN = "."
+
+[additional_consonants]
+# Additional consonants for borrowed sounds
+QA = "q"
+KHHA = "K"         # or "kh" with context
+GHHA = "G"         # or "gh" with context
+ZA = "z"
+RRA = ".D"         # or "R"
+RHRA = ".Dh"       # or "Rh"
+FA = "f"
+YYA = "Y"          # or "yh"
+
+[ligatures]
+# Common ligatures
+KSHA = "kSh"       # or "x"
+JNYA = "GY"        # or "dny"
+
+[alternatives]
+# ITRANS allows multiple representations
+AA_ALT = "A"
+II_ALT = "I"
+UU_ALT = "U"
+RI_ALT = "R^i"
+RII_ALT = "R^I"
+LI_ALT = "L^i"
+LII_ALT = "L^I"
+NGA_ALT = "N^"
+NYA_ALT = "JN"
+CHA_ALT = "chh"
+SSA_ALT = "shh"
+ANUSVARA_ALT = ".n"
+VISARGA_ALT = ".h"
+VIRAMA_ALT = ".h"
+KSHA_ALT = "x"

@@ -1,0 +1,136 @@
+# IAST Base Schema
+# International Alphabet of Sanskrit Transliteration (standard)
+# Based on Vidyut-lipi standards
+
+[metadata]
+name = "IAST"
+scheme_id = "iast"
+description = "International Alphabet of Sanskrit Transliteration (standard)"
+author = "Udapaana Project (based on Vidyut-lipi)"
+version = "2.0"
+base_encoding = "Unicode"
+standard = "ISO 15919"
+supports_vedic_accents = false
+
+[vowels]
+# Independent vowel forms
+A = "a"
+AA = "ā"
+I = "i"
+II = "ī"
+U = "u"
+UU = "ū"
+RI = "ṛ"
+RII = "ṝ"
+LI = "ḷ"
+LII = "ḹ"
+E = "e"
+AI = "ai"
+O = "o"
+AU = "au"
+
+[vowel_marks]
+# Dependent vowel forms (same as independent for IAST)
+AA_MATRA = "ā"
+I_MATRA = "i"
+II_MATRA = "ī"
+U_MATRA = "u"
+UU_MATRA = "ū"
+RI_MATRA = "ṛ"
+RII_MATRA = "ṝ"
+LI_MATRA = "ḷ"
+LII_MATRA = "ḹ"
+E_MATRA = "e"
+AI_MATRA = "ai"
+O_MATRA = "o"
+AU_MATRA = "au"
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "ka"
+KHA = "kha"
+GA = "ga"
+GHA = "gha"
+NGA = "ṅa"
+
+CA = "ca"
+CHA = "cha"
+JA = "ja"
+JHA = "jha"
+NYA = "ña"
+
+TTA = "ṭa"
+TTHA = "ṭha"
+DDA = "ḍa"
+DDHA = "ḍha"
+NNA = "ṇa"
+
+TA = "ta"
+THA = "tha"
+DA = "da"
+DHA = "dha"
+NA = "na"
+
+PA = "pa"
+PHA = "pha"
+BA = "ba"
+BHA = "bha"
+MA = "ma"
+
+YA = "ya"
+RA = "ra"
+LA = "la"
+LLA = "ḷa"
+VA = "va"
+
+SHA = "śa"
+SSA = "ṣa"
+SA = "sa"
+HA = "ha"
+
+[special_marks]
+VIRAMA = ""        # No representation (implicit)
+ANUSVARA = "ṃ"     # or "ṁ" in some systems
+VISARGA = "ḥ"
+AVAGRAHA = "'"
+OM = "oṃ"          # Standard IAST representation of ॐ
+NUKTA = ""         # Nukta is represented by the modified character
+CANDRABINDU = "m̐"  # Candrabindu with combining inverted breve below
+
+[digits]
+ZERO = "0"
+ONE = "1"
+TWO = "2"
+THREE = "3"
+FOUR = "4"
+FIVE = "5"
+SIX = "6"
+SEVEN = "7"
+EIGHT = "8"
+NINE = "9"
+
+[punctuation]
+DANDA = "|"
+DOUBLE_DANDA = "||"
+ABBREVIATION_SIGN = "."
+
+[additional_consonants]
+# Additional consonants for borrowed sounds
+QA = "qa"
+KHHA = "x̌a"       # or "k͟ha"
+GHHA = "ġa"        # or "g͟ha"
+ZA = "za"
+RRA = "ṛa"         # flap r
+RHRA = "ṛha"
+FA = "fa"
+YYA = "ẏa"
+
+[ligatures]
+# Common ligatures
+KSHA = "kṣa"
+JNYA = "jña"
+
+[alternates]
+# Alternative representations used in some systems
+ANUSVARA_ALT = "ṁ"  # alternative to ṃ
+L_VOCALIC_ALT = "ḷ"  # sometimes written as l̥

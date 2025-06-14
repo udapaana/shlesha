@@ -1,0 +1,176 @@
+# Telugu Base Schema
+# Telugu script transliteration based on Vidyut-lipi standards
+# Standard Telugu without Vedic accents (handled in extensions)
+
+[metadata]
+name = "Telugu"
+description = "Telugu script transliteration for Sanskrit texts"
+author = "Udapaana Project (based on Vidyut-lipi)"
+version = "2.0"
+base_encoding = "Unicode"
+script = "Telugu"
+unicode_block = "Telugu (U+0C00-U+0C7F)"
+supports_vedic_accents = false
+
+[vowels]
+# Independent vowel forms
+A = "అ"          # U+0C05
+AA = "ఆ"         # U+0C06
+I = "ఇ"          # U+0C07
+II = "ఈ"         # U+0C08
+U = "ఉ"          # U+0C09
+UU = "ఊ"         # U+0C0A
+RI = "ఋ"         # U+0C0B
+RII = "ౠ"        # U+0C60
+LI = "ఌ"         # U+0C0C
+LII = "ౡ"        # U+0C61
+E = "ఎ"          # U+0C0E
+EE = "ఏ"         # U+0C0F
+AI = "ఐ"         # U+0C10
+O = "ఒ"          # U+0C12
+OO = "ఓ"         # U+0C13
+AU = "ఔ"         # U+0C14
+
+[vowel_marks]
+# Dependent vowel forms (matras)
+AA_MATRA = "ా"    # U+0C3E
+I_MATRA = "ి"     # U+0C3F
+II_MATRA = "ీ"    # U+0C40
+U_MATRA = "ు"     # U+0C41
+UU_MATRA = "ూ"    # U+0C42
+RI_MATRA = "ృ"    # U+0C43
+RII_MATRA = "ౄ"   # U+0C44
+LI_MATRA = "ౢ"    # U+0C62
+LII_MATRA = "ౣ"   # U+0C63
+E_MATRA = "ె"     # U+0C46
+EE_MATRA = "ే"    # U+0C47
+AI_MATRA = "ై"    # U+0C48
+O_MATRA = "ొ"     # U+0C4A
+OO_MATRA = "ో"    # U+0C4B
+AU_MATRA = "ౌ"    # U+0C4C
+
+[consonants]
+# Basic consonants with inherent 'a'
+KA = "క"         # U+0C15
+KHA = "ఖ"        # U+0C16
+GA = "గ"         # U+0C17
+GHA = "ఘ"        # U+0C18
+NGA = "ఙ"        # U+0C19
+
+CA = "చ"         # U+0C1A
+CHA = "ఛ"        # U+0C1B
+JA = "జ"         # U+0C1C
+JHA = "ఝ"        # U+0C1D
+NYA = "ఞ"        # U+0C1E
+
+TTA = "ట"        # U+0C1F
+TTHA = "ఠ"       # U+0C20
+DDA = "డ"        # U+0C21
+DDHA = "ఢ"       # U+0C22
+NNA = "ణ"        # U+0C23
+
+TA = "త"         # U+0C24
+THA = "థ"        # U+0C25
+DA = "ద"         # U+0C26
+DHA = "ధ"        # U+0C27
+NA = "న"         # U+0C28
+
+PA = "ప"         # U+0C2A
+PHA = "ఫ"        # U+0C2B
+BA = "బ"         # U+0C2C
+BHA = "భ"        # U+0C2D
+MA = "మ"         # U+0C2E
+
+YA = "య"         # U+0C2F
+RA = "ర"         # U+0C30
+LA = "ల"         # U+0C32
+VA = "వ"         # U+0C35
+
+SHA = "శ"        # U+0C36
+SSA = "ష"        # U+0C37
+SA = "స"         # U+0C38
+HA = "హ"         # U+0C39
+
+[telugu_specific_consonants]
+# Telugu-specific consonants
+LLA = "ళ"        # U+0C33 - Telugu retroflex lateral approximant
+RRA = "ఱ"        # U+0C31 - Telugu rra (tapped r)
+
+[special_marks]
+VIRAMA = "్"      # U+0C4D - Telugu halant
+ANUSVARA = "ం"    # U+0C02 - Telugu anusvara
+VISARGA = "ః"     # U+0C03 - Telugu visarga
+AVAGRAHA = "ఽ"    # U+0C3D - Telugu avagraha
+
+[digits]
+ZERO = "౦"       # U+0C66
+ONE = "౧"        # U+0C67
+TWO = "౨"        # U+0C68
+THREE = "౩"      # U+0C69
+FOUR = "౪"       # U+0C6A
+FIVE = "౫"       # U+0C6B
+SIX = "౬"        # U+0C6C
+SEVEN = "౭"      # U+0C6D
+EIGHT = "౮"      # U+0C6E
+NINE = "౯"       # U+0C6F
+
+[punctuation]
+DANDA = "।"       # U+0964 - Devanagari danda (used in Telugu texts)
+DOUBLE_DANDA = "॥" # U+0965 - Devanagari double danda
+ABBREVIATION_SIGN = "॰" # U+0970
+HIGH_SPACING_DOT = "॑" # U+0951
+
+[common_ligatures]
+# Common Telugu ligatures
+KSHA = "క్ష"      # ka + virama + sha
+JNYA = "జ్ఞ"       # ja + virama + nya
+TRA = "త్ర"       # ta + virama + ra
+STU = "స్తు"       # sa + virama + ta + u_matra
+SHRI = "శ్రీ"      # sha + virama + ra + ii_matra
+
+[vowel_sequences]
+# Common vowel sequences in Telugu
+AI_SPLIT = "అయి"   # a + ya + i (alternative to ఐ)
+AU_SPLIT = "అవు"   # a + va + u (alternative to ఔ)
+OO_LONG = "ఓఓ"     # doubled oo for emphasis
+
+[archaic_characters]
+# Archaic Telugu characters (for historical texts)
+LI_ARCHAIC = "ఌ"    # Rarely used in modern Telugu
+LII_ARCHAIC = "ౡ"   # Rarely used in modern Telugu
+RII_ARCHAIC = "ౠ"   # Rarely used in modern Telugu
+LII_MATRA_ARCHAIC = "ౣ" # Rarely used matra
+
+[vedic_compatibility]
+# Characters used in Vedic contexts
+PLUTA_MARKER = "౽"  # U+0C7D - Telugu pluta marker (rare)
+TUUMU = "౾"        # U+0C7E - Telugu tuumu (emphasis)
+SIGN_SIDDHAM = "౿"  # U+0C7F - Telugu sign siddham
+
+[normalization]
+# Unicode normalization preferences
+normalization_form = "NFC"  # Canonical composition preferred for Telugu
+alternative_forms = ["NFD"]  # Decomposed form as fallback
+combining_marks_order = "standard"
+
+[script_features]
+# Telugu script characteristics
+writing_direction = "left_to_right"
+conjunct_formation = "subjoined"  # Telugu uses subjoined consonants
+vowel_placement = "around_consonant"  # Vowels can appear before, after, above, below
+case_system = false  # Telugu has no case distinction
+inherent_vowel = "a"  # Consonants have inherent 'a' sound
+
+[compatibility]
+# Compatibility with other systems
+ascii_fallback = false  # No ASCII representation
+devanagari_compatible = true  # Can map to/from Devanagari
+unicode_compliant = true
+font_requirements = ["Telugu_font_support"]
+
+[processing_hints]
+# Hints for text processing
+word_boundary = "space_separated"
+syllable_structure = "consonant_vowel"
+conjunct_handling = "explicit_virama"
+rendering_complexity = "moderate"
