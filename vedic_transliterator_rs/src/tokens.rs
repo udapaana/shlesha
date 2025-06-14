@@ -3,19 +3,19 @@
 //! Tokens represent the atomic units of Sanskrit text, providing a 
 //! script-independent representation for perfect round-trip transliteration.
 
-use std::collections::HashMap;
+use fxhash::FxHashMap;
 use std::sync::{Arc, RwLock};
+use std::sync::atomic::{AtomicU32, Ordering};
 use once_cell::sync::Lazy;
 
 pub mod levels;
 pub use levels::*;
 
-/// Global token registry for efficient lookups
-static TOKEN_REGISTRY: Lazy<Arc<RwLock<HashMap<String, u32>>>> = 
-    Lazy::new(|| Arc::new(RwLock::new(HashMap::new())));
+/// Global token registry for efficient lookups with fast hash
+static TOKEN_REGISTRY: Lazy<Arc<RwLock<FxHashMap<String, u32>>>> = 
+    Lazy::new(|| Arc::new(RwLock::new(FxHashMap::default())));
 
-static TOKEN_COUNTER: Lazy<Arc<RwLock<u32>>> = 
-    Lazy::new(|| Arc::new(RwLock::new(0)));
+static TOKEN_COUNTER: AtomicU32 = AtomicU32::new(0);
 
 /// Sanskrit token - the intermediate representation
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -29,18 +29,25 @@ pub enum SanskritToken {
 }
 
 impl SanskritToken {
-    /// Register a new token or return existing one
+    /// Register a new token or return existing one (optimized with atomic counter)
     pub fn register(name: String) -> Self {
+        // Fast path: check if token already exists
+        {
+            let registry = TOKEN_REGISTRY.read().unwrap();
+            if let Some(&id) = registry.get(&name) {
+                return SanskritToken::Named(name, id);
+            }
+        }
+        
+        // Slow path: need to register new token
         let mut registry = TOKEN_REGISTRY.write().unwrap();
         
+        // Double-check after acquiring write lock
         if let Some(&id) = registry.get(&name) {
             return SanskritToken::Named(name, id);
         }
         
-        let mut counter = TOKEN_COUNTER.write().unwrap();
-        let id = *counter;
-        *counter += 1;
-        
+        let id = TOKEN_COUNTER.fetch_add(1, Ordering::Relaxed);
         registry.insert(name.clone(), id);
         SanskritToken::Named(name, id)
     }
@@ -54,18 +61,20 @@ impl SanskritToken {
         }
     }
     
-    /// Create from string
+    /// Create from string (optimized lookup)
     pub fn from_name(name: &str) -> Self {
         match name {
             "SPACE" => SanskritToken::Space,
             _ => {
-                let registry = TOKEN_REGISTRY.read().unwrap();
-                if let Some(&id) = registry.get(name) {
-                    SanskritToken::Named(name.to_string(), id)
-                } else {
-                    drop(registry);
-                    Self::register(name.to_string())
+                // Try fast path first
+                {
+                    let registry = TOKEN_REGISTRY.read().unwrap();
+                    if let Some(&id) = registry.get(name) {
+                        return SanskritToken::Named(name.to_string(), id);
+                    }
                 }
+                // Register if not found
+                Self::register(name.to_string())
             }
         }
     }

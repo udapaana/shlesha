@@ -6,7 +6,7 @@
 use std::time::Instant;
 use clap::{Parser, Subcommand};
 use colored::*;
-use vedic_transliterator::{transliterate, TargetScheme, TransliterationError};
+use shlesha::{transliterate, TargetScheme, TransliterationError};
 
 #[derive(Parser)]
 #[command(name = "vedic_transliterator")]

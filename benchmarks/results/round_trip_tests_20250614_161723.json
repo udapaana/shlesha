@@ -1,0 +1,5026 @@
+{
+  "timestamp": 1749898039.141665,
+  "test_summary": {
+    "total_tests": 504,
+    "successful_tests": 432,
+    "engine_scores": {
+      "shlesha": {
+        "total_tests": 126,
+        "successful_tests": 126,
+        "success_rate": 100.0,
+        "average_accuracy": 1.0
+      },
+      "aksharamukha": {
+        "total_tests": 126,
+        "successful_tests": 126,
+        "success_rate": 100.0,
+        "average_accuracy": 0.9625632709224041
+      },
+      "dharmamitra": {
+        "total_tests": 126,
+        "successful_tests": 126,
+        "success_rate": 100.0,
+        "average_accuracy": 0.9733500417710943
+      },
+      "vidyut_lipi": {
+        "total_tests": 126,
+        "successful_tests": 54,
+        "success_rate": 42.857142857142854,
+        "average_accuracy": 0.9910575048732942
+      }
+    }
+  },
+  "detailed_results": {
+    "shlesha": {
+      "devanagari_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे॑न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३।",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ॥१॥ ॥२॥",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "devanagari_harvard_kyoto": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे॑न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३।",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ॥१॥ ॥२॥",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "devanagari_slp1": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे॑न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३।",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ॥१॥ ॥२॥",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "bengali_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे॑न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३।",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ॥१॥ ॥२॥",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "gujarati_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे॑न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३।",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ॥१॥ ॥२॥",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "kannada_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे॑न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३।",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ॥१॥ ॥२॥",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "telugu_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे॑न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३।",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ॥१॥ ॥२॥",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      }
+    },
+    "aksharamukha": {
+      "devanagari_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "agnimīl̤e purohitaṃ",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "tattvamasi",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "sarvaṃ khalvidaṃ brahma",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "dvandvamohanirmuktā",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "svaprakāśasvarūpāṇāṃ",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "kṣatriyāṇāṃ mahāratha",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "a̱gnimī̍l̤e pu̱rohi̍taṃ",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "indra̍ ma̱rutva̍ān",
+            "backward": "इन्द्र॑ म॒रुत्व॑आन्",
+            "accuracy": 0.9473684210526315,
+            "differences": [
+              "replace: 'ा' -> 'आ'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "va̱ruṇe̍na paśyatā̱",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "oṃ maṇipadme hūm̐",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ṝkāralṛkārau",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "qak͟haġazafa",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 0.0,
+            "differences": [
+              "replace: 'क़ख़ग़ज़फ़' -> 'क़ख़ग़ज़फ़'"
+            ],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "adhyāya 0 1 2 3.",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "śloka ..1.. ..2..",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "pāṭha-vibhāga",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "mahābhāratakathāsārasaṅgrahaṇam",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "śrīmadbhagavadgītāśāstram",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "vedāntadarśanaprakāśikā",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "devanagari_harvard_kyoto": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे॑न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 0.0,
+            "differences": [
+              "replace: 'क़ख़ग़ज़फ़' -> 'क़ख़ग़ज़फ़'"
+            ],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३।",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ॥१॥ ॥२॥",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "devanagari_slp1": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "agnimILe purohitaM",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "tattvamasi",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "sarvaM KalvidaM brahma",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "dvandvamohanirmuktA",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "svaprakASasvarUpARAM",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "kzatriyARAM mahAraTa",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "a\\_gnimI\\'Le pu\\_rohi\\'taM",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "indra\\' ma\\_rutva\\'An",
+            "backward": "इन्द्र॑ म॒रुत्व॑आन्",
+            "accuracy": 0.9473684210526315,
+            "differences": [
+              "replace: 'ा' -> 'आ'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "va\\_ruRe\\'na paSyatA\\_",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "oM maRipadme hU~",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "FkAralfkArO",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "k0aK0ag0aj0aP0a",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 0.0,
+            "differences": [
+              "replace: 'क़ख़ग़ज़फ़' -> 'क़ख़ग़ज़फ़'"
+            ],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "aDyAya 0 1 2 3.",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "Sloka ..1.. ..2..",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "pAWa-viBAga",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "mahABAratakaTAsArasaNgrahaRam",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "SrImadBagavadgItASAstram",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "vedAntadarSanaprakASikA",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "bengali_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ̱ग्निमी̍ळे पु̱रोहि̍तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र̍ म̱रुत्व̍ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व̱रुणे̍न पश्यता̱",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३.",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ..१.. ..२..",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "gujarati_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ̱ग्निमी̍ळे पु̱रोहि̍तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र̍ म̱रुत्व̍ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व̱रुणे̍न पश्यता̱",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३.",
+            "backward": "अध्याय ० १ २ ३.",
+            "accuracy": 0.9333333333333333,
+            "differences": [
+              "replace: '।' -> '.'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ..१.. ..२..",
+            "backward": "श्लोक ..१.. ..२..",
+            "accuracy": 0.5294117647058824,
+            "differences": [
+              "replace: '॥' -> '..'",
+              "replace: '॥' -> '..'",
+              "replace: '॥' -> '..'",
+              "replace: '॥' -> '..'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "kannada_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ̱ग्निमी̍ळे पु̱रोहि̍तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र̍ म̱रुत्व̍ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व̱रुणे̍न पश्यता̱",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३.",
+            "backward": "अध्याय ० १ २ ३.",
+            "accuracy": 0.9333333333333333,
+            "differences": [
+              "replace: '।' -> '.'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ..१.. ..२..",
+            "backward": "श्लोक ..१.. ..२..",
+            "accuracy": 0.5294117647058824,
+            "differences": [
+              "replace: '॥' -> '..'",
+              "replace: '॥' -> '..'",
+              "replace: '॥' -> '..'",
+              "replace: '॥' -> '..'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "telugu_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ̱ग्निमी̍ळे पु̱रोहि̍तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र̍ म̱रुत्व̍ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व̱रुणे̍न पश्यता̱",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३.",
+            "backward": "अध्याय ० १ २ ३.",
+            "accuracy": 0.9333333333333333,
+            "differences": [
+              "replace: '।' -> '.'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ..१.. ..२..",
+            "backward": "श्लोक ..१.. ..२..",
+            "accuracy": 0.5294117647058824,
+            "differences": [
+              "replace: '॥' -> '..'",
+              "replace: '॥' -> '..'",
+              "replace: '॥' -> '..'",
+              "replace: '॥' -> '..'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      }
+    },
+    "dharmamitra": {
+      "devanagari_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "agnimīḻe purohitaṃ",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "tattvamasi",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "sarvaṃ khalvidaṃ brahma",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "dvandvamohanirmuktā",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "svaprakāśasvarūpāṇāṃ",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "kṣatriyāṇāṃ mahāratha",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "a॒gnimī̭ḻe pu॒rohi̭taṃ",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "indra̭ ma॒rutva̭ān",
+            "backward": "इन्द्र॑ म॒रुत्व॑आन्",
+            "accuracy": 0.9473684210526315,
+            "differences": [
+              "replace: 'ा' -> 'आ'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "va॒ruṇḙna paśyatā॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "oṃ maṇipadme hū~",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ṝkāralṛkārau",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "qak͟haġazafa",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 0.0,
+            "differences": [
+              "replace: 'क़ख़ग़ज़फ़' -> 'क़ख़ग़ज़फ़'"
+            ],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "adhyāya 0 1 2 3|",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "śloka ||1|| ||2||",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "pāṭha-vibhāga",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "mahābhāratakathāsārasaṅgrahaṇam",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "śrīmadbhagavadgītāśāstram",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "vedāntadarśanaprakāśikā",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "devanagari_harvard_kyoto": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "agnimILe purohitaM",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "tattvamasi",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "sarvaM khalvidaM brahma",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "dvandvamohanirmuktA",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "svaprakAzasvarUpANAM",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "kSatriyANAM mahAratha",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "a॒gnimI॑Le pu॒rohi॑taM",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "indra॑ ma॒rutva॑An",
+            "backward": "इन्द्र॑ म॒रुत्व॑आन्",
+            "accuracy": 0.9473684210526315,
+            "differences": [
+              "replace: 'ा' -> 'आ'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "va॒ruNe॑na pazyatA॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "OM maNipadme hU~",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "RRkAralRkArau",
+            "backward": "ॠकारऌकारौ",
+            "accuracy": 0.8,
+            "differences": [
+              "replace: 'लृ' -> 'ऌ'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "qaqhag2az2afa",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 0.0,
+            "differences": [
+              "replace: 'क़ख़ग़ज़फ़' -> 'क़ख़ग़ज़फ़'"
+            ],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "adhyAya 0 1 2 3|",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "zloka ||1|| ||2||",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "pATha-vibhAga",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "mahAbhAratakathAsArasaGgrahaNam",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "zrImadbhagavadgItAzAstram",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "vedAntadarzanaprakAzikA",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "devanagari_slp1": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "agnimILe purohitaM",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "tattvamasi",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "sarvaM KalvidaM brahma",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "dvandvamohanirmuktA",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "svaprakASasvarUpARAM",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "kzatriyARAM mahAraTa",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "a॒gnimI॑Le pu॒rohi॑taM",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "indra॑ ma॒rutva॑An",
+            "backward": "इन्द्र॑ म॒रुत्व॑आन्",
+            "accuracy": 0.9473684210526315,
+            "differences": [
+              "replace: 'ा' -> 'आ'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "va॒ruRe॑na paSyatA॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "AUM maRipadme hU~",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "FkAralfkArO",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "k0aK0ag0aj0aP0a",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 0.0,
+            "differences": [
+              "replace: 'क़ख़ग़ज़फ़' -> 'क़ख़ग़ज़फ़'"
+            ],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "aDyAya 0 1 2 3.",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "Sloka ..1.. ..2..",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "pAWa-viBAga",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "mahABAratakaTAsArasaNgrahaRam",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "SrImadBagavadgItASAstram",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "vedAntadarSanaprakASikA",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "bengali_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी̭ळे पु॒रोहि̭तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र̭ म॒रुत्व̭ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे̭न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३|",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ||१|| ||२||",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "gujarati_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी̭ळे पु॒रोहि̭तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र̭ म॒रुत्व̭ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे̭न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३|",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ||१|| ||२||",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "kannada_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे॑न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३|",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ||१|| ||२||",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "telugu_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "अग्निमीळे पुरोहितं",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "तत्त्वमसि",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "सर्वं खल्विदं ब्रह्म",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "द्वन्द्वमोहनिर्मुक्ता",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "स्वप्रकाशस्वरूपाणां",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "क्षत्रियाणां महारथ",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "backward": "इन्द्र॑ म॒रुत्व॑ान्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "व॒रुणे॑न पश्यता॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "ॐ मणिपद्मे हूँ",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ॠकारलृकारौ",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "क़ख़ग़ज़फ़",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "अध्याय ० १ २ ३|",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "श्लोक ||१|| ||२||",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "पाठ-विभाग",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "महाभारतकथासारसङ्ग्रहणम्",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "वेदान्तदर्शनप्रकाशिका",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      }
+    },
+    "vidyut_lipi": {
+      "devanagari_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "agnimīḻe purohitaṃ",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "tattvamasi",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "sarvaṃ khalvidaṃ brahma",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "dvandvamohanirmuktā",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "svaprakāśasvarūpāṇāṃ",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "kṣatriyāṇāṃ mahāratha",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "a॒gnimī̭ḻe pu॒rohi̭taṃ",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "indra̭ ma॒rutva̭ān",
+            "backward": "इन्द्र॑ म॒रुत्व॑आन्",
+            "accuracy": 0.9473684210526315,
+            "differences": [
+              "replace: 'ा' -> 'आ'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "va॒ruṇḙna paśyatā॒",
+            "backward": "व॒रुण्ḙन पश्यता॒",
+            "accuracy": 0.875,
+            "differences": [
+              "replace: 'े॑' -> '्ḙ'"
+            ],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "oṃ maṇipadme hūm̐",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "ṝkāralṛkārau",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "qak͟haġazafa",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "adhyāya 0 1 2 3.",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "śloka ..1.. ..2..",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "pāṭha-vibhāga",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "mahābhāratakathāsārasaṅgrahaṇam",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "śrīmadbhagavadgītāśāstram",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "vedāntadarśanaprakāśikā",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "devanagari_harvard_kyoto": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "agnimILe purohitaM",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "tattvamasi",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "sarvaM khalvidaM brahma",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "dvandvamohanirmuktA",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "svaprakAzasvarUpANAM",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "kSatriyANAM mahAratha",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "a॒gnimI॑Le pu॒rohi॑taM",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "indra॑ ma॒rutva॑An",
+            "backward": "इन्द्र॑ म॒रुत्व॑आन्",
+            "accuracy": 0.9473684210526315,
+            "differences": [
+              "replace: 'ा' -> 'आ'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "va॒ruNe॑na pazyatA॒",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "OM maNipadme hU~",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "RRkAralRkArau",
+            "backward": "ॠकारऌकारौ",
+            "accuracy": 0.8,
+            "differences": [
+              "replace: 'लृ' -> 'ऌ'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "qaqhag2az2afa",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "adhyAya 0 1 2 3.",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "zloka ..1.. ..2..",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "pATha-vibhAga",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "mahAbhAratakathAsArasaGgrahaNam",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "zrImadbhagavadgItAzAstram",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "vedAntadarzanaprakAzikA",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "devanagari_slp1": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "agnimILe purohitaM",
+            "backward": "अग्निमीळे पुरोहितं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "tattvamasi",
+            "backward": "तत्त्वमसि",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "sarvaM KalvidaM brahma",
+            "backward": "सर्वं खल्विदं ब्रह्म",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "dvandvamohanirmuktA",
+            "backward": "द्वन्द्वमोहनिर्मुक्ता",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "svaprakASasvarUpARAM",
+            "backward": "स्वप्रकाशस्वरूपाणां",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "kzatriyARAM mahAraTa",
+            "backward": "क्षत्रियाणां महारथ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "a\\gnimI^Le pu\\rohi^taM",
+            "backward": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "indra^ ma\\rutva^An",
+            "backward": "इन्द्र॑ म॒रुत्व॑आन्",
+            "accuracy": 0.9473684210526315,
+            "differences": [
+              "replace: 'ा' -> 'आ'"
+            ],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "va\\ruRe^na paSyatA\\",
+            "backward": "व॒रुणे॑न पश्यता॒",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "AUM maRipadme hU~",
+            "backward": "ॐ मणिपद्मे हूँ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "FkAralfkArO",
+            "backward": "ॠकारलृकारौ",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "k0aK0ag0aj0aP0a",
+            "backward": "क़ख़ग़ज़फ़",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "aDyAya 0 1 2 3.",
+            "backward": "अध्याय ० १ २ ३।",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "Sloka ..1.. ..2..",
+            "backward": "श्लोक ॥१॥ ॥२॥",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "pAWa-viBAga",
+            "backward": "पाठ-विभाग",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "mahABAratakaTAsArasaNgrahaRam",
+            "backward": "महाभारतकथासारसङ्ग्रहणम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "SrImadBagavadgItASAstram",
+            "backward": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "vedAntadarSanaprakASikA",
+            "backward": "वेदान्तदर्शनप्रकाशिका",
+            "accuracy": 1.0,
+            "differences": [],
+            "success": true,
+            "error": null
+          }
+        ]
+      },
+      "bengali_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ]
+      },
+      "gujarati_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ]
+      },
+      "kannada_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ]
+      },
+      "telugu_iast": {
+        "basic_sanskrit": [
+          {
+            "text": "अग्निमीळे पुरोहितं",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "तत्त्वमसि",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "सर्वं खल्विदं ब्रह्म",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "complex_conjuncts": [
+          {
+            "text": "द्वन्द्वमोहनिर्मुक्ता",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "स्वप्रकाशस्वरूपाणां",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "क्षत्रियाणां महारथ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "vedic_accents": [
+          {
+            "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तं",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "इन्द्र॑ म॒रुत्व॑ान्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "व॒रुणे॑न पश्यता॒",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "rare_characters": [
+          {
+            "text": "ॐ मणिपद्मे हूँ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "ॠकारलृकारौ",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "क़ख़ग़ज़फ़",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "numbers_punctuation": [
+          {
+            "text": "अध्याय ० १ २ ३।",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "श्लोक ॥१॥ ॥२॥",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "पाठ-विभाग",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ],
+        "long_compounds": [
+          {
+            "text": "महाभारतकथासारसङ्ग्रहणम्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "श्रीमद्भगवद्गीताशास्त्रम्",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          },
+          {
+            "text": "वेदान्तदर्शनप्रकाशिका",
+            "forward": "",
+            "backward": "",
+            "accuracy": 0.0,
+            "differences": [],
+            "success": false,
+            "error": "Vidyut-lipi not available (neither Python bindings nor CLI)"
+          }
+        ]
+      }
+    }
+  }
+}

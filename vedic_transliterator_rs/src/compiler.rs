@@ -7,57 +7,169 @@ use crate::tokens::{SanskritToken, TokenWithMetadata};
 use crate::{TargetScheme, TransliterationError};
 use std::collections::HashMap;
 use std::path::Path;
+use std::sync::{Arc, RwLock};
 use unicode_normalization::UnicodeNormalization;
+use once_cell::sync::Lazy;
+use fxhash::FxHashMap;
+use aho_corasick::{AhoCorasick, MatchKind};
 
-/// Scheme definition for parsing and rendering
+/// Optimized scheme definition with Aho-Corasick automaton
 #[derive(Debug, Clone)]
 pub struct SchemeDefinition {
     pub name: String,
     /// For parsing: input string → token
-    input_to_token: HashMap<String, SanskritToken>,
+    input_to_token: FxHashMap<String, SanskritToken>,
     /// For rendering: token → output string  
-    token_to_output: HashMap<String, String>,
-    /// Ordered patterns for longest-match parsing
+    token_to_output: FxHashMap<String, String>,
+    /// Optimized pattern matching automaton
+    automaton: Option<AhoCorasick>,
+    /// Map pattern index to token
+    pattern_to_token: FxHashMap<usize, SanskritToken>,
+    /// Legacy: Ordered patterns for fallback parsing
     parsing_patterns: Vec<String>,
 }
 
+/// Cached compiled schema
+#[derive(Clone)]
+struct CompiledSchema {
+    definition: SchemeDefinition,
+    version_hash: u64,
+}
+
+/// Global schema cache
+static SCHEMA_CACHE: Lazy<Arc<RwLock<FxHashMap<String, Arc<CompiledSchema>>>>> =
+    Lazy::new(|| Arc::new(RwLock::new(FxHashMap::default())));
+
 impl SchemeDefinition {
-    /// Create from TOML mappings
+    /// Create from TOML mappings with Aho-Corasick optimization
     pub fn from_toml_mappings(name: String, mappings: HashMap<String, String>) -> Self {
-        let mut input_to_token = HashMap::new();
-        let mut token_to_output = HashMap::new();
-        let mut parsing_patterns = Vec::new();
+        let mut input_to_token = FxHashMap::default();
+        let mut token_to_output = FxHashMap::default();
+        let mut patterns = Vec::new();
+        let mut pattern_to_token = FxHashMap::default();
         
         for (token_name, output_string) in mappings {
             let token = SanskritToken::register(token_name.clone());
             
             // Build both directions
-            input_to_token.insert(output_string.clone(), token);
+            input_to_token.insert(output_string.clone(), token.clone());
             token_to_output.insert(token_name, output_string.clone());
-            parsing_patterns.push(output_string);
+            
+            // For Aho-Corasick pattern matching
+            let pattern_idx = patterns.len();
+            patterns.push(output_string);
+            pattern_to_token.insert(pattern_idx, token);
         }
         
-        // Sort patterns by length descending for longest-match parsing
-        parsing_patterns.sort_by(|a, b| b.len().cmp(&a.len()).then(a.cmp(b)));
+        // Sort patterns by length descending for longest-match preference
+        let mut indexed_patterns: Vec<(usize, String)> = patterns.into_iter().enumerate().collect();
+        indexed_patterns.sort_by(|a, b| b.1.len().cmp(&a.1.len()).then(a.1.cmp(&b.1)));
+        
+        // Rebuild with sorted order
+        let sorted_patterns: Vec<String> = indexed_patterns.iter().map(|(_, p)| p.clone()).collect();
+        let mut new_pattern_to_token = FxHashMap::default();
+        for (new_idx, (old_idx, _)) in indexed_patterns.iter().enumerate() {
+            if let Some(token) = pattern_to_token.get(old_idx) {
+                new_pattern_to_token.insert(new_idx, token.clone());
+            }
+        }
+        
+        // Build Aho-Corasick automaton
+        let automaton = if !sorted_patterns.is_empty() {
+            AhoCorasick::builder()
+                .match_kind(MatchKind::LeftmostLongest)
+                .build(&sorted_patterns)
+                .ok()
+        } else {
+            None
+        };
         
         Self {
             name,
             input_to_token,
             token_to_output,
-            parsing_patterns,
+            automaton,
+            pattern_to_token: new_pattern_to_token,
+            parsing_patterns: sorted_patterns,
         }
     }
     
-    /// Parse input text to tokens with intelligent script-aware parsing
+    /// Parse input text to tokens with optimized Aho-Corasick matching
     pub fn parse(&self, text: &str) -> Vec<TokenWithMetadata> {
         let normalized = text.nfc().collect::<String>();
         
-        // Detect script and use appropriate parser
-        if self.is_devanagari_text(&normalized) {
-            self.parse_devanagari(&normalized)
+        // Use Aho-Corasick automaton if available
+        if let Some(ref automaton) = self.automaton {
+            self.parse_with_automaton(&normalized, automaton)
         } else {
-            self.parse_romanization(&normalized)
+            // Fallback to legacy parsing
+            if self.is_devanagari_text(&normalized) {
+                self.parse_devanagari(&normalized)
+            } else {
+                self.parse_romanization(&normalized)
+            }
         }
+    }
+    
+    /// Fast parsing using Aho-Corasick automaton
+    fn parse_with_automaton(&self, text: &str, automaton: &AhoCorasick) -> Vec<TokenWithMetadata> {
+        let mut tokens = Vec::new();
+        let mut last_end = 0;
+        
+        // Single O(n) pass through text
+        for mat in automaton.find_iter(text) {
+            // Handle unmatched text before this match
+            if mat.start() > last_end {
+                let unmatched = &text[last_end..mat.start()];
+                tokens.extend(self.handle_unmatched_text(unmatched, last_end));
+            }
+            
+            // Add the matched token
+            if let Some(token) = self.pattern_to_token.get(&mat.pattern().as_usize()) {
+                let matched_text = &text[mat.start()..mat.end()];
+                tokens.push(TokenWithMetadata::new(
+                    token.clone(),
+                    matched_text.to_string(),
+                    mat.start(),
+                ));
+            }
+            
+            last_end = mat.end();
+        }
+        
+        // Handle any remaining unmatched text
+        if last_end < text.len() {
+            let remaining = &text[last_end..];
+            tokens.extend(self.handle_unmatched_text(remaining, last_end));
+        }
+        
+        tokens
+    }
+    
+    /// Handle unmatched text (whitespace, unknown characters)
+    fn handle_unmatched_text(&self, text: &str, start_pos: usize) -> Vec<TokenWithMetadata> {
+        let mut tokens = Vec::new();
+        let mut current_pos = start_pos;
+        
+        for ch in text.chars() {
+            if ch.is_whitespace() {
+                tokens.push(TokenWithMetadata::new(
+                    SanskritToken::Space,
+                    ch.to_string(),
+                    current_pos,
+                ));
+            } else {
+                // Unknown character
+                tokens.push(TokenWithMetadata::new(
+                    SanskritToken::Unknown(ch.to_string()),
+                    ch.to_string(),
+                    current_pos,
+                ));
+            }
+            current_pos += ch.len_utf8();
+        }
+        
+        tokens
     }
     
     /// Check if text is primarily Devanagari
@@ -576,14 +688,98 @@ impl SchemeDefinition {
 
 /// Main transliteration compiler
 pub struct TransliterationCompiler {
-    schemes: HashMap<String, SchemeDefinition>,
+    schemes: FxHashMap<String, SchemeDefinition>,
 }
 
 impl TransliterationCompiler {
     pub fn new() -> Self {
         Self {
-            schemes: HashMap::new(),
+            schemes: FxHashMap::default(),
         }
+    }
+    
+    /// Get cached schema or load it
+    fn get_cached_scheme(&self, scheme: TargetScheme) -> Result<Arc<CompiledSchema>, TransliterationError> {
+        let cache_key = scheme.to_string();
+        
+        // Fast path: check cache first
+        {
+            let cache = SCHEMA_CACHE.read().unwrap();
+            if let Some(schema) = cache.get(&cache_key) {
+                return Ok(Arc::clone(schema));
+            }
+        }
+        
+        // Slow path: load and compile schema
+        let compiled = self.load_and_compile_schema(scheme)?;
+        
+        // Update cache
+        {
+            let mut cache = SCHEMA_CACHE.write().unwrap();
+            cache.insert(cache_key, Arc::clone(&compiled));
+        }
+        
+        Ok(compiled)
+    }
+    
+    /// Load and compile a schema with optimizations
+    fn load_and_compile_schema(&self, scheme: TargetScheme) -> Result<Arc<CompiledSchema>, TransliterationError> {
+        // For now, create a basic schema - this will be expanded to load from TOML files
+        let mappings = self.get_builtin_mappings(scheme);
+        let definition = SchemeDefinition::from_toml_mappings(scheme.to_string(), mappings);
+        
+        // Simple hash for versioning (in real implementation, use file hash)
+        let version_hash = fxhash::hash64(&definition.name);
+        
+        Ok(Arc::new(CompiledSchema {
+            definition,
+            version_hash,
+        }))
+    }
+    
+    /// Get builtin mappings for a scheme (placeholder implementation)
+    fn get_builtin_mappings(&self, scheme: TargetScheme) -> HashMap<String, String> {
+        let mut mappings = HashMap::new();
+        
+        match scheme {
+            TargetScheme::Devanagari => {
+                // Basic Devanagari mappings
+                mappings.insert("A".to_string(), "अ".to_string());
+                mappings.insert("AA".to_string(), "आ".to_string());
+                mappings.insert("I".to_string(), "इ".to_string());
+                mappings.insert("II".to_string(), "ई".to_string());
+                mappings.insert("U".to_string(), "उ".to_string());
+                mappings.insert("UU".to_string(), "ऊ".to_string());
+                mappings.insert("KA".to_string(), "क".to_string());
+                mappings.insert("GA".to_string(), "ग".to_string());
+                mappings.insert("MA".to_string(), "म".to_string());
+                mappings.insert("NA".to_string(), "न".to_string());
+                mappings.insert("RA".to_string(), "र".to_string());
+                mappings.insert("LA".to_string(), "ल".to_string());
+                mappings.insert("SPACE".to_string(), " ".to_string());
+            }
+            TargetScheme::Iast => {
+                // Basic IAST mappings (reverse of Devanagari)
+                mappings.insert("A".to_string(), "a".to_string());
+                mappings.insert("AA".to_string(), "ā".to_string());
+                mappings.insert("I".to_string(), "i".to_string());
+                mappings.insert("II".to_string(), "ī".to_string());
+                mappings.insert("U".to_string(), "u".to_string());
+                mappings.insert("UU".to_string(), "ū".to_string());
+                mappings.insert("KA".to_string(), "ka".to_string());
+                mappings.insert("GA".to_string(), "ga".to_string());
+                mappings.insert("MA".to_string(), "ma".to_string());
+                mappings.insert("NA".to_string(), "na".to_string());
+                mappings.insert("RA".to_string(), "ra".to_string());
+                mappings.insert("LA".to_string(), "la".to_string());
+                mappings.insert("SPACE".to_string(), " ".to_string());
+            }
+            _ => {
+                // Placeholder for other schemes
+            }
+        }
+        
+        mappings
     }
     
     /// Add a scheme from TOML content
@@ -752,20 +948,14 @@ impl TransliterationCompiler {
     
     /// Parse input text to tokens using specified scheme
     pub fn parse(&self, text: &str, scheme: TargetScheme) -> Result<Vec<TokenWithMetadata>, TransliterationError> {
-        let scheme_name = scheme.to_string();
-        let scheme_def = self.schemes.get(&scheme_name)
-            .ok_or_else(|| TransliterationError::UnsupportedScheme(scheme_name))?;
-        
-        Ok(scheme_def.parse(text))
+        let cached_schema = self.get_cached_scheme(scheme)?;
+        Ok(cached_schema.definition.parse(text))
     }
     
-    /// Render tokens to output using specified scheme
+    /// Render tokens to output using cached scheme
     pub fn render(&self, tokens: &[TokenWithMetadata], scheme: TargetScheme) -> Result<String, TransliterationError> {
-        let scheme_name = scheme.to_string();
-        let scheme_def = self.schemes.get(&scheme_name)
-            .ok_or_else(|| TransliterationError::UnsupportedScheme(scheme_name))?;
-        
-        Ok(scheme_def.render(tokens))
+        let cached_schema = self.get_cached_scheme(scheme)?;
+        Ok(cached_schema.definition.render(tokens))
     }
     
     /// Get available schemes

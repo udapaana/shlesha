@@ -6,8 +6,14 @@
 mod tokens;
 mod compiler;
 
+#[cfg(feature = "python")]
+mod python_bindings;
+
 pub use tokens::*;
 pub use compiler::*;
+
+#[cfg(feature = "python")]
+pub use python_bindings::*;
 
 /// Supported target schemes
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

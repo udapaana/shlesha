@@ -1,0 +1,163 @@
+{
+  "timestamp": 1749898024.054207,
+  "benchmarks": {
+    "shlesha": {
+      "small": {
+        "engine": "shlesha",
+        "text_size": "small",
+        "runs": 3,
+        "avg_execution_time": 0.13837569168147942,
+        "avg_memory_used": 0.140625,
+        "avg_chars_per_second": 1081.434385357991,
+        "success_rate": 100.0
+      },
+      "medium": {
+        "engine": "shlesha",
+        "text_size": "medium",
+        "runs": 3,
+        "avg_execution_time": 0.010894397351269921,
+        "avg_memory_used": 0.0013020833333333333,
+        "avg_chars_per_second": 52332.63139390445,
+        "success_rate": 100.0
+      },
+      "large": {
+        "engine": "shlesha",
+        "text_size": "large",
+        "runs": 3,
+        "avg_execution_time": 0.01136544393375516,
+        "avg_memory_used": 0.018229166666666668,
+        "avg_chars_per_second": 501749.0413220385,
+        "success_rate": 100.0
+      },
+      "xlarge": {
+        "engine": "shlesha",
+        "text_size": "xlarge",
+        "runs": 3,
+        "avg_execution_time": 0.011575874290429056,
+        "avg_memory_used": 0.028645833333333332,
+        "avg_chars_per_second": 4489747.287336915,
+        "success_rate": 100.0
+      }
+    },
+    "aksharamukha": {
+      "small": {
+        "engine": "aksharamukha",
+        "text_size": "small",
+        "runs": 3,
+        "avg_execution_time": 0.17043130196786174,
+        "avg_memory_used": 6.740885416666667,
+        "avg_chars_per_second": 14151.932156530396,
+        "success_rate": 100.0
+      },
+      "medium": {
+        "engine": "aksharamukha",
+        "text_size": "medium",
+        "runs": 3,
+        "avg_execution_time": 0.0011065293413897355,
+        "avg_memory_used": 0.0026041666666666665,
+        "avg_chars_per_second": 516269.2419030907,
+        "success_rate": 100.0
+      },
+      "large": {
+        "engine": "aksharamukha",
+        "text_size": "large",
+        "runs": 3,
+        "avg_execution_time": 0.0036000629576543965,
+        "avg_memory_used": 0.009114583333333334,
+        "avg_chars_per_second": 1583690.5456908878,
+        "success_rate": 100.0
+      },
+      "xlarge": {
+        "engine": "aksharamukha",
+        "text_size": "xlarge",
+        "runs": 3,
+        "avg_execution_time": 0.019794329651631415,
+        "avg_memory_used": 0.044270833333333336,
+        "avg_chars_per_second": 2629310.966873415,
+        "success_rate": 100.0
+      }
+    },
+    "dharmamitra": {
+      "small": {
+        "engine": "dharmamitra",
+        "text_size": "small",
+        "runs": 3,
+        "avg_execution_time": 0.06716244062408805,
+        "avg_memory_used": 0.5494791666666666,
+        "avg_chars_per_second": 178898.88211019966,
+        "success_rate": 100.0
+      },
+      "medium": {
+        "engine": "dharmamitra",
+        "text_size": "medium",
+        "runs": 3,
+        "avg_execution_time": 0.0006694773522516092,
+        "avg_memory_used": 0.0013020833333333333,
+        "avg_chars_per_second": 851474.9212006023,
+        "success_rate": 100.0
+      },
+      "large": {
+        "engine": "dharmamitra",
+        "text_size": "large",
+        "runs": 3,
+        "avg_execution_time": 0.0061521433138598995,
+        "avg_memory_used": 0.0078125,
+        "avg_chars_per_second": 926595.1884204979,
+        "success_rate": 100.0
+      },
+      "xlarge": {
+        "engine": "dharmamitra",
+        "text_size": "xlarge",
+        "runs": 3,
+        "avg_execution_time": 0.057751493295654655,
+        "avg_memory_used": 0.21354166666666666,
+        "avg_chars_per_second": 899744.8907039143,
+        "success_rate": 100.0
+      }
+    },
+    "vidyut_lipi": {
+      "small": {
+        "engine": "vidyut_lipi",
+        "text_size": "small",
+        "runs": 3,
+        "avg_execution_time": 0.007681358333987494,
+        "avg_memory_used": 0.4739583333333333,
+        "avg_chars_per_second": 683187.3381629081,
+        "success_rate": 100.0
+      },
+      "medium": {
+        "engine": "vidyut_lipi",
+        "text_size": "medium",
+        "runs": 3,
+        "avg_execution_time": 5.574862007051706e-05,
+        "avg_memory_used": 0.0,
+        "avg_chars_per_second": 10333052.977401631,
+        "success_rate": 100.0
+      },
+      "large": {
+        "engine": "vidyut_lipi",
+        "text_size": "large",
+        "runs": 3,
+        "avg_execution_time": 0.00043130468111485243,
+        "avg_memory_used": 0.020833333333333332,
+        "avg_chars_per_second": 13244140.249081613,
+        "success_rate": 100.0
+      },
+      "xlarge": {
+        "engine": "vidyut_lipi",
+        "text_size": "xlarge",
+        "runs": 3,
+        "avg_execution_time": 0.0025665180680031576,
+        "avg_memory_used": -0.11588541666666667,
+        "avg_chars_per_second": 20707198.625477877,
+        "success_rate": 100.0
+      }
+    }
+  },
+  "summary": {
+    "fastest_engine": "vidyut_lipi",
+    "most_memory_efficient": "vidyut_lipi",
+    "most_reliable": "shlesha",
+    "engine_rankings": {}
+  }
+}
