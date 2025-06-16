@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASM Transliteration Benchmark</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans', 'Noto Sans Devanagari', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .benchmark-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .results-table th, .results-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .results-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .status.info {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        .status.success {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        .status.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .chart-container {
+            margin: 20px 0;
+            height: 400px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>WASM Transliteration Benchmark</h1>
+    
+    <div class="benchmark-section">
+        <h2>Test Configuration</h2>
+        <p>This benchmark compares WebAssembly implementations of transliteration libraries:</p>
+        <ul>
+            <li><strong>Shlesha WASM</strong>: Our Rust-based transliterator compiled to WebAssembly</li>
+            <li><strong>Aksharamukha JS</strong>: JavaScript implementation (if available)</li>
+            <li><strong>Other WASM libs</strong>: Any other WASM transliteration libraries</li>
+        </ul>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Controls</h2>
+        <button class="btn" onclick="loadShleshaWASM()">Load Shlesha WASM</button>
+        <button class="btn" onclick="runBenchmarks()" id="runBtn" disabled>Run Benchmarks</button>
+        <button class="btn" onclick="downloadResults()">Download Results</button>
+        <div id="status" class="status info">Click "Load Shlesha WASM" to begin</div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Test Corpus</h2>
+        <pre id="testCorpus"></pre>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Results</h2>
+        <table class="results-table" id="resultsTable">
+            <thead>
+                <tr>
+                    <th>Test Case</th>
+                    <th>Input Length</th>
+                    <th>Shlesha WASM (ms)</th>
+                    <th>JavaScript (ms)</th>
+                    <th>Speedup</th>
+                </tr>
+            </thead>
+            <tbody id="resultsBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Performance Chart</h2>
+        <div class="chart-container">
+            <canvas id="performanceChart"></canvas>
+        </div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Throughput Analysis</h2>
+        <div class="chart-container">
+            <canvas id="throughputChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Test corpus
+        const testCorpus = [
+            { name: "Single word", text: "नमस्ते", expected: "namaste" },
+            { name: "Short sentence", text: "अहं संस्कृतं वदामि", expected: "ahaṃ saṃskṛtaṃ vadāmi" },
+            { name: "Medium verse", text: "तत्र शूरा महेष्वासा भीमार्जुनसमा युधि", expected: "tatra śūrā maheṣvāsā bhīmārjunasamā yudhi" },
+            { name: "Long text", text: "धृतराष्ट्र उवाच धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः".repeat(5), expected: "" },
+            { name: "Very long text", text: "तत्र शूरा महेष्वासा भीमार्जुनसमा युधि । युयुधानो विराटश्च द्रुपदश्च महारथः ॥".repeat(100), expected: "" }
+        ];
+
+        // Display test corpus
+        document.getElementById('testCorpus').textContent = JSON.stringify(testCorpus.map(t => ({
+            name: t.name,
+            length: t.text.length,
+            preview: t.text.substring(0, 50) + (t.text.length > 50 ? "..." : "")
+        })), null, 2);
+
+        let shleshaWASM = null;
+        let results = [];
+
+        async function loadShleshaWASM() {
+            const status = document.getElementById('status');
+            status.className = 'status info';
+            status.textContent = 'Loading Shlesha WASM module...';
+
+            try {
+                // In actual implementation, load the actual WASM module
+                // const module = await import('./shlesha_wasm.js');
+                // shleshaWASM = await module.default();
+                
+                // Simulate loading for now
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                shleshaWASM = {
+                    transliterate: (text, from, to) => {
+                        // Simulated transliteration
+                        return text.replace(/[अ-ॿ]/g, 'a');
+                    }
+                };
+
+                status.className = 'status success';
+                status.textContent = 'Shlesha WASM loaded successfully!';
+                document.getElementById('runBtn').disabled = false;
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `Error loading WASM: ${error.message}`;
+            }
+        }
+
+        function benchmark(fn, iterations = 100) {
+            const times = [];
+            
+            // Warmup
+            for (let i = 0; i < 10; i++) {
+                fn();
+            }
+            
+            // Actual benchmark
+            for (let i = 0; i < iterations; i++) {
+                const start = performance.now();
+                fn();
+                const end = performance.now();
+                times.push(end - start);
+            }
+            
+            times.sort((a, b) => a - b);
+            
+            return {
+                mean: times.reduce((a, b) => a + b) / times.length,
+                median: times[Math.floor(times.length / 2)],
+                min: times[0],
+                max: times[times.length - 1],
+                p95: times[Math.floor(times.length * 0.95)],
+                p99: times[Math.floor(times.length * 0.99)]
+            };
+        }
+
+        function simpleJSTransliterate(text) {
+            // Simple JavaScript transliteration for comparison
+            const map = {
+                'अ': 'a', 'आ': 'ā', 'इ': 'i', 'ई': 'ī',
+                'उ': 'u', 'ऊ': 'ū', 'ए': 'e', 'ऐ': 'ai',
+                'ओ': 'o', 'औ': 'au', 'क': 'ka', 'ख': 'kha',
+                'ग': 'ga', 'घ': 'gha', 'च': 'ca', 'छ': 'cha',
+                'ज': 'ja', 'झ': 'jha', 'ट': 'ṭa', 'ठ': 'ṭha',
+                'ड': 'ḍa', 'ढ': 'ḍha', 'त': 'ta', 'थ': 'tha',
+                'द': 'da', 'ध': 'dha', 'न': 'na', 'प': 'pa',
+                'फ': 'pha', 'ब': 'ba', 'भ': 'bha', 'म': 'ma',
+                'य': 'ya', 'र': 'ra', 'ल': 'la', 'व': 'va',
+                'श': 'śa', 'ष': 'ṣa', 'स': 'sa', 'ह': 'ha'
+            };
+            
+            let result = '';
+            for (let char of text) {
+                result += map[char] || char;
+            }
+            return result;
+        }
+
+        async function runBenchmarks() {
+            const status = document.getElementById('status');
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+            results = [];
+
+            status.className = 'status info';
+            status.textContent = 'Running benchmarks...';
+
+            for (const testCase of testCorpus) {
+                status.textContent = `Benchmarking: ${testCase.name}`;
+                
+                // Benchmark Shlesha WASM
+                const wasmStats = benchmark(() => {
+                    shleshaWASM.transliterate(testCase.text, 'Devanagari', 'IAST');
+                });
+                
+                // Benchmark JavaScript implementation
+                const jsStats = benchmark(() => {
+                    simpleJSTransliterate(testCase.text);
+                });
+                
+                const speedup = jsStats.mean / wasmStats.mean;
+                
+                const result = {
+                    name: testCase.name,
+                    length: testCase.text.length,
+                    wasm: wasmStats,
+                    js: jsStats,
+                    speedup: speedup
+                };
+                
+                results.push(result);
+                
+                // Add row to table
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = testCase.name;
+                row.insertCell(1).textContent = testCase.text.length;
+                row.insertCell(2).textContent = wasmStats.mean.toFixed(3);
+                row.insertCell(3).textContent = jsStats.mean.toFixed(3);
+                row.insertCell(4).textContent = speedup.toFixed(2) + 'x';
+                
+                // Small delay to update UI
+                await new Promise(resolve => setTimeout(resolve, 10));
+            }
+
+            status.className = 'status success';
+            status.textContent = 'Benchmarks completed!';
+            
+            updateCharts();
+        }
+
+        function updateCharts() {
+            // Performance comparison chart
+            const perfCtx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(perfCtx, {
+                type: 'bar',
+                data: {
+                    labels: results.map(r => r.name),
+                    datasets: [{
+                        label: 'Shlesha WASM (ms)',
+                        data: results.map(r => r.wasm.mean),
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        borderWidth: 1
+                    }, {
+                        label: 'JavaScript (ms)',
+                        data: results.map(r => r.js.mean),
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Time (milliseconds)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Throughput chart
+            const throughputCtx = document.getElementById('throughputChart').getContext('2d');
+            const throughputData = results.map(r => ({
+                name: r.name,
+                wasmThroughput: r.length / (r.wasm.mean / 1000), // chars/second
+                jsThroughput: r.length / (r.js.mean / 1000)
+            }));
+
+            new Chart(throughputCtx, {
+                type: 'line',
+                data: {
+                    labels: throughputData.map(r => r.name),
+                    datasets: [{
+                        label: 'Shlesha WASM (chars/sec)',
+                        data: throughputData.map(r => r.wasmThroughput),
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.1
+                    }, {
+                        label: 'JavaScript (chars/sec)',
+                        data: throughputData.map(r => r.jsThroughput),
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Throughput (characters/second)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function downloadResults() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                results: results
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `wasm_benchmark_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

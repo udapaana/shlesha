@@ -1,0 +1,174 @@
+name: "musical_notation"
+description: "Musical notation system for marking tones in chanted texts"
+applies_to: ["Devanagari", "IAST", "Harvard-Kyoto", "SLP1"]
+
+extensions:
+  sama_vedic_tones:
+    description: "Sama Veda musical notation with 7 tones"
+    priority: 20
+    mappings:
+      # Number-based tone markers (1-7)
+      "१":
+        to: "₁"
+        element_type: "musical_tone"
+        properties:
+          tone_number: 1
+          tone_name: "prathama"
+          frequency_ratio: 1.0
+      "२":
+        to: "₂"
+        element_type: "musical_tone"
+        properties:
+          tone_number: 2
+          tone_name: "dvitiya"
+          frequency_ratio: 1.125
+      "३":
+        to: "₃"
+        element_type: "musical_tone"
+        properties:
+          tone_number: 3
+          tone_name: "tritiya"
+          frequency_ratio: 1.25
+      "४":
+        to: "₄"
+        element_type: "musical_tone"
+        properties:
+          tone_number: 4
+          tone_name: "caturtha"
+          frequency_ratio: 1.333
+      "५":
+        to: "₅"
+        element_type: "musical_tone"
+        properties:
+          tone_number: 5
+          tone_name: "panchama"
+          frequency_ratio: 1.5
+      "६":
+        to: "₆"
+        element_type: "musical_tone"
+        properties:
+          tone_number: 6
+          tone_name: "shashtha"
+          frequency_ratio: 1.667
+      "७":
+        to: "₇"
+        element_type: "musical_tone"
+        properties:
+          tone_number: 7
+          tone_name: "saptama"
+          frequency_ratio: 1.875
+          
+  western_staff_notation:
+    description: "Western musical staff notation markers"
+    priority: 15
+    mappings:
+      "♩":
+        to: "[quarter]"
+        element_type: "note_duration"
+        properties:
+          duration: 0.25
+          beats: 1
+      "♪":
+        to: "[eighth]"
+        element_type: "note_duration"
+        properties:
+          duration: 0.125
+          beats: 0.5
+      "♫":
+        to: "[sixteenth]"
+        element_type: "note_duration"
+        properties:
+          duration: 0.0625
+          beats: 0.25
+      "♭":
+        to: "[flat]"
+        element_type: "pitch_modifier"
+        properties:
+          semitones: -1
+      "♮":
+        to: "[natural]"
+        element_type: "pitch_modifier"
+        properties:
+          semitones: 0
+      "♯":
+        to: "[sharp]"
+        element_type: "pitch_modifier"
+        properties:
+          semitones: 1
+          
+  rhythmic_patterns:
+    description: "Indian classical rhythmic pattern markers"
+    priority: 25
+    mappings:
+      "|":
+        to: "|"
+        element_type: "tala_separator"
+        properties:
+          marks: "vibhag"
+          strength: "medium"
+      "||":
+        to: "||"
+        element_type: "tala_separator"
+        properties:
+          marks: "sam"
+          strength: "strong"
+      "○":
+        to: "[khali]"
+        element_type: "tala_marker"
+        properties:
+          type: "khali"
+          description: "empty beat"
+      "●":
+        to: "[tali]"
+        element_type: "tala_marker"
+        properties:
+          type: "tali"
+          description: "clap beat"
+      "S":
+        to: "[sam]"
+        element_type: "tala_marker"
+        properties:
+          type: "sam"
+          description: "first beat of cycle"
+          
+  byzantine_neumes:
+    description: "Byzantine musical notation symbols"
+    priority: 10
+    mappings:
+      "ison":
+        to: "—"
+        element_type: "byzantine_neume"
+        properties:
+          movement: "horizontal"
+          interval: 0
+      "oligon":
+        to: "/"
+        element_type: "byzantine_neume"
+        properties:
+          movement: "ascending"
+          interval: 1
+      "apostrophos":
+        to: "\\"
+        element_type: "byzantine_neume"
+        properties:
+          movement: "descending"
+          interval: -1
+      "petasthe":
+        to: "⌒"
+        element_type: "byzantine_neume"
+        properties:
+          movement: "ascending"
+          interval: 5
+          
+conditions:
+  sama_vedic_tones:
+    # Only apply if text contains Vedic markers
+    requires_any: ["॑", "॒", "᳚", "᳛"]
+    
+  western_staff_notation:
+    # Apply only if Western notation symbols present
+    requires_any: ["♩", "♪", "♫", "♭", "♮", "♯"]
+    
+  rhythmic_patterns:
+    # Apply for texts with rhythmic markers
+    requires_any: ["|", "||", "○", "●", "S"]

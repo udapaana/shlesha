@@ -1,0 +1,234 @@
+name: "IAST"
+type: alphabet
+
+metadata:
+  version: "1.0.0"
+  author: "Shlesha Contributors"
+  description: "International Alphabet of Sanskrit Transliteration"
+  references:
+    - "ISO 15919:2001"
+    - "Sanskrit Computational Linguistics"
+
+element_types:
+  consonant:
+    description: "Latin consonant or consonant cluster"
+    properties:
+      is_aspirated:
+        type: bool
+        default: false
+        description: "Whether the consonant is aspirated (e.g., kh, gh)"
+      is_retroflex:
+        type: bool
+        default: false
+        description: "Whether the consonant is retroflex (ṭ, ḍ, etc.)"
+        
+  vowel:
+    description: "Latin vowel with diacritics"
+    properties:
+      is_long:
+        type: bool
+        default: false
+        description: "Whether the vowel is long (ā, ī, ū)"
+
+mappings:
+  consonants:
+    # Velars
+    "k":
+      canonical: "k"
+      is_aspirated: false
+    "kh":
+      canonical: "kh"
+      is_aspirated: true
+    "g":
+      canonical: "g"
+      is_aspirated: false
+    "gh":
+      canonical: "gh"
+      is_aspirated: true
+    "ṅ":
+      canonical: "ṅ"
+      is_aspirated: false
+      
+    # Palatals
+    "c":
+      canonical: "c"
+      is_aspirated: false
+    "ch":
+      canonical: "ch"
+      is_aspirated: true
+    "j":
+      canonical: "j"
+      is_aspirated: false
+    "jh":
+      canonical: "jh"
+      is_aspirated: true
+    "ñ":
+      canonical: "ñ"
+      is_aspirated: false
+      
+    # Retroflexes
+    "ṭ":
+      canonical: "ṭ"
+      is_aspirated: false
+      is_retroflex: true
+    "ṭh":
+      canonical: "ṭh"
+      is_aspirated: true
+      is_retroflex: true
+    "ḍ":
+      canonical: "ḍ"
+      is_aspirated: false
+      is_retroflex: true
+    "ḍh":
+      canonical: "ḍh"
+      is_aspirated: true
+      is_retroflex: true
+    "ṇ":
+      canonical: "ṇ"
+      is_aspirated: false
+      is_retroflex: true
+      
+    # Dentals
+    "t":
+      canonical: "t"
+      is_aspirated: false
+    "th":
+      canonical: "th"
+      is_aspirated: true
+    "d":
+      canonical: "d"
+      is_aspirated: false
+    "dh":
+      canonical: "dh"
+      is_aspirated: true
+    "n":
+      canonical: "n"
+      is_aspirated: false
+      
+    # Labials
+    "p":
+      canonical: "p"
+      is_aspirated: false
+    "ph":
+      canonical: "ph"
+      is_aspirated: true
+    "b":
+      canonical: "b"
+      is_aspirated: false
+    "bh":
+      canonical: "bh"
+      is_aspirated: true
+    "m":
+      canonical: "m"
+      is_aspirated: false
+      
+    # Semi-vowels
+    "y":
+      canonical: "y"
+    "r":
+      canonical: "r"
+    "l":
+      canonical: "l"
+    "v":
+      canonical: "v"
+      
+    # Sibilants
+    "ś":
+      canonical: "ś"
+    "ṣ":
+      canonical: "ṣ"
+      is_retroflex: true
+    "s":
+      canonical: "s"
+      
+    # Aspirate
+    "h":
+      canonical: "h"
+      
+    # Additional
+    "ḷ":
+      canonical: "ḷ"
+      is_retroflex: true
+    "kṣ":
+      canonical: "kṣ"
+    "jñ":
+      canonical: "jñ"
+
+  vowels:
+    "a":
+      canonical: "a"
+      is_long: false
+    "ā":
+      canonical: "ā"
+      is_long: true
+    "i":
+      canonical: "i"
+      is_long: false
+    "ī":
+      canonical: "ī"
+      is_long: true
+    "u":
+      canonical: "u"
+      is_long: false
+    "ū":
+      canonical: "ū"
+      is_long: true
+    "ṛ":
+      canonical: "ṛ"
+      is_long: false
+    "ṝ":
+      canonical: "ṝ"
+      is_long: true
+    "ḷ":
+      canonical: "ḷ"
+      is_long: false
+    "ḹ":
+      canonical: "ḹ"
+      is_long: true
+    "e":
+      canonical: "e"
+      is_long: true
+    "ai":
+      canonical: "ai"
+      is_long: true
+    "o":
+      canonical: "o"
+      is_long: true
+    "au":
+      canonical: "au"
+      is_long: true
+
+  modifiers:
+    "ṃ":
+      canonical: "ṃ"
+      type: anusvara
+    "ḥ":
+      canonical: "ḥ"
+      type: visarga
+    "m̐":
+      canonical: "m̐"
+      type: candrabindu
+    "'":
+      canonical: "'"
+      type: avagraha
+
+  numerals:
+    "0": { canonical: "0" }
+    "1": { canonical: "1" }
+    "2": { canonical: "2" }
+    "3": { canonical: "3" }
+    "4": { canonical: "4" }
+    "5": { canonical: "5" }
+    "6": { canonical: "6" }
+    "7": { canonical: "7" }
+    "8": { canonical: "8" }
+    "9": { canonical: "9" }
+
+  punctuation:
+    ".": { canonical: "." }
+    ",": { canonical: "," }
+    ";": { canonical: ";" }
+    ":": { canonical: ":" }
+    "!": { canonical: "!" }
+    "?": { canonical: "?" }
+    "..": { canonical: ".." }

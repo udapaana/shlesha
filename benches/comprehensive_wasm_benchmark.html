@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive WASM Transliteration Benchmark</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Telugu:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans', 'Noto Sans Devanagari', 'Noto Sans Telugu', sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .benchmark-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tool-card {
+            display: inline-block;
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .tool-card.loaded {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+        .tool-card.error {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .results-table th, .results-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .results-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .results-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .btn.secondary {
+            background-color: #2196F3;
+        }
+        .btn.secondary:hover {
+            background-color: #1976D2;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .status.info {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        .status.success {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        .status.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .status.warning {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+        .chart-container {
+            margin: 20px 0;
+            height: 400px;
+            position: relative;
+        }
+        .accuracy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .accuracy-card {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .accuracy-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .correct {
+            color: #4caf50;
+        }
+        .incorrect {
+            color: #f44336;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .devanagari-text {
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Comprehensive WASM Transliteration Benchmark</h1>
+    
+    <div class="benchmark-section">
+        <h2>Available Transliterators</h2>
+        <div id="toolCards">
+            <div class="tool-card" id="shlesha-card">
+                <h3>Shlesha WASM</h3>
+                <p>Rust-based transliterator</p>
+                <button class="btn" onclick="loadShleshaWASM()">Load</button>
+                <div id="shlesha-status"></div>
+            </div>
+            
+            <div class="tool-card" id="vidyut-card">
+                <h3>Vidyut WASM</h3>
+                <p>Vidyut transliterator</p>
+                <button class="btn" onclick="loadVidyutWASM()">Load</button>
+                <div id="vidyut-status"></div>
+            </div>
+            
+            <div class="tool-card" id="dharmamitra-card">
+                <h3>dharmamitra JS</h3>
+                <p>JavaScript implementation</p>
+                <button class="btn" onclick="loadDharmamitraJS()">Load</button>
+                <div id="dharmamitra-status"></div>
+            </div>
+            
+            <div class="tool-card" id="aksharamukha-card">
+                <h3>Aksharamukha JS</h3>
+                <p>Web API / JS implementation</p>
+                <button class="btn" onclick="loadAksharamukhaJS()">Load</button>
+                <div id="aksharamukha-status"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Controls</h2>
+        <button class="btn" onclick="loadAllTools()">Load All Tools</button>
+        <button class="btn" onclick="runBenchmarks()" id="runBtn" disabled>Run Benchmarks</button>
+        <button class="btn secondary" onclick="runAccuracyTests()" id="accuracyBtn" disabled>Test Accuracy</button>
+        <button class="btn secondary" onclick="downloadResults()">Download Results</button>
+        <div id="status" class="status info">Load tools to begin benchmarking</div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Test Corpus</h2>
+        <pre id="testCorpus" class="devanagari-text"></pre>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Performance Results</h2>
+        <div style="overflow-x: auto;">
+            <table class="results-table" id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Test Case</th>
+                        <th>Input Length</th>
+                        <th>Shlesha WASM</th>
+                        <th>Vidyut WASM</th>
+                        <th>dharmamitra JS</th>
+                        <th>Aksharamukha</th>
+                        <th>Fastest</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Accuracy Tests</h2>
+        <div id="accuracyResults" class="accuracy-grid">
+        </div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Performance Chart</h2>
+        <div class="chart-container">
+            <canvas id="performanceChart"></canvas>
+        </div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>Throughput Analysis</h2>
+        <div class="chart-container">
+            <canvas id="throughputChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Test corpus
+        const testCorpus = [
+            { name: "Single word", text: "नमस्ते", expected: "namaste" },
+            { name: "Short sentence", text: "अहं संस्कृतं वदामि", expected: "ahaṃ saṃskṛtaṃ vadāmi" },
+            { name: "Medium verse", text: "तत्र शूरा महेष्वासा भीमार्जुनसमा युधि", expected: "tatra śūrā maheṣvāsā bhīmārjunasamā yudhi" },
+            { name: "Complex conjuncts", text: "कृष्णार्जुनसंवादः", expected: "kṛṣṇārjunasaṃvādaḥ" },
+            { name: "Long text", text: "धृतराष्ट्र उवाच धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः".repeat(5), expected: "" },
+            { name: "Very long text", text: "तत्र शूरा महेष्वासा भीमार्जुनसमा युधि । युयुधानो विराटश्च द्रुपदश्च महारथः ॥".repeat(100), expected: "" }
+        ];
+
+        const accuracyTests = [
+            { text: "नमस्ते", expected: "namaste" },
+            { text: "संस्कृतम्", expected: "saṃskṛtam" },
+            { text: "कृष्ण", expected: "kṛṣṇa" },
+            { text: "ज्ञान", expected: "jñāna" },
+            { text: "अग्निमीळे", expected: "agnimīḷe" },
+            { text: "यज्ञस्य", expected: "yajñasya" },
+            { text: "ऋत्विजम्", expected: "ṛtvijam" },
+            { text: "द्वौ", expected: "dvau" },
+            { text: "त्र्यम्बकम्", expected: "tryambakam" },
+            { text: "पुष्टिवर्धनम्", expected: "puṣṭivardhanam" }
+        ];
+
+        // Display test corpus
+        document.getElementById('testCorpus').textContent = JSON.stringify(testCorpus.map(t => ({
+            name: t.name,
+            length: t.text.length,
+            preview: t.text.substring(0, 50) + (t.text.length > 50 ? "..." : "")
+        })), null, 2);
+
+        // Tool instances
+        const tools = {
+            shlesha: null,
+            vidyut: null,
+            dharmamitra: null,
+            aksharamukha: null
+        };
+
+        let results = [];
+        let loadedTools = 0;
+
+        async function loadShleshaWASM() {
+            const status = document.getElementById('shlesha-status');
+            status.innerHTML = '<div class="loading-spinner"></div> Loading...';
+            
+            try {
+                // In actual implementation:
+                // const module = await import('./pkg/shlesha_wasm.js');
+                // tools.shlesha = await module.default();
+                
+                // Simulate for now
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                tools.shlesha = {
+                    transliterate: (text) => text.replace(/[अ-ॿ]/g, 'a') // Mock
+                };
+                
+                document.getElementById('shlesha-card').classList.add('loaded');
+                status.innerHTML = '✓ Loaded';
+                loadedTools++;
+                updateStatus();
+            } catch (error) {
+                document.getElementById('shlesha-card').classList.add('error');
+                status.innerHTML = `✗ Error: ${error.message}`;
+            }
+        }
+
+        async function loadVidyutWASM() {
+            const status = document.getElementById('vidyut-status');
+            status.innerHTML = '<div class="loading-spinner"></div> Loading...';
+            
+            try {
+                // Actual: Load Vidyut WASM
+                await new Promise(resolve => setTimeout(resolve, 800));
+                tools.vidyut = {
+                    transliterate: (text) => text.replace(/[अ-ॿ]/g, 'b') // Mock
+                };
+                
+                document.getElementById('vidyut-card').classList.add('loaded');
+                status.innerHTML = '✓ Loaded';
+                loadedTools++;
+                updateStatus();
+            } catch (error) {
+                document.getElementById('vidyut-card').classList.add('error');
+                status.innerHTML = `✗ Error: ${error.message}`;
+            }
+        }
+
+        async function loadDharmamitraJS() {
+            const status = document.getElementById('dharmamitra-status');
+            status.innerHTML = '<div class="loading-spinner"></div> Loading...';
+            
+            try {
+                // Actual: Load dharmamitra JS library
+                await new Promise(resolve => setTimeout(resolve, 600));
+                tools.dharmamitra = {
+                    transliterate: (text) => simpleJSTransliterate(text)
+                };
+                
+                document.getElementById('dharmamitra-card').classList.add('loaded');
+                status.innerHTML = '✓ Loaded';
+                loadedTools++;
+                updateStatus();
+            } catch (error) {
+                document.getElementById('dharmamitra-card').classList.add('error');
+                status.innerHTML = `✗ Error: ${error.message}`;
+            }
+        }
+
+        async function loadAksharamukhaJS() {
+            const status = document.getElementById('aksharamukha-status');
+            status.innerHTML = '<div class="loading-spinner"></div> Loading...';
+            
+            try {
+                // Actual: Could use Aksharamukha web API or JS library
+                await new Promise(resolve => setTimeout(resolve, 700));
+                tools.aksharamukha = {
+                    transliterate: async (text) => {
+                        // Mock API call
+                        await new Promise(resolve => setTimeout(resolve, 50));
+                        return text.replace(/[अ-ॿ]/g, 'd');
+                    }
+                };
+                
+                document.getElementById('aksharamukha-card').classList.add('loaded');
+                status.innerHTML = '✓ Loaded';
+                loadedTools++;
+                updateStatus();
+            } catch (error) {
+                document.getElementById('aksharamukha-card').classList.add('error');
+                status.innerHTML = `✗ Error: ${error.message}`;
+            }
+        }
+
+        async function loadAllTools() {
+            await Promise.all([
+                loadShleshaWASM(),
+                loadVidyutWASM(),
+                loadDharmamitraJS(),
+                loadAksharamukhaJS()
+            ]);
+        }
+
+        function updateStatus() {
+            const status = document.getElementById('status');
+            if (loadedTools === 0) {
+                status.className = 'status info';
+                status.textContent = 'Load tools to begin benchmarking';
+                document.getElementById('runBtn').disabled = true;
+                document.getElementById('accuracyBtn').disabled = true;
+            } else {
+                status.className = 'status success';
+                status.textContent = `${loadedTools} tool(s) loaded and ready`;
+                document.getElementById('runBtn').disabled = false;
+                document.getElementById('accuracyBtn').disabled = false;
+            }
+        }
+
+        function simpleJSTransliterate(text) {
+            const map = {
+                'अ': 'a', 'आ': 'ā', 'इ': 'i', 'ई': 'ī',
+                'उ': 'u', 'ऊ': 'ū', 'ए': 'e', 'ऐ': 'ai',
+                'ओ': 'o', 'औ': 'au', 'क': 'ka', 'ख': 'kha',
+                'ग': 'ga', 'घ': 'gha', 'च': 'ca', 'छ': 'cha',
+                'ज': 'ja', 'झ': 'jha', 'ट': 'ṭa', 'ठ': 'ṭha',
+                'ड': 'ḍa', 'ढ': 'ḍha', 'त': 'ta', 'थ': 'tha',
+                'द': 'da', 'ध': 'dha', 'न': 'na', 'प': 'pa',
+                'फ': 'pha', 'ब': 'ba', 'भ': 'bha', 'म': 'ma',
+                'य': 'ya', 'र': 'ra', 'ल': 'la', 'व': 'va',
+                'श': 'śa', 'ष': 'ṣa', 'स': 'sa', 'ह': 'ha',
+                'ं': 'ṃ', 'ः': 'ḥ', '्': '', 'ा': 'ā',
+                'ि': 'i', 'ी': 'ī', 'ु': 'u', 'ू': 'ū',
+                'े': 'e', 'ै': 'ai', 'ो': 'o', 'ौ': 'au'
+            };
+            
+            let result = '';
+            for (let char of text) {
+                result += map[char] || char;
+            }
+            return result;
+        }
+
+        async function benchmark(fn, iterations = 100) {
+            const times = [];
+            
+            // Warmup
+            for (let i = 0; i < 10; i++) {
+                await fn();
+            }
+            
+            // Actual benchmark
+            for (let i = 0; i < iterations; i++) {
+                const start = performance.now();
+                await fn();
+                const end = performance.now();
+                times.push(end - start);
+            }
+            
+            times.sort((a, b) => a - b);
+            
+            return {
+                mean: times.reduce((a, b) => a + b) / times.length,
+                median: times[Math.floor(times.length / 2)],
+                min: times[0],
+                max: times[times.length - 1],
+                p95: times[Math.floor(times.length * 0.95)],
+                p99: times[Math.floor(times.length * 0.99)]
+            };
+        }
+
+        async function runBenchmarks() {
+            const status = document.getElementById('status');
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+            results = [];
+
+            status.className = 'status info';
+            status.textContent = 'Running benchmarks...';
+
+            for (const testCase of testCorpus) {
+                status.textContent = `Benchmarking: ${testCase.name}`;
+                
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = testCase.name;
+                row.insertCell(1).textContent = testCase.text.length;
+                
+                const toolResults = {};
+                let fastest = { tool: null, time: Infinity };
+                
+                // Benchmark each tool
+                for (const [toolName, tool] of Object.entries(tools)) {
+                    if (!tool) {
+                        row.insertCell().textContent = 'N/A';
+                        continue;
+                    }
+                    
+                    try {
+                        const stats = await benchmark(async () => {
+                            if (tool.transliterate.constructor.name === 'AsyncFunction') {
+                                await tool.transliterate(testCase.text);
+                            } else {
+                                tool.transliterate(testCase.text);
+                            }
+                        }, testCase.text.length > 1000 ? 20 : 100);
+                        
+                        toolResults[toolName] = stats;
+                        const cell = row.insertCell();
+                        cell.textContent = `${stats.mean.toFixed(3)}ms`;
+                        
+                        if (stats.mean < fastest.time) {
+                            fastest = { tool: toolName, time: stats.mean };
+                        }
+                    } catch (error) {
+                        row.insertCell().textContent = 'Error';
+                    }
+                }
+                
+                // Highlight fastest
+                const fastestCell = row.insertCell();
+                fastestCell.textContent = fastest.tool || 'N/A';
+                fastestCell.style.fontWeight = 'bold';
+                fastestCell.style.color = '#4caf50';
+                
+                results.push({
+                    testCase: testCase.name,
+                    length: testCase.text.length,
+                    results: toolResults
+                });
+                
+                // Small delay to update UI
+                await new Promise(resolve => setTimeout(resolve, 10));
+            }
+
+            status.className = 'status success';
+            status.textContent = 'Benchmarks completed!';
+            
+            updateCharts();
+        }
+
+        async function runAccuracyTests() {
+            const container = document.getElementById('accuracyResults');
+            container.innerHTML = '';
+            
+            const status = document.getElementById('status');
+            status.className = 'status info';
+            status.textContent = 'Running accuracy tests...';
+
+            for (const [toolName, tool] of Object.entries(tools)) {
+                if (!tool) continue;
+                
+                const card = document.createElement('div');
+                card.className = 'accuracy-card';
+                card.innerHTML = `<h3>${toolName}</h3>`;
+                
+                let correct = 0;
+                
+                for (const test of accuracyTests) {
+                    const item = document.createElement('div');
+                    item.className = 'accuracy-item';
+                    
+                    try {
+                        let result;
+                        if (tool.transliterate.constructor.name === 'AsyncFunction') {
+                            result = await tool.transliterate(test.text);
+                        } else {
+                            result = tool.transliterate(test.text);
+                        }
+                        
+                        const isCorrect = result === test.expected;
+                        if (isCorrect) correct++;
+                        
+                        item.innerHTML = `
+                            <span class="devanagari-text">${test.text}</span>
+                            <span class="${isCorrect ? 'correct' : 'incorrect'}">
+                                ${result} ${isCorrect ? '✓' : '✗ (' + test.expected + ')'}
+                            </span>
+                        `;
+                    } catch (error) {
+                        item.innerHTML = `
+                            <span class="devanagari-text">${test.text}</span>
+                            <span class="incorrect">Error</span>
+                        `;
+                    }
+                    
+                    card.appendChild(item);
+                }
+                
+                const accuracy = (correct / accuracyTests.length * 100).toFixed(1);
+                card.innerHTML = `<h3>${toolName} - ${accuracy}% accurate</h3>` + card.innerHTML;
+                
+                container.appendChild(card);
+            }
+            
+            status.className = 'status success';
+            status.textContent = 'Accuracy tests completed!';
+        }
+
+        function updateCharts() {
+            if (!results.length) return;
+            
+            // Performance comparison chart
+            const perfCtx = document.getElementById('performanceChart').getContext('2d');
+            
+            const toolNames = Object.keys(tools).filter(name => tools[name]);
+            const datasets = toolNames.map((toolName, index) => {
+                const colors = ['#2196F3', '#4CAF50', '#FF9800', '#9C27B0'];
+                return {
+                    label: toolName,
+                    data: results.map(r => r.results[toolName]?.mean || null),
+                    backgroundColor: colors[index % colors.length] + '80',
+                    borderColor: colors[index % colors.length],
+                    borderWidth: 2
+                };
+            });
+            
+            new Chart(perfCtx, {
+                type: 'bar',
+                data: {
+                    labels: results.map(r => r.testCase),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Time (milliseconds)'
+                            },
+                            type: 'logarithmic'
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Performance Comparison (lower is better)'
+                        }
+                    }
+                }
+            });
+
+            // Throughput chart
+            const throughputCtx = document.getElementById('throughputChart').getContext('2d');
+            
+            const throughputDatasets = toolNames.map((toolName, index) => {
+                const colors = ['#2196F3', '#4CAF50', '#FF9800', '#9C27B0'];
+                return {
+                    label: toolName,
+                    data: results.map(r => {
+                        if (!r.results[toolName]) return null;
+                        return r.length / (r.results[toolName].mean / 1000); // chars/second
+                    }),
+                    borderColor: colors[index % colors.length],
+                    backgroundColor: colors[index % colors.length] + '20',
+                    tension: 0.1
+                };
+            });
+
+            new Chart(throughputCtx, {
+                type: 'line',
+                data: {
+                    labels: results.map(r => r.testCase),
+                    datasets: throughputDatasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Throughput (characters/second)'
+                            },
+                            type: 'logarithmic'
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Throughput Analysis (higher is better)'
+                        }
+                    }
+                }
+            });
+        }
+
+        function downloadResults() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                benchmarkResults: results,
+                tools: Object.keys(tools).filter(name => tools[name])
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `wasm_benchmark_comprehensive_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+name: "vedic_accents"
+description: "Vedic accent marks including udatta, anudatta, and svarita"
+applies_to: ["Devanagari", "IAST", "Harvard-Kyoto", "SLP1", "ISO15919"]
+
+metadata:
+  version: "1.0.0"
+  author: "Shlesha Contributors"
+  references:
+    - "Taittiriya Samhita conventions"
+    - "Unicode Standard 15.0 - Vedic Extensions"
+    - "ISO 15919:2001 Annex F"
+
+extensions:
+  basic_accents:
+    description: "Three-tone Vedic accent system"
+    priority: 30
+    mappings:
+      # Udatta (high tone) - U+0951
+      "॑":
+        to: "́"  # Combining acute accent U+0301
+        element_type: "accent_udatta"
+        properties:
+          tone: "high"
+          combining: true
+          unicode_name: "DEVANAGARI STRESS SIGN UDATTA"
+          
+      # Anudatta (low tone) - U+0952  
+      "॒":
+        to: "̀"  # Combining grave accent U+0300
+        element_type: "accent_anudatta"
+        properties:
+          tone: "low"
+          combining: true
+          unicode_name: "DEVANAGARI STRESS SIGN ANUDATTA"
+          
+      # Independent svarita - U+1CDA
+      "᳚":
+        to: "̌"  # Combining caron U+030C
+        element_type: "accent_svarita"
+        properties:
+          tone: "falling"
+          combining: true
+          unicode_name: "VEDIC TONE DOUBLE SVARITA"
+          
+      # Dirgha svarita - U+1CDB
+      "᳛":
+        to: "̂"  # Combining circumflex U+0302
+        element_type: "accent_dirgha_svarita"
+        properties:
+          tone: "extended_falling"
+          combining: true
+          unicode_name: "VEDIC TONE TRIPLE SVARITA"
+
+  kampa_markers:
+    description: "Kampa (tremolo) markers for Sama Veda"
+    priority: 25
+    mappings:
+      # Kampa markers
+      "॔":
+        to: "⁽¹⁾"
+        element_type: "kampa"
+        properties:
+          kampa_type: "one"
+          unicode_name: "DEVANAGARI ACUTE ACCENT"
+          
+      "॓":
+        to: "⁽²⁾"
+        element_type: "kampa"
+        properties:
+          kampa_type: "two"
+          unicode_name: "DEVANAGARI GRAVE ACCENT"
+          
+      "ॕ":
+        to: "⁽³⁾"
+        element_type: "kampa"
+        properties:
+          kampa_type: "three"
+          unicode_name: "DEVANAGARI VOWEL SIGN CANDRA LONG E"
+
+  yajurveda_accents:
+    description: "Yajur Veda specific accent notations"
+    priority: 20
+    mappings:
+      # Special Yajurveda independent svarita
+      "ꣳ":
+        to: "̃"  # Combining tilde
+        element_type: "accent_independent_svarita"
+        properties:
+          tone: "independent_falling"
+          tradition: "yajurveda"
+          
+      # Aggravated independent svarita
+      "᳘":
+        to: "̰"  # Combining tilde below
+        element_type: "accent_aggravated"
+        properties:
+          tone: "extra_low"
+          unicode_name: "VEDIC TONE AGGRAVATED INDEPENDENT SVARITA"
+
+  rigveda_accents:
+    description: "Rig Veda specific accent notations"
+    priority: 20
+    mappings:
+      # Rig Vedic anusvara variants
+      "ꣴ":
+        to: "ṁ"
+        element_type: "anusvara_udatta"
+        properties:
+          combines_with: "anusvara"
+          tone: "high"
+          
+      "ꣵ":
+        to: "m̐"
+        element_type: "anusvara_anudatta"
+        properties:
+          combines_with: "anusvara"
+          tone: "low"
+
+  atharvaveda_accents:
+    description: "Atharva Veda specific markers"
+    priority: 18
+    mappings:
+      # Atharva Veda specific markers
+      "᳡":
+        to: "˟"
+        element_type: "accent_marker"
+        properties:
+          tradition: "atharvaveda"
+          purpose: "pause"
+
+conditions:
+  basic_accents:
+    # Apply if any Vedic accent mark is present
+    requires_any: ["॑", "॒", "᳚", "᳛"]
+    
+  kampa_markers:
+    # Apply for Sama Veda texts
+    requires_any: ["॔", "॓", "ॕ"]
+    
+  yajurveda_accents:
+    requires_any: ["ꣳ", "᳘"]
+    
+  rigveda_accents:
+    requires_any: ["ꣴ", "ꣵ"]
+
+# Special handling rules
+special_rules:
+  # Accent placement
+  accent_stacking:
+    description: "How to handle multiple accents on same syllable"
+    order: ["anudatta", "udatta", "svarita"]
+    
+  # Romanization variants
+  romanization_options:
+    iast:
+      use_combining: true  # á instead of a'
+      preserve_kampa: false
+    harvard_kyoto:
+      use_combining: false # a' instead of á
+      preserve_kampa: true
+    iso15919:
+      use_combining: true
+      preserve_kampa: true
