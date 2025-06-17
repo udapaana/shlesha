@@ -156,7 +156,7 @@ impl GeneratorBuilder {
 mod tests {
     use super::*;
     use crate::schema_parser::SchemaParser;
-    use crate::ir::PropertyValue;
+    use crate::ir::{PropertyValue, Element};
     
     #[test]
     fn test_generate_devanagari() {
