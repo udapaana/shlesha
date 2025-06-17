@@ -162,13 +162,13 @@ impl Transliterator {
         Ok(())
     }
     
-    fn get_script_type(&self, script_name: &str) -> Result<String, TransliteratorError> {
+    fn get_script_type(&self, script_name: &str) -> Result<&'static str, TransliteratorError> {
         let schema = self.schema_registry.get(script_name)
             .ok_or_else(|| TransliteratorError::UnknownScript(script_name.to_string()))?;
         
         match schema.script_type {
-            crate::schema_parser::ScriptType::Abugida => Ok("abugida".to_string()),
-            crate::schema_parser::ScriptType::Alphabet => Ok("alphabet".to_string()),
+            crate::schema_parser::ScriptType::Abugida => Ok("abugida"),
+            crate::schema_parser::ScriptType::Alphabet => Ok("alphabet"),
         }
     }
     

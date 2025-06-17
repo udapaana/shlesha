@@ -17,16 +17,27 @@ pub enum GenerateError {
 
 pub struct Generator {
     schemas: HashMap<String, Schema>,
+    // Cache reverse mappings to avoid rebuilding on every generate() call
+    reverse_mappings_cache: HashMap<String, HashMap<String, String>>,
 }
 
 impl Generator {
     pub fn new() -> Self {
         Self {
             schemas: HashMap::new(),
+            reverse_mappings_cache: HashMap::new(),
         }
     }
     
     pub fn load_schema(&mut self, schema: Schema) {
+        // Build and cache reverse mappings when schema is loaded
+        let mut reverse = HashMap::new();
+        for (_, category_mappings) in &schema.mappings {
+            for (grapheme, mapping) in category_mappings {
+                reverse.insert(mapping.canonical.clone(), grapheme.clone());
+            }
+        }
+        self.reverse_mappings_cache.insert(schema.name.clone(), reverse);
         self.schemas.insert(schema.name.clone(), schema);
     }
     
@@ -47,7 +58,8 @@ impl Generator {
     
     fn generate_abugida(&self, ir: &AbugidaIR, schema: &Schema) -> Result<String, GenerateError> {
         let mut result = String::new();
-        let reverse_mappings = self.build_reverse_mappings(schema);
+        let reverse_mappings = self.reverse_mappings_cache.get(&schema.name)
+            .ok_or_else(|| GenerateError::UnknownScript(schema.name.clone()))?;
         
         for element in &ir.elements {
             match element.element_type.0.as_str() {
@@ -75,7 +87,8 @@ impl Generator {
     
     fn generate_alphabet(&self, ir: &AlphabetIR, schema: &Schema) -> Result<String, GenerateError> {
         let mut result = String::new();
-        let reverse_mappings = self.build_reverse_mappings(schema);
+        let reverse_mappings = self.reverse_mappings_cache.get(&schema.name)
+            .ok_or_else(|| GenerateError::UnknownScript(schema.name.clone()))?;
         
         for element in &ir.elements {
             match element.element_type.0.as_str() {

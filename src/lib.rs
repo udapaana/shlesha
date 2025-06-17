@@ -13,6 +13,11 @@ pub mod transformer_v2;
 pub mod generator_v2;
 pub mod runtime_extension;
 
+// Optimized modules (commented out for now)
+// pub mod parser_optimized;
+// pub mod generator_optimized;  
+// pub mod transliterator_optimized;
+
 pub use ir::{
     AbugidaIR, AlphabetIR, IR, Element, ElementType, PropertyValue,
     Extension, ExtensionMapping, Metadata
