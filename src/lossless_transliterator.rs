@@ -293,7 +293,9 @@ impl LosslessTransliterator {
     
     /// Fast transliteration using specific mapper
     fn transliterate_with_mapper(&self, text: &str, mapper: &LosslessMapper) -> Result<String, String> {
-        let mut result = String::with_capacity(text.len() * 2);
+        // Pre-allocate with better capacity estimation for Devanagari->IAST
+        // Devanagari: 1 char -> 1-4 Latin chars typically, so 3x is better than 2x
+        let mut result = String::with_capacity(text.len() * 3);
         let mut byte_pos = 0;
         let chars: Vec<char> = text.chars().collect();
         let mut char_idx = 0;
