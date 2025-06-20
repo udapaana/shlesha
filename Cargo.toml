@@ -60,6 +60,10 @@ harness = false
 name = "comprehensive_comparison"
 harness = false
 
+[[bench]]
+name = "extensibility_performance_benchmark"
+harness = false
+
 
 [profile.release]
 lto = true

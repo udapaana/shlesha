@@ -17,6 +17,7 @@ benches/
 ├── README.md                           # This file
 ├── unified_benchmark_runner.py         # 🚀 Main orchestrator - run this!
 ├── comprehensive_rust_benchmark.rs     # 🦀 Rust vs Rust benchmarks
+├── extensibility_performance_benchmark.rs # 🔧 Runtime extensibility overhead
 ├── improved_python_benchmark.py        # 🐍 Python vs Python benchmarks  
 ├── improved_cli_benchmark.sh           # ⚡ CLI vs CLI benchmarks
 ├── improved_wasm_benchmark.html        # 🌐 WASM vs WASM benchmarks
@@ -43,6 +44,12 @@ python3 benches/unified_benchmark_runner.py --include-wasm
 ```bash
 # Rust benchmarks (requires Rust/Cargo)
 cargo bench --bench comprehensive_rust_benchmark
+
+# Runtime extensibility performance
+cargo bench --bench extensibility_performance_benchmark
+
+# Compare with Vidyut (if available)
+cargo bench --bench extensibility_performance_benchmark --features compare-vidyut
 
 # Python benchmarks
 python3 benches/improved_python_benchmark.py
