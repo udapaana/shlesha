@@ -29,6 +29,7 @@ These modules are under active development.
 | Module | Status | Notes |
 |--------|--------|-------|
 | Script implementations | 🚧 In Progress | 206/225 mappings remaining |
+| Runtime extensions | ✅ Stable | Custom script creation and registration |
 | Python bindings | 📋 Planned | PyO3 integration |
 | WASM bindings | 📋 Planned | wasm-bindgen |
 
@@ -64,6 +65,11 @@ src/
 - Centralizes script definitions
 - Manages bidirectional mappings
 - Handles reconstruction pathways
+
+**ExtensionManager**: Runtime extensibility system
+- Manages custom scripts and mappings
+- Provides builder pattern for script creation
+- Enables dynamic script registration without recompilation
 
 ### Processing Pipeline
 ```

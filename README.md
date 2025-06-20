@@ -302,6 +302,293 @@ println!("Original entropy: {:.2}", verification.entropy_analysis.original);
 println!("Total preserved: {:.2}", verification.entropy_analysis.total_preserved);
 ```
 
+## Runtime Extensibility
+
+Shlesha supports adding custom scripts and mappings at runtime without recompilation. This enables users to extend support for new writing systems, create custom romanization schemes, or add domain-specific transliterations.
+
+### Creating Custom Scripts
+
+```rust
+use shlesha::{CustomScriptBuilder, ExtendedTransliterator, FallbackStrategy};
+
+// Create a custom script for Ancient Greek
+let ancient_greek = CustomScriptBuilder::new("AncientGreek", 100)
+    // Basic character mappings
+    .add_mapping('α', "a")
+    .add_mapping('β', "b") 
+    .add_mapping('γ', "g")
+    .add_mapping('δ', "d")
+    .add_mapping('ε', "e")
+    .add_mapping('ζ', "z")
+    .add_mapping('η', "ē")
+    .add_mapping('θ', "th")
+    .add_mapping('ι', "i")
+    .add_mapping('κ', "k")
+    .add_mapping('λ', "l")
+    .add_mapping('μ', "m")
+    .add_mapping('ν', "n")
+    .add_mapping('ξ', "x")
+    .add_mapping('ο', "o")
+    .add_mapping('π', "p")
+    .add_mapping('ρ', "r")
+    .add_mapping('σ', "s")
+    .add_mapping('ς', "s")  // Final sigma
+    .add_mapping('τ', "t")
+    .add_mapping('υ', "y")
+    .add_mapping('φ', "ph")
+    .add_mapping('χ', "ch")
+    .add_mapping('ψ', "ps")
+    .add_mapping('ω', "ō")
+    // Pattern mappings for diphthongs
+    .add_pattern("αι", "ai")
+    .add_pattern("ει", "ei") 
+    .add_pattern("οι", "oi")
+    .add_pattern("αυ", "au")
+    .add_pattern("ευ", "eu")
+    .add_pattern("ου", "ou")
+    .with_fallback_strategy(FallbackStrategy::PreserveWithPhonetics)
+    .build();
+
+// Create extended transliterator and add the custom script
+let mut transliterator = ExtendedTransliterator::new();
+transliterator.add_custom_script(ancient_greek);
+
+// Now you can transliterate Ancient Greek (with custom fallback for unregistered mappings)
+let result = transliterator.transliterate("κόσμος", "AncientGreek", "IAST");
+```
+
+### Custom Romanization Schemes
+
+```rust
+use shlesha::{CustomScriptBuilder, ExtendedTransliterator};
+
+// Create a custom romanization for Devanagari (simplified ASCII-only)
+let ascii_roman = CustomScriptBuilder::new("ASCII_Roman", 101)
+    // Simple consonants 
+    .add_mappings(&[
+        ('क', "ka"), ('ख', "kha"), ('ग', "ga"), ('घ', "gha"), ('ङ', "nga"),
+        ('च', "cha"), ('छ', "chha"), ('ज', "ja"), ('झ', "jha"), ('ञ', "nja"),
+        ('ट', "ta"), ('ठ', "tha"), ('ड', "da"), ('ढ', "dha"), ('ण', "na"),
+        ('त', "ta"), ('थ', "tha"), ('द', "da"), ('ध', "dha"), ('न', "na"),
+        ('प', "pa"), ('फ', "pha"), ('ब', "ba"), ('भ', "bha"), ('म', "ma"),
+        ('य', "ya"), ('र', "ra"), ('ल', "la"), ('व', "va"),
+        ('श', "sha"), ('ष', "shha"), ('स', "sa"), ('ह', "ha"),
+    ])
+    // Vowels
+    .add_mappings(&[
+        ('अ', "a"), ('आ', "aa"), ('इ', "i"), ('ई', "ii"),
+        ('उ', "u"), ('ऊ', "uu"), ('ए', "e"), ('ओ', "o"),
+        ('ा', "aa"), ('ि', "i"), ('ी', "ii"), ('ु', "u"), ('ू', "uu"),
+        ('े', "e"), ('ै', "ai"), ('ो', "o"), ('ौ', "au"),
+    ])
+    // Special characters
+    .add_mappings(&[
+        ('ं', "n"), ('ः', "h"), ('्', ""),
+        ('।', "."), ('॥', ".."),
+    ])
+    // Complex patterns
+    .add_patterns(&[
+        ("क्ष", "ksha"),
+        ("ज्ञ", "gnja"), 
+        ("त्र", "tra"),
+        ("श्र", "shra"),
+    ])
+    .build();
+
+let mut transliterator = ExtendedTransliterator::new();
+transliterator.add_custom_script(ascii_roman);
+```
+
+### Domain-Specific Extensions
+
+```rust
+use shlesha::{CustomScriptBuilder, CustomMapping, ExtendedTransliterator};
+
+// Create a custom script for mathematical notation
+let math_notation = CustomScriptBuilder::new("MathNotation", 102)
+    .add_mappings(&[
+        ('α', "alpha"), ('β', "beta"), ('γ', "gamma"), ('δ', "delta"),
+        ('ε', "epsilon"), ('ζ', "zeta"), ('η', "eta"), ('θ', "theta"),
+        ('λ', "lambda"), ('μ', "mu"), ('π', "pi"), ('σ', "sigma"),
+        ('τ', "tau"), ('φ', "phi"), ('χ', "chi"), ('ψ', "psi"), ('ω', "omega"),
+    ])
+    .add_patterns(&[
+        ("∞", "infinity"),
+        ("∑", "sum"),
+        ("∏", "product"), 
+        ("∫", "integral"),
+        ("∂", "partial"),
+        ("∇", "nabla"),
+        ("∆", "delta"),
+    ])
+    .build();
+
+// Create custom mapping between math notation and LaTeX
+let math_to_latex = CustomMapping {
+    from_script: 102, // MathNotation
+    to_script: 103,   // LaTeX
+    char_mappings: [
+        ('α', "\\alpha".to_string()),
+        ('β', "\\beta".to_string()),
+        ('γ', "\\gamma".to_string()),
+        ('∞', "\\infty".to_string()),
+        ('∑', "\\sum".to_string()),
+        ('∫', "\\int".to_string()),
+    ].iter().cloned().collect(),
+    pattern_mappings: vec![
+        ("∑_{i=1}^{n}".to_string(), "\\sum_{i=1}^{n}".to_string()),
+        ("∫_{a}^{b}".to_string(), "\\int_{a}^{b}".to_string()),
+    ],
+    fallback_strategy: FallbackStrategy::Preserve,
+};
+
+let mut transliterator = ExtendedTransliterator::new();
+transliterator.add_custom_script(math_notation);
+transliterator.add_custom_mapping(math_to_latex);
+```
+
+### Linguistic Research Extensions
+
+```rust
+use shlesha::{CustomScriptBuilder, ExtendedTransliterator, FallbackStrategy};
+
+// Create a custom script for Old Church Slavonic
+let old_church_slavonic = CustomScriptBuilder::new("OldChurchSlavonic", 104)
+    .add_mappings(&[
+        ('а', "a"), ('б', "b"), ('в', "v"), ('г', "g"), ('д', "d"),
+        ('е', "e"), ('ж', "ž"), ('з', "z"), ('и', "i"), ('і', "i"),
+        ('к', "k"), ('л', "l"), ('м', "m"), ('н', "n"), ('о', "o"),
+        ('п', "p"), ('р', "r"), ('с', "s"), ('т', "t"), ('у', "u"),
+        ('ф', "f"), ('х', "x"), ('ц', "c"), ('ч', "č"), ('ш', "š"),
+        ('щ', "šč"), ('ъ', "ъ"), ('ы', "y"), ('ь', "ь"), ('ѣ', "ě"),
+        ('ю', "ju"), ('я', "ja"), ('ѧ', "ę"), ('ѩ', "ję"), ('ѫ', "ǫ"),
+        ('ѭ', "jǫ"), ('ѯ', "ks"), ('ѱ', "ps"), ('ѳ', "th"), ('ѵ', "ü"),
+    ])
+    .add_patterns(&[
+        ("оу", "u"),    // Digraph ou = u
+        ("ць", "c'"),   // Palatalized c
+        ("дь", "d'"),   // Palatalized d  
+        ("ль", "l'"),   // Palatalized l
+        ("нь", "n'"),   // Palatalized n
+        ("рь", "r'"),   // Palatalized r
+        ("сь", "s'"),   // Palatalized s
+        ("ть", "t'"),   // Palatalized t
+    ])
+    .with_fallback_strategy(FallbackStrategy::PreserveWithContext)
+    .build();
+
+let mut transliterator = ExtendedTransliterator::new();
+transliterator.add_custom_script(old_church_slavonic);
+
+// Transliterate Old Church Slavonic to modern romanization
+let result = transliterator.transliterate("блажени миротворьци", "OldChurchSlavonic", "IAST");
+```
+
+### Loading Scripts from Configuration
+
+```rust
+use shlesha::{CustomScriptBuilder, ExtendedTransliterator};
+use std::collections::HashMap;
+
+// Example: Load script mappings from JSON/YAML configuration
+fn load_script_from_config(config: &str) -> Result<CustomScript, Box<dyn std::error::Error>> {
+    // Parse configuration (JSON/YAML/TOML)
+    let config_data: HashMap<String, serde_json::Value> = serde_json::from_str(config)?;
+    
+    let script_name = config_data["script_name"].as_str().unwrap();
+    let script_id = config_data["script_id"].as_u64().unwrap() as u8;
+    
+    let mut builder = CustomScriptBuilder::new(script_name, script_id);
+    
+    // Load character mappings
+    if let Some(chars) = config_data["characters"].as_object() {
+        for (from, to) in chars {
+            if let (Some(from_char), Some(to_str)) = (from.chars().next(), to.as_str()) {
+                builder = builder.add_mapping(from_char, to_str);
+            }
+        }
+    }
+    
+    // Load pattern mappings
+    if let Some(patterns) = config_data["patterns"].as_object() {
+        for (from, to) in patterns {
+            if let Some(to_str) = to.as_str() {
+                builder = builder.add_pattern(from, to_str);
+            }
+        }
+    }
+    
+    Ok(builder.build())
+}
+
+// Usage
+let config = r#"{
+    "script_name": "CustomScript",
+    "script_id": 200,
+    "characters": {
+        "α": "a",
+        "β": "b",
+        "γ": "g"
+    },
+    "patterns": {
+        "αβ": "ab",
+        "γδ": "gd"
+    }
+}"#;
+
+let custom_script = load_script_from_config(config).unwrap();
+let mut transliterator = ExtendedTransliterator::new();
+transliterator.add_custom_script(custom_script);
+```
+
+### Extension Management
+
+```rust
+use shlesha::{ExtendedTransliterator, ExtensionManager};
+
+let mut transliterator = ExtendedTransliterator::new();
+
+// Access the extension manager for advanced operations
+let extensions = transliterator.extensions();
+
+// List all custom scripts
+for (script_id, script_name) in extensions.list_custom_scripts() {
+    println!("Custom script {}: {}", script_id, script_name);
+}
+
+// Check if a specific mapping exists
+if extensions.has_custom_mapping(100, 101) {
+    println!("Custom mapping exists between scripts 100 and 101");
+}
+
+// Get a specific custom script
+if let Some(script) = extensions.get_script(100) {
+    println!("Found custom script: {}", script.script_name);
+    
+    // Test character lookup
+    if let Some(result) = script.lookup_char('α') {
+        println!("α maps to: {}", result);
+    }
+}
+```
+
+### Runtime Extension Best Practices
+
+1. **Script ID Management**: Use IDs 100+ for custom scripts to avoid conflicts with built-in scripts (1-99)
+
+2. **Unicode Sorting**: Custom mappings are automatically sorted by Unicode value for efficient binary search
+
+3. **Pattern Precedence**: Longer patterns are matched first (automatic sorting by length)
+
+4. **Fallback Strategies**: Choose appropriate fallback for your use case:
+   - `Preserve`: Simple token preservation
+   - `PreserveWithPhonetics`: Add phonetic hints for unknown characters
+   - `PreserveWithContext`: Include surrounding context for better reconstruction
+
+5. **Performance**: Runtime extensions use the same optimized lookup algorithms as built-in scripts
+
+6. **Memory Management**: Custom scripts are stored in owned memory (not static), allowing full runtime flexibility
+
 ## Development
 
 ### Building

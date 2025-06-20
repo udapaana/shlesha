@@ -39,6 +39,7 @@
 // Core lossless transliteration system
 pub mod lossless_transliterator;
 pub mod script_mappings;
+pub mod runtime_extension;
 
 // Language bindings
 #[cfg(feature = "python")]
@@ -52,6 +53,10 @@ pub use lossless_transliterator::{
     LosslessMapper, ScriptRegistry, FallbackStrategy,
     TokenReconstructionInfo, ReconstructionMethod, EntropyAnalysis, VerificationMethod,
     DEVANAGARI_TO_IAST_SIMPLE, DEVANAGARI_TO_IAST
+};
+
+pub use runtime_extension::{
+    CustomScriptBuilder, CustomScript, CustomMapping, ExtensionManager, ExtendedTransliterator
 };
 
 /// Library version information
