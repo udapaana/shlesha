@@ -1,0 +1,11 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 73f449aff4e56d9687d8bac61755c10ad722aa5ca91792f9f71d822f6e86e18b # shrinks to test_chars = ['A']
+cc 6201044d5c7e1f6d674cd543d1b1db5c284bfa47c38dded4a68e6b9bfef09e3f # shrinks to text = "फबपलक"
+cc 1cf9fd3f8c0a42f454d1e26198de1615d3385e8b139f62baacc9e2091793de60 # shrinks to text = "ध।\u{2000}\u{205f}लपद"
+cc 1ecccfcbba42aa7238171a0dd8d354dee16c7c6ddef8c8c1176798aeb23f87f8 # shrinks to base_text = "कगखघ", repetitions = 1
+cc 00c8e0850b4cd2f085b2a7ec2ec6db10f5e7fb018c6ed0a6f47c8addd185429e # shrinks to text = "व।\u{205f}पशण"

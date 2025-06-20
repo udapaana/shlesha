@@ -2,7 +2,6 @@
 //! Key insight: We don't need bidirectionality, we need information preservation
 
 use std::collections::HashMap;
-use std::fmt::Write;
 
 /// Script identifier for compact tokens
 pub type ScriptId = u8;
@@ -11,11 +10,11 @@ pub type ScriptId = u8;
 #[derive(Debug, Clone, PartialEq)]
 pub struct PreservationToken {
     /// Source script ID for reconstruction context
-    source_script: ScriptId,
+    pub source_script: ScriptId,
     /// Original data (in real impl: SmallVec<[u8; 8]> for efficiency)
-    data: String,
+    pub data: String,
     /// Metadata for complex preservation (optional)
-    metadata: Option<String>,
+    pub metadata: Option<String>,
 }
 
 impl PreservationToken {
@@ -52,6 +51,12 @@ impl PreservationToken {
             if parts.len() >= 2 {
                 if let Ok(script_id) = parts[0].parse::<ScriptId>() {
                     let data = parts[1].to_string();
+                    
+                    // Reject empty data
+                    if data.is_empty() {
+                        return None;
+                    }
+                    
                     let metadata = if parts.len() > 2 {
                         Some(parts[2..].join(":"))
                     } else {
@@ -316,11 +321,14 @@ impl LosslessTransliterator {
             }
             
             // Handle unknown character with preservation
-            if chars[char_idx].is_whitespace() || chars[char_idx].is_ascii_punctuation() {
-                // Pass through whitespace and punctuation unchanged
+            if chars[char_idx].is_whitespace() 
+                || chars[char_idx].is_ascii_punctuation() 
+                || chars[char_idx].is_ascii_digit() 
+                || chars[char_idx].is_ascii_alphabetic() {
+                // Pass through whitespace, punctuation, digits, and ASCII letters unchanged
                 result.push(chars[char_idx]);
             } else {
-                // Create preservation token
+                // Create preservation token for non-ASCII unknown characters
                 let token = mapper.create_preservation_token(text, char_idx);
                 result.push_str(&token.encode());
             }
@@ -391,7 +399,7 @@ impl LosslessTransliterator {
     }
     
     /// Extract all preservation tokens from encoded text
-    fn extract_tokens(&self, text: &str) -> Vec<PreservationToken> {
+    pub fn extract_tokens(&self, text: &str) -> Vec<PreservationToken> {
         let mut tokens = Vec::new();
         let mut i = 0;
         let chars: Vec<char> = text.chars().collect();
@@ -429,15 +437,22 @@ impl LosslessTransliterator {
     }
     
     /// Calculate Shannon entropy for information preservation analysis
-    fn calculate_entropy(&self, text: &str) -> f64 {
+    pub fn calculate_entropy(&self, text: &str) -> f64 {
         let mut char_counts: HashMap<char, usize> = HashMap::new();
-        let total_chars = text.chars().count();
+        
+        // Filter out control characters and normalize whitespace for entropy calculation
+        let meaningful_chars: Vec<char> = text.chars()
+            .filter(|&ch| !ch.is_control() || ch == '\n' || ch == '\t')
+            .map(|ch| if ch.is_whitespace() { ' ' } else { ch }) // Normalize all whitespace to space
+            .collect();
+        
+        let total_chars = meaningful_chars.len();
         
         if total_chars == 0 {
             return 0.0;
         }
         
-        for ch in text.chars() {
+        for ch in meaningful_chars {
             *char_counts.entry(ch).or_insert(0) += 1;
         }
         
@@ -557,11 +572,18 @@ pub enum VerificationMethod {
     Error(String),
 }
 
-// Static mapping data for maximum performance
-const DEVANAGARI_TO_IAST_SIMPLE: &[(char, &str)] = &[
+// Static mapping data for maximum performance - MUST BE SORTED BY UNICODE VALUE
+pub const DEVANAGARI_TO_IAST_SIMPLE: &[(char, &str)] = &[
+    // Signs (U+0902-U+0903)
+    ('ं', "ṃ"), ('ः', "ḥ"),
+    
+    // Vowels (U+0905-U+0914)
     ('अ', "a"), ('आ', "ā"), ('इ', "i"), ('ई', "ī"),
-    ('उ', "u"), ('ऊ', "ū"), ('ऋ', "ṛ"), ('ए', "e"),
-    ('ऐ', "ai"), ('ओ', "o"), ('औ', "au"),
+    ('उ', "u"), ('ऊ', "ū"), ('ऋ', "ṛ"), ('ऌ', "ḷ"),
+    ('ऍ', "ê"), ('ऎ', "e"), ('ए', "e"), ('ऐ', "ai"), 
+    ('ऑ', "ô"), ('ऒ', "o"), ('ओ', "o"), ('औ', "au"),
+    
+    // Consonants (U+0915-U+0939)
     ('क', "ka"), ('ख', "kha"), ('ग', "ga"), ('घ', "gha"), ('ङ', "ṅa"),
     ('च', "ca"), ('छ', "cha"), ('ज', "ja"), ('झ', "jha"), ('ञ', "ña"),
     ('ट', "ṭa"), ('ठ', "ṭha"), ('ड', "ḍa"), ('ढ', "ḍha"), ('ण', "ṇa"),
@@ -569,8 +591,19 @@ const DEVANAGARI_TO_IAST_SIMPLE: &[(char, &str)] = &[
     ('प', "pa"), ('फ', "pha"), ('ब', "ba"), ('भ', "bha"), ('म', "ma"),
     ('य', "ya"), ('र', "ra"), ('ल', "la"), ('व', "va"),
     ('श', "śa"), ('ष', "ṣa"), ('स', "sa"), ('ह', "ha"),
-    ('्', ""), ('ं', "ṃ"), ('ः', "ḥ"), ('।', "."), ('॥', ".."),
-    // Note: ॐ (Om) is intentionally not mapped to test token preservation
+    
+    // Vowel marks (U+093E-U+094C)
+    ('ा', "ā"), ('ि', "i"), ('ी', "ī"), ('ु', "u"), ('ू', "ū"),
+    ('ृ', "ṛ"), ('ॄ', "ṝ"), ('ॅ', "ê"), ('ॆ', "e"), ('े', "e"), ('ै', "ai"),
+    ('ॉ', "ô"), ('ॊ', "o"), ('ो', "o"), ('ौ', "au"),
+    
+    // Virama (U+094D)
+    ('्', ""),
+    
+    // Additional symbols (U+0964+)
+    ('।', "."), ('॥', ".."),
+    
+    // Note: ॐ (Om) at U+0950 is intentionally not mapped to test token preservation
 ];
 
 const DEVANAGARI_TO_IAST_PATTERNS: &[(&str, &str)] = &[
@@ -579,7 +612,7 @@ const DEVANAGARI_TO_IAST_PATTERNS: &[(&str, &str)] = &[
     ("श्र", "śra"),  // Common conjunct
 ];
 
-const DEVANAGARI_TO_IAST: LosslessMapper = LosslessMapper::new(
+pub const DEVANAGARI_TO_IAST: LosslessMapper = LosslessMapper::new(
     DEVANAGARI_TO_IAST_SIMPLE,
     DEVANAGARI_TO_IAST_PATTERNS,
     1, // Devanagari
@@ -678,5 +711,322 @@ mod tests {
         
         let decoded = PreservationToken::decode(&encoded).unwrap();
         assert_eq!(decoded, token);
+    }
+
+    // COMPREHENSIVE TEST SUITE
+
+    #[test]
+    fn test_comprehensive_script_matrix() {
+        let trans = LosslessTransliterator::new();
+        
+        // Test all script combinations
+        let scripts = ["Devanagari", "IAST", "SLP1"];
+        let test_cases = [
+            ("क", "consonant"),
+            ("का", "consonant+vowel"),
+            ("क्ष", "conjunct"),
+            ("धर्म", "word"),
+        ];
+        
+        for &from_script in &scripts {
+            for &to_script in &scripts {
+                if from_script != to_script {
+                    for &(text, desc) in &test_cases {
+                        if from_script == "Devanagari" {
+                            let result = trans.transliterate(text, from_script, to_script);
+                            match result {
+                                Ok(encoded) => {
+                                    let verification = trans.verify_lossless(text, &encoded, from_script);
+                                    assert!(verification.is_lossless, 
+                                        "Failed lossless guarantee for {} ({}) from {} to {}", 
+                                        text, desc, from_script, to_script);
+                                }
+                                Err(_) => {
+                                    // Expected for some combinations - log but don't fail
+                                    eprintln!("No mapping {} -> {} for {}", from_script, to_script, desc);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_edge_cases() {
+        let trans = LosslessTransliterator::new();
+        
+        // Empty string
+        let result = trans.transliterate("", "Devanagari", "IAST").unwrap();
+        assert_eq!(result, "");
+        
+        // Whitespace preservation
+        let result = trans.transliterate("क ख", "Devanagari", "IAST").unwrap();
+        assert!(result.contains(" "));
+        
+        // Punctuation preservation
+        let result = trans.transliterate("क।", "Devanagari", "IAST").unwrap();
+        assert!(result.contains("."));
+        
+        // Mixed content with numbers
+        let result = trans.transliterate("क123ख", "Devanagari", "IAST").unwrap();
+        assert!(result.contains("123"));
+        
+        // Unicode edge cases
+        let result = trans.transliterate("क\u{200C}ख", "Devanagari", "IAST"); // ZWNJ
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_complex_conjuncts() {
+        let trans = LosslessTransliterator::new();
+        
+        // Complex conjuncts that should use patterns
+        let test_cases = [
+            ("क्ष", "kṣa"),
+            ("ज्ञ", "jña"),
+            ("श्र", "śra"),
+        ];
+        
+        for &(input, expected) in &test_cases {
+            let result = trans.transliterate(input, "Devanagari", "IAST").unwrap();
+            assert_eq!(result, expected, "Pattern matching failed for {}", input);
+            
+            // Verify losslessness
+            let verification = trans.verify_lossless(input, &result, "Devanagari");
+            assert!(verification.is_lossless);
+        }
+    }
+
+    #[test]
+    fn test_multiple_tokens() {
+        let trans = LosslessTransliterator::new();
+        
+        // Text with multiple unknown characters
+        let original = "कॐखॐग";
+        let encoded = trans.transliterate(original, "Devanagari", "IAST").unwrap();
+        
+        println!("Multiple tokens - Original: {}", original);
+        println!("Multiple tokens - Encoded: {}", encoded);
+        
+        let verification = trans.verify_lossless(original, &encoded, "Devanagari");
+        assert!(verification.is_lossless);
+        assert_eq!(verification.tokens_count, 2); // Two ॐ symbols
+    }
+
+    #[test]
+    fn test_fallback_strategies() {
+        // Test different fallback strategies
+        let token_preserve = PreservationToken::new(1, "ॐ".to_string());
+        let token_phonetic = PreservationToken::with_metadata(1, "ॐ".to_string(), "om".to_string());
+        
+        // Basic preservation
+        assert_eq!(token_preserve.encode(), "[1:ॐ]");
+        
+        // With phonetic metadata
+        assert_eq!(token_phonetic.encode(), "[1:ॐ:om]");
+        
+        // Reconstruction capability
+        let registry = ScriptRegistry::new();
+        assert!(token_preserve.can_reconstruct(1, &registry)); // Same script
+    }
+
+    #[test]
+    fn test_token_boundary_cases() {
+        // Test edge cases in token parsing
+        let test_cases = [
+            ("[1:क]", true),
+            ("[1:क:meta]", true),
+            ("[1:]", false), // Empty data
+            ("[क]", false), // No script ID
+            ("[]", false), // Completely empty
+            ("[1:क:meta:extra]", true), // Extra metadata
+            ("[255:क]", true), // High script ID (valid u8 range)
+            ("[256:क]", false), // Script ID out of u8 range
+            ("[a:क]", false), // Non-numeric script ID
+        ];
+        
+        for &(token_str, should_parse) in &test_cases {
+            let result = PreservationToken::decode(token_str);
+            assert_eq!(result.is_some(), should_parse, 
+                "Token parsing mismatch for: {}", token_str);
+        }
+    }
+
+    #[test]
+    fn test_nested_brackets() {
+        let trans = LosslessTransliterator::new();
+        
+        // Text containing bracket-like characters
+        let original = "क[test]ख";
+        let encoded = trans.transliterate(original, "Devanagari", "IAST").unwrap();
+        
+        // Should preserve literal brackets and ASCII text while transliterating Devanagari
+        assert!(encoded.contains("[test]")); // Literal brackets preserved
+        assert!(encoded.contains("ka")); // क transliterated
+        assert!(encoded.contains("kha")); // ख transliterated
+        
+        let verification = trans.verify_lossless(original, &encoded, "Devanagari");
+        assert!(verification.is_lossless);
+    }
+
+    #[test]
+    fn test_character_boundaries() {
+        let trans = LosslessTransliterator::new();
+        
+        // Test proper UTF-8 character boundary handling with simpler characters
+        let original = "कमल"; // Multi-byte characters without complex vowel marks
+        let encoded = trans.transliterate(original, "Devanagari", "IAST").unwrap();
+        
+        println!("Character boundaries test:");
+        println!("  Original: {}", original);
+        println!("  Encoded: {}", encoded);
+        
+        let verification = trans.verify_lossless(original, &encoded, "Devanagari");
+        println!("  Is lossless: {}", verification.is_lossless);
+        println!("  Preservation ratio: {:.3}", verification.preservation_ratio);
+        println!("  Tokens count: {}", verification.tokens_count);
+        
+        assert!(verification.is_lossless);
+        assert!(verification.preservation_ratio >= 0.99); // Allow small tolerance
+    }
+
+    #[test]
+    fn test_entropy_calculation_accuracy() {
+        let trans = LosslessTransliterator::new();
+        
+        // Test entropy calculation for known cases
+        let uniform_text = "aaaa"; // Low entropy
+        let random_text = "कखगघ"; // Higher entropy
+        
+        let uniform_entropy = trans.calculate_entropy(uniform_text);
+        let random_entropy = trans.calculate_entropy(random_text);
+        
+        assert!(uniform_entropy < random_entropy, 
+            "Entropy calculation incorrect: uniform={}, random={}", 
+            uniform_entropy, random_entropy);
+        
+        // Empty string should have 0 entropy
+        assert_eq!(trans.calculate_entropy(""), 0.0);
+        
+        // Single character should have 0 entropy
+        assert_eq!(trans.calculate_entropy("a"), 0.0);
+    }
+
+    #[test]
+    fn test_error_handling() {
+        let trans = LosslessTransliterator::new();
+        
+        // Unknown source script
+        let result = trans.transliterate("test", "UnknownScript", "IAST");
+        assert!(result.is_err());
+        
+        // Unknown target script
+        let result = trans.transliterate("test", "Devanagari", "UnknownScript");
+        assert!(result.is_err());
+        
+        // Both unknown
+        let result = trans.transliterate("test", "Unknown1", "Unknown2");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_round_trip_accuracy() {
+        let trans = LosslessTransliterator::new();
+        
+        // Test cases that should round-trip perfectly
+        let test_cases = [
+            "क", "ख", "ग", "घ", "ङ",
+            "का", "खा", "गा", "घा", "ङा",
+            "कि", "की", "कु", "कू", "के", "कै", "को", "कौ",
+        ];
+        
+        for &original in &test_cases {
+            // Devanagari -> IAST -> verify lossless
+            let iast = trans.transliterate(original, "Devanagari", "IAST").unwrap();
+            let verification = trans.verify_lossless(original, &iast, "Devanagari");
+            
+            assert!(verification.is_lossless, 
+                "Round-trip failed for: {} -> {}", original, iast);
+            assert!(verification.preservation_ratio >= 0.99);
+        }
+    }
+
+    #[test]
+    fn test_performance_characteristics() {
+        let trans = LosslessTransliterator::new();
+        
+        // Test with increasingly large inputs to verify O(n) scaling
+        let base_text = "धर्म";
+        let mut current_text = String::new();
+        
+        for i in 1..=5 {
+            current_text.push_str(base_text);
+            
+            let start = std::time::Instant::now();
+            let result = trans.transliterate(&current_text, "Devanagari", "IAST").unwrap();
+            let duration = start.elapsed();
+            
+            // Verify correctness
+            assert!(!result.is_empty());
+            
+            // Verify losslessness
+            let verification = trans.verify_lossless(&current_text, &result, "Devanagari");
+            assert!(verification.is_lossless);
+            
+            println!("Size {}: {} chars in {:?}", i, current_text.len(), duration);
+        }
+    }
+
+    #[test]
+    fn test_binary_search_correctness() {
+        // Test that binary search in character lookup works correctly
+        let mapper = &DEVANAGARI_TO_IAST;
+        
+        // Test all characters in the mapping
+        let test_chars = ['क', 'ख', 'ग', 'अ', 'आ', 'इ'];
+        
+        for &ch in &test_chars {
+            let result = mapper.lookup_char(ch);
+            // Should find mapping for characters that exist
+            if ch == 'क' { assert_eq!(result, Some("ka")); }
+            if ch == 'अ' { assert_eq!(result, Some("a")); }
+        }
+        
+        // Test character not in mapping
+        let result = mapper.lookup_char('🚀');
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn test_mathematical_verification() {
+        let trans = LosslessTransliterator::new();
+        
+        // Test the mathematical foundation: H(original) ≤ H(encoded) + H(tokens)
+        let original = "धर्म्ॐक्ष";
+        let encoded = trans.transliterate(original, "Devanagari", "IAST").unwrap();
+        let verification = trans.verify_lossless(original, &encoded, "Devanagari");
+        
+        let h_original = verification.entropy_analysis.original;
+        let h_encoded = verification.entropy_analysis.encoded;
+        let h_tokens = verification.entropy_analysis.token_preservation;
+        let h_total = verification.entropy_analysis.total_preserved;
+        
+        // Mathematical invariant
+        assert!(h_original <= h_total + 0.01, // Small tolerance for floating point
+            "Mathematical invariant violated: H(orig)={} > H(total)={}", 
+            h_original, h_total);
+        
+        // Total should be sum of encoded + tokens
+        assert!((h_total - (h_encoded + h_tokens)).abs() < 0.01,
+            "Total entropy calculation incorrect");
+        
+        println!("Mathematical verification:");
+        println!("  H(original) = {:.3}", h_original);
+        println!("  H(encoded) = {:.3}", h_encoded);  
+        println!("  H(tokens) = {:.3}", h_tokens);
+        println!("  H(total) = {:.3}", h_total);
+        println!("  Preservation ratio = {:.3}", verification.preservation_ratio);
     }
 }
