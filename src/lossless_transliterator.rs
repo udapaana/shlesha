@@ -299,23 +299,28 @@ impl LosslessTransliterator {
         let mut char_idx = 0;
         
         while char_idx < chars.len() {
-            // Try pattern matching first (multi-character sequences)
-            if let Some((replacement, chars_consumed)) = mapper.lookup_pattern(text, byte_pos) {
-                result.push_str(replacement);
-                // Advance both byte position and character index
-                for _ in 0..chars_consumed {
-                    if char_idx < chars.len() {
-                        byte_pos += chars[char_idx].len_utf8();
-                        char_idx += 1;
+            let ch = chars[char_idx];
+            
+            // Fast path: Try pattern matching only for potential conjunct starters
+            // For Devanagari: क, ज, त, श, द, स, न, ल are conjunct starters
+            if matches!(ch, 'क' | 'ज' | 'त' | 'श' | 'द' | 'स' | 'न' | 'ल') {
+                if let Some((replacement, chars_consumed)) = mapper.lookup_pattern(text, byte_pos) {
+                    result.push_str(replacement);
+                    // Advance both byte position and character index
+                    for _ in 0..chars_consumed {
+                        if char_idx < chars.len() {
+                            byte_pos += chars[char_idx].len_utf8();
+                            char_idx += 1;
+                        }
                     }
+                    continue;
                 }
-                continue;
             }
             
             // Try single character mapping
-            if let Some(replacement) = mapper.lookup_char(chars[char_idx]) {
+            if let Some(replacement) = mapper.lookup_char(ch) {
                 result.push_str(replacement);
-                byte_pos += chars[char_idx].len_utf8();
+                byte_pos += ch.len_utf8();
                 char_idx += 1;
                 continue;
             }
