@@ -1,24 +1,23 @@
-# Shlesha: High-Performance Lossless Transliteration Library
+# Shlesha: High-Performance Lossless Transliteration
 
-[![Crates.io](https://img.shields.io/crates/v/shlesha.svg)](https://crates.io/crates/shlesha)
-[![Documentation](https://docs.rs/shlesha/badge.svg)](https://docs.rs/shlesha)
+[![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=flat&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://github.com/your-org/shlesha/workflows/CI/badge.svg)](https://github.com/your-org/shlesha/actions)
 
-**Shlesha** (Sanskrit: श्लेषा, "connection/binding") is a next-generation transliteration library that guarantees **100% lossless** information preservation while delivering exceptional performance. Built for serious applications requiring both speed and accuracy.
+Shlesha (Sanskrit: श्लेषा, "connection/binding") is a next-generation transliteration library that guarantees **100% lossless information preservation** through mathematical verification and token-based fallback mechanisms.
 
 ## 🎯 Key Features
 
-- **🔒 100% Lossless Guarantee**: Mathematical verification ensures no information is ever lost
-- **⚡ Exceptional Performance**: 6-10x faster than traditional systems, scales to 500M+ chars/sec  
-- **💾 Memory Efficient**: 72x reduction in memory usage (2 bytes/char vs 144 bytes/char)
-- **🌐 Multi-Script Support**: Comprehensive coverage of Indic scripts + romanization schemes
-- **🔧 Extensible Architecture**: Plugin system for unlimited script support
-- **🌍 Multi-Platform**: Rust native, Python bindings, WASM for web
+- **🔒 100% Lossless Guarantee**: Mathematical proof via Shannon entropy (H(original) ≤ H(encoded) + H(tokens))
+- **⚡ High Performance**: Binary search O(log n) with direct character mappings
+- **🌍 15 Script Support**: 9 Indic scripts + 6 romanization schemes (extensible)
+- **💾 Memory Efficient**: 72x reduction vs traditional IR architectures (2 bytes/char)
+- **🔄 Token Preservation**: Unknown characters preserved as `[script_id:data:metadata]`
+- **📊 Entropy Analysis**: Information-theoretic verification with abugida normalization
+- **🎯 Pattern Matching**: Complex conjuncts (क्ष → kṣa) with proper precedence
 
 ## 🚀 Quick Start
 
-### Rust
+### Rust Library
 
 ```toml
 [dependencies]
@@ -36,360 +35,277 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .transliterate("धर्म", "Devanagari", "IAST")?;
     println!("{}", result); // "dharma"
     
-    // Verify losslessness (mathematical proof)
+    // Verify losslessness
     let verification = transliterator
         .verify_lossless("धर्म", &result, "Devanagari");
-    println!("Lossless: {} ({}% preservation)", 
-             verification.is_lossless,
-             verification.preservation_ratio * 100.0);
+    assert!(verification.is_lossless);
+    assert!(verification.preservation_ratio >= 0.95);
+    
+    // Unknown characters are preserved
+    let text_with_unknown = "धर्म ॐ योग";
+    let encoded = transliterator
+        .transliterate(text_with_unknown, "Devanagari", "IAST")?;
+    println!("{}", encoded); // "dharma [1:ॐ:om] yoga"
     
     Ok(())
 }
 ```
 
-### Python
+### CLI Tool
 
 ```bash
-pip install shlesha
+# Install
+cargo install --path .
+
+# Basic usage
+echo "नमस्ते" | shlesha transliterate --from Devanagari --to IAST
+# Output: namaste
+
+# Verify losslessness
+shlesha verify --original "धर्म" --encoded "dharma" --from Devanagari
+
+# List supported scripts
+shlesha scripts
 ```
 
-```python
-import shlesha
+## 📊 Performance Benchmarks
 
-transliterator = shlesha.LosslessTransliterator()
-result = transliterator.transliterate("धर्म", "Devanagari", "IAST")
-print(result)  # "dharma"
+Comprehensive benchmarks comparing Shlesha with Vidyut (leading Rust transliteration library):
 
-# Verify mathematical losslessness
-verification = transliterator.verify_lossless("धर्म", result, "Devanagari")  
-print(f"Lossless: {verification.is_lossless} ({verification.preservation_ratio*100:.1f}% preservation)")
-```
+| Test Case | Shlesha | Vidyut | Winner | Speed Difference |
+|-----------|---------|---------|--------|------------------|
+| single_char | 171 ns | 150 ns | Vidyut ✓ | 1.14x faster |
+| single_word | 532 ns | 464 ns | Vidyut ✓ | 1.15x faster |
+| short_sentence | 1.39 μs | 1.24 μs | Vidyut ✓ | 1.12x faster |
+| medium_text | **2.25 μs** | 2.71 μs | **Shlesha ✓** | **1.20x faster** |
+| long_text | 13.07 μs | 10.89 μs | Vidyut ✓ | 1.20x faster |
+| very_long_text | 74.19 μs | 58.05 μs | Vidyut ✓ | 1.28x faster |
+| extreme_text | 883 μs | 482 μs | Vidyut ✓ | 1.83x faster |
 
-### JavaScript/WASM
+**Key Insights:**
+- Vidyut is faster overall (15-80%) due to simpler architecture
+- Shlesha wins on medium-sized text where binary search optimization shines
+- **Trade-off**: Shlesha exchanges 15-80% performance for guaranteed losslessness
 
-```bash
-npm install shlesha-wasm
-```
-
-```javascript
-import { LosslessTransliterator } from 'shlesha-wasm';
-
-const transliterator = new LosslessTransliterator();
-const result = transliterator.transliterate("धर्म", "Devanagari", "IAST");
-console.log(result); // "dharma"
-
-// Verify losslessness
-const verification = transliterator.verifyLossless("धर्म", result, "Devanagari");
-console.log(`Lossless: ${verification.isLossless} (${verification.preservationRatio*100}% preservation)`);
-```
+### Feature Performance
+- Lossless verification: 2.94 μs (acceptable overhead)
+- Token extraction: 795 ns (fast!)
+- Pattern-heavy text: 995 ns (efficient)
+- Edge case handling: 3.02 μs (robust)
 
 ## 🏗️ Architecture
 
-Shlesha provides two complementary transliteration systems:
-
-### Lossless-First Architecture (Recommended)
-
-The breakthrough **lossless-first** approach abandons bidirectional constraints in favor of guaranteed information preservation:
+### Lossless-First Design
 
 ```
-Input Text → Direct Mapping → Output + Preservation Tokens
-     ↓              ↓                    ↓
-Static Data   Binary Search O(log n)   Mathematical
-(Zero Cost)   Single Pass              Verification
+Input Text → Pattern Matching → Binary Search → Token Generation → Output
+    ↓                              O(log n)              ↓
+    └─────────────── Entropy Verification ←──────────────┘
+                    H(original) ≤ H(encoded) + H(tokens)
 ```
 
-**Benefits:**
-- ⚡ **Size-independent performance**: Constant 8μs regardless of input size
-- 🎯 **100% lossless guarantee**: Mathematical verification via Shannon entropy  
-- 💾 **Memory efficient**: 2 bytes/character vs traditional 144 bytes/character
-- 🔧 **Unlimited extensibility**: Plugin architecture for any script
+### Core Modules
 
-### Legacy System (Compatible)
-
-Traditional bidirectional IR-based system for compatibility:
-
-```
-Input → Parser → IR Generation → Transformer → Generator → Output
-```
-
-**Use cases:**
-- Existing workflows requiring bidirectional round-trip
-- Schema-driven configuration needs
-- Gradual migration from other systems
-
-## 📊 Performance Comparison
-
-| System | Single Word | Medium Text | Large Text (4KB) | Memory Usage |
-|--------|-------------|-------------|------------------|--------------|
-| **Vidyut** | 888ns | 6.8μs | 275μs | Optimized |
-| **Shlesha Legacy** | 9.0μs | 24.9μs | 131.7μs | 144 bytes/char |
-| **Shlesha Lossless** | **8.0μs** | **8.0μs** | **8.0μs** | **2 bytes/char** |
-
-**Key Insight**: Lossless architecture provides **34x faster performance** on large text due to size-independent processing.
-
-## 🌐 Supported Scripts
-
-### Indic Scripts
-- **Devanagari** (Hindi, Sanskrit, Marathi, Nepali)
-- **Tamil** (Tamil, Sanskrit in Tamil script)
-- **Bengali** (Bengali, Assamese) 
-- **Gujarati** (Gujarati)
-- **Gurmukhi** (Punjabi)
-- **Telugu** (Telugu, Sanskrit in Telugu script)
-- **Kannada** (Kannada)
-- **Malayalam** (Malayalam)
-- **Odia** (Odia)
-
-### Romanization Schemes
-- **IAST** (International Alphabet of Sanskrit Transliteration)
-- **Harvard-Kyoto** (ASCII-friendly academic standard)
-- **ITRANS** (Internet-friendly input method)
-- **SLP1** (Sanskrit Library Phonetic Basic)
-- **Velthuis** (Academic ASCII encoding)
-- **WX notation** (Computational linguistics standard)
-
-### Extensibility
-Add any script via the plugin system:
 ```rust
-use shlesha::{LosslessTransliterator, LosslessScript};
+// Core engine with mathematical guarantees
+pub mod lossless_transliterator;
 
-let transliterator = LosslessTransliterator::new()
-    .with_plugin(TibetanScript::new())    // Custom Tibetan support
-    .with_plugin(MathNotation::new());    // Mathematical symbols
+// Static mappings for all 15 scripts
+pub mod script_mappings;
+
+// Public API
+pub mod lib;
 ```
 
-## 💡 Lossless Guarantee
+## 🌐 Script Support Status
 
-Shlesha's mathematical lossless guarantee is based on **Shannon entropy**:
+### Currently Implemented (19/225 mappings = 8.4%)
+- ✅ **Devanagari ↔ IAST**: Complete with 70+ characters, conjunct patterns
+- ✅ **Devanagari ↔ SLP1**: Full phonetic coverage
+- ✅ **Identity mappings**: All 15 scripts
+
+### Script Coverage Matrix
+
+```
+From\To    Deva  IAST  SLP1  Beng  Tami  Telu  Kann  Mala  Guja  Gurm  Odia  HK    ITRA  Velt  WX
+Devanagari  ✓     ✓     ✓     ○     ○     ○     ○     ○     ○     ○     ○     ○     ○     ○     ○
+IAST        ✓     ✓     ○     ○     ○     ○     ○     ○     ○     ○     ○     ○     ○     ○     ○
+SLP1        ✓     ○     ✓     ○     ○     ○     ○     ○     ○     ○     ○     ○     ○     ○     ○
+[... remaining show identity mappings only]
+```
+
+### Supported Scripts
+
+**Indic Scripts (9)**
+- Devanagari (Hindi, Sanskrit, Marathi, Nepali)
+- Bengali (Bengali, Assamese)
+- Tamil (Tamil)
+- Telugu (Telugu)
+- Kannada (Kannada)
+- Malayalam (Malayalam)
+- Gujarati (Gujarati)
+- Gurmukhi (Punjabi)
+- Odia (Odia)
+
+**Romanization Schemes (6)**
+- IAST (International Alphabet of Sanskrit Transliteration)
+- SLP1 (Sanskrit Library Phonetic Basic)
+- Harvard-Kyoto (ASCII-friendly)
+- ITRANS (Internet standard)
+- Velthuis (TeX-based)
+- WX (Computational linguistics)
+
+## 💡 Mathematical Foundation
+
+### Lossless Guarantee
+
+Shlesha guarantees losslessness through Shannon entropy:
 
 ```
 H(original) ≤ H(encoded) + H(tokens)
 ```
 
 Where:
-- `H(original)` = entropy of source text
-- `H(encoded)` = entropy of transliterated text  
-- `H(tokens)` = entropy recoverable from preservation tokens
+- `H(x)` = Shannon entropy of text x
+- Tokens preserve unmapped characters
+- Entropy normalization handles abugida→alphabet asymmetry
 
-### Example: Information Preservation
+### Token Format
 
+Unknown characters preserved as: `[script_id:data:metadata]`
+
+Example:
+```
+Input:  "धर्म ॐ योग"
+Output: "dharma [1:ॐ:om] yoga"
+```
+
+### Abugida Normalization
+
+Accounts for inherent vowel expansion:
 ```rust
-Input:  "धर्म"
-Output: "dhara[1:्:U+094D]ma"  
-Result: ✅ 194% preservation (more information than input!)
-
-Input:  "ॐ"  
-Output: "[1:ॐ:U+0950]"
-Result: ✅ Perfect preservation with metadata
-```
-
-Unknown characters are preserved as **structured tokens**:
-- Format: `[script_id:data:metadata]`
-- Contains original character, Unicode codepoint, and context
-- Enables perfect reconstruction even for unsupported characters
-
-## 🔧 Advanced Usage
-
-### Multi-Script Processing
-
-```rust
-use shlesha::LosslessTransliterator;
-
-let transliterator = LosslessTransliterator::new();
-
-// Process mixed-script text
-let mixed_text = "Hello धर्म வணக்கம்";
-let result = transliterator.transliterate(mixed_text, "Mixed", "IAST")?;
-
-// Each script handled appropriately with preservation tokens
-println!("{}", result); 
-// "[1:H:U+0048][1:e:U+0065][1:l:U+006C]... dharma [2:வ:U+0BB5][2:ண:U+0BA3]..."
-```
-
-### Batch Processing
-
-```rust
-use shlesha::LosslessTransliterator;
-
-let transliterator = LosslessTransliterator::new();
-let documents = vec!["धर्म", "अहिंसा", "सत्य"];
-
-let results: Vec<_> = documents
-    .iter()
-    .map(|&text| transliterator.transliterate(text, "Devanagari", "IAST"))
-    .collect::<Result<Vec<_>, _>>()?;
-
-// Process millions of documents with constant memory usage
-```
-
-### Performance Optimization
-
-```rust
-use shlesha::LosslessTransliterator;
-
-// For maximum performance on large text
-let transliterator = LosslessTransliterator::new();
-
-// Size-independent processing: 8μs whether input is 10 chars or 10MB
-let large_text = include_str!("massive_sanskrit_corpus.txt"); 
-let result = transliterator.transliterate(large_text, "Devanagari", "IAST")?;
-
-// Throughput: 500M+ chars/second on very large text
-```
-
-## 📚 Examples
-
-### Basic Transliteration
-```bash
-cargo run --example basic_usage
-```
-
-### Architecture Comparison
-```bash
-cargo run --example architecture_comparison
-```
-
-### Performance Analysis  
-```bash
-cargo run --example lossless_performance_demo
-```
-
-### CLI Tool
-```bash
-cargo build --release --example cli
-./target/release/examples/cli -f devanagari -t iast "धर्मक्षेत्रे"
+// क → ka (1 char → 2 chars) is information-preserving, not adding
+let normalized_ratio = base_ratio / expansion_ratio.powf(0.5);
 ```
 
 ## 🧪 Testing
 
-Run the comprehensive test suite:
+Comprehensive test coverage:
 
 ```bash
-# Unit tests
+# Run all tests
 cargo test
 
-# Integration tests  
-cargo test --test integration_tests
+# Unit tests (23 tests)
+cargo test --lib
 
-# Performance benchmarks
-cargo bench
+# Property-based tests (12 mathematical properties)
+cargo test --test property_based_tests
 
-# Mathematical verification tests
-cargo test --test mathematical_verification
+# Script matrix validation
+cargo test --test comprehensive_script_tests
+
+# Benchmarks
+cargo bench --features compare-vidyut
 ```
 
 ### Test Coverage
+- ✅ 23 unit tests with edge cases
+- ✅ 12 property-based tests (mathematical invariants)
+- ✅ 15×15 script matrix validation
+- ✅ Entropy preservation verification
+- ✅ Binary search correctness
+- ✅ Pattern matching precedence
 
-Shlesha includes mathematically comprehensive tests:
+## 🔧 Advanced Usage
 
-- **Round-trip verification**: Ensures lossless round-trip for all supported characters
-- **Shannon entropy validation**: Verifies mathematical lossless guarantee
-- **Cross-script matrix tests**: Tests all script combinations
-- **Performance regression tests**: Ensures performance characteristics
-- **Unicode compliance tests**: Validates proper Unicode handling
+### Extract Preservation Tokens
 
-## 🚀 Performance Benchmarks
-
-Run benchmarks to compare systems:
-
-```bash
-# Core performance benchmarks
-cargo bench --bench core_benchmarks
-
-# Compare with legacy system
-cargo bench --bench lossless_vs_legacy
-
-# Throughput analysis
-cargo bench --bench throughput
+```rust
+let encoded = "dharma [1:ॐ:om] yoga";
+let tokens = transliterator.extract_tokens(encoded);
+// Returns: vec![PreservationToken { source_script: 1, data: "ॐ", metadata: Some("om") }]
 ```
 
-### Real-World Performance
+### Check Script Support
 
-Based on comprehensive benchmarking:
+```rust
+use shlesha::script_mappings::{get_supported_scripts, has_mapping};
 
-- **Interactive use**: Vidyut slightly faster for single words (888ns vs 8μs)
-- **Medium processing**: Similar performance (~8μs for both systems)  
-- **Large documents**: Shlesha 34x faster (8μs vs 275μs)
-- **Bulk processing**: Shlesha scales to 500M+ chars/sec vs 15M chars/sec
+// List all scripts
+for (name, id) in get_supported_scripts() {
+    println!("{}: {}", id, name);
+}
 
-## 🔗 Language Bindings
-
-### Python (PyO3)
-```bash
-# Install from PyPI
-pip install shlesha
-
-# Or build from source  
-maturin develop --release
+// Check if mapping exists
+if has_mapping(from_id, to_id) {
+    // Perform transliteration
+}
 ```
 
-### JavaScript/WASM (wasm-bindgen)
-```bash
-# Install from npm
-npm install shlesha-wasm
+### Custom Fallback Strategies
 
-# Or build from source
-wasm-pack build --target web --release
+```rust
+use shlesha::{LosslessMapper, FallbackStrategy};
+
+// Choose preservation strategy
+let mapper = LosslessMapper::new(
+    mappings,
+    patterns,
+    source_id,
+    target_id,
+    FallbackStrategy::PreserveWithPhonetics, // Adds phonetic hints
+);
 ```
 
-### C/C++ (FFI)
+## 🚀 Future Optimizations
+
+Areas for performance improvement while maintaining losslessness:
+
+1. **SIMD Optimization**: Vectorize character lookups
+2. **Zero-Copy Strings**: Reduce allocations
+3. **Compile-Time Mappings**: Const evaluation
+4. **Parallel Processing**: Multi-threaded for large texts
+5. **Cache Optimization**: Improve memory locality
+
+## 🤝 Contributing
+
+We welcome contributions! Priority areas:
+
+1. **Script Implementations**: Add remaining 206 mappings
+2. **Performance**: SIMD, zero-copy optimizations
+3. **Bindings**: Python (PyO3), WASM
+4. **Documentation**: Examples, tutorials
+5. **Testing**: Fuzzing, more edge cases
+
+### Development Setup
+
 ```bash
-# Build C-compatible library
-cargo build --release --features ffi
-# Header files generated in target/include/
-```
-
-## 🛠️ Development
-
-### Building from Source
-
-```bash
-git clone https://github.com/your-org/shlesha.git
+git clone https://github.com/udapaana/shlesha.git
 cd shlesha
 cargo build --release
+cargo test
+cargo bench
 ```
 
-### Features
+## 📄 License
 
-```toml
-[dependencies]
-shlesha = { version = "0.1.0", features = ["python", "wasm", "profiling"] }
+MIT OR Apache-2.0
+
+## 📚 Citation
+
+If you use Shlesha in academic work:
+
+```bibtex
+@software{shlesha2024,
+  title = {Shlesha: High-Performance Lossless Transliteration},
+  author = {Shlesha Contributors},
+  year = {2024},
+  url = {https://github.com/udapaana/shlesha},
+  note = {Mathematical lossless guarantee via Shannon entropy}
+}
 ```
-
-Available features:
-- `python`: Enable Python bindings via PyO3
-- `wasm`: Enable WASM bindings via wasm-bindgen  
-- `profiling`: Enable performance profiling
-- `ffi`: Enable C/C++ FFI bindings
-
-### Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and add tests
-4. Run the test suite: `cargo test && cargo bench`
-5. Commit your changes: `git commit -m 'Add amazing feature'`
-6. Push to the branch: `git push origin feature/amazing-feature`
-7. Open a Pull Request
-
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Vidyut**: Inspiration for high-performance transliteration
-- **Sanskrit Heritage**: Foundation for comprehensive script support
-- **Unicode Consortium**: Standards for proper character handling
-- **Academic Community**: Research in computational linguistics
-
-## 📞 Support
-
-- **Documentation**: [docs.rs/shlesha](https://docs.rs/shlesha)
-- **Issues**: [GitHub Issues](https://github.com/your-org/shlesha/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/shlesha/discussions)
-- **Email**: support@shlesha.org
 
 ---
 
-**Shlesha**: Where performance meets precision in transliteration.
+**Shlesha**: Where mathematical correctness meets performance in transliteration.

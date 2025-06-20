@@ -9,6 +9,10 @@ repository = "https://github.com/udapaana/shlesha"
 keywords = ["transliteration", "indic", "sanskrit", "devanagari", "lossless"]
 categories = ["text-processing", "localization", "algorithms"]
 
+[[bin]]
+name = "shlesha"
+path = "src/main.rs"
+
 [dependencies]
 # Core dependencies for lossless architecture
 thiserror = "2.0"
@@ -50,6 +54,10 @@ harness = false
 
 [[bench]]
 name = "vidyut_fair_comparison"
+harness = false
+
+[[bench]]
+name = "comprehensive_comparison"
 harness = false
 
 
