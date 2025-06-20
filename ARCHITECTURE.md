@@ -1,11 +1,10 @@
-# Shlesha Architecture & Module Interfaces
+# Shlesha Architecture
 
-This document defines the architecture, module boundaries, and interfaces for Shlesha.
+This document defines the architecture, module boundaries, and development practices for Shlesha.
 
 ## Module Stability Tracker
 
-### 🔒 Immutable Modules (Do Not Modify)
-
+### 🔒 Immutable Modules
 These modules have stable interfaces and comprehensive tests. Changes require architectural review.
 
 | Module | Status | Interface Stability | Test Coverage |
@@ -15,8 +14,7 @@ These modules have stable interfaces and comprehensive tests. Changes require ar
 | `benches/comprehensive_comparison.rs` | 🔒 LOCKED | Stable | N/A |
 | `src/lossless_transliterator.rs` (tests) | 🔒 LOCKED | Stable | 100% |
 
-### 🟡 Stable Interfaces (Implementation May Change)
-
+### 🟡 Stable Interfaces
 These modules have stable public APIs but internal implementation can be optimized.
 
 | Module | Interface | Implementation Status |
@@ -26,7 +24,6 @@ These modules have stable public APIs but internal implementation can be optimiz
 | `src/lib.rs` | ✅ Stable | Minimal changes only |
 
 ### 🟢 Active Development
-
 These modules are under active development.
 
 | Module | Status | Notes |
@@ -35,135 +32,91 @@ These modules are under active development.
 | Python bindings | 📋 Planned | PyO3 integration |
 | WASM bindings | 📋 Planned | wasm-bindgen |
 
-## Module Interfaces
+## Core Architecture
 
-### Core Transliterator Interface
-
-```rust
-// src/lossless_transliterator.rs
-pub trait TransliteratorInterface {
-    /// Core transliteration function
-    fn transliterate(&self, text: &str, from: &str, to: &str) -> Result<String, String>;
-    
-    /// Verify losslessness with mathematical proof
-    fn verify_lossless(&self, original: &str, encoded: &str, from_script: &str) -> LosslessResult;
-    
-    /// Extract preservation tokens
-    fn extract_tokens(&self, text: &str) -> Vec<PreservationToken>;
-    
-    /// Calculate Shannon entropy
-    fn calculate_entropy(&self, text: &str) -> f64;
-}
+### Module Structure
+```
+src/
+├── lib.rs                      // Public API exports
+├── lossless_transliterator.rs  // Core engine with mathematical guarantees
+├── script_mappings.rs          // Static mappings for all scripts
+└── [additional modules...]     // Script-specific implementations
 ```
 
-### Script Mapping Interface
+### Key Components
 
-```rust
-// src/script_mappings.rs
-pub trait ScriptMappingInterface {
-    /// Get all supported scripts
-    fn get_supported_scripts() -> Vec<(String, u8)>;
-    
-    /// Check if mapping exists
-    fn has_mapping(from_id: u8, to_id: u8) -> bool;
-    
-    /// Get mapper for script pair
-    fn get_mapper(from_id: u8, to_id: u8) -> Option<&'static LosslessMapper>;
-}
+**LosslessTransliterator**: Main transliteration engine
+- Script registration and mapping management
+- Entropy-based verification
+- Token extraction and reconstruction
+
+**LosslessMapper**: High-performance character mapping
+- Binary search for O(log n) character lookup
+- Pattern matching for multi-character sequences
+- Fallback token generation for unmapped characters
+
+**PreservationToken**: Information preservation mechanism
+- Encodes unmapped characters with metadata
+- Enables perfect reconstruction
+- Supports multiple fallback strategies
+
+**ScriptRegistry**: Script and mapping management
+- Centralizes script definitions
+- Manages bidirectional mappings
+- Handles reconstruction pathways
+
+### Processing Pipeline
+```
+Input Text → Pattern Matching → Binary Search → Token Generation → Output
+    ↓                              O(log n)              ↓
+    └─────────────── Entropy Verification ←──────────────┘
+                    H(original) ≤ H(encoded) + H(tokens)
 ```
 
-### Mapper Interface
+## Development Standards
 
-```rust
-// src/lossless_transliterator.rs
-pub trait MapperInterface {
-    /// Binary search character lookup
-    fn lookup_char(&self, ch: char) -> Option<&'static str>;
-    
-    /// Pattern matching for sequences
-    fn lookup_pattern(&self, text: &str, pos: usize) -> Option<(&'static str, usize)>;
-    
-    /// Create preservation token
-    fn create_preservation_token(&self, text: &str, pos: usize) -> PreservationToken;
-}
-```
+### Performance Requirements
+- Binary search for character lookup: O(log n)
+- Pattern matching with longest-match-first precedence
+- String capacity pre-allocation for performance
+- Entropy verification overhead < 10% of transliteration time
 
-### Token Interface
-
-```rust
-// src/lossless_transliterator.rs
-pub trait TokenInterface {
-    /// Encode token to string
-    fn encode(&self) -> String;
-    
-    /// Decode token from string
-    fn decode(s: &str) -> Option<Self> where Self: Sized;
-    
-    /// Check reconstruction capability
-    fn can_reconstruct(&self, target_script: u8, registry: &ScriptRegistry) -> bool;
-}
-```
-
-## Performance Optimization Boundaries
-
-### Areas Open for Optimization
-
-1. **Character Lookup** (`lookup_char`)
-   - Current: Binary search O(log n)
-   - Potential: SIMD, perfect hashing, compile-time lookup
-
-2. **String Building** (`transliterate_with_mapper`)
-   - Current: String allocation with capacity hint
-   - Potential: Zero-copy with borrowed slices
-
-3. **Pattern Matching** (`lookup_pattern`)
-   - Current: Linear scan of patterns
-   - Potential: Trie, Aho-Corasick, SIMD
-
-4. **Entropy Calculation** (`calculate_entropy`)
-   - Current: HashMap for frequency counting
-   - Potential: Array-based for common scripts
-
-### Invariants to Maintain
-
-1. **Losslessness**: H(original) ≤ H(encoded) + H(tokens)
+### Losslessness Invariants
+1. **Mathematical Guarantee**: H(original) ≤ H(encoded) + H(tokens)
 2. **Token Format**: `[script_id:data:metadata]`
 3. **Pattern Precedence**: Longest match first
-4. **Binary Search Order**: Mappings sorted by Unicode value
-5. **Preservation Ratio**: ≥ 0.95 for all scripts
+4. **Preservation Ratio**: ≥ 0.95 for all scripts
+5. **Unicode Ordering**: Mappings sorted by Unicode value
 
-## Testing Requirements
+### Testing Requirements
 
-### Unit Test Invariants
+**Unit Tests**
 - All public methods must have tests
 - Edge cases: empty string, single char, Unicode boundaries
 - Pattern matching: precedence, overlapping patterns
 - Token handling: encoding, decoding, malformed tokens
 
-### Property-Based Test Invariants
+**Property-Based Tests**
 - Losslessness for all valid input
 - Token roundtrip correctness
 - Entropy non-decreasing
 - Pattern precedence maintained
 
-### Benchmark Requirements
-- Compare against Vidyut for regression detection
-- Measure throughput in MB/s
-- Track memory allocations
-- Profile hot paths
+**Benchmarks**
+- Performance regression detection
+- Memory allocation tracking
+- Throughput measurement (MB/s)
 
 ## Development Workflow
 
 ### Making Changes
-
-1. **Check Module Status**: Consult the stability tracker above
+1. **Check Module Status**: Consult stability tracker
 2. **Respect Interfaces**: Public APIs must remain stable
-3. **Run Tests**: `cargo test` must pass before any commit
-4. **Run Benchmarks**: `cargo bench` to detect performance regressions
+3. **Run Tests**: `cargo test` must pass before commit
+4. **Run Benchmarks**: `cargo bench` to detect regressions
 5. **Update Documentation**: Keep this file current
 
 ### Adding New Scripts
-
 1. Add mappings to `src/script_mappings.rs`
 2. Update `get_supported_scripts()`
 3. Update `has_mapping()` and `get_mapper()`
@@ -171,14 +124,28 @@ pub trait TokenInterface {
 5. Run full test suite
 
 ### Performance Optimization
-
 1. Identify hot path with `cargo bench`
 2. Profile with `perf` or `cargo flamegraph`
 3. Implement optimization maintaining interface
 4. Verify with benchmarks
 5. Ensure all tests still pass
 
-## Version Control Strategy
+## Optimization Boundaries
+
+### Areas Open for Optimization
+1. **Character Lookup**: Current binary search can be optimized with SIMD or perfect hashing
+2. **String Building**: Current allocation can be improved with zero-copy techniques
+3. **Pattern Matching**: Current linear scan can use Trie or Aho-Corasick
+4. **Entropy Calculation**: Current HashMap can use arrays for common scripts
+
+### Protected Elements
+- Public API signatures
+- Test interfaces and behaviors
+- Losslessness guarantees
+- Token format specification
+- Mathematical verification methods
+
+## Git Workflow
 
 ### Protected Files
 ```
@@ -187,17 +154,18 @@ benches/**/*.rs        # All benchmark files are immutable
 src/**/tests.rs        # Test modules within source files
 ```
 
-### Semantic Versioning
-- Major: Breaking API changes
-- Minor: New features, backward compatible
-- Patch: Bug fixes, performance improvements
+### Branch Strategy
+- `main`: Stable releases
+- Feature branches for new development
+- PR required for protected files
+- All tests must pass before merge
 
-### Git Workflow
-1. Feature branches for new development
-2. PR required for protected files
-3. Benchmarks must not regress >5%
-4. All tests must pass
+### Commit Standards
+- Atomic commits with clear descriptions
+- Performance impact noted in commit message
+- Breaking changes marked with `BREAKING:`
+- Documentation updates included with changes
 
 ---
 
-**Note**: This architecture document is the source of truth for module boundaries and development practices. Update it when making architectural changes.
+**Note**: This architecture document defines the authoritative module boundaries and development practices for Shlesha.
