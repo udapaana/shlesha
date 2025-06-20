@@ -1,5 +1,5 @@
-use crate::ir_v2::{AbugidaIR, AlphabetIR, IR, AbugidaAtom, AlphabetAtom, ScriptId, SchemeId};
-use crate::element_id::{ElementId, ElementType, ElementRegistry};
+use crate::ir_v2::{AbugidaIR, AlphabetIR, IR, ScriptId, SchemeId};
+use crate::element_id::{ElementId, ElementRegistry, ElementType};
 use thiserror::Error;
 use std::collections::HashMap;
 

@@ -1,0 +1,348 @@
+name: "Gurmukhi"
+type: abugida
+
+metadata:
+  version: "1.0.0"
+  author: "Shlesha Contributors"
+  description: "Gurmukhi script mapping for Punjabi language"
+  references:
+    - "Unicode Standard 15.0"
+    - "Punjabi Language Standards"
+
+element_types:
+  consonant:
+    description: "Basic consonant with inherent 'a' vowel"
+    properties:
+      has_inherent_vowel:
+        type: bool
+        default: true
+        description: "Whether the consonant has inherent 'a' vowel"
+      varga:
+        type: string
+        description: "Consonant class"
+        required: false
+      voiced:
+        type: bool
+        default: false
+        description: "Whether the consonant is voiced"
+      aspirated:
+        type: bool
+        default: false
+        description: "Whether the consonant is aspirated"
+        
+  vowel_independent:
+    description: "Independent vowel sign"
+    properties:
+      is_long:
+        type: bool
+        default: false
+        description: "Whether the vowel is long"
+        
+  vowel_dependent:
+    description: "Dependent vowel sign (matra)"
+    properties:
+      is_long:
+        type: bool
+        default: false
+        description: "Whether the vowel is long"
+
+mappings:
+  consonants:
+    # Velars (ka-varga)
+    "ਕ":
+      canonical: "ka"
+      varga: "ka-varga"
+      voiced: false
+      aspirated: false
+    "ਖ":
+      canonical: "kha"
+      varga: "ka-varga"
+      voiced: false
+      aspirated: true
+    "ਗ":
+      canonical: "ga"
+      varga: "ka-varga"
+      voiced: true
+      aspirated: false
+    "ਘ":
+      canonical: "gha"
+      varga: "ka-varga"
+      voiced: true
+      aspirated: true
+    "ਙ":
+      canonical: "ṅa"
+      varga: "ka-varga"
+      voiced: true
+      aspirated: false
+      
+    # Palatals (ca-varga)
+    "ਚ":
+      canonical: "ca"
+      varga: "ca-varga"
+      voiced: false
+      aspirated: false
+    "ਛ":
+      canonical: "cha"
+      varga: "ca-varga"
+      voiced: false
+      aspirated: true
+    "ਜ":
+      canonical: "ja"
+      varga: "ca-varga"
+      voiced: true
+      aspirated: false
+    "ਝ":
+      canonical: "jha"
+      varga: "ca-varga"
+      voiced: true
+      aspirated: true
+    "ਞ":
+      canonical: "ña"
+      varga: "ca-varga"
+      voiced: true
+      aspirated: false
+      
+    # Retroflexes (ṭa-varga)
+    "ਟ":
+      canonical: "ṭa"
+      varga: "ṭa-varga"
+      voiced: false
+      aspirated: false
+    "ਠ":
+      canonical: "ṭha"
+      varga: "ṭa-varga"
+      voiced: false
+      aspirated: true
+    "ਡ":
+      canonical: "ḍa"
+      varga: "ṭa-varga"
+      voiced: true
+      aspirated: false
+    "ਢ":
+      canonical: "ḍha"
+      varga: "ṭa-varga"
+      voiced: true
+      aspirated: true
+    "ਣ":
+      canonical: "ṇa"
+      varga: "ṭa-varga"
+      voiced: true
+      aspirated: false
+      
+    # Dentals (ta-varga)
+    "ਤ":
+      canonical: "ta"
+      varga: "ta-varga"
+      voiced: false
+      aspirated: false
+    "ਥ":
+      canonical: "tha"
+      varga: "ta-varga"
+      voiced: false
+      aspirated: true
+    "ਦ":
+      canonical: "da"
+      varga: "ta-varga"
+      voiced: true
+      aspirated: false
+    "ਧ":
+      canonical: "dha"
+      varga: "ta-varga"
+      voiced: true
+      aspirated: true
+    "ਨ":
+      canonical: "na"
+      varga: "ta-varga"
+      voiced: true
+      aspirated: false
+      
+    # Labials (pa-varga)
+    "ਪ":
+      canonical: "pa"
+      varga: "pa-varga"
+      voiced: false
+      aspirated: false
+    "ਫ":
+      canonical: "pha"
+      varga: "pa-varga"
+      voiced: false
+      aspirated: true
+    "ਬ":
+      canonical: "ba"
+      varga: "pa-varga"
+      voiced: true
+      aspirated: false
+    "ਭ":
+      canonical: "bha"
+      varga: "pa-varga"
+      voiced: true
+      aspirated: true
+    "ਮ":
+      canonical: "ma"
+      varga: "pa-varga"
+      voiced: true
+      aspirated: false
+      
+    # Semi-vowels
+    "ਯ":
+      canonical: "ya"
+      voiced: true
+    "ਰ":
+      canonical: "ra"
+      voiced: true
+    "ਲ":
+      canonical: "la"
+      voiced: true
+    "ਵ":
+      canonical: "va"
+      voiced: true
+    "ਲ਼":
+      canonical: "ḷa"
+      voiced: true
+      
+    # Sibilants
+    "ਸ਼":
+      canonical: "śa"
+      voiced: false
+    "ਸ":
+      canonical: "sa"
+      voiced: false
+      
+    # Aspirate
+    "ਹ":
+      canonical: "ha"
+      voiced: true
+      
+    # Additional Gurmukhi consonants
+    "ਖ਼":
+      canonical: "xa"  # Persian kh
+      voiced: false
+    "ਗ਼":
+      canonical: "ġa"  # Persian gh
+      voiced: true
+    "ਜ਼":
+      canonical: "za"  # Persian z
+      voiced: true
+    "ਫ਼":
+      canonical: "fa"  # Persian f
+      voiced: false
+    "ਕ੍ਸ਼":
+      canonical: "kṣa"
+      voiced: false
+    "ਗ੍ਯ":
+      canonical: "jña"
+      voiced: true
+
+  vowels:
+    # Independent vowels
+    "ਅ":
+      canonical: "a"
+      type: vowel_independent
+      is_long: false
+    "ਆ":
+      canonical: "ā"
+      type: vowel_independent
+      is_long: true
+    "ਇ":
+      canonical: "i"
+      type: vowel_independent
+      is_long: false
+    "ਈ":
+      canonical: "ī"
+      type: vowel_independent
+      is_long: true
+    "ਉ":
+      canonical: "u"
+      type: vowel_independent
+      is_long: false
+    "ਊ":
+      canonical: "ū"
+      type: vowel_independent
+      is_long: true
+    "ਏ":
+      canonical: "e"
+      type: vowel_independent
+      is_long: true
+    "ਐ":
+      canonical: "ai"
+      type: vowel_independent
+      is_long: true
+    "ਓ":
+      canonical: "o"
+      type: vowel_independent
+      is_long: true
+    "ਔ":
+      canonical: "au"
+      type: vowel_independent
+      is_long: true
+      
+    # Dependent vowels (matras)
+    "ਾ":
+      canonical: "ā"
+      type: vowel_dependent
+      is_long: true
+    "ਿ":
+      canonical: "i"
+      type: vowel_dependent
+      is_long: false
+    "ੀ":
+      canonical: "ī"
+      type: vowel_dependent
+      is_long: true
+    "ੁ":
+      canonical: "u"
+      type: vowel_dependent
+      is_long: false
+    "ੂ":
+      canonical: "ū"
+      type: vowel_dependent
+      is_long: true
+    "ੇ":
+      canonical: "e"
+      type: vowel_dependent
+      is_long: true
+    "ੈ":
+      canonical: "ai"
+      type: vowel_dependent
+      is_long: true
+    "ੋ":
+      canonical: "o"
+      type: vowel_dependent
+      is_long: true
+    "ੌ":
+      canonical: "au"
+      type: vowel_dependent
+      is_long: true
+
+  modifiers:
+    "੍":
+      canonical: ""
+      type: virama
+    "ਁ":
+      canonical: "m̐"
+      type: candrabindu
+    "ੰ":
+      canonical: "ṃ"
+      type: anusvara
+    "ੱ":
+      canonical: ""
+      type: addak  # Gemination mark
+    "਼":
+      canonical: ""
+      type: nukta
+
+  numerals:
+    "੦": { canonical: "0" }
+    "੧": { canonical: "1" }
+    "੨": { canonical: "2" }
+    "੩": { canonical: "3" }
+    "੪": { canonical: "4" }
+    "੫": { canonical: "5" }
+    "੬": { canonical: "6" }
+    "੭": { canonical: "7" }
+    "੮": { canonical: "8" }
+    "੯": { canonical: "9" }
+
+  punctuation:
+    "।": { canonical: "." }
+    "॥": { canonical: ".." }

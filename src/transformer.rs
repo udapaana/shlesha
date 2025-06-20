@@ -268,6 +268,21 @@ impl Transformer {
         }
     }
     
+    fn decompose_compound_consonant(&self, canonical: &str) -> Vec<String> {
+        // Handle common Sanskrit conjuncts by decomposing them into constituent parts
+        match canonical {
+            "kṣa" => vec!["k".to_string(), "ṣa".to_string()],
+            "jña" => vec!["j".to_string(), "ña".to_string()],
+            "kṣ" => vec!["k".to_string(), "ṣ".to_string()],
+            "jñ" => vec!["j".to_string(), "ñ".to_string()],
+            // Add more conjuncts as needed
+            _ => {
+                // For non-compound consonants, don't decompose at all
+                vec![canonical.to_string()]
+            }
+        }
+    }
+    
     fn get_abugida_consonant(&self, pure: &str) -> String {
         // Temporary hardcoded mappings - should come from schema
         match pure {

@@ -1,0 +1,42 @@
+{
+  "small": {
+    "text_length": 6,
+    "iterations": 1000,
+    "indic_transliteration": {
+      "total_time": 0.022624866000114707,
+      "avg_time": 2.2624866000114706e-05,
+      "iterations": 1000,
+      "chars_per_second": 265194.9408217304
+    }
+  },
+  "medium": {
+    "text_length": 58,
+    "iterations": 100,
+    "indic_transliteration": {
+      "total_time": 0.007771190001221839,
+      "avg_time": 7.77119000122184e-05,
+      "iterations": 100,
+      "chars_per_second": 746346.4410325941
+    }
+  },
+  "large": {
+    "text_length": 250,
+    "iterations": 10,
+    "indic_transliteration": {
+      "total_time": 0.003122408001217991,
+      "avg_time": 0.0003122408001217991,
+      "iterations": 10,
+      "chars_per_second": 800664.1025211306
+    }
+  },
+  "very_large": {
+    "text_length": 38499,
+    "iterations": 1,
+    "indic_transliteration": {
+      "total_time": 0.05143937499815365,
+      "avg_time": 0.05143937499815365,
+      "iterations": 1,
+      "chars_per_second": 748434.4434857902
+    }
+  }
+}

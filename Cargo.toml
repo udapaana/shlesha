@@ -3,11 +3,11 @@ name = "shlesha"
 version = "0.1.0"
 edition = "2021"
 authors = ["Shlesha Contributors"]
-description = "A bidirectional, extensible, and highly-performant transliterator for Indic languages"
+description = "High-performance lossless transliteration library with 100% information preservation guarantee"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/udapaana/shlesha"
-keywords = ["transliteration", "indic", "sanskrit", "devanagari", "romanization"]
-categories = ["text-processing", "localization"]
+keywords = ["transliteration", "indic", "sanskrit", "devanagari", "lossless"]
+categories = ["text-processing", "localization", "algorithms"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
@@ -16,8 +16,14 @@ thiserror = "2.0"
 once_cell = "1.21"
 regex = "1.11"
 indexmap = "2.7"
+smallvec = { version = "1.11", features = ["serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 clap = { version = "4.5.40", features = ["derive"] }
+
+# Optional dependencies for bindings
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+wasm-bindgen = { version = "0.2", optional = true }
+tracing = { version = "0.1", optional = true }
 
 [dev-dependencies]
 criterion = "0.5"
@@ -25,7 +31,16 @@ proptest = "1.6"
 vidyut-lipi = "0.2.0"
 
 [features]
+default = []
 compare-vidyut = []
+python = ["pyo3"]
+wasm = ["wasm-bindgen"]
+profiling = ["tracing"]
+ffi = []
+
+[[bench]]
+name = "core_benchmarks"
+harness = false
 
 [[bench]]
 name = "transliteration_bench"
@@ -33,6 +48,14 @@ harness = false
 
 [[bench]]
 name = "compare_vidyut"
+harness = false
+
+[[bench]]
+name = "lossless_vs_vidyut"
+harness = false
+
+[[bench]]
+name = "vidyut_fair_comparison"
 harness = false
 
 

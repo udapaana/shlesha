@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improved WASM Transliteration Benchmark</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans', 'Noto Sans Devanagari', sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .tool-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .tool-card.loaded {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+        .tool-card.error {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+        .tool-card.loading {
+            background: #fff3e0;
+            border-color: #ff9800;
+        }
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .tool-info {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .btn.secondary {
+            background-color: #2196F3;
+        }
+        .btn.secondary:hover {
+            background-color: #1976D2;
+        }
+        .btn.danger {
+            background-color: #f44336;
+        }
+        .btn.danger:hover {
+            background-color: #d32f2f;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .status.info {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #2196F3;
+        }
+        .status.success {
+            background-color: #e8f5e9;
+            color: #388e3c;
+            border-left: 4px solid #4CAF50;
+        }
+        .status.error {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        .status.warning {
+            background-color: #fff3e0;
+            color: #f57c00;
+            border-left: 4px solid #ff9800;
+        }
+        .results-container {
+            overflow-x: auto;
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .results-table th, .results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .results-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .results-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .chart-container {
+            margin: 30px 0;
+            height: 400px;
+            position: relative;
+        }
+        .accuracy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .accuracy-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .accuracy-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .accuracy-item:last-child {
+            border-bottom: none;
+        }
+        .correct {
+            color: #4caf50;
+            font-weight: 500;
+        }
+        .incorrect {
+            color: #f44336;
+            font-weight: 500;
+        }
+        .devanagari-text {
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        .log-container {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        .metric-label {
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Improved WASM Transliteration Benchmark</h1>
+        <p>Fair WASM vs WASM comparison of transliteration libraries</p>
+    </div>
+    
+    <div class="section">
+        <h2>🔧 WASM Module Detection & Loading</h2>
+        <div class="tool-grid" id="toolGrid">
+            <!-- Tools will be dynamically populated -->
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚡ Benchmark Controls</h2>
+        <div class="controls">
+            <button class="btn" onclick="autoDetectTools()">Auto-Detect Tools</button>
+            <button class="btn" onclick="loadAllAvailableTools()">Load All Available</button>
+            <button class="btn secondary" onclick="runPerformanceBenchmarks()" id="perfBtn" disabled>
+                Run Performance Tests
+            </button>
+            <button class="btn secondary" onclick="runAccuracyTests()" id="accBtn" disabled>
+                Test Accuracy
+            </button>
+            <button class="btn danger" onclick="clearResults()">Clear Results</button>
+            <button class="btn" onclick="downloadResults()">📥 Download Results</button>
+        </div>
+        <div id="globalStatus" class="status info">Ready to detect and load WASM modules</div>
+        
+        <div id="progressContainer" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            </div>
+            <div id="progressText">Starting...</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📊 Performance Results</h2>
+        <div class="results-container">
+            <table class="results-table" id="performanceTable">
+                <thead>
+                    <tr>
+                        <th>Test Case</th>
+                        <th>Input Length</th>
+                        <th>Shlesha WASM</th>
+                        <th>Vidyut WASM</th>
+                        <th>Other Tools</th>
+                        <th>Winner</th>
+                        <th>Speed Difference</th>
+                    </tr>
+                </thead>
+                <tbody id="performanceBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🎯 Accuracy Results</h2>
+        <div id="accuracyResults" class="accuracy-grid"></div>
+    </div>
+
+    <div class="section">
+        <h2>📈 Performance Visualization</h2>
+        <div class="chart-container">
+            <canvas id="performanceChart"></canvas>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚡ Throughput Analysis</h2>
+        <div class="chart-container">
+            <canvas id="throughputChart"></canvas>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📋 Benchmark Log</h2>
+        <div class="log-container" id="benchmarkLog"></div>
+    </div>
+
+    <script>
+        // Enhanced test corpus with comprehensive cases
+        const testCorpus = [
+            { name: "Single character", text: "क", expected: "ka", category: "basic" },
+            { name: "Simple word", text: "नमस्ते", expected: "namaste", category: "basic" },
+            { name: "Short sentence", text: "अहं संस्कृतं वदामि", expected: "ahaṃ saṃskṛtaṃ vadāmi", category: "medium" },
+            { name: "Complex conjuncts", text: "कृष्णार्जुनसंवादः", expected: "kṛṣṇārjunasaṃvādaḥ", category: "medium" },
+            { name: "Vedic text", text: "अग्निमीळे पुरोहितं यज्ञस्य देवमृत्विजम्", expected: "agnimīḷe purohitaṃ yajñasya devamṛtvijam", category: "complex" },
+            { name: "Classical verse", text: "तत्र शूरा महेष्वासा भीमार्जुनसमा युधि", expected: "tatra śūrā maheṣvāsā bhīmārjunasamā yudhi", category: "complex" },
+            { name: "Long text", text: "धृतराष्ट्र उवाच धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः। मामकाः पाण्डवाश्चैव किमकुर्वत सञ्जय॥", expected: "", category: "stress" },
+            { name: "Repeated text", text: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन। ".repeat(20), expected: "", category: "stress" },
+            { name: "Very long text", text: "तत्र शूरा महेष्वासा भीमार्जुनसमा युधि। युयुधानो विराटश्च द्रुपदश्च महारथः॥ ".repeat(100), expected: "", category: "stress" }
+        ];
+
+        // Comprehensive accuracy test cases
+        const accuracyTests = [
+            { text: "नमस्ते", expected: "namaste" },
+            { text: "संस्कृतम्", expected: "saṃskṛtam" },
+            { text: "कृष्ण", expected: "kṛṣṇa" },
+            { text: "ज्ञान", expected: "jñāna" },
+            { text: "अग्निमीळे", expected: "agnimīḷe" },
+            { text: "यज्ञस्य", expected: "yajñasya" },
+            { text: "ऋत्विजम्", expected: "ṛtvijam" },
+            { text: "द्वौ", expected: "dvau" },
+            { text: "त्र्यम्बकम्", expected: "tryambakam" },
+            { text: "पुष्टिवर्धनम्", expected: "puṣṭivardhanam" },
+            { text: "श्रीः", expected: "śrīḥ" },
+            { text: "कार्त्स्न्येन", expected: "kārtsnyena" },
+            { text: "वाङ्मयम्", expected: "vāṅmayam" },
+            { text: "षट्कर्म", expected: "ṣaṭkarma" },
+            { text: "अष्टाध्यायी", expected: "aṣṭādhyāyī" }
+        ];
+
+        // Tool management
+        const tools = new Map();
+        const results = {
+            performance: [],
+            accuracy: []
+        };
+        let benchmarkInProgress = false;
+
+        // Tool definition class
+        class WasmTool {
+            constructor(name, config) {
+                this.name = name;
+                this.config = config;
+                this.status = 'not_loaded';
+                this.module = null;
+                this.error = null;
+                this.loadTime = 0;
+                this.version = 'unknown';
+            }
+
+            async load() {
+                const startTime = performance.now();
+                this.status = 'loading';
+                this.updateUI();
+
+                try {
+                    if (this.config.type === 'wasm') {
+                        await this.loadWasm();
+                    } else if (this.config.type === 'js') {
+                        await this.loadJavaScript();
+                    } else if (this.config.type === 'api') {
+                        await this.loadAPI();
+                    }
+
+                    this.loadTime = performance.now() - startTime;
+                    this.status = 'loaded';
+                    this.log(`✅ Loaded successfully in ${this.loadTime.toFixed(2)}ms`);
+                } catch (error) {
+                    this.error = error.message;
+                    this.status = 'error';
+                    this.log(`❌ Failed to load: ${error.message}`);
+                }
+
+                this.updateUI();
+                updateGlobalControls();
+            }
+
+            async loadWasm() {
+                if (this.config.wasmPath) {
+                    // Try to load actual WASM module
+                    const wasmModule = await WebAssembly.instantiateStreaming(fetch(this.config.wasmPath));
+                    this.module = wasmModule.instance.exports;
+                } else if (this.config.jsPath) {
+                    // Load WASM via JS wrapper
+                    const module = await import(this.config.jsPath);
+                    this.module = await module.default();
+                } else {
+                    throw new Error('No WASM path specified');
+                }
+            }
+
+            async loadJavaScript() {
+                if (this.config.scriptUrl) {
+                    await this.loadScript(this.config.scriptUrl);
+                    this.module = window[this.config.globalName];
+                } else if (this.config.moduleUrl) {
+                    this.module = await import(this.config.moduleUrl);
+                } else {
+                    // Create mock implementation for demo
+                    this.module = this.createMockImplementation();
+                }
+            }
+
+            async loadAPI() {
+                // Test API availability
+                if (this.config.testEndpoint) {
+                    const response = await fetch(this.config.testEndpoint, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`API not available: ${response.status}`);
+                    }
+                }
+                this.module = { type: 'api', endpoint: this.config.endpoint };
+            }
+
+            createMockImplementation() {
+                // Create a mock implementation for demonstration
+                const charMap = {
+                    'क': 'ka', 'ख': 'kha', 'ग': 'ga', 'घ': 'gha',
+                    'च': 'ca', 'छ': 'cha', 'ज': 'ja', 'झ': 'jha',
+                    'ट': 'ṭa', 'ठ': 'ṭha', 'ड': 'ḍa', 'ढ': 'ḍha',
+                    'त': 'ta', 'थ': 'tha', 'द': 'da', 'ध': 'dha',
+                    'प': 'pa', 'फ': 'pha', 'ब': 'ba', 'भ': 'bha',
+                    'म': 'ma', 'य': 'ya', 'र': 'ra', 'ल': 'la',
+                    'व': 'va', 'श': 'śa', 'ष': 'ṣa', 'स': 'sa', 'ह': 'ha',
+                    'न': 'na', 'ण': 'ṇa', 'ङ': 'ṅa', 'ञ': 'ña',
+                    'अ': 'a', 'आ': 'ā', 'इ': 'i', 'ई': 'ī',
+                    'उ': 'u', 'ऊ': 'ū', 'ऋ': 'ṛ', 'ए': 'e',
+                    'ऐ': 'ai', 'ओ': 'o', 'औ': 'au',
+                    'ं': 'ṃ', 'ः': 'ḥ', '्': '', ' ': ' ', '।': '.'
+                };
+
+                return {
+                    transliterate: (text) => {
+                        // Simple character mapping with some randomness for variety
+                        let result = '';
+                        for (let char of text) {
+                            result += charMap[char] || char;
+                        }
+                        // Add small delay to simulate processing
+                        const delay = Math.random() * 2;
+                        return new Promise(resolve => 
+                            setTimeout(() => resolve(result), delay)
+                        );
+                    }
+                };
+            }
+
+            async transliterate(text) {
+                if (!this.module) {
+                    throw new Error('Module not loaded');
+                }
+
+                if (this.module.type === 'api') {
+                    // API call
+                    const response = await fetch(this.module.endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text, from: 'devanagari', to: 'iast' })
+                    });
+                    const data = await response.json();
+                    return data.result;
+                } else if (this.module.transliterate) {
+                    return await this.module.transliterate(text);
+                } else {
+                    throw new Error('No transliterate method available');
+                }
+            }
+
+            updateUI() {
+                const card = document.getElementById(`tool-${this.name.replace(/\s+/g, '-').toLowerCase()}`);
+                if (!card) return;
+
+                card.className = `tool-card ${this.status}`;
+                const statusEl = card.querySelector('.tool-status');
+                const actionBtn = card.querySelector('.tool-action');
+
+                switch (this.status) {
+                    case 'not_loaded':
+                        statusEl.textContent = 'Not loaded';
+                        actionBtn.textContent = 'Load';
+                        actionBtn.disabled = false;
+                        break;
+                    case 'loading':
+                        statusEl.innerHTML = 'Loading... <div class="loading-spinner"></div>';
+                        actionBtn.disabled = true;
+                        break;
+                    case 'loaded':
+                        statusEl.textContent = `✅ Loaded (${this.loadTime.toFixed(2)}ms)`;
+                        actionBtn.textContent = 'Reload';
+                        actionBtn.disabled = false;
+                        break;
+                    case 'error':
+                        statusEl.textContent = `❌ Error: ${this.error}`;
+                        actionBtn.textContent = 'Retry';
+                        actionBtn.disabled = false;
+                        break;
+                }
+            }
+
+            log(message) {
+                const logContainer = document.getElementById('benchmarkLog');
+                const timestamp = new Date().toLocaleTimeString();
+                logContainer.innerHTML += `[${timestamp}] ${this.name}: ${message}\n`;
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+
+            async loadScript(url) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    script.src = url;
+                    document.head.appendChild(script);
+                });
+            }
+        }
+
+        // Tool configurations
+        const toolConfigs = {
+            'Shlesha WASM': {
+                type: 'wasm',
+                wasmPath: './pkg/shlesha_bg.wasm',
+                jsPath: './pkg/shlesha.js',
+                description: 'Rust-based WASM transliterator'
+            },
+            'Vidyut WASM': {
+                type: 'wasm',
+                wasmPath: './vidyut/pkg/vidyut_bg.wasm',
+                jsPath: './vidyut/pkg/vidyut.js',
+                description: 'Vidyut WASM implementation'
+            },
+            'Aksharamukha JS': {
+                type: 'js',
+                scriptUrl: 'https://cdn.jsdelivr.net/npm/aksharamukha@latest/aksharamukha.min.js',
+                globalName: 'Aksharamukha',
+                description: 'Aksharamukha JavaScript library'
+            },
+            'Indic Transliteration JS': {
+                type: 'js',
+                moduleUrl: './js/indic-transliteration.js',
+                description: 'JavaScript port of indic-transliteration'
+            },
+            'Dharmamitra API': {
+                type: 'api',
+                endpoint: 'https://api.dharmamitra.org/transliterate',
+                testEndpoint: 'https://api.dharmamitra.org/status',
+                description: 'Dharmamitra web API'
+            }
+        };
+
+        // Initialize tools
+        function initializeTools() {
+            const toolGrid = document.getElementById('toolGrid');
+            toolGrid.innerHTML = '';
+
+            for (const [name, config] of Object.entries(toolConfigs)) {
+                const tool = new WasmTool(name, config);
+                tools.set(name, tool);
+
+                const card = createToolCard(tool);
+                toolGrid.appendChild(card);
+            }
+        }
+
+        function createToolCard(tool) {
+            const card = document.createElement('div');
+            card.className = 'tool-card not_loaded';
+            card.id = `tool-${tool.name.replace(/\s+/g, '-').toLowerCase()}`;
+
+            card.innerHTML = `
+                <div class="tool-header">
+                    <h3>${tool.name}</h3>
+                    <button class="btn tool-action" onclick="loadTool('${tool.name}')">Load</button>
+                </div>
+                <div class="tool-info">${tool.config.description}</div>
+                <div class="tool-status">Not loaded</div>
+                <div class="tool-metrics" style="display: none;">
+                    <div class="metric-card">
+                        <div class="metric-value" id="${tool.name}-speed">-</div>
+                        <div class="metric-label">chars/sec</div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        async function loadTool(toolName) {
+            const tool = tools.get(toolName);
+            if (tool) {
+                await tool.load();
+            }
+        }
+
+        async function autoDetectTools() {
+            updateGlobalStatus('Detecting available tools...', 'info');
+            
+            const detectionPromises = Array.from(tools.values()).map(async (tool) => {
+                try {
+                    await tool.load();
+                    return { tool: tool.name, success: true };
+                } catch (error) {
+                    return { tool: tool.name, success: false, error: error.message };
+                }
+            });
+
+            const results = await Promise.all(detectionPromises);
+            const successful = results.filter(r => r.success);
+            
+            updateGlobalStatus(
+                `Detection complete: ${successful.length}/${results.length} tools available`,
+                successful.length > 0 ? 'success' : 'warning'
+            );
+        }
+
+        async function loadAllAvailableTools() {
+            const loadPromises = Array.from(tools.values()).map(tool => tool.load());
+            await Promise.all(loadPromises);
+        }
+
+        // Benchmark functions
+        async function benchmark(func, iterations = 100) {
+            const times = [];
+            
+            // Warmup
+            for (let i = 0; i < Math.min(10, iterations / 10); i++) {
+                try {
+                    await func();
+                } catch (e) {}
+            }
+            
+            // Actual benchmark
+            for (let i = 0; i < iterations; i++) {
+                try {
+                    const start = performance.now();
+                    await func();
+                    const end = performance.now();
+                    times.push(end - start);
+                } catch (e) {
+                    // Count failed runs
+                }
+            }
+            
+            if (times.length === 0) {
+                throw new Error('All benchmark runs failed');
+            }
+            
+            times.sort((a, b) => a - b);
+            
+            return {
+                mean: times.reduce((a, b) => a + b) / times.length,
+                median: times[Math.floor(times.length / 2)],
+                min: times[0],
+                max: times[times.length - 1],
+                p95: times[Math.floor(times.length * 0.95)],
+                p99: times[Math.floor(times.length * 0.99)],
+                successRate: times.length / iterations
+            };
+        }
+
+        async function runPerformanceBenchmarks() {
+            if (benchmarkInProgress) return;
+            
+            benchmarkInProgress = true;
+            updateGlobalStatus('Running performance benchmarks...', 'info');
+            showProgress(true);
+            
+            const availableTools = Array.from(tools.values()).filter(t => t.status === 'loaded');
+            if (availableTools.length === 0) {
+                updateGlobalStatus('No tools loaded for benchmarking', 'error');
+                showProgress(false);
+                benchmarkInProgress = false;
+                return;
+            }
+
+            const performanceBody = document.getElementById('performanceBody');
+            performanceBody.innerHTML = '';
+            results.performance = [];
+
+            let progress = 0;
+            const totalTests = testCorpus.length * availableTools.length;
+
+            for (const testCase of testCorpus) {
+                const row = performanceBody.insertRow();
+                row.insertCell(0).textContent = testCase.name;
+                row.insertCell(1).textContent = testCase.text.length;
+
+                const toolResults = new Map();
+                let fastest = { tool: null, time: Infinity };
+
+                for (const tool of availableTools) {
+                    try {
+                        updateProgress(progress / totalTests * 100, `Testing ${tool.name} with ${testCase.name}`);
+                        
+                        const iterations = testCase.text.length > 1000 ? 20 : 
+                                         testCase.text.length > 100 ? 50 : 100;
+
+                        const stats = await benchmark(async () => {
+                            await tool.transliterate(testCase.text);
+                        }, iterations);
+
+                        toolResults.set(tool.name, stats);
+                        
+                        if (stats.mean < fastest.time) {
+                            fastest = { tool: tool.name, time: stats.mean };
+                        }
+
+                        // Update tool metrics in UI
+                        const speedEl = document.getElementById(`${tool.name}-speed`);
+                        if (speedEl) {
+                            const charsPerSec = testCase.text.length / (stats.mean / 1000);
+                            speedEl.textContent = Math.round(charsPerSec).toLocaleString();
+                            speedEl.parentElement.parentElement.style.display = 'block';
+                        }
+
+                        tool.log(`${testCase.name}: ${stats.mean.toFixed(3)}ms (${Math.round(testCase.text.length / (stats.mean / 1000))} chars/sec)`);
+
+                    } catch (error) {
+                        tool.log(`${testCase.name}: ERROR - ${error.message}`);
+                    }
+                    
+                    progress++;
+                }
+
+                // Add results to table
+                let cellIndex = 2;
+                for (const tool of availableTools) {
+                    const cell = row.insertCell(cellIndex++);
+                    const stats = toolResults.get(tool.name);
+                    if (stats) {
+                        cell.textContent = `${stats.mean.toFixed(2)}ms`;
+                        if (tool.name === fastest.tool) {
+                            cell.style.fontWeight = 'bold';
+                            cell.style.color = '#4CAF50';
+                        }
+                    } else {
+                        cell.textContent = 'Failed';
+                        cell.style.color = '#f44336';
+                    }
+                }
+
+                // Winner cell
+                const winnerCell = row.insertCell(cellIndex++);
+                winnerCell.textContent = fastest.tool || 'N/A';
+                winnerCell.style.fontWeight = 'bold';
+                winnerCell.style.color = '#4CAF50';
+
+                // Speed difference cell
+                const speedCell = row.insertCell(cellIndex++);
+                if (toolResults.size > 1) {
+                    const times = Array.from(toolResults.values()).map(s => s.mean);
+                    const slowest = Math.max(...times);
+                    const speedup = (slowest / fastest.time).toFixed(1);
+                    speedCell.textContent = `${speedup}x faster`;
+                } else {
+                    speedCell.textContent = '-';
+                }
+
+                // Store results
+                results.performance.push({
+                    testCase: testCase.name,
+                    length: testCase.text.length,
+                    results: Object.fromEntries(toolResults)
+                });
+            }
+
+            updateProgress(100, 'Performance benchmarks complete');
+            setTimeout(() => showProgress(false), 1000);
+            
+            updateGlobalStatus('Performance benchmarks completed successfully', 'success');
+            updateCharts();
+            benchmarkInProgress = false;
+        }
+
+        async function runAccuracyTests() {
+            updateGlobalStatus('Running accuracy tests...', 'info');
+            
+            const availableTools = Array.from(tools.values()).filter(t => t.status === 'loaded');
+            const container = document.getElementById('accuracyResults');
+            container.innerHTML = '';
+            results.accuracy = [];
+
+            for (const tool of availableTools) {
+                const card = document.createElement('div');
+                card.className = 'accuracy-card';
+                
+                let correct = 0;
+                const testResults = [];
+
+                for (const test of accuracyTests) {
+                    try {
+                        const result = await tool.transliterate(test.text);
+                        const isCorrect = result.trim() === test.expected;
+                        if (isCorrect) correct++;
+
+                        testResults.push({
+                            input: test.text,
+                            expected: test.expected,
+                            actual: result.trim(),
+                            correct: isCorrect
+                        });
+                    } catch (error) {
+                        testResults.push({
+                            input: test.text,
+                            expected: test.expected,
+                            actual: `ERROR: ${error.message}`,
+                            correct: false
+                        });
+                    }
+                }
+
+                const accuracy = (correct / accuracyTests.length * 100).toFixed(1);
+                
+                card.innerHTML = `
+                    <h3>${tool.name} - ${accuracy}% Accurate</h3>
+                    <div class="metric-card">
+                        <div class="metric-value">${correct}</div>
+                        <div class="metric-label">out of ${accuracyTests.length} correct</div>
+                    </div>
+                `;
+
+                // Add test details
+                testResults.slice(0, 10).forEach(result => {
+                    const item = document.createElement('div');
+                    item.className = 'accuracy-item';
+                    item.innerHTML = `
+                        <span class="devanagari-text">${result.input}</span>
+                        <span class="${result.correct ? 'correct' : 'incorrect'}">
+                            ${result.actual} ${result.correct ? '✓' : '✗'}
+                            ${!result.correct && !result.actual.startsWith('ERROR') ? `(expected: ${result.expected})` : ''}
+                        </span>
+                    `;
+                    card.appendChild(item);
+                });
+
+                container.appendChild(card);
+                
+                results.accuracy.push({
+                    tool: tool.name,
+                    accuracy: parseFloat(accuracy),
+                    correct: correct,
+                    total: accuracyTests.length,
+                    details: testResults
+                });
+
+                tool.log(`Accuracy test completed: ${accuracy}%`);
+            }
+
+            updateGlobalStatus('Accuracy tests completed', 'success');
+        }
+
+        // UI helper functions
+        function updateGlobalStatus(message, type) {
+            const status = document.getElementById('globalStatus');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        function updateGlobalControls() {
+            const availableTools = Array.from(tools.values()).filter(t => t.status === 'loaded');
+            const hasTools = availableTools.length > 0;
+            
+            document.getElementById('perfBtn').disabled = !hasTools;
+            document.getElementById('accBtn').disabled = !hasTools;
+        }
+
+        function showProgress(show) {
+            const container = document.getElementById('progressContainer');
+            container.style.display = show ? 'block' : 'none';
+            if (!show) {
+                updateProgress(0, '');
+            }
+        }
+
+        function updateProgress(percent, text) {
+            document.getElementById('progressFill').style.width = `${percent}%`;
+            document.getElementById('progressText').textContent = text;
+        }
+
+        function clearResults() {
+            document.getElementById('performanceBody').innerHTML = '';
+            document.getElementById('accuracyResults').innerHTML = '';
+            document.getElementById('benchmarkLog').innerHTML = '';
+            results.performance = [];
+            results.accuracy = [];
+            
+            // Clear charts
+            if (window.performanceChart) {
+                window.performanceChart.destroy();
+            }
+            if (window.throughputChart) {
+                window.throughputChart.destroy();
+            }
+            
+            updateGlobalStatus('Results cleared', 'info');
+        }
+
+        function updateCharts() {
+            if (results.performance.length === 0) return;
+
+            // Performance comparison chart
+            const perfCtx = document.getElementById('performanceChart').getContext('2d');
+            
+            const availableTools = Array.from(tools.values()).filter(t => t.status === 'loaded');
+            const toolNames = availableTools.map(t => t.name);
+            
+            const datasets = toolNames.map((toolName, index) => {
+                const colors = ['#2196F3', '#4CAF50', '#FF9800', '#9C27B0', '#F44336'];
+                return {
+                    label: toolName,
+                    data: results.performance.map(r => r.results[toolName]?.mean || null),
+                    backgroundColor: colors[index % colors.length] + '80',
+                    borderColor: colors[index % colors.length],
+                    borderWidth: 2
+                };
+            });
+
+            if (window.performanceChart) {
+                window.performanceChart.destroy();
+            }
+
+            window.performanceChart = new Chart(perfCtx, {
+                type: 'bar',
+                data: {
+                    labels: results.performance.map(r => r.testCase),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Time (milliseconds)'
+                            },
+                            type: 'logarithmic'
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Performance Comparison (lower is better)'
+                        }
+                    }
+                }
+            });
+
+            // Throughput chart
+            const throughputCtx = document.getElementById('throughputChart').getContext('2d');
+            
+            const throughputDatasets = toolNames.map((toolName, index) => {
+                const colors = ['#2196F3', '#4CAF50', '#FF9800', '#9C27B0', '#F44336'];
+                return {
+                    label: toolName,
+                    data: results.performance.map(r => {
+                        if (!r.results[toolName]) return null;
+                        return r.length / (r.results[toolName].mean / 1000); // chars/second
+                    }),
+                    borderColor: colors[index % colors.length],
+                    backgroundColor: colors[index % colors.length] + '20',
+                    tension: 0.1
+                };
+            });
+
+            if (window.throughputChart) {
+                window.throughputChart.destroy();
+            }
+
+            window.throughputChart = new Chart(throughputCtx, {
+                type: 'line',
+                data: {
+                    labels: results.performance.map(r => r.testCase),
+                    datasets: throughputDatasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Throughput (characters/second)'
+                            },
+                            type: 'logarithmic'
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Throughput Analysis (higher is better)'
+                        }
+                    }
+                }
+            });
+        }
+
+        function downloadResults() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                tools: Array.from(tools.values()).map(t => ({
+                    name: t.name,
+                    status: t.status,
+                    loadTime: t.loadTime,
+                    error: t.error
+                })),
+                performance: results.performance,
+                accuracy: results.accuracy
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `wasm_benchmark_results_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize the benchmark suite
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTools();
+            updateGlobalStatus('Benchmark suite ready. Load tools to begin testing.', 'info');
+        });
+    </script>
+</body>
+</html>

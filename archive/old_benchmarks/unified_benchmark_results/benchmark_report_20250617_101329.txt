@@ -1,0 +1,37 @@
+SHLESHA TRANSLITERATION BENCHMARK REPORT
+============================================================
+
+Generated: 2025-06-17 10:13:29
+System: darwin
+Python: 3.13.3 (main, Apr  8 2025, 13:54:08) [Clang 16.0.0 (clang-1600.0.26.6)]
+Rust: rustc 1.86.0 (05f9846f8 2025-03-31) (Homebrew)
+
+SUMMARY
+------------------------------
+Total tools tested: 1
+Available tools: 1
+Platforms tested: Python
+
+PERFORMANCE LEADERS
+------------------------------
+Fastest: indic-transliteration (Python) - 0.78ms
+Highest throughput: indic-transliteration (Python) - 537052 chars/sec
+
+ACCURACY LEADERS
+------------------------------
+Most accurate: indic-transliteration (Python) - 0.8%
+
+DETAILED RESULTS
+------------------------------
+
+indic-transliteration (Python)
+  Available: Yes
+  Performance:
+    Mean time: 0.7778431940314476 ms
+    Throughput: 537052.0853461229 chars/sec
+  Accuracy: 0.8%
+
+RECOMMENDATIONS
+------------------------------
+🐍 For Python integration: 1 Python libraries available
+⚠️  Shlesha not detected - ensure proper installation

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
-use crate::ir_v2::{AbugidaIR, AlphabetIR, IR, AbugidaAtom, AlphabetAtom, ModifierSet, ScriptId, SchemeId};
-use crate::element_id::{ElementId, ElementType, ElementRegistry};
-use crate::schema_parser::{Schema, ScriptType, ElementMapping};
+use crate::ir_v2::{AbugidaIR, AlphabetIR, IR, ScriptId, SchemeId};
+use crate::element_id::{ElementId, ElementRegistry, ElementType};
+use crate::schema_parser::{Schema, ScriptType};
 use crate::runtime_extension::RuntimeExtensionManager;
 use thiserror::Error;
 
@@ -188,7 +188,7 @@ impl ParserV2 {
             
             // Check all mapping categories for this sequence
             for (_, mappings) in &schema.mappings {
-                if let Some(mapping) = mappings.get(&sequence) {
+                if let Some(_mapping) = mappings.get(&sequence) {
                     if let Some(&element_id) = self.element_cache.get(&sequence) {
                         best_match = (len, element_id, sequence.clone());
                         // Continue to find longest match

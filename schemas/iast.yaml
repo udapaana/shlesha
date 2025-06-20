@@ -147,8 +147,14 @@ mappings:
       
     # Additional
     "ḷ":
-      canonical: "ḷ"
+      canonical: "ḷa"
       is_retroflex: true
+    "ḻ":
+      canonical: "ḻa"
+    "ṟ":
+      canonical: "ṟa"
+    "ṉ":
+      canonical: "ṉa"
     "kṣ":
       canonical: "kṣ"
     "jñ":
@@ -188,11 +194,17 @@ mappings:
     "e":
       canonical: "e"
       is_long: true
+    "ē":
+      canonical: "ē"
+      is_long: true
     "ai":
       canonical: "ai"
       is_long: true
     "o":
       canonical: "o"
+      is_long: true
+    "ō":
+      canonical: "ō"
       is_long: true
     "au":
       canonical: "au"

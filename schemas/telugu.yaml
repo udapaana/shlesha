@@ -1,0 +1,384 @@
+name: "Telugu"
+type: abugida
+
+metadata:
+  version: "1.0.0"
+  author: "Shlesha Contributors"
+  description: "Telugu script mapping for Telugu language"
+  references:
+    - "Unicode Standard 15.0"
+    - "Telugu Language Standards"
+
+element_types:
+  consonant:
+    description: "Basic consonant with inherent 'a' vowel"
+    properties:
+      has_inherent_vowel:
+        type: bool
+        default: true
+        description: "Whether the consonant has inherent 'a' vowel"
+      varga:
+        type: string
+        description: "Consonant class"
+        required: false
+      voiced:
+        type: bool
+        default: false
+        description: "Whether the consonant is voiced"
+      aspirated:
+        type: bool
+        default: false
+        description: "Whether the consonant is aspirated"
+        
+  vowel_independent:
+    description: "Independent vowel sign"
+    properties:
+      is_long:
+        type: bool
+        default: false
+        description: "Whether the vowel is long"
+        
+  vowel_dependent:
+    description: "Dependent vowel sign (matra)"
+    properties:
+      is_long:
+        type: bool
+        default: false
+        description: "Whether the vowel is long"
+
+mappings:
+  consonants:
+    # Velars (ka-varga)
+    "క":
+      canonical: "ka"
+      varga: "ka-varga"
+      voiced: false
+      aspirated: false
+    "ఖ":
+      canonical: "kha"
+      varga: "ka-varga"
+      voiced: false
+      aspirated: true
+    "గ":
+      canonical: "ga"
+      varga: "ka-varga"
+      voiced: true
+      aspirated: false
+    "ఘ":
+      canonical: "gha"
+      varga: "ka-varga"
+      voiced: true
+      aspirated: true
+    "ఙ":
+      canonical: "ṅa"
+      varga: "ka-varga"
+      voiced: true
+      aspirated: false
+      
+    # Palatals (ca-varga)
+    "చ":
+      canonical: "ca"
+      varga: "ca-varga"
+      voiced: false
+      aspirated: false
+    "ఛ":
+      canonical: "cha"
+      varga: "ca-varga"
+      voiced: false
+      aspirated: true
+    "జ":
+      canonical: "ja"
+      varga: "ca-varga"
+      voiced: true
+      aspirated: false
+    "ఝ":
+      canonical: "jha"
+      varga: "ca-varga"
+      voiced: true
+      aspirated: true
+    "ఞ":
+      canonical: "ña"
+      varga: "ca-varga"
+      voiced: true
+      aspirated: false
+      
+    # Retroflexes (ṭa-varga)
+    "ట":
+      canonical: "ṭa"
+      varga: "ṭa-varga"
+      voiced: false
+      aspirated: false
+    "ఠ":
+      canonical: "ṭha"
+      varga: "ṭa-varga"
+      voiced: false
+      aspirated: true
+    "డ":
+      canonical: "ḍa"
+      varga: "ṭa-varga"
+      voiced: true
+      aspirated: false
+    "ఢ":
+      canonical: "ḍha"
+      varga: "ṭa-varga"
+      voiced: true
+      aspirated: true
+    "ణ":
+      canonical: "ṇa"
+      varga: "ṭa-varga"
+      voiced: true
+      aspirated: false
+      
+    # Dentals (ta-varga)
+    "త":
+      canonical: "ta"
+      varga: "ta-varga"
+      voiced: false
+      aspirated: false
+    "థ":
+      canonical: "tha"
+      varga: "ta-varga"
+      voiced: false
+      aspirated: true
+    "ద":
+      canonical: "da"
+      varga: "ta-varga"
+      voiced: true
+      aspirated: false
+    "ధ":
+      canonical: "dha"
+      varga: "ta-varga"
+      voiced: true
+      aspirated: true
+    "న":
+      canonical: "na"
+      varga: "ta-varga"
+      voiced: true
+      aspirated: false
+      
+    # Labials (pa-varga)
+    "ప":
+      canonical: "pa"
+      varga: "pa-varga"
+      voiced: false
+      aspirated: false
+    "ఫ":
+      canonical: "pha"
+      varga: "pa-varga"
+      voiced: false
+      aspirated: true
+    "బ":
+      canonical: "ba"
+      varga: "pa-varga"
+      voiced: true
+      aspirated: false
+    "భ":
+      canonical: "bha"
+      varga: "pa-varga"
+      voiced: true
+      aspirated: true
+    "మ":
+      canonical: "ma"
+      varga: "pa-varga"
+      voiced: true
+      aspirated: false
+      
+    # Semi-vowels
+    "య":
+      canonical: "ya"
+      voiced: true
+    "ర":
+      canonical: "ra"
+      voiced: true
+    "ల":
+      canonical: "la"
+      voiced: true
+    "వ":
+      canonical: "va"
+      voiced: true
+    "ళ":
+      canonical: "ḷa"
+      voiced: true
+      
+    # Sibilants
+    "శ":
+      canonical: "śa"
+      voiced: false
+    "ష":
+      canonical: "ṣa"
+      voiced: false
+    "స":
+      canonical: "sa"
+      voiced: false
+      
+    # Aspirate
+    "హ":
+      canonical: "ha"
+      voiced: true
+      
+    # Additional Telugu consonants
+    "క్ష":
+      canonical: "kṣa"
+      voiced: false
+    "జ్ఞ":
+      canonical: "jña"
+      voiced: true
+
+  vowels:
+    # Independent vowels
+    "అ":
+      canonical: "a"
+      type: vowel_independent
+      is_long: false
+    "ఆ":
+      canonical: "ā"
+      type: vowel_independent
+      is_long: true
+    "ఇ":
+      canonical: "i"
+      type: vowel_independent
+      is_long: false
+    "ఈ":
+      canonical: "ī"
+      type: vowel_independent
+      is_long: true
+    "ఉ":
+      canonical: "u"
+      type: vowel_independent
+      is_long: false
+    "ఊ":
+      canonical: "ū"
+      type: vowel_independent
+      is_long: true
+    "ఋ":
+      canonical: "ṛ"
+      type: vowel_independent
+      is_long: false
+    "ౠ":
+      canonical: "ṝ"
+      type: vowel_independent
+      is_long: true
+    "ఌ":
+      canonical: "ḷ"
+      type: vowel_independent
+      is_long: false
+    "ౡ":
+      canonical: "ḹ"
+      type: vowel_independent
+      is_long: true
+    "ఎ":
+      canonical: "e"
+      type: vowel_independent
+      is_long: false
+    "ఏ":
+      canonical: "ē"
+      type: vowel_independent
+      is_long: true
+    "ఐ":
+      canonical: "ai"
+      type: vowel_independent
+      is_long: true
+    "ఒ":
+      canonical: "o"
+      type: vowel_independent
+      is_long: false
+    "ఓ":
+      canonical: "ō"
+      type: vowel_independent
+      is_long: true
+    "ఔ":
+      canonical: "au"
+      type: vowel_independent
+      is_long: true
+      
+    # Dependent vowels (matras)
+    "ా":
+      canonical: "ā"
+      type: vowel_dependent
+      is_long: true
+    "ి":
+      canonical: "i"
+      type: vowel_dependent
+      is_long: false
+    "ీ":
+      canonical: "ī"
+      type: vowel_dependent
+      is_long: true
+    "ు":
+      canonical: "u"
+      type: vowel_dependent
+      is_long: false
+    "ూ":
+      canonical: "ū"
+      type: vowel_dependent
+      is_long: true
+    "ృ":
+      canonical: "ṛ"
+      type: vowel_dependent
+      is_long: false
+    "ౄ":
+      canonical: "ṝ"
+      type: vowel_dependent
+      is_long: true
+    "ౢ":
+      canonical: "ḷ"
+      type: vowel_dependent
+      is_long: false
+    "ౣ":
+      canonical: "ḹ"
+      type: vowel_dependent
+      is_long: true
+    "ె":
+      canonical: "e"
+      type: vowel_dependent
+      is_long: false
+    "ే":
+      canonical: "ē"
+      type: vowel_dependent
+      is_long: true
+    "ై":
+      canonical: "ai"
+      type: vowel_dependent
+      is_long: true
+    "ొ":
+      canonical: "o"
+      type: vowel_dependent
+      is_long: false
+    "ో":
+      canonical: "ō"
+      type: vowel_dependent
+      is_long: true
+    "ౌ":
+      canonical: "au"
+      type: vowel_dependent
+      is_long: true
+
+  modifiers:
+    "్":
+      canonical: ""
+      type: virama
+    "ఁ":
+      canonical: "m̐"
+      type: candrabindu
+    "ం":
+      canonical: "ṃ"
+      type: anusvara
+    "ః":
+      canonical: "ḥ"
+      type: visarga
+
+  numerals:
+    "౦": { canonical: "0" }
+    "౧": { canonical: "1" }
+    "౨": { canonical: "2" }
+    "౩": { canonical: "3" }
+    "౪": { canonical: "4" }
+    "౫": { canonical: "5" }
+    "౬": { canonical: "6" }
+    "౭": { canonical: "7" }
+    "౮": { canonical: "8" }
+    "౯": { canonical: "9" }
+
+  punctuation:
+    "।": { canonical: "." }
+    "॥": { canonical: ".." }

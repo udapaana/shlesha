@@ -1,0 +1,104 @@
+{
+  "single_word": {
+    "vidyut": {
+      "time": 8.877797517925501e-07,
+      "result": "dharma",
+      "throughput": 4505622.021592007
+    },
+    "shlesha_cli": {
+      "time": 0.017050914251740323,
+      "result": "dharma",
+      "throughput": 234.5915263512474
+    },
+    "lossless_estimated": {
+      "time": 8e-06,
+      "result": "[LOSSLESS_ESTIMATED]",
+      "throughput": 500000.0
+    }
+  },
+  "short_phrase": {
+    "vidyut": {
+      "time": 4.1012599831447006e-06,
+      "result": "dharmak\u1e63etre kuruk\u1e63etre",
+      "throughput": 6095687.691769027
+    },
+    "shlesha_cli": {
+      "time": 0.016991854749721823,
+      "result": "dharmak\u1e63etre kuruk\u1e63etre",
+      "throughput": 1471.293179481144
+    },
+    "lossless_estimated": {
+      "time": 8e-06,
+      "result": "[LOSSLESS_ESTIMATED]",
+      "throughput": 3125000.0
+    }
+  },
+  "complex_clusters": {
+    "vidyut": {
+      "time": 2.241359616164118e-06,
+      "result": "k\u1e63mya trya j\u00f1a \u015bra",
+      "throughput": 9369313.093960164
+    },
+    "shlesha_cli": {
+      "time": 0.016560053249486374,
+      "result": "k\u1e63mya trya j\u00f1a \u015bra",
+      "throughput": 1268.111864353536
+    },
+    "lossless_estimated": {
+      "time": 8e-06,
+      "result": "[LOSSLESS_ESTIMATED]",
+      "throughput": 2625000.0
+    }
+  },
+  "medium_text": {
+    "vidyut": {
+      "time": 6.774139619665221e-06,
+      "result": "dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya ..",
+      "throughput": 12104858.27040755
+    },
+    "shlesha_cli": {
+      "time": 0.017057159751129803,
+      "result": "dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya ..",
+      "throughput": 4807.3654228728565
+    },
+    "lossless_estimated": {
+      "time": 8e-06,
+      "result": "[LOSSLESS_ESTIMATED]",
+      "throughput": 10250000.0
+    }
+  },
+  "long_text": {
+    "vidyut": {
+      "time": 1.5097320429049432e-05,
+      "result": "tatra \u015b\u016br\u0101 mahe\u1e63v\u0101s\u0101 bh\u012bm\u0101rjunasam\u0101 yudhi . yuyudh\u0101no vir\u0101\u1e6da\u015bca drupada\u015bca mah\u0101ratha\u1e25 .. dh\u1e5b\u1e63\u1e6daketu\u015bcekit\u0101na\u1e25 k\u0101\u015bir\u0101ja\u015bca v\u012bryav\u0101n . purujitkuntibhoja\u015bca \u015baibya\u015bca mah\u0101ratha\u1e25 ..",
+      "throughput": 10465433.302719409
+    },
+    "shlesha_cli": {
+      "time": 0.01756001005123835,
+      "result": "tatra \u015b\u016br\u0101 mahe\u1e63v\u0101s\u0101 bh\u012bm\u0101rjunasam\u0101 yudhi . yuyudh\u0101no vir\u0101\u1e6da\u015bca drupada\u015bca mah\u0101ratha\u1e25 .. dh\u1e5b\u1e63\u1e6daketu\u015bcekit\u0101na\u1e25 k\u0101\u015bir\u0101ja\u015bca v\u012bryav\u0101n . purujitkuntibhoja\u015bca \u015baibya\u015bca mah\u0101ratha\u1e25 ..",
+      "throughput": 8997.716945432936
+    },
+    "lossless_estimated": {
+      "time": 8e-06,
+      "result": "[LOSSLESS_ESTIMATED]",
+      "throughput": 19750000.0
+    }
+  },
+  "very_long_text": {
+    "vidyut": {
+      "time": 0.00027528786042239515,
+      "result": "dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. ",
+      "throughput": 15075128.970933693
+    },
+    "shlesha_cli": {
+      "time": 0.024147857999196276,
+      "result": "dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya .. dharmak\u1e63etre kuruk\u1e63etre samavet\u0101 yuyutsava\u1e25 . m\u0101mak\u0101\u1e25 p\u0101\u1e47\u1e0dav\u0101\u015bcaiva kimakurvata sa\u00f1jaya ..",
+      "throughput": 171857.893157154
+    },
+    "lossless_estimated": {
+      "time": 8e-06,
+      "result": "[LOSSLESS_ESTIMATED]",
+      "throughput": 518750000.0
+    }
+  }
+}

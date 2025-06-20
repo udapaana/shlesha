@@ -19,7 +19,7 @@ pub enum SchemaError {
     MissingField(String),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ScriptType {
     Abugida,
@@ -234,8 +234,14 @@ impl SchemaRegistry {
                     let ext_file: ExtensionFile = serde_yaml::from_str(&content)?;
                     self.register_extension_file(ext_file);
                 } else {
-                    let schema = SchemaParser::parse_str(&content)?;
-                    self.register(schema);
+                    // Try to parse as a regular schema, skip if it fails
+                    match SchemaParser::parse_str(&content) {
+                        Ok(schema) => self.register(schema),
+                        Err(e) => {
+                            eprintln!("Warning: Skipping schema file {} - {}", path.display(), e);
+                            continue;
+                        }
+                    }
                 }
                 count += 1;
             }

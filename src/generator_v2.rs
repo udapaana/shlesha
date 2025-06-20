@@ -137,8 +137,8 @@ impl GeneratorV2 {
         Ok(result)
     }
     
-    fn generate_modifiers(&self, modifiers: &crate::ir_v2::ModifierSet, target_script: &str) -> Result<String, GenerateError> {
-        let mut result = String::new();
+    fn generate_modifiers(&self, modifiers: &crate::ir_v2::ModifierSet, _target_script: &str) -> Result<String, GenerateError> {
+        let result = String::new();
         
         // This is a simplified implementation
         // In practice, you'd iterate through the modifier set and generate each modifier
@@ -153,7 +153,7 @@ impl GeneratorV2 {
     fn build_reverse_mappings(&mut self, schema: &Schema) {
         let script_name = &schema.name;
         
-        for (category, mappings) in &schema.mappings {
+        for (_category, mappings) in &schema.mappings {
             for (grapheme, element_mapping) in mappings {
                 let canonical = &element_mapping.canonical;
                 let lookup_key = (script_name.clone(), canonical.clone());

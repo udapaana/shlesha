@@ -32,12 +32,24 @@ echo "संस्कृतम्" | cargo run --example cli -- -f devanagari -t
 
 ### Supported Scripts
 
+**Indic Scripts (9):**
 - `devanagari` - Devanagari script (देवनागरी)
+- `bengali` - Bengali script (বাংলা)
+- `tamil` - Tamil script (தமிழ்)
+- `telugu` - Telugu script (తెలుగు)
+- `kannada` - Kannada script (ಕನ್ನಡ)
+- `malayalam` - Malayalam script (മലയാളം)
+- `gujarati` - Gujarati script (ગુજરાતી)
+- `odia` - Odia script (ଓଡ଼ିଆ)
+- `gurmukhi` - Gurmukhi script (ਗੁਰਮੁਖੀ)
+
+**Roman Schemes (6):**
 - `iast` - International Alphabet of Sanskrit Transliteration
 - `harvard-kyoto` - Harvard-Kyoto convention
+- `itrans` - ITRANS scheme (ASCII-based)
 - `slp1` - Sanskrit Library Phonetic Basic
-- `iso15919` - ISO 15919 standard
-- `telugu` - Telugu script (తెలుగు)
+- `velthuis` - Velthuis TeX transliteration
+- `wx` - WX notation (IIIT Hyderabad)
 
 ### Options
 
@@ -59,6 +71,17 @@ cargo run --example cli -- -f devanagari -t iast "धर्मक्षेत्
 # IAST to Devanagari
 cargo run --example cli -- -f iast -t devanagari "śāntam"
 # Output: शान्तम्
+
+# Cross-script transliteration via IAST
+cargo run --example cli -- -f devanagari -t tamil "नमः"
+# Output: நம꞉
+
+# ASCII schemes
+cargo run --example cli -- -f devanagari -t harvard-kyoto "धर्म"
+# Output: dharma
+
+cargo run --example cli -- -f slp1 -t devanagari "Darma"
+# Output: धर्म
 
 # With verbose metrics
 cargo run --example cli -- -f devanagari -t iast -v "कर्म"
@@ -148,12 +171,42 @@ See [EXTENSIONS.md](EXTENSIONS.md) for details on creating custom extensions.
 # Run all tests
 cargo test
 
+# Run comprehensive matrix tests (all 15×15 = 225 script pairs)
+cargo test --test full_matrix_tests -- --nocapture
+
 # Run specific test suite
 cargo test parser
+
+# Verify expected test values
+cargo test --test verify_expected_values -- --nocapture
 
 # Run benchmarks
 cargo bench
 ```
+
+### Matrix Testing
+
+Shlesha includes comprehensive round-trip testing across all supported scripts:
+
+- **Identity tests**: Same script conversions (15 tests)
+- **Round-trip tests**: Source → Target → Source (210 tests)  
+- **Total coverage**: 18,675 test cases (225 pairs × 83 test cases)
+- **Test categories**: 
+  - All consonants (velars, palatals, retroflexes, dentals, labials, semi-vowels, sibilants)
+  - Independent vowels and vowel combinations
+  - Common conjuncts and complex clusters
+  - Anusvara, visarga, and modifiers
+  - Real Sanskrit/Hindi words
+  - Numerals and punctuation
+  - Script-specific features
+
+### Specialized Testing
+
+- **Conjunct coverage**: 23 complex conjuncts with 100% success rate
+- **Vowel combinations**: 28 vowel forms with 100% success rate  
+- **Real-world words**: 24 Sanskrit terms with 100% success rate
+- **Numerals/punctuation**: 14 symbols with 92.9% success rate
+- **Script-specific features**: Tamil, Bengali, Telugu, Devanagari specializations
 
 ## Notes
 

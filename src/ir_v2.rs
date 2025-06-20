@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::element_id::{ElementId, ElementType, ElementRegistry};
+use crate::element_id::{ElementId, ElementType};
 
 /// Compact element representation optimized for large texts
 #[derive(Clone, Debug)]

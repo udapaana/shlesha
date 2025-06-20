@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fair WASM vs WASM Benchmark</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+        }
+        .results {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .library-status {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .available {
+            color: #28a745;
+        }
+        .unavailable {
+            color: #dc3545;
+        }
+        .benchmark-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fair WASM vs WASM Benchmark</h1>
+    
+    <div class="controls">
+        <h2>Benchmark Controls</h2>
+        <button id="loadLibraries">Load Libraries</button>
+        <button id="runBenchmark" disabled>Run Benchmark</button>
+        <button id="downloadResults" disabled>Download Results</button>
+    </div>
+
+    <div class="library-status">
+        <h3>Library Status:</h3>
+        <div id="libraryStatus">
+            <p>Click "Load Libraries" to initialize WASM modules...</p>
+        </div>
+    </div>
+
+    <div class="status" id="status">
+        Ready to start benchmark...
+    </div>
+
+    <div class="results" id="results">
+        <h2>Benchmark Results</h2>
+        <div id="resultsContent">
+            <p>No results yet. Run the benchmark to see performance comparisons.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        // Global state
+        let libraries = {
+            shlesha: { loaded: false, module: null },
+            // Add other WASM libraries here as they become available
+            // vidyut: { loaded: false, module: null },
+            // aksharamukha_wasm: { loaded: false, module: null }
+        };
+
+        let testData = {};
+        let benchmarkResults = {};
+
+        // Load test data
+        async function loadTestData() {
+            const sizes = ['small', 'medium', 'large', 'very_large'];
+            for (const size of sizes) {
+                try {
+                    const response = await fetch(`../bench_data/${size}.txt`);
+                    if (response.ok) {
+                        testData[size] = await response.text();
+                    }
+                } catch (error) {
+                    console.warn(`Could not load ${size}.txt:`, error);
+                }
+            }
+        }
+
+        // Load Shlesha WASM module
+        async function loadShlesha() {
+            try {
+                // This assumes shlesha_wasm.js and shlesha_wasm_bg.wasm are in the parent directory
+                const module = await import('../pkg/shlesha_wasm.js');
+                await module.default();
+                libraries.shlesha.module = module;
+                libraries.shlesha.loaded = true;
+                return true;
+            } catch (error) {
+                console.error('Failed to load Shlesha WASM:', error);
+                return false;
+            }
+        }
+
+        // Benchmark function for Shlesha
+        function benchmarkShlesha(text, iterations) {
+            if (!libraries.shlesha.loaded) return null;
+            
+            const module = libraries.shlesha.module;
+            const transliterator = new module.Transliterator();
+
+            // Warm up
+            for (let i = 0; i < 10; i++) {
+                transliterator.transliterate(text, "devanagari", "iast");
+            }
+
+            // Benchmark
+            const startTime = performance.now();
+            for (let i = 0; i < iterations; i++) {
+                const result = transliterator.transliterate(text, "devanagari", "iast");
+            }
+            const endTime = performance.now();
+
+            const totalTime = (endTime - startTime) / 1000; // Convert to seconds
+            return {
+                totalTime: totalTime,
+                avgTime: totalTime / iterations,
+                iterations: iterations,
+                charsPerSecond: (text.length * iterations) / totalTime
+            };
+        }
+
+        // Update library status display
+        function updateLibraryStatus() {
+            const statusDiv = document.getElementById('libraryStatus');
+            let html = '';
+            
+            for (const [name, lib] of Object.entries(libraries)) {
+                const status = lib.loaded ? 
+                    '<span class="available">✓ Loaded</span>' : 
+                    '<span class="unavailable">✗ Not loaded</span>';
+                html += `<p>${name}: ${status}</p>`;
+            }
+            
+            statusDiv.innerHTML = html;
+        }
+
+        // Load all libraries
+        async function loadLibraries() {
+            const status = document.getElementById('status');
+            const loadBtn = document.getElementById('loadLibraries');
+            const runBtn = document.getElementById('runBenchmark');
+            
+            loadBtn.disabled = true;
+            status.textContent = 'Loading libraries...';
+            
+            // Load test data
+            await loadTestData();
+            
+            // Load WASM modules
+            await loadShlesha();
+            // Add other libraries here as they become available
+            
+            updateLibraryStatus();
+            
+            // Enable run button if at least one library loaded
+            const anyLoaded = Object.values(libraries).some(lib => lib.loaded);
+            if (anyLoaded) {
+                runBtn.disabled = false;
+                status.textContent = 'Libraries loaded. Ready to run benchmark.';
+            } else {
+                status.textContent = 'Failed to load any libraries.';
+            }
+            
+            loadBtn.disabled = false;
+        }
+
+        // Run benchmarks
+        async function runBenchmark() {
+            const status = document.getElementById('status');
+            const runBtn = document.getElementById('runBenchmark');
+            const downloadBtn = document.getElementById('downloadResults');
+            
+            runBtn.disabled = true;
+            benchmarkResults = {};
+            
+            const iterationCounts = {
+                small: 1000,
+                medium: 100,
+                large: 10,
+                very_large: 1
+            };
+            
+            for (const [size, text] of Object.entries(testData)) {
+                if (!text) continue;
+                
+                const iterations = iterationCounts[size] || 100;
+                status.textContent = `Benchmarking ${size} text (${text.length} chars)...`;
+                
+                benchmarkResults[size] = {
+                    textLength: text.length,
+                    iterations: iterations
+                };
+                
+                // Benchmark each loaded library
+                if (libraries.shlesha.loaded) {
+                    benchmarkResults[size].shlesha = benchmarkShlesha(text, iterations);
+                }
+                // Add other libraries here
+                
+                // Small delay to update UI
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            displayResults();
+            runBtn.disabled = false;
+            downloadBtn.disabled = false;
+            status.textContent = 'Benchmark complete!';
+        }
+
+        // Display results
+        function displayResults() {
+            const resultsDiv = document.getElementById('resultsContent');
+            let html = '';
+            
+            for (const [size, results] of Object.entries(benchmarkResults)) {
+                html += `<div class="benchmark-section">`;
+                html += `<h3>${size.toUpperCase()} Text (${results.textLength} chars)</h3>`;
+                html += '<table>';
+                html += '<tr><th>Library</th><th>Avg Time (ms)</th><th>Chars/sec</th><th>Relative Speed</th></tr>';
+                
+                // Get baseline (first available library)
+                let baselineTime = null;
+                let baselineName = null;
+                
+                for (const [libName, libResults] of Object.entries(results)) {
+                    if (libName !== 'textLength' && libName !== 'iterations' && libResults) {
+                        if (!baselineTime) {
+                            baselineTime = libResults.avgTime;
+                            baselineName = libName;
+                        }
+                        
+                        const avgTimeMs = libResults.avgTime * 1000;
+                        const relative = baselineTime ? (libResults.avgTime / baselineTime).toFixed(2) : '1.00';
+                        const relativeText = libName === baselineName ? '1.00x (baseline)' : `${relative}x`;
+                        
+                        html += '<tr>';
+                        html += `<td>${libName}</td>`;
+                        html += `<td>${avgTimeMs.toFixed(3)}</td>`;
+                        html += `<td>${libResults.charsPerSecond.toFixed(0)}</td>`;
+                        html += `<td>${relativeText}</td>`;
+                        html += '</tr>';
+                    }
+                }
+                
+                html += '</table>';
+                html += '</div>';
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        // Download results as JSON
+        function downloadResults() {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const filename = `wasm_fair_benchmark_${timestamp}.json`;
+            
+            const data = {
+                timestamp: new Date().toISOString(),
+                platform: 'WASM',
+                results: benchmarkResults
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Event listeners
+        document.getElementById('loadLibraries').addEventListener('click', loadLibraries);
+        document.getElementById('runBenchmark').addEventListener('click', runBenchmark);
+        document.getElementById('downloadResults').addEventListener('click', downloadResults);
+    </script>
+</body>
+</html>

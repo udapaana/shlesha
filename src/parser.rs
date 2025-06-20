@@ -76,6 +76,52 @@ impl Parser {
             }
             
             if !matched {
+                // Check for fallback tokens [script:token] or legacy [?:token]
+                if chars[i] == '[' && i + 2 < chars.len() {
+                    // Find the closing bracket
+                    let mut j = i + 1;
+                    while j < chars.len() && chars[j] != ']' {
+                        j += 1;
+                    }
+                    
+                    if j < chars.len() && chars[j] == ']' {
+                        // Extract the full token content [script:token]
+                        let token_content: String = chars[i + 1..j].iter().collect();
+                        
+                        if let Some(colon_pos) = token_content.find(':') {
+                            let script_part = &token_content[..colon_pos];
+                            let token_part = &token_content[colon_pos + 1..];
+                            
+                            // Check if we're parsing back to the origin script
+                            let current_script = self.script_to_demonym(&schema.name);
+                            if script_part == current_script || script_part == "?" {
+                                // We're back to origin script - unwrap the token
+                                ir.push(Element::new(
+                                    ElementType::UNKNOWN, // Will be reclassified by normal parsing
+                                    token_part.to_string(),
+                                    token_part.to_string()
+                                ));
+                            } else {
+                                // Keep as unknown token for different script
+                                ir.push(Element::new(
+                                    ElementType::UNKNOWN,
+                                    format!("[{}]", token_content),
+                                    format!("[{}]", token_content)
+                                ));
+                            }
+                        } else {
+                            // Malformed token, treat as unknown
+                            ir.push(Element::new(
+                                ElementType::UNKNOWN,
+                                format!("[{}]", token_content),
+                                format!("[{}]", token_content)
+                            ));
+                        }
+                        i = j + 1;
+                        continue;
+                    }
+                }
+                
                 // Handle whitespace and unknown characters
                 let ch = chars[i];
                 if ch.is_whitespace() {
@@ -131,6 +177,52 @@ impl Parser {
             }
             
             if !matched {
+                // Check for fallback tokens [script:token] or legacy [?:token]
+                if chars[i] == '[' && i + 2 < chars.len() {
+                    // Find the closing bracket
+                    let mut j = i + 1;
+                    while j < chars.len() && chars[j] != ']' {
+                        j += 1;
+                    }
+                    
+                    if j < chars.len() && chars[j] == ']' {
+                        // Extract the full token content [script:token]
+                        let token_content: String = chars[i + 1..j].iter().collect();
+                        
+                        if let Some(colon_pos) = token_content.find(':') {
+                            let script_part = &token_content[..colon_pos];
+                            let token_part = &token_content[colon_pos + 1..];
+                            
+                            // Check if we're parsing back to the origin script
+                            let current_script = self.script_to_demonym(&schema.name);
+                            if script_part == current_script || script_part == "?" {
+                                // We're back to origin script - unwrap the token
+                                ir.push(Element::new(
+                                    ElementType::UNKNOWN, // Will be reclassified by normal parsing
+                                    token_part.to_string(),
+                                    token_part.to_string()
+                                ));
+                            } else {
+                                // Keep as unknown token for different script
+                                ir.push(Element::new(
+                                    ElementType::UNKNOWN,
+                                    format!("[{}]", token_content),
+                                    format!("[{}]", token_content)
+                                ));
+                            }
+                        } else {
+                            // Malformed token, treat as unknown
+                            ir.push(Element::new(
+                                ElementType::UNKNOWN,
+                                format!("[{}]", token_content),
+                                format!("[{}]", token_content)
+                            ));
+                        }
+                        i = j + 1;
+                        continue;
+                    }
+                }
+                
                 let ch = chars[i];
                 if ch.is_whitespace() {
                     ir.push(Element::new(
@@ -197,6 +289,28 @@ impl Parser {
             "accents" => ElementType::ACCENT.to_string(),
             _ => ElementType::UNKNOWN.to_string(),
         }
+    }
+    
+    fn script_to_demonym(&self, script_name: &str) -> String {
+        // Convert script names to lowercase demonyms
+        match script_name {
+            "Devanagari" => "devanagari",
+            "Bengali" => "bengali", 
+            "Tamil" => "tamil",
+            "Telugu" => "telugu",
+            "Kannada" => "kannada",
+            "Malayalam" => "malayalam",
+            "Gujarati" => "gujarati",
+            "Odia" => "odia",
+            "Gurmukhi" => "gurmukhi",
+            "IAST" => "iast",
+            "Harvard-Kyoto" => "harvard-kyoto",
+            "ITRANS" => "itrans",
+            "SLP1" => "slp1",
+            "Velthuis" => "velthuis",
+            "WX" => "wx",
+            _ => script_name,
+        }.to_string()
     }
 }
 

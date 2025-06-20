@@ -1,0 +1,264 @@
+name: "Tamil"
+type: abugida
+
+metadata:
+  version: "1.0.0"
+  author: "Shlesha Contributors"
+  description: "Tamil script mapping with unique characteristics"
+  references:
+    - "Unicode Standard 15.0"
+    - "Tamil Nadu Government Tamil Unicode Standard"
+
+element_types:
+  consonant:
+    description: "Basic consonant with inherent 'a' vowel"
+    properties:
+      has_inherent_vowel:
+        type: bool
+        default: true
+        description: "Whether the consonant has inherent 'a' vowel"
+      varga:
+        type: string
+        description: "Consonant class"
+        required: false
+      voiced:
+        type: bool
+        default: false
+        description: "Whether the consonant is voiced"
+        
+  vowel_independent:
+    description: "Independent vowel sign"
+    properties:
+      is_long:
+        type: bool
+        default: false
+        description: "Whether the vowel is long"
+        
+  vowel_dependent:
+    description: "Dependent vowel sign (matra)"
+    properties:
+      is_long:
+        type: bool
+        default: false
+        description: "Whether the vowel is long"
+
+mappings:
+  consonants:
+    # Velars
+    "க":
+      canonical: "ka"
+      varga: "ka-varga"
+      voiced: false
+    "ங":
+      canonical: "ṅa"
+      varga: "ka-varga"
+      voiced: true
+      
+    # Palatals
+    "ச":
+      canonical: "ca"
+      varga: "ca-varga"
+      voiced: false
+    "ஞ":
+      canonical: "ña"
+      varga: "ca-varga"
+      voiced: true
+      
+    # Retroflexes
+    "ட":
+      canonical: "ṭa"
+      varga: "ṭa-varga"
+      voiced: false
+    "ண":
+      canonical: "ṇa"
+      varga: "ṭa-varga"
+      voiced: true
+      
+    # Dentals
+    "த":
+      canonical: "ta"
+      varga: "ta-varga"
+      voiced: false
+    "ந":
+      canonical: "na"
+      varga: "ta-varga"
+      voiced: true
+      
+    # Labials
+    "ப":
+      canonical: "pa"
+      varga: "pa-varga"
+      voiced: false
+    "ம":
+      canonical: "ma"
+      varga: "pa-varga"
+      voiced: true
+      
+    # Semi-vowels
+    "ய":
+      canonical: "ya"
+      voiced: true
+    "ர":
+      canonical: "ra"
+      voiced: true
+    "ல":
+      canonical: "la"
+      voiced: true
+    "வ":
+      canonical: "va"
+      voiced: true
+    "ழ":
+      canonical: "ḻa"
+      voiced: true
+    "ள":
+      canonical: "ḷa"
+      voiced: true
+      
+    # Sibilants and aspirate
+    "ற":
+      canonical: "ṟa"
+      voiced: false
+    "ன":
+      canonical: "ṉa"
+      voiced: true
+    "ஜ":
+      canonical: "ja"
+      voiced: true
+    "ஶ":
+      canonical: "śa"
+      voiced: false
+    "ஷ":
+      canonical: "ṣa"
+      voiced: false
+    "ஸ":
+      canonical: "sa"
+      voiced: false
+    "ஹ":
+      canonical: "ha"
+      voiced: true
+    "க்ஷ":
+      canonical: "kṣa"
+      voiced: false
+
+  vowels:
+    # Independent vowels
+    "அ":
+      canonical: "a"
+      type: vowel_independent
+      is_long: false
+    "ஆ":
+      canonical: "ā"
+      type: vowel_independent
+      is_long: true
+    "இ":
+      canonical: "i"
+      type: vowel_independent
+      is_long: false
+    "ஈ":
+      canonical: "ī"
+      type: vowel_independent
+      is_long: true
+    "உ":
+      canonical: "u"
+      type: vowel_independent
+      is_long: false
+    "ஊ":
+      canonical: "ū"
+      type: vowel_independent
+      is_long: true
+    "எ":
+      canonical: "e"
+      type: vowel_independent
+      is_long: false
+    "ஏ":
+      canonical: "ē"
+      type: vowel_independent
+      is_long: true
+    "ஐ":
+      canonical: "ai"
+      type: vowel_independent
+      is_long: true
+    "ஒ":
+      canonical: "o"
+      type: vowel_independent
+      is_long: false
+    "ஓ":
+      canonical: "ō"
+      type: vowel_independent
+      is_long: true
+    "ஔ":
+      canonical: "au"
+      type: vowel_independent
+      is_long: true
+      
+    # Dependent vowels (matras)
+    "ா":
+      canonical: "ā"
+      type: vowel_dependent
+      is_long: true
+    "ி":
+      canonical: "i"
+      type: vowel_dependent
+      is_long: false
+    "ீ":
+      canonical: "ī"
+      type: vowel_dependent
+      is_long: true
+    "ு":
+      canonical: "u"
+      type: vowel_dependent
+      is_long: false
+    "ூ":
+      canonical: "ū"
+      type: vowel_dependent
+      is_long: true
+    "ெ":
+      canonical: "e"
+      type: vowel_dependent
+      is_long: false
+    "ே":
+      canonical: "ē"
+      type: vowel_dependent
+      is_long: true
+    "ை":
+      canonical: "ai"
+      type: vowel_dependent
+      is_long: true
+    "ொ":
+      canonical: "o"
+      type: vowel_dependent
+      is_long: false
+    "ோ":
+      canonical: "ō"
+      type: vowel_dependent
+      is_long: true
+    "ௌ":
+      canonical: "au"
+      type: vowel_dependent
+      is_long: true
+
+  modifiers:
+    "்":
+      canonical: ""
+      type: virama
+    "ஂ":
+      canonical: "ṃ"
+      type: anusvara
+    "ஃ":
+      canonical: "ḥ"
+      type: visarga
+
+  numerals:
+    "௦": { canonical: "0" }
+    "௧": { canonical: "1" }
+    "௨": { canonical: "2" }
+    "௩": { canonical: "3" }
+    "௪": { canonical: "4" }
+    "௫": { canonical: "5" }
+    "௬": { canonical: "6" }
+    "௭": { canonical: "7" }
+    "௮": { canonical: "8" }
+    "௯": { canonical: "9" }
+
+  punctuation:
+    "।": { canonical: "." }

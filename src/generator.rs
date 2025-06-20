@@ -32,9 +32,19 @@ impl Generator {
     pub fn load_schema(&mut self, schema: Schema) {
         // Build and cache reverse mappings when schema is loaded
         let mut reverse = HashMap::new();
-        for (_, category_mappings) in &schema.mappings {
+        for (category, category_mappings) in &schema.mappings {
             for (grapheme, mapping) in category_mappings {
-                reverse.insert(mapping.canonical.clone(), grapheme.clone());
+                // Use composite key: canonical + element_type to handle cases where
+                // multiple graphemes map to the same canonical (e.g., virama and anudatta both → "")
+                let element_type = mapping.element_type.as_deref().unwrap_or(category);
+                let composite_key = format!("{}:{}", mapping.canonical, element_type);
+                reverse.insert(composite_key, grapheme.clone());
+                
+                // Also keep the simple canonical key for backward compatibility
+                // But only if it's not already set (first one wins)
+                if !reverse.contains_key(&mapping.canonical) {
+                    reverse.insert(mapping.canonical.clone(), grapheme.clone());
+                }
             }
         }
         self.reverse_mappings_cache.insert(schema.name.clone(), reverse);
@@ -67,16 +77,30 @@ impl Generator {
                     result.push_str(&element.grapheme);
                 }
                 ElementType::UNKNOWN => {
-                    // Mark unknown elements
-                    result.push_str(&format!("[?:{}]", element.grapheme));
+                    // Check if this is already a script-aware token
+                    if element.grapheme.starts_with('[') && element.grapheme.contains(':') && element.grapheme.ends_with(']') {
+                        // Already a fallback token, preserve as-is
+                        result.push_str(&element.grapheme);
+                    } else {
+                        // Create new script-aware fallback token
+                        let source_script = &ir.script;
+                        let source_demonym = self.script_to_demonym(source_script);
+                        result.push_str(&format!("[{}:{}]", source_demonym, element.grapheme));
+                    }
                 }
                 _ => {
-                    // Look up in reverse mappings
-                    if let Some(grapheme) = reverse_mappings.get(&element.canonical) {
+                    // Look up in reverse mappings using composite key first
+                    let composite_key = format!("{}:{}", element.canonical, element.element_type.0);
+                    if let Some(grapheme) = reverse_mappings.get(&composite_key) {
+                        result.push_str(grapheme);
+                    } else if let Some(grapheme) = reverse_mappings.get(&element.canonical) {
+                        // Fallback to simple canonical lookup
                         result.push_str(grapheme);
                     } else {
-                        // If no mapping found, use the grapheme directly
-                        result.push_str(&element.grapheme);
+                        // If no mapping found, generate script-aware fallback token
+                        let source_script = &ir.script;
+                        let source_demonym = self.script_to_demonym(source_script);
+                        result.push_str(&format!("[{}:{}]", source_demonym, element.grapheme));
                     }
                 }
             }
@@ -96,13 +120,30 @@ impl Generator {
                     result.push_str(&element.grapheme);
                 }
                 ElementType::UNKNOWN => {
-                    result.push_str(&format!("[?:{}]", element.grapheme));
+                    // Check if this is already a script-aware token
+                    if element.grapheme.starts_with('[') && element.grapheme.contains(':') && element.grapheme.ends_with(']') {
+                        // Already a fallback token, preserve as-is
+                        result.push_str(&element.grapheme);
+                    } else {
+                        // Create new script-aware fallback token
+                        let source_script = &ir.scheme;
+                        let source_demonym = self.script_to_demonym(source_script);
+                        result.push_str(&format!("[{}:{}]", source_demonym, element.grapheme));
+                    }
                 }
                 _ => {
-                    if let Some(grapheme) = reverse_mappings.get(&element.canonical) {
+                    // Look up in reverse mappings using composite key first
+                    let composite_key = format!("{}:{}", element.canonical, element.element_type.0);
+                    if let Some(grapheme) = reverse_mappings.get(&composite_key) {
+                        result.push_str(grapheme);
+                    } else if let Some(grapheme) = reverse_mappings.get(&element.canonical) {
+                        // Fallback to simple canonical lookup
                         result.push_str(grapheme);
                     } else {
-                        result.push_str(&element.grapheme);
+                        // If no mapping found, generate script-aware fallback token
+                        let source_script = &ir.scheme;
+                        let source_demonym = self.script_to_demonym(source_script);
+                        result.push_str(&format!("[{}:{}]", source_demonym, element.grapheme));
                     }
                 }
             }
@@ -121,6 +162,28 @@ impl Generator {
         }
         
         reverse
+    }
+    
+    fn script_to_demonym(&self, script_name: &str) -> String {
+        // Convert script names to lowercase demonyms
+        match script_name {
+            "Devanagari" => "devanagari",
+            "Bengali" => "bengali", 
+            "Tamil" => "tamil",
+            "Telugu" => "telugu",
+            "Kannada" => "kannada",
+            "Malayalam" => "malayalam",
+            "Gujarati" => "gujarati",
+            "Odia" => "odia",
+            "Gurmukhi" => "gurmukhi",
+            "IAST" => "iast",
+            "Harvard-Kyoto" => "harvard-kyoto",
+            "ITRANS" => "itrans",
+            "SLP1" => "slp1",
+            "Velthuis" => "velthuis",
+            "WX" => "wx",
+            _ => script_name,
+        }.to_string()
     }
 }
 

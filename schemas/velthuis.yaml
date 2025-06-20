@@ -1,0 +1,85 @@
+name: "Velthuis"
+type: alphabet
+
+metadata:
+  version: "1.0.0"
+  author: "Shlesha Contributors"
+  description: "Velthuis transliteration scheme - ASCII with period diacritics"
+  references:
+    - "Frans Velthuis TeX transliteration"
+
+mappings:
+  consonants:
+    "k": { canonical: "k" }
+    "kh": { canonical: "kh" }
+    "g": { canonical: "g" }
+    "gh": { canonical: "gh" }
+    "\"n": { canonical: "ṅ" }
+    "c": { canonical: "c" }
+    "ch": { canonical: "ch" }
+    "j": { canonical: "j" }
+    "jh": { canonical: "jh" }
+    "~n": { canonical: "ñ" }
+    ".t": { canonical: "ṭ" }
+    ".th": { canonical: "ṭh" }
+    ".d": { canonical: "ḍ" }
+    ".dh": { canonical: "ḍh" }
+    ".n": { canonical: "ṇ" }
+    "t": { canonical: "t" }
+    "th": { canonical: "th" }
+    "d": { canonical: "d" }
+    "dh": { canonical: "dh" }
+    "n": { canonical: "n" }
+    "p": { canonical: "p" }
+    "ph": { canonical: "ph" }
+    "b": { canonical: "b" }
+    "bh": { canonical: "bh" }
+    "m": { canonical: "m" }
+    "y": { canonical: "y" }
+    "r": { canonical: "r" }
+    "l": { canonical: "l" }
+    "v": { canonical: "v" }
+    "\"s": { canonical: "ś" }
+    ".s": { canonical: "ṣ" }
+    "s": { canonical: "s" }
+    "h": { canonical: "h" }
+    
+    # Common conjuncts
+    "k.sa": { canonical: "kṣa" }
+    "j~na": { canonical: "jña" }
+
+  vowels:
+    "a": { canonical: "a" }
+    "aa": { canonical: "ā" }
+    "i": { canonical: "i" }
+    "ii": { canonical: "ī" }
+    "u": { canonical: "u" }
+    "uu": { canonical: "ū" }
+    ".r": { canonical: "ṛ" }
+    ".rr": { canonical: "ṝ" }
+    ".l": { canonical: "ḷ" }
+    ".ll": { canonical: "ḹ" }
+    "e": { canonical: "e" }
+    "ai": { canonical: "ai" }
+    "o": { canonical: "o" }
+    "au": { canonical: "au" }
+
+  modifiers:
+    ".m": { canonical: "ṃ", type: anusvara }
+    ".h": { canonical: "ḥ", type: visarga }
+
+  numerals:
+    "0": { canonical: "0" }
+    "1": { canonical: "1" }
+    "2": { canonical: "2" }
+    "3": { canonical: "3" }
+    "4": { canonical: "4" }
+    "5": { canonical: "5" }
+    "6": { canonical: "6" }
+    "7": { canonical: "7" }
+    "8": { canonical: "8" }
+    "9": { canonical: "9" }
+
+  punctuation:
+    ".": { canonical: "." }
+    "..": { canonical: ".." }

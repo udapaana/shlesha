@@ -1,0 +1,76 @@
+{
+  "timestamp": "2025-06-17 19:52:18",
+  "config": {
+    "run_rust": true,
+    "run_python": true,
+    "run_cli": true,
+    "run_wasm": false,
+    "iterations": 10,
+    "timeout": 300,
+    "output_dir": "unified_benchmark_results",
+    "include_accuracy": true,
+    "include_memory": true
+  },
+  "system_info": {
+    "platform": "darwin",
+    "python_version": "3.13.3 (main, Apr  8 2025, 13:54:08) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "timestamp": "2025-06-17 19:52:18",
+    "rust_version": "rustc 1.86.0 (05f9846f8 2025-03-31) (Homebrew)",
+    "system": {
+      "sysname": "Darwin",
+      "release": "24.4.0",
+      "machine": "x86_64"
+    }
+  },
+  "tools": [
+    {
+      "name": "indic-transliteration",
+      "platform": "Python",
+      "available": true,
+      "version": null,
+      "performance_metrics": {
+        "mean_time_ms": 0.808047522965353,
+        "throughput_chars_per_sec": 546751.0037263843
+      },
+      "accuracy_score": 0.85,
+      "memory_usage": null,
+      "error_message": null
+    }
+  ],
+  "summary": {
+    "total_tools_tested": 1,
+    "platforms": [
+      "Python"
+    ],
+    "available_tools": 1,
+    "performance_leaders": {
+      "fastest_overall": {
+        "name": "indic-transliteration",
+        "platform": "Python",
+        "time_ms": 0.808047522965353
+      },
+      "highest_throughput": {
+        "name": "indic-transliteration",
+        "platform": "Python",
+        "throughput": 546751.0037263843
+      }
+    },
+    "accuracy_leaders": {
+      "most_accurate": {
+        "name": "indic-transliteration",
+        "platform": "Python",
+        "accuracy": 0.85
+      }
+    },
+    "platform_comparison": {
+      "Python": {
+        "tool_count": 1,
+        "avg_performance_ms": 0.808047522965353
+      }
+    }
+  },
+  "recommendations": [
+    "\ud83d\udc0d For Python integration: 1 Python libraries available",
+    "\u26a0\ufe0f  Shlesha not detected - ensure proper installation"
+  ]
+}

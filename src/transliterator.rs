@@ -114,7 +114,7 @@ impl Transliterator {
         to_script: &str,
         extensions: &[&str]
     ) -> Result<String, TransliteratorError> {
-        let mut temp_transliterator = self.clone_with_extensions(extensions)?;
+        let temp_transliterator = self.clone_with_extensions(extensions)?;
         temp_transliterator.transliterate(input, from_script, to_script)
     }
     

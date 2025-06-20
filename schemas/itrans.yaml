@@ -1,0 +1,295 @@
+name: "ITRANS"
+type: alphabet
+
+metadata:
+  version: "1.0.0"
+  author: "Shlesha Contributors"
+  description: "Indian Traditional Transliteration (ITRANS) - ASCII-only scheme"
+  references:
+    - "ITRANS 5.30 specification"
+    - "Avinash Chopde's ITRANS system"
+
+element_types:
+  consonant:
+    description: "ASCII consonant or consonant cluster"
+    properties:
+      is_aspirated:
+        type: bool
+        default: false
+        description: "Whether the consonant is aspirated"
+      is_retroflex:
+        type: bool
+        default: false
+        description: "Whether the consonant is retroflex"
+        
+  vowel:
+    description: "ASCII vowel"
+    properties:
+      is_long:
+        type: bool
+        default: false
+        description: "Whether the vowel is long"
+
+mappings:
+  consonants:
+    # Velars
+    "k":
+      canonical: "k"
+      is_aspirated: false
+    "kh":
+      canonical: "kh"
+      is_aspirated: true
+    "g":
+      canonical: "g"
+      is_aspirated: false
+    "gh":
+      canonical: "gh"
+      is_aspirated: true
+    "~N":
+      canonical: "ṅ"
+      is_aspirated: false
+    "N^":
+      canonical: "ṅ"
+      is_aspirated: false
+      
+    # Palatals
+    "ch":
+      canonical: "c"
+      is_aspirated: false
+    "Ch":
+      canonical: "ch"
+      is_aspirated: true
+    "chh":
+      canonical: "ch"
+      is_aspirated: true
+    "j":
+      canonical: "j"
+      is_aspirated: false
+    "jh":
+      canonical: "jh"
+      is_aspirated: true
+    "~n":
+      canonical: "ñ"
+      is_aspirated: false
+    "JN":
+      canonical: "ñ"
+      is_aspirated: false
+      
+    # Retroflexes
+    "T":
+      canonical: "ṭ"
+      is_aspirated: false
+      is_retroflex: true
+    "Th":
+      canonical: "ṭh"
+      is_aspirated: true
+      is_retroflex: true
+    "D":
+      canonical: "ḍ"
+      is_aspirated: false
+      is_retroflex: true
+    "Dh":
+      canonical: "ḍh"
+      is_aspirated: true
+      is_retroflex: true
+    "N":
+      canonical: "ṇ"
+      is_aspirated: false
+      is_retroflex: true
+      
+    # Dentals
+    "t":
+      canonical: "t"
+      is_aspirated: false
+    "th":
+      canonical: "th"
+      is_aspirated: true
+    "d":
+      canonical: "d"
+      is_aspirated: false
+    "dh":
+      canonical: "dh"
+      is_aspirated: true
+    "n":
+      canonical: "n"
+      is_aspirated: false
+      
+    # Labials
+    "p":
+      canonical: "p"
+      is_aspirated: false
+    "ph":
+      canonical: "ph"
+      is_aspirated: true
+    "b":
+      canonical: "b"
+      is_aspirated: false
+    "bh":
+      canonical: "bh"
+      is_aspirated: true
+    "m":
+      canonical: "m"
+      is_aspirated: false
+      
+    # Semi-vowels
+    "y":
+      canonical: "y"
+    "r":
+      canonical: "r"
+    "l":
+      canonical: "l"
+    "v":
+      canonical: "v"
+    "w":
+      canonical: "v"  # Alternative for v
+    "L":
+      canonical: "ḷa"
+      is_retroflex: true
+    "zh":
+      canonical: "ḻa"
+    "R":
+      canonical: "ṟa"
+    "n^":
+      canonical: "ṉa"
+      
+    # Sibilants
+    "sh":
+      canonical: "ś"
+    "Sh":
+      canonical: "ṣ"
+      is_retroflex: true
+    "shh":
+      canonical: "ṣ"
+      is_retroflex: true
+    "s":
+      canonical: "s"
+      
+    # Aspirate
+    "h":
+      canonical: "h"
+      
+    # Conjuncts
+    "x":
+      canonical: "kṣa"
+    "kSh":
+      canonical: "kṣa"
+    "ksh":
+      canonical: "kṣa"
+    "GY":
+      canonical: "jña"
+    "dny":
+      canonical: "jña"
+    "j~n":
+      canonical: "jña"
+
+  vowels:
+    "a":
+      canonical: "a"
+      is_long: false
+    "aa":
+      canonical: "ā"
+      is_long: true
+    "A":
+      canonical: "ā"
+      is_long: true
+    "i":
+      canonical: "i"
+      is_long: false
+    "ii":
+      canonical: "ī"
+      is_long: true
+    "I":
+      canonical: "ī"
+      is_long: true
+    "u":
+      canonical: "u"
+      is_long: false
+    "uu":
+      canonical: "ū"
+      is_long: true
+    "U":
+      canonical: "ū"
+      is_long: true
+    "RRi":
+      canonical: "ṛ"
+      is_long: false
+    "R^i":
+      canonical: "ṛ"
+      is_long: false
+    "RRI":
+      canonical: "ṝ"
+      is_long: true
+    "R^I":
+      canonical: "ṝ"
+      is_long: true
+    "LLi":
+      canonical: "ḷ"
+      is_long: false
+    "L^i":
+      canonical: "ḷ"
+      is_long: false
+    "LLI":
+      canonical: "ḹ"
+      is_long: true
+    "L^I":
+      canonical: "ḹ"
+      is_long: true
+    "e":
+      canonical: "e"
+      is_long: true
+    "E":
+      canonical: "ē"
+      is_long: true
+    "ai":
+      canonical: "ai"
+      is_long: true
+    "o":
+      canonical: "o"
+      is_long: true
+    "O":
+      canonical: "ō"
+      is_long: true
+    "au":
+      canonical: "au"
+      is_long: true
+
+  modifiers:
+    "M":
+      canonical: "ṃ"
+      type: anusvara
+    ".m":
+      canonical: "ṃ"
+      type: anusvara
+    "H":
+      canonical: "ḥ"
+      type: visarga
+    ".h":
+      canonical: "ḥ"
+      type: visarga
+    ".N":
+      canonical: "m̐"
+      type: candrabindu
+    "~":
+      canonical: "m̐"
+      type: candrabindu
+    ".a":
+      canonical: "'"
+      type: avagraha
+
+  numerals:
+    "0": { canonical: "0" }
+    "1": { canonical: "1" }
+    "2": { canonical: "2" }
+    "3": { canonical: "3" }
+    "4": { canonical: "4" }
+    "5": { canonical: "5" }
+    "6": { canonical: "6" }
+    "7": { canonical: "7" }
+    "8": { canonical: "8" }
+    "9": { canonical: "9" }
+
+  punctuation:
+    ".": { canonical: "." }
+    "..": { canonical: ".." }
+    "|": { canonical: "." }
+    "||": { canonical: ".." }

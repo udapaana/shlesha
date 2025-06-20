@@ -1,0 +1,2 @@
+Tool,Platform,Available,Version,Mean_Time_ms,Throughput_chars_per_sec,Accuracy_%
+indic-transliteration,Python,Yes,Unknown,0.7778431940314476,537052.0853461229,0.85

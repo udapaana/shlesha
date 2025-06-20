@@ -1,0 +1,165 @@
+{
+  "timestamp": "2025-06-17 19:53:04",
+  "results": [
+    {
+      "tool": "indic-transliteration",
+      "input_text": "नमस्ते",
+      "expected": "namaste",
+      "actual": "namaste",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "संस्कृतम्",
+      "expected": "saṃskṛtam",
+      "actual": "saṃskṛtam",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "कृष्ण",
+      "expected": "kṛṣṇa",
+      "actual": "kṛṣṇa",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "ज्ञान",
+      "expected": "jñāna",
+      "actual": "jñāna",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "अग्निमीळे",
+      "expected": "agnimīḷe",
+      "actual": "agnimīḻe",
+      "correct": false,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "यज्ञस्य",
+      "expected": "yajñasya",
+      "actual": "yajñasya",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "ऋत्विजम्",
+      "expected": "ṛtvijam",
+      "actual": "ṛtvijam",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "द्वौ",
+      "expected": "dvau",
+      "actual": "dvau",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "त्र्यम्बकम्",
+      "expected": "tryambakam",
+      "actual": "tryambakam",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "पुष्टिवर्धनम्",
+      "expected": "puṣṭivardhanam",
+      "actual": "puṣṭivardhanam",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "श्रीः",
+      "expected": "śrīḥ",
+      "actual": "śrīḥ",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "कार्त्स्न्येन",
+      "expected": "kārtsnyena",
+      "actual": "kārtsnyena",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "वाङ्मयम्",
+      "expected": "vāṅmayam",
+      "actual": "vāṅmayam",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "षट्कर्म",
+      "expected": "ṣaṭkarma",
+      "actual": "ṣaṭkarma",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "अष्टाध्यायी",
+      "expected": "aṣṭādhyāyī",
+      "actual": "aṣṭādhyāyī",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "ज्योतिष्मान्",
+      "expected": "jyotiṣmān",
+      "actual": "jyotiṣmān",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "प्रत्युत्पन्नमतिः",
+      "expected": "pratyutpanamatiḥ",
+      "actual": "pratyutpannamatiḥ",
+      "correct": false,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "सत्चित्आनन्द",
+      "expected": "saccidānanda",
+      "actual": "satcitānanda",
+      "correct": false,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "आत्मज्ञान",
+      "expected": "ātmajñāna",
+      "actual": "ātmajñāna",
+      "correct": true,
+      "error": null
+    },
+    {
+      "tool": "indic-transliteration",
+      "input_text": "ब्रह्मचर्य",
+      "expected": "brahmacarya",
+      "actual": "brahmacarya",
+      "correct": true,
+      "error": null
+    }
+  ]
+}

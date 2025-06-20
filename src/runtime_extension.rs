@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
-use crate::element_id::{ElementId, ElementType, ElementRegistry};
-use crate::ir_v2::{PropertyKey, PropertyValue, SmallPropertySet};
+use crate::element_id::{ElementId, ElementRegistry};
 use crate::schema_parser::{Schema, ElementMapping};
 
 /// User-friendly interface for extending the transliterator at runtime
