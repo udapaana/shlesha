@@ -61,10 +61,20 @@ This file contains development philosophy, architectural decisions, and Claude-s
 ### Optimization Strategy
 
 1. **Profile First**: Use `cargo bench` to identify bottlenecks
-2. **Maintain Invariants**: Never break losslessness guarantee
-3. **Test Coverage**: Ensure optimizations don't break edge cases
-4. **Interface Preservation**: Keep public APIs unchanged
-5. **Regression Detection**: Compare against baseline benchmarks
+2. **Target Highest Impact**: Focus on largest performance gaps first
+3. **Maintain Invariants**: Never break losslessness guarantee
+4. **Test Coverage**: Ensure optimizations don't break edge cases
+5. **Interface Preservation**: Keep public APIs unchanged
+6. **Regression Detection**: Compare against baseline benchmarks
+7. **Commit Frequently**: Small, atomic changes with performance tracking
+
+### Performance-Focused Development
+
+1. **Measure Before Optimize**: Always benchmark current state
+2. **Isolate Changes**: One optimization per commit for easy rollback
+3. **Track Performance Impact**: Include benchmark results in commit messages
+4. **Rollback Criteria**: Any regression >5% without equivalent gain elsewhere
+5. **Document Tradeoffs**: Explain why specific approaches were chosen
 
 ## 🧪 Testing Philosophy
 
