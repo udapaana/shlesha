@@ -25,14 +25,16 @@
 pub mod modules;
 
 use modules::hub::{Hub, HubTrait, HubInput, HubOutput};
-use modules::converter::{ScriptConverter, ScriptConverterTrait};
+use modules::script_converter::ScriptConverterRegistry;
+use modules::converter::{ScriptConverter as OldScriptConverter, ScriptConverterTrait};
 use modules::generator::{TargetGenerator, TargetGeneratorTrait};
 use modules::registry::{SchemaRegistry, SchemaRegistryTrait};
 
 /// Main transliterator struct implementing hub-and-spoke architecture
 pub struct Shlesha {
     hub: Hub,
-    converter: ScriptConverter,
+    script_converter_registry: ScriptConverterRegistry,
+    old_converter: OldScriptConverter,
     generator: TargetGenerator,
     registry: SchemaRegistry,
 }
@@ -40,9 +42,17 @@ pub struct Shlesha {
 impl Shlesha {
     /// Create a new Shlesha transliterator instance
     pub fn new() -> Self {
+        use modules::script_converter::{IASTConverter, ITRANSConverter, SLP1Converter};
+        
+        let mut script_converter_registry = ScriptConverterRegistry::new();
+        script_converter_registry.register_converter(Box::new(IASTConverter::new()));
+        script_converter_registry.register_converter(Box::new(ITRANSConverter::new()));
+        script_converter_registry.register_converter(Box::new(SLP1Converter::new()));
+        
         Self {
             hub: Hub::new(),
-            converter: ScriptConverter::new(),
+            script_converter_registry,
+            old_converter: OldScriptConverter::new(),
             generator: TargetGenerator::new(),
             registry: SchemaRegistry::new(),
         }
@@ -51,7 +61,13 @@ impl Shlesha {
     /// Transliterate text from one script to another via the central hub
     pub fn transliterate(&self, text: &str, from: &str, to: &str) -> Result<String, Box<dyn std::error::Error>> {
         // Convert source script to hub format (Devanagari or ISO)
-        let hub_input = self.converter.to_hub(from, text)?;
+        let hub_input = if self.script_converter_registry.supported_scripts().contains(&from) {
+            // Use new script converter registry for romanized scripts
+            self.script_converter_registry.to_hub(from, text)?
+        } else {
+            // Fall back to old converter for devanagari/iso
+            self.old_converter.to_hub(from, text)?
+        };
         
         // Process through the hub (Devanagari ↔ ISO-15919)
         let hub_output = match hub_input {
