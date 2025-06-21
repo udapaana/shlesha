@@ -44,18 +44,9 @@ harness = false
 name = "transliteration_bench"
 harness = false
 
-# Legacy benchmarks with temporary value issues - need additional fixes
-# [[bench]]
-# name = "compare_vidyut"
-# harness = false
-
-# [[bench]]
-# name = "lossless_vs_vidyut"
-# harness = false
-
-# [[bench]]
-# name = "vidyut_fair_comparison"
-# harness = false
+[[bench]]
+name = "compare_vidyut"
+harness = false
 
 [[bench]]
 name = "comprehensive_comparison"

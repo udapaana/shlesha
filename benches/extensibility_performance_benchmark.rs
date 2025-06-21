@@ -295,7 +295,7 @@ fn bench_vidyut_vs_extensible(c: &mut Criterion) {
     // Setup systems
     let core_transliterator = LosslessTransliterator::new();
     let extended_transliterator = ExtendedTransliterator::new();
-    let vidyut_mapping = Mapping::new(Scheme::Devanagari, Scheme::Iast).unwrap();
+    let vidyut_mapping = Mapping::new(Scheme::Devanagari, Scheme::Iast);
     
     for (name, text, size) in test_corpus.iter() {
         group.throughput(Throughput::Bytes(*size as u64));
