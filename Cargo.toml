@@ -1,0 +1,31 @@
+[package]
+name = "shlesha"
+version = "0.1.0"
+edition = "2021"
+authors = ["Shlesha Contributors"]
+description = "High-performance extensible transliteration library with hub-and-spoke architecture"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/udapaana/shlesha"
+
+[dependencies]
+# Core dependencies - keeping minimal for now
+thiserror = "1.0"
+unicode-normalization = "0.1"
+
+# Optional features
+serde = { version = "1.0", features = ["derive"], optional = true }
+clap = { version = "4.0", features = ["derive"], optional = true }
+
+[features]
+default = ["cli"]
+cli = ["dep:clap"]
+serde = ["dep:serde"]
+
+[[bin]]
+name = "shlesha"
+path = "src/main.rs"
+required-features = ["cli"]
+
+[lib]
+name = "shlesha"
+path = "src/lib.rs"
