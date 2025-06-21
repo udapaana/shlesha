@@ -1,66 +1,29 @@
 //! Core benchmarks for Shlesha performance testing
 //! 
 //! This file contains the essential benchmarks for measuring:
-//! - Legacy transliterator performance  
 //! - Lossless transliterator performance
 //! - Cross-system comparison
 //! - Multi-script support
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
-use shlesha::{LosslessTransliterator, Transliterator, TransliteratorBuilder, SchemaParser};
+use shlesha::LosslessTransliterator;
 
-fn get_test_corpus() -> Vec<(&'static str, &'static str, usize)> {
+fn get_test_corpus() -> Vec<(&'static str, String, usize)> {
+    let very_long_text = "धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः । मामकाः पाण्डवाश्चैव किमकुर्वत सञ्जय ॥ ".repeat(100);
+    
     vec![
         // (name, text, approximate_word_count)
-        ("single_word", "धर्म", 1),
-        ("short_phrase", "धर्मक्षेत्रे कुरुक्षेत्रे", 2),
-        ("complex_clusters", "क्ष्म्य त्र्य ज्ञ श्र", 4),
-        ("medium_text", "धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः । मामकाः पाण्डवाश्चैव किमकुर्वत सञ्जय ॥", 15),
-        ("long_text", "तत्र शूरा महेष्वासा भीमार्जुनसमा युधि । युयुधानो विराटश्च द्रुपदश्च महारथः ॥ धृष्टकेतुश्चेकितानः काशिराजश्च वीर्यवान् । पुरुजित्कुन्तिभोजश्च शैब्यश्च महारथः ॥", 30),
-        ("very_long_text", &"धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः । मामकाः पाण्डवाश्चैव किमकुर्वत सञ्जय ॥ ".repeat(100), 1500),
+        ("single_word", "धर्म".to_string(), 1),
+        ("short_phrase", "धर्मक्षेत्रे कुरुक्षेत्रे".to_string(), 2),
+        ("complex_clusters", "क्ष्म्य त्र्य ज्ञ श्र".to_string(), 4),
+        ("medium_text", "धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः । मामकाः पाण्डवाश्चैव किमकुर्वत सञ्जय ॥".to_string(), 15),
+        ("long_text", "तत्र शूरा महेष्वासा भीमार्जुनसमा युधि । युयुधानो विराटश्च द्रुपदश्च महारथः ॥ धृष्टकेतुश्चेकितानः काशिराजश्च वीर्यवान् । पुरुजित्कुन्तिभोजश्च शैब्यश्च महारथः ॥".to_string(), 30),
+        ("very_long_text", very_long_text, 1500),
     ]
-}
-
-fn setup_legacy_transliterator() -> Transliterator {
-    let devanagari_schema = include_str!("../schemas/devanagari.yaml");
-    let iast_schema = include_str!("../schemas/iast.yaml");
-    
-    let dev_schema = SchemaParser::parse_str(devanagari_schema).unwrap();
-    let iast_schema = SchemaParser::parse_str(iast_schema).unwrap();
-    
-    TransliteratorBuilder::new()
-        .with_schema(dev_schema).unwrap()
-        .with_schema(iast_schema).unwrap()
-        .build()
 }
 
 fn setup_lossless_transliterator() -> LosslessTransliterator {
     LosslessTransliterator::new()
-}
-
-fn bench_legacy_system(c: &mut Criterion) {
-    let transliterator = setup_legacy_transliterator();
-    let test_corpus = get_test_corpus();
-    
-    let mut group = c.benchmark_group("legacy_transliterator");
-    
-    for (name, text, _word_count) in test_corpus.iter() {
-        group.bench_with_input(
-            BenchmarkId::new("devanagari_to_iast", name),
-            text,
-            |b, text| {
-                b.iter(|| {
-                    transliterator.transliterate(
-                        black_box(text),
-                        black_box("Devanagari"),
-                        black_box("IAST")
-                    )
-                })
-            },
-        );
-    }
-    
-    group.finish();
 }
 
 fn bench_lossless_system(c: &mut Criterion) {
@@ -79,7 +42,7 @@ fn bench_lossless_system(c: &mut Criterion) {
                         black_box(text),
                         black_box("Devanagari"),
                         black_box("IAST")
-                    )
+                    ).unwrap()
                 })
             },
         );
@@ -120,7 +83,6 @@ fn bench_lossless_verification(c: &mut Criterion) {
 }
 
 fn bench_throughput(c: &mut Criterion) {
-    let legacy_transliterator = setup_legacy_transliterator();
     let lossless_transliterator = setup_lossless_transliterator();
     
     // Create different sized texts for throughput testing
@@ -137,21 +99,6 @@ fn bench_throughput(c: &mut Criterion) {
         let text_size = text.len();
         group.throughput(criterion::Throughput::Bytes(text_size as u64));
         
-        // Legacy system throughput
-        group.bench_with_input(
-            BenchmarkId::new("legacy", size_name),
-            &text,
-            |b, text| {
-                b.iter(|| {
-                    legacy_transliterator.transliterate(
-                        black_box(text),
-                        black_box("Devanagari"),
-                        black_box("IAST")
-                    )
-                })
-            },
-        );
-        
         // Lossless system throughput
         group.bench_with_input(
             BenchmarkId::new("lossless", size_name),
@@ -162,7 +109,7 @@ fn bench_throughput(c: &mut Criterion) {
                         black_box(text),
                         black_box("Devanagari"),
                         black_box("IAST")
-                    )
+                    ).unwrap()
                 })
             },
         );
@@ -173,7 +120,6 @@ fn bench_throughput(c: &mut Criterion) {
 
 criterion_group!(
     benches, 
-    bench_legacy_system,
     bench_lossless_system, 
     bench_lossless_verification,
     bench_throughput

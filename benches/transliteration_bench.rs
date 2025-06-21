@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
-use shlesha::{Transliterator, TransliteratorBuilder, SchemaParser};
+use shlesha::LosslessTransliterator;
 
 fn get_test_data() -> Vec<(&'static str, &'static str)> {
     vec![
@@ -20,17 +20,8 @@ fn get_test_data() -> Vec<(&'static str, &'static str)> {
     ]
 }
 
-fn setup_transliterator() -> Transliterator {
-    let devanagari_schema = include_str!("../schemas/devanagari.yaml");
-    let iast_schema = include_str!("../schemas/iast.yaml");
-    
-    let dev_schema = SchemaParser::parse_str(devanagari_schema).unwrap();
-    let iast_schema = SchemaParser::parse_str(iast_schema).unwrap();
-    
-    TransliteratorBuilder::new()
-        .with_schema(dev_schema).unwrap()
-        .with_schema(iast_schema).unwrap()
-        .build()
+fn setup_transliterator() -> LosslessTransliterator {
+    LosslessTransliterator::new()
 }
 
 fn benchmark_shlesha_devanagari_to_iast(c: &mut Criterion) {
@@ -49,7 +40,7 @@ fn benchmark_shlesha_devanagari_to_iast(c: &mut Criterion) {
                         black_box(input),
                         black_box("Devanagari"),
                         black_box("IAST")
-                    )
+                    ).unwrap()
                 })
             },
         );
@@ -74,7 +65,7 @@ fn benchmark_shlesha_iast_to_devanagari(c: &mut Criterion) {
                         black_box(input),
                         black_box("IAST"),
                         black_box("Devanagari")
-                    )
+                    ).unwrap()
                 })
             },
         );

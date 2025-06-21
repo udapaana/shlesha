@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
-use shlesha::{Transliterator, TransliteratorBuilder, SchemaParser};
+use shlesha::LosslessTransliterator;
 
 #[cfg(feature = "compare-vidyut")]
 use vidyut_lipi::{Mapping, Scheme, transliterate};

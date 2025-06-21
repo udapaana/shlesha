@@ -4,7 +4,7 @@
 //! the current state-of-the-art Vidyut library to demonstrate performance improvements.
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
-use shlesha::{LosslessTransliterator, Transliterator, TransliteratorBuilder, SchemaParser};
+use shlesha::LosslessTransliterator;
 
 #[cfg(feature = "compare-vidyut")]
 use vidyut_lipi::{Mapping, Scheme, transliterate};

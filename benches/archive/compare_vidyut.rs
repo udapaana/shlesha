@@ -7,7 +7,7 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion, Benchmark
 #[cfg(feature = "compare-vidyut")]
 use vidyut_lipi::{Scheme, transliterate};
 
-use shlesha::{Transliterator, TransliteratorBuilder, SchemaParser};
+use shlesha::LosslessTransliterator;
 
 fn get_test_corpus() -> Vec<(&'static str, usize)> {
     vec![
@@ -29,17 +29,8 @@ fn get_test_corpus() -> Vec<(&'static str, usize)> {
     ]
 }
 
-fn setup_shlesha() -> Transliterator {
-    let devanagari_schema = include_str!("../schemas/devanagari.yaml");
-    let iast_schema = include_str!("../schemas/iast.yaml");
-    
-    let dev_schema = SchemaParser::parse_str(devanagari_schema).unwrap();
-    let iast_schema = SchemaParser::parse_str(iast_schema).unwrap();
-    
-    TransliteratorBuilder::new()
-        .with_schema(dev_schema).unwrap()
-        .with_schema(iast_schema).unwrap()
-        .build()
+fn setup_shlesha() -> LosslessTransliterator {
+    LosslessTransliterator::new()
 }
 
 fn bench_shlesha(c: &mut Criterion) {
