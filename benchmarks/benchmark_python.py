@@ -30,12 +30,12 @@ class BenchmarkResult:
         self.latency_ns = latency_ns
         self.api_type = api_type
 
-def benchmark_api_method(method, text, from_script, to_script, iterations=1000):
+def benchmark_api_method(method, text, from_script, to_script, iterations=100):
     """Benchmark a specific API method"""
     times = []
     
     # Warmup
-    for _ in range(10):
+    for _ in range(5):
         method(text, from_script, to_script)
     
     # Actual benchmark

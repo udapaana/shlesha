@@ -16,13 +16,13 @@ import shlesha
 # Try to import other transliteration libraries
 other_libs = {}
 
-# Try importing vidyut-py
+# Try importing vidyut
 try:
-    import vidyut
-    other_libs['vidyut'] = vidyut
-    print("✓ vidyut-py found")
+    from vidyut.lipi import Scheme, transliterate
+    other_libs['vidyut'] = {'Scheme': Scheme, 'transliterate': transliterate}
+    print("✓ vidyut found")
 except ImportError:
-    print("✗ vidyut-py not found (pip install vidyut-py)")
+    print("✗ vidyut not found (pip install vidyut)")
 
 # Try importing indic-transliteration
 try:
@@ -40,18 +40,48 @@ try:
 except ImportError:
     print("✗ aksharamukha not found (pip install aksharamukha)")
 
-# Test data
-SMALL_TEXT = "धर्म"
-MEDIUM_TEXT = "धर्म योग भारत संस्कृत वेद उपनिषद् गीता रामायण महाभारत"
-LARGE_TEXT = "धर्म योग भारत संस्कृत वेद उपनिषद् गीता रामायण महाभारत पुराण शास्त्र दर्शन आयुर्वेद ज्योतिष व्याकरण छन्द निरुक्त कल्प शिक्षा स्मृति श्रुति आचार विचार संस्कार परम्परा सत्य अहिंसा करुणा दया प्रेम शान्ति आनन्द मोक्ष निर्वाण समाधि ध्यान प्राणायाम आसन मन्त्र यन्त्र तन्त्र"
+# Test data - using appropriate scripts for each conversion
+TEST_DATA = {
+    "devanagari": {
+        "small": "धर्म",
+        "medium": "धर्म योग भारत संस्कृत वेद उपनिषद् गीता रामायण महाभारत",
+        "large": "धर्म योग भारत संस्कृत वेद उपनिषद् गीता रामायण महाभारत पुराण शास्त्र दर्शन आयुर्वेद ज्योतिष व्याकरण छन्द निरुक्त कल्प शिक्षा स्मृति श्रुति आचार विचार संस्कार परम्परा सत्य अहिंसा करुणा दया प्रेम शान्ति आनन्द मोक्ष निर्वाण समाधि ध्यान प्राणायाम आसन मन्त्र यन्त्र तन्त्र"
+    },
+    "iast": {
+        "small": "dharma",
+        "medium": "dharma yoga bhārata saṃskṛta veda upaniṣad gītā rāmāyaṇa mahābhārata",
+        "large": "dharma yoga bhārata saṃskṛta veda upaniṣad gītā rāmāyaṇa mahābhārata purāṇa śāstra darśana āyurveda jyotiṣa vyākaraṇa chanda nirukta kalpa śikṣā smṛti śruti ācāra vicāra saṃskāra paramparā satya ahiṃsā karuṇā dayā prema śānti ānanda mokṣa nirvāṇa samādhi dhyāna prāṇāyāma āsana mantra yantra tantra"
+    },
+    "itrans": {
+        "small": "dharma",
+        "medium": "dharma yoga bhArata sa~nskR^ita veda upaniShad gItA rAmAyaNa mahAbhArata",
+        "large": "dharma yoga bhArata sa~nskR^ita veda upaniShad gItA rAmAyaNa mahAbhArata purANa shAstra darshana Ayurveda jyotiSha vyAkaraNa chanda nirukta kalpa shikShA smR^iti shruti AchAra vichAra sa~nskAra paramparA satya ahi~nsA karuNA dayA prema shAnti Ananda mokSha nirvANa samAdhi dhyAna prANAyAma Asana mantra yantra tantra"
+    },
+    "slp1": {
+        "small": "Darma",
+        "medium": "Darma yoga BArata saMskfta veda upanizad gItA rAmAyaNa mahABArata",
+        "large": "Darma yoga BArata saMskfta veda upanizad gItA rAmAyaNa mahABArata purANa SAstra darSana Ayurveda jyotiza vyAkaraNa Canda nirukta kalpa SikzA smfti Sruti AcAra vicAra saMskAra paramparA satya ahiMsA karuNA dayA prema SAnti Ananda mokza nirvANa samADi DyAna prANAyAma Asana mantra yantra tantra"
+    }
+}
 
 # Common script mappings across libraries
 COMMON_CONVERSIONS = [
+    # Devanagari to others (current tests)
     ("devanagari", "iast"),
     ("devanagari", "itrans"),
     ("devanagari", "slp1"),
     ("devanagari", "telugu"),
     ("devanagari", "tamil"),
+    # Roman to Indic
+    ("iast", "devanagari"),
+    ("iast", "telugu"),
+    ("iast", "tamil"),
+    ("itrans", "devanagari"),
+    ("slp1", "devanagari"),
+    # Roman to Roman
+    ("iast", "itrans"),
+    ("iast", "slp1"),
+    ("itrans", "slp1"),
 ]
 
 class ComparisonResult:
@@ -87,14 +117,18 @@ def benchmark_shlesha(text, from_script, to_script, iterations=1000):
     return throughput, avg_time_ns
 
 def benchmark_vidyut(text, from_script, to_script, iterations=1000):
-    """Benchmark vidyut-py"""
+    """Benchmark vidyut"""
     if 'vidyut' not in other_libs:
         return None, None
+    
+    vidyut_lib = other_libs['vidyut']
+    Scheme = vidyut_lib['Scheme']
+    transliterate = vidyut_lib['transliterate']
     
     # Map script names to vidyut scheme names
     vidyut_map = {
         "devanagari": "Devanagari",
-        "iast": "Iast",
+        "iast": "Iast", 
         "itrans": "Itrans",
         "slp1": "Slp1",
         "telugu": "Telugu",
@@ -104,19 +138,27 @@ def benchmark_vidyut(text, from_script, to_script, iterations=1000):
     if from_script not in vidyut_map or to_script not in vidyut_map:
         return None, None
     
-    from_scheme = getattr(vidyut.Scheme, vidyut_map[from_script])
-    to_scheme = getattr(vidyut.Scheme, vidyut_map[to_script])
+    try:
+        from_scheme = getattr(Scheme, vidyut_map[from_script])
+        to_scheme = getattr(Scheme, vidyut_map[to_script])
+    except AttributeError as e:
+        print(f"    vidyut AttributeError: {e}")
+        return None, None
     
     times = []
     
     # Warmup
-    for _ in range(10):
-        vidyut.transliterate(text, from_scheme, to_scheme)
+    try:
+        for _ in range(10):
+            transliterate(text, from_scheme, to_scheme)
+    except Exception as e:
+        print(f"    vidyut warmup error: {e}")
+        return None, None
     
     # Benchmark
     for _ in range(iterations):
         start = time.perf_counter_ns()
-        vidyut.transliterate(text, from_scheme, to_scheme)
+        transliterate(text, from_scheme, to_scheme)
         end = time.perf_counter_ns()
         times.append(end - start)
     
@@ -206,7 +248,13 @@ def run_comparison_benchmarks():
     results = []
     
     for from_script, to_script in COMMON_CONVERSIONS:
-        for size_name, text in [("small", SMALL_TEXT), ("medium", MEDIUM_TEXT), ("large", LARGE_TEXT)]:
+        for size_name in ["small", "medium", "large"]:
+            # Get appropriate test data for the source script
+            if from_script in TEST_DATA:
+                text = TEST_DATA[from_script][size_name]
+            else:
+                text = TEST_DATA["devanagari"][size_name]  # fallback
+            
             print(f"\nBenchmarking {from_script} → {to_script} ({size_name})...")
             
             # Benchmark Shlesha
