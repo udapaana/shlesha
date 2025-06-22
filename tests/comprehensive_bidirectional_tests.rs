@@ -18,6 +18,9 @@ fn test_all_script_pairs() {
         ("iast", "dharma", "dharma"),
         ("itrans", "dharma", "dharma"),
         ("slp1", "Darma", "dharma"),
+        ("velthuis", "dharma", "dharma"),
+        ("wx", "Darma", "dharma"),
+        ("harvard_kyoto", "dharma", "dharma"),
     ];
     
     // Comprehensive bidirectional tests
@@ -74,7 +77,7 @@ fn test_indic_to_roman_conversions() {
         ("devanagari", "धर्म"),
     ];
     
-    let roman_scripts = vec!["iast", "itrans", "slp1", "iso"];
+    let roman_scripts = vec!["iast", "itrans", "slp1", "iso", "velthuis", "wx", "harvard_kyoto"];
     
     for (indic_script, text) in &indic_scripts {
         for roman_script in &roman_scripts {
@@ -99,6 +102,9 @@ fn test_roman_to_indic_conversions() {
         ("itrans", "dharma"),
         ("slp1", "Darma"),
         ("iso", "dharma"),
+        ("velthuis", "dharma"),
+        ("wx", "Darma"),
+        ("harvard_kyoto", "dharma"),
     ];
     
     let indic_scripts = vec!["gujarati", "bengali", "telugu", "tamil", "kannada", "malayalam", "odia", "devanagari"];
