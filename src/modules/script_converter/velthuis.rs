@@ -9,6 +9,7 @@ use crate::modules::hub::HubInput;
 /// to represent Sanskrit sounds without requiring special fonts or diacritical marks.
 pub struct VelthuisConverter {
     velthuis_to_iso_map: HashMap<&'static str, &'static str>,
+    iso_to_velthuis_map: HashMap<&'static str, &'static str>,
 }
 
 impl VelthuisConverter {
@@ -108,8 +109,15 @@ impl VelthuisConverter {
         velthuis_to_iso.insert("|", "।");       // Velthuis | → danda
         velthuis_to_iso.insert("||", "॥");      // Velthuis || → double danda
         
+        // Build reverse mapping for ISO → Velthuis conversion
+        let mut iso_to_velthuis = HashMap::new();
+        for (&velthuis, &iso) in &velthuis_to_iso {
+            iso_to_velthuis.insert(iso, velthuis);
+        }
+
         Self {
             velthuis_to_iso_map: velthuis_to_iso,
+            iso_to_velthuis_map: iso_to_velthuis,
         }
     }
     
@@ -162,6 +170,56 @@ impl VelthuisConverter {
         
         Ok(result)
     }
+    
+    /// Convert ISO-15919 text to Velthuis format (reverse conversion)
+    pub fn iso_to_velthuis(&self, input: &str) -> Result<String, ConverterError> {
+        let mut result = String::new();
+        let chars: Vec<char> = input.chars().collect();
+        let mut i = 0;
+        
+        while i < chars.len() {
+            let ch = chars[i];
+            
+            if ch.is_whitespace() {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            // Handle ASCII punctuation that's not in our mapping
+            if ch.is_ascii_punctuation() && ch != '।' && ch != '॥' && ch != '\'' {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            let mut matched = false;
+            
+            // Try to match sequences of decreasing length (5, 4, 3, 2, 1)
+            // ISO can have combining characters like r̥̄, l̥̄
+            for len in (1..=5).rev() {
+                if i + len > chars.len() {
+                    continue;
+                }
+                
+                let seq: String = chars[i..i+len].iter().collect();
+                if let Some(&velthuis_str) = self.iso_to_velthuis_map.get(seq.as_str()) {
+                    result.push_str(velthuis_str);
+                    i += len;
+                    matched = true;
+                    break;
+                }
+            }
+            
+            if !matched {
+                // Character not found in mapping - preserve as-is
+                result.push(ch);
+                i += 1;
+            }
+        }
+        
+        Ok(result)
+    }
 }
 
 impl ScriptConverter for VelthuisConverter {
@@ -184,6 +242,31 @@ impl ScriptConverter for VelthuisConverter {
     
     fn supported_scripts(&self) -> Vec<&'static str> {
         vec!["velthuis"]
+    }
+    
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        if script != "velthuis" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "Velthuis converter only supports 'velthuis' script".to_string(),
+            });
+        }
+        
+        match hub_input {
+            HubInput::Iso(iso_text) => {
+                self.iso_to_velthuis(iso_text)
+                    .map_err(|e| ConverterError::ConversionFailed {
+                        script: script.to_string(),
+                        reason: format!("ISO to Velthuis conversion failed: {}", e),
+                    })
+            }
+            HubInput::Devanagari(_) => {
+                Err(ConverterError::ConversionFailed {
+                    script: script.to_string(),
+                    reason: "Velthuis converter expects ISO hub input, not Devanagari".to_string(),
+                })
+            }
+        }
     }
     
     fn script_has_implicit_a(&self, _script: &str) -> bool {
@@ -282,6 +365,34 @@ mod tests {
     }
     
     #[test]
+    fn test_velthuis_bidirectional_conversion() {
+        let converter = VelthuisConverter::new();
+        
+        // Test Velthuis → ISO → Velthuis roundtrip
+        let original = "dharma .r k.s j~n \"s .s .m .h";
+        let iso_result = converter.velthuis_to_iso(original).unwrap();
+        let velthuis_result = converter.iso_to_velthuis(&iso_result).unwrap();
+        assert_eq!(original, velthuis_result);
+        
+        // Test specific bidirectional conversions
+        assert_eq!(converter.iso_to_velthuis("ṭ").unwrap(), ".t");
+        assert_eq!(converter.iso_to_velthuis("ṭh").unwrap(), ".th");
+        assert_eq!(converter.iso_to_velthuis("ḍ").unwrap(), ".d");
+        assert_eq!(converter.iso_to_velthuis("ḍh").unwrap(), ".dh");
+        assert_eq!(converter.iso_to_velthuis("ṇ").unwrap(), ".n");
+        assert_eq!(converter.iso_to_velthuis("ś").unwrap(), "\"s");
+        assert_eq!(converter.iso_to_velthuis("ṣ").unwrap(), ".s");
+        assert_eq!(converter.iso_to_velthuis("r̥").unwrap(), ".r");
+        assert_eq!(converter.iso_to_velthuis("r̥̄").unwrap(), ".R");
+        assert_eq!(converter.iso_to_velthuis("l̥").unwrap(), ".l");
+        assert_eq!(converter.iso_to_velthuis("l̥̄").unwrap(), ".L");
+        assert_eq!(converter.iso_to_velthuis("ṁ").unwrap(), ".m");
+        assert_eq!(converter.iso_to_velthuis("ḥ").unwrap(), ".h");
+        assert_eq!(converter.iso_to_velthuis("kṣ").unwrap(), "k.s");
+        assert_eq!(converter.iso_to_velthuis("jñ").unwrap(), "j~n");
+    }
+    
+    #[test]
     fn test_script_converter_interface() {
         let converter = VelthuisConverter::new();
         
@@ -292,11 +403,17 @@ mod tests {
         // Test script_has_implicit_a
         assert!(!converter.script_has_implicit_a("velthuis"));
         
+        // Test to_hub
         let result = converter.to_hub("velthuis", "k").unwrap();
         if let HubInput::Iso(iso_text) = result {
             assert_eq!(iso_text, "k");
         } else {
             panic!("Expected ISO hub input");
         }
+        
+        // Test from_hub
+        let hub_input = HubInput::Iso("ṭ".to_string());
+        let result = converter.from_hub("velthuis", &hub_input).unwrap();
+        assert_eq!(result, ".t");
     }
 }

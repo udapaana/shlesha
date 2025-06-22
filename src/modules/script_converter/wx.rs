@@ -10,6 +10,7 @@ use crate::modules::hub::HubInput;
 /// linguistics and NLP applications for Indian languages.
 pub struct WXConverter {
     wx_to_iso_map: HashMap<&'static str, &'static str>,
+    iso_to_wx_map: HashMap<&'static str, &'static str>,
 }
 
 impl WXConverter {
@@ -108,8 +109,15 @@ impl WXConverter {
         wx_to_iso.insert("|", "।");        // WX | → danda
         wx_to_iso.insert("||", "॥");       // WX || → double danda
         
+        // Build reverse mapping for ISO → WX conversion
+        let mut iso_to_wx = HashMap::new();
+        for (&wx, &iso) in &wx_to_iso {
+            iso_to_wx.insert(iso, wx);
+        }
+
         Self {
             wx_to_iso_map: wx_to_iso,
+            iso_to_wx_map: iso_to_wx,
         }
     }
     
@@ -162,6 +170,56 @@ impl WXConverter {
         
         Ok(result)
     }
+    
+    /// Convert ISO-15919 text to WX notation format (reverse conversion)
+    pub fn iso_to_wx(&self, input: &str) -> Result<String, ConverterError> {
+        let mut result = String::new();
+        let chars: Vec<char> = input.chars().collect();
+        let mut i = 0;
+        
+        while i < chars.len() {
+            let ch = chars[i];
+            
+            if ch.is_whitespace() {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            // Handle ASCII punctuation that's not in our mapping
+            if ch.is_ascii_punctuation() && ch != '।' && ch != '॥' && ch != '\'' {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            let mut matched = false;
+            
+            // Try to match sequences of decreasing length (5, 4, 3, 2, 1)
+            // ISO can have combining characters like r̥̄, l̥̄
+            for len in (1..=5).rev() {
+                if i + len > chars.len() {
+                    continue;
+                }
+                
+                let seq: String = chars[i..i+len].iter().collect();
+                if let Some(&wx_str) = self.iso_to_wx_map.get(seq.as_str()) {
+                    result.push_str(wx_str);
+                    i += len;
+                    matched = true;
+                    break;
+                }
+            }
+            
+            if !matched {
+                // Character not found in mapping - preserve as-is
+                result.push(ch);
+                i += 1;
+            }
+        }
+        
+        Ok(result)
+    }
 }
 
 impl ScriptConverter for WXConverter {
@@ -184,6 +242,31 @@ impl ScriptConverter for WXConverter {
     
     fn supported_scripts(&self) -> Vec<&'static str> {
         vec!["wx", "wx_notation"]
+    }
+    
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        if script != "wx" && script != "wx_notation" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "WX converter only supports 'wx' or 'wx_notation' script".to_string(),
+            });
+        }
+        
+        match hub_input {
+            HubInput::Iso(iso_text) => {
+                self.iso_to_wx(iso_text)
+                    .map_err(|e| ConverterError::ConversionFailed {
+                        script: script.to_string(),
+                        reason: format!("ISO to WX conversion failed: {}", e),
+                    })
+            }
+            HubInput::Devanagari(_) => {
+                Err(ConverterError::ConversionFailed {
+                    script: script.to_string(),
+                    reason: "WX converter expects ISO hub input, not Devanagari".to_string(),
+                })
+            }
+        }
     }
     
     fn script_has_implicit_a(&self, _script: &str) -> bool {
@@ -284,6 +367,33 @@ mod tests {
     }
     
     #[test]
+    fn test_wx_bidirectional_conversion() {
+        let converter = WXConverter::new();
+        
+        // Test WX → ISO → WX roundtrip
+        let original = "Darma kz S z M H";
+        let iso_result = converter.wx_to_iso(original).unwrap();
+        let wx_result = converter.iso_to_wx(&iso_result).unwrap();
+        assert_eq!(original, wx_result);
+        
+        // Test specific bidirectional conversions
+        assert_eq!(converter.iso_to_wx("ṭ").unwrap(), "w");
+        assert_eq!(converter.iso_to_wx("ṭh").unwrap(), "W");
+        assert_eq!(converter.iso_to_wx("ḍ").unwrap(), "x");
+        assert_eq!(converter.iso_to_wx("ḍh").unwrap(), "X");
+        assert_eq!(converter.iso_to_wx("ṇ").unwrap(), "N");
+        assert_eq!(converter.iso_to_wx("ś").unwrap(), "S");
+        assert_eq!(converter.iso_to_wx("ṣ").unwrap(), "z");
+        assert_eq!(converter.iso_to_wx("r̥").unwrap(), "q");
+        assert_eq!(converter.iso_to_wx("r̥̄").unwrap(), "Q");
+        assert_eq!(converter.iso_to_wx("l̥").unwrap(), "L");
+        assert_eq!(converter.iso_to_wx("ṁ").unwrap(), "M");
+        assert_eq!(converter.iso_to_wx("ḥ").unwrap(), "H");
+        assert_eq!(converter.iso_to_wx("kṣ").unwrap(), "kz");
+        assert_eq!(converter.iso_to_wx("jñ").unwrap(), "jF");
+    }
+    
+    #[test]
     fn test_script_converter_interface() {
         let converter = WXConverter::new();
         
@@ -296,11 +406,17 @@ mod tests {
         assert!(!converter.script_has_implicit_a("wx"));
         assert!(!converter.script_has_implicit_a("wx_notation"));
         
+        // Test to_hub
         let result = converter.to_hub("wx", "k").unwrap();
         if let HubInput::Iso(iso_text) = result {
             assert_eq!(iso_text, "k");
         } else {
             panic!("Expected ISO hub input");
         }
+        
+        // Test from_hub
+        let hub_input = HubInput::Iso("ṭ".to_string());
+        let result = converter.from_hub("wx", &hub_input).unwrap();
+        assert_eq!(result, "w");
     }
 }
