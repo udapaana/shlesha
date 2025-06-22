@@ -58,8 +58,32 @@ fn main() {
         
         Commands::Scripts => {
             println!("Currently supported scripts:");
-            println!("  devanagari (deva) - Devanagari script");
-            println!("  iso (iso15919)    - ISO 15919 romanization");
+            
+            let scripts = transliterator.list_supported_scripts();
+            for script in scripts {
+                // Provide descriptions for known scripts
+                let description = match script {
+                    "iast" => "IAST (International Alphabet of Sanskrit Transliteration)",
+                    "itrans" => "ITRANS (ASCII transliteration)",
+                    "slp1" => "SLP1 (Sanskrit Library Phonetic scheme)",
+                    "harvard_kyoto" | "hk" => "Harvard-Kyoto (ASCII-based academic standard)",
+                    "velthuis" => "Velthuis (TeX-based notation)",
+                    "wx" => "WX (Computational notation)",
+                    "devanagari" | "deva" => "Devanagari script (देवनागरी)",
+                    "bengali" | "bn" => "Bengali script (বাংলা)",
+                    "tamil" | "ta" => "Tamil script (தமிழ்)",
+                    "telugu" | "te" => "Telugu script (తెలుగు)",
+                    "gujarati" | "gu" => "Gujarati script (ગુજરાતી)",
+                    "kannada" | "kn" => "Kannada script (ಕನ್ನಡ)",
+                    "malayalam" | "ml" => "Malayalam script (മലയാളം)",
+                    "odia" | "od" | "oriya" => "Odia script (ଓଡ଼ିଆ)",
+                    "iso15919" | "iso" | "iso_15919" => "ISO-15919 (International standard)",
+                    "bangla" => "Bengali script (বাংলা)",
+                    "wx_notation" => "WX (Computational notation)",
+                    _ => "Unknown script type",
+                };
+                println!("  {} - {}", script, description);
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ use crate::modules::hub::HubInput;
 /// Every Sanskrit sound has a unique ASCII representation.
 pub struct SLP1Converter {
     slp1_to_iso_map: HashMap<&'static str, &'static str>,
+    iso_to_slp1_map: HashMap<&'static str, &'static str>,
 }
 
 impl SLP1Converter {
@@ -114,8 +115,15 @@ impl SLP1Converter {
         slp1_to_iso.insert("|", "।");        // Danda
         slp1_to_iso.insert("||", "॥");       // Double danda
         
+        // Build reverse mapping for ISO → SLP1 conversion
+        let mut iso_to_slp1 = HashMap::new();
+        for (&slp1, &iso) in &slp1_to_iso {
+            iso_to_slp1.insert(iso, slp1);
+        }
+
         Self {
             slp1_to_iso_map: slp1_to_iso,
+            iso_to_slp1_map: iso_to_slp1,
         }
     }
     
@@ -168,6 +176,56 @@ impl SLP1Converter {
         
         Ok(result)
     }
+    
+    /// Convert ISO-15919 text to SLP1 format (reverse conversion)
+    pub fn iso_to_slp1(&self, input: &str) -> Result<String, ConverterError> {
+        let mut result = String::new();
+        let chars: Vec<char> = input.chars().collect();
+        let mut i = 0;
+        
+        while i < chars.len() {
+            let ch = chars[i];
+            
+            // Handle whitespace (preserve as-is)
+            if ch.is_whitespace() {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            // Handle ASCII punctuation (preserve as-is)
+            if ch.is_ascii_punctuation() && ch != '\'' {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            let mut matched = false;
+            
+            // Try to match sequences of decreasing length (4, 3, 2, 1)
+            for len in (1..=4).rev() {
+                if i + len > chars.len() {
+                    continue;
+                }
+                
+                let seq: String = chars[i..i+len].iter().collect();
+                if let Some(&slp1_str) = self.iso_to_slp1_map.get(seq.as_str()) {
+                    result.push_str(slp1_str);
+                    i += len;
+                    matched = true;
+                    break;
+                }
+            }
+            
+            if !matched {
+                // Character not found in mapping - preserve as-is
+                result.push(ch);
+                i += 1;
+            }
+        }
+        
+        Ok(result)
+    }
 }
 
 impl ScriptConverter for SLP1Converter {
@@ -186,6 +244,23 @@ impl ScriptConverter for SLP1Converter {
             })?;
             
         Ok(HubInput::Iso(iso_text))
+    }
+    
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        if script != "slp1" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "SLP1 converter only supports 'slp1' script".to_string(),
+            });
+        }
+        
+        match hub_input {
+            HubInput::Iso(iso_text) => self.iso_to_slp1(iso_text),
+            HubInput::Devanagari(_) => Err(ConverterError::ConversionFailed {
+                script: script.to_string(),
+                reason: "SLP1 converter expects ISO input, got Devanagari".to_string(),
+            }),
+        }
     }
     
     fn supported_scripts(&self) -> Vec<&'static str> {

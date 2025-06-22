@@ -54,6 +54,15 @@ pub trait ScriptConverter {
     /// Convert text from a specific script to hub input format
     fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError>;
     
+    /// Convert text from hub format to a specific script (reverse conversion)
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        // Default implementation for converters that don't support reverse conversion
+        Err(ConverterError::ConversionFailed {
+            script: script.to_string(),
+            reason: "Reverse conversion not supported by this converter".to_string(),
+        })
+    }
+    
     /// Get the list of supported scripts for this converter
     fn supported_scripts(&self) -> Vec<&'static str>;
     
@@ -103,6 +112,20 @@ impl ScriptConverterRegistry {
         })
     }
     
+    /// Convert text from hub format to any supported script (reverse conversion)
+    pub fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        for converter in &self.converters {
+            if converter.supports_script(script) {
+                return converter.from_hub(script, hub_input);
+            }
+        }
+        
+        Err(ConverterError::ConversionFailed {
+            script: script.to_string(),
+            reason: "No converter found for script".to_string(),
+        })
+    }
+    
     /// Get all supported scripts across all converters
     pub fn supported_scripts(&self) -> Vec<&str> {
         let mut scripts = Vec::new();
@@ -138,13 +161,15 @@ impl ScriptConverterRegistry {
         // Register Indic script converters
         registry.register_converter(Box::new(DevanagariConverter::new()));
         registry.register_converter(Box::new(BengaliConverter::new()));
+        registry.register_converter(Box::new(TamilConverter::new()));
+        registry.register_converter(Box::new(TeluguConverter::new()));
+        registry.register_converter(Box::new(GujaratiConverter::new()));
+        registry.register_converter(Box::new(KannadaConverter::new()));
+        registry.register_converter(Box::new(MalayalamConverter::new()));
+        registry.register_converter(Box::new(OdiaConverter::new()));
         
         // Register ISO-15919 hub format converter
         registry.register_converter(Box::new(ISO15919Converter::new()));
-        
-        // Register additional Indic script converters
-        registry.register_converter(Box::new(TamilConverter::new()));
-        registry.register_converter(Box::new(TeluguConverter::new()));
         
         registry
     }
@@ -192,6 +217,10 @@ pub mod bengali;
 pub mod iso15919;
 pub mod tamil;
 pub mod telugu;
+pub mod gujarati;
+pub mod kannada;
+pub mod malayalam;
+pub mod odia;
 
 // Integration tests
 #[cfg(test)]
@@ -217,3 +246,7 @@ pub use bengali::BengaliConverter;
 pub use iso15919::ISO15919Converter;
 pub use tamil::TamilConverter;
 pub use telugu::TeluguConverter;
+pub use gujarati::GujaratiConverter;
+pub use kannada::KannadaConverter;
+pub use malayalam::MalayalamConverter;
+pub use odia::OdiaConverter;

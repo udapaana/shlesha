@@ -26,34 +26,31 @@ pub mod modules;
 
 use modules::hub::{Hub, HubTrait, HubInput, HubOutput};
 use modules::script_converter::ScriptConverterRegistry;
-use modules::converter::{ScriptConverter as OldScriptConverter, ScriptConverterTrait};
-use modules::generator::{TargetGenerator, TargetGeneratorTrait};
 use modules::registry::{SchemaRegistry, SchemaRegistryTrait};
+
+// Re-export unknown handler types for public API
+pub use modules::core::unknown_handler::{
+    TransliterationResult,
+    TransliterationMetadata,
+    UnknownToken,
+};
 
 /// Main transliterator struct implementing hub-and-spoke architecture
 pub struct Shlesha {
     hub: Hub,
     script_converter_registry: ScriptConverterRegistry,
-    old_converter: OldScriptConverter,
-    generator: TargetGenerator,
     registry: SchemaRegistry,
 }
 
 impl Shlesha {
     /// Create a new Shlesha transliterator instance
     pub fn new() -> Self {
-        use modules::script_converter::{IASTConverter, ITRANSConverter, SLP1Converter};
-        
-        let mut script_converter_registry = ScriptConverterRegistry::new();
-        script_converter_registry.register_converter(Box::new(IASTConverter::new()));
-        script_converter_registry.register_converter(Box::new(ITRANSConverter::new()));
-        script_converter_registry.register_converter(Box::new(SLP1Converter::new()));
+        // Use the complete registry with all available converters
+        let script_converter_registry = ScriptConverterRegistry::default();
         
         Self {
             hub: Hub::new(),
             script_converter_registry,
-            old_converter: OldScriptConverter::new(),
-            generator: TargetGenerator::new(),
             registry: SchemaRegistry::new(),
         }
     }
@@ -61,27 +58,76 @@ impl Shlesha {
     /// Transliterate text from one script to another via the central hub
     pub fn transliterate(&self, text: &str, from: &str, to: &str) -> Result<String, Box<dyn std::error::Error>> {
         // Convert source script to hub format (Devanagari or ISO)
-        let hub_input = if self.script_converter_registry.supported_scripts().contains(&from) {
-            // Use new script converter registry for romanized scripts
-            self.script_converter_registry.to_hub(from, text)?
-        } else {
-            // Fall back to old converter for devanagari/iso
-            self.old_converter.to_hub(from, text)?
+        let hub_input = self.script_converter_registry.to_hub(from, text)?;
+        
+        // Smart hub processing based on input and desired output
+        let result = match (&hub_input, to.to_lowercase().as_str()) {
+            // Direct passthrough cases - no hub processing needed
+            (HubInput::Devanagari(deva), "devanagari" | "deva") => deva.clone(),
+            (HubInput::Iso(iso), "iso" | "iso15919" | "iso-15919") => iso.clone(),
+            
+            // Hub processing needed - convert between formats
+            (HubInput::Devanagari(deva), _) => {
+                // Try direct Devanagari → target conversion first (for Indic scripts)
+                let deva_hub_input = HubInput::Devanagari(deva.clone());
+                match self.script_converter_registry.from_hub(to, &deva_hub_input) {
+                    Ok(result) => result,
+                    Err(_) => {
+                        // If direct conversion fails, convert through ISO: Devanagari → ISO → target
+                        let hub_output = self.hub.deva_to_iso(&deva)?;
+                        if let HubOutput::Iso(ref iso_result) = hub_output {
+                            let iso_hub_input = HubInput::Iso(iso_result.clone());
+                            self.script_converter_registry.from_hub(to, &iso_hub_input)?
+                        } else {
+                            return Err("Expected ISO output from hub".into());
+                        }
+                    }
+                }
+            },
+            (HubInput::Iso(iso), _) => {
+                // Try direct ISO → target conversion first
+                let iso_hub_input = HubInput::Iso(iso.clone());
+                match self.script_converter_registry.from_hub(to, &iso_hub_input) {
+                    Ok(result) => result,
+                    Err(_) => {
+                        // If direct conversion fails, convert through Devanagari: ISO → Devanagari → target
+                        let hub_output = self.hub.iso_to_deva(&iso)?;
+                        if let HubOutput::Devanagari(ref deva_result) = hub_output {
+                            let deva_hub_input = HubInput::Devanagari(deva_result.clone());
+                            self.script_converter_registry.from_hub(to, &deva_hub_input)?
+                        } else {
+                            return Err("Expected Devanagari output from hub".into());
+                        }
+                    }
+                }
+            },
         };
         
-        // Process through the hub (Devanagari ↔ ISO-15919)
-        let hub_output = match hub_input {
-            HubInput::Devanagari(deva) => self.hub.deva_to_iso(&deva)?,
-            HubInput::Iso(iso) => self.hub.iso_to_deva(&iso)?,
-        };
-        
-        // Generate target script from hub output
-        Ok(self.generator.from_hub(&hub_output, to)?)
+        Ok(result)
     }
 
     /// Load a new script schema at runtime
     pub fn load_schema(&mut self, schema_path: &str) -> Result<(), Box<dyn std::error::Error>> {
         Ok(self.registry.load_schema(schema_path)?)
+    }
+    
+    /// Get list of supported scripts
+    pub fn list_supported_scripts(&self) -> Vec<&str> {
+        self.script_converter_registry.list_supported_scripts()
+    }
+    
+    /// Check if a script is supported
+    pub fn supports_script(&self, script: &str) -> bool {
+        self.script_converter_registry.supports_script(script)
+    }
+    
+    /// Transliterate text with metadata collection for unknown tokens
+    pub fn transliterate_with_metadata(&self, text: &str, from: &str, to: &str) 
+        -> Result<crate::modules::core::unknown_handler::TransliterationResult, Box<dyn std::error::Error>> {
+        // For now, just return simple result without metadata
+        // TODO: Implement full metadata collection through hub and converters
+        let output = self.transliterate(text, from, to)?;
+        Ok(crate::modules::core::unknown_handler::TransliterationResult::simple(output))
     }
 }
 

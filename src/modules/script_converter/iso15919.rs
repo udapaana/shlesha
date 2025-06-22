@@ -27,6 +27,23 @@ impl ScriptConverter for ISO15919Converter {
         Ok(HubInput::Iso(input.to_string()))
     }
     
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        if script != "iso15919" && script != "iso_15919" && script != "iso" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "ISO-15919 converter only supports 'iso15919', 'iso_15919', or 'iso' script".to_string(),
+            });
+        }
+        
+        match hub_input {
+            HubInput::Iso(iso_text) => Ok(iso_text.clone()),
+            HubInput::Devanagari(_) => Err(ConverterError::ConversionFailed {
+                script: script.to_string(),
+                reason: "ISO-15919 converter expects ISO input, got Devanagari".to_string(),
+            }),
+        }
+    }
+    
     fn supported_scripts(&self) -> Vec<&'static str> {
         vec!["iso15919", "iso_15919", "iso"]
     }

@@ -27,6 +27,23 @@ impl ScriptConverter for DevanagariConverter {
         Ok(HubInput::Devanagari(input.to_string()))
     }
     
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        if script != "devanagari" && script != "deva" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "Devanagari converter only supports 'devanagari' or 'deva' script".to_string(),
+            });
+        }
+        
+        match hub_input {
+            HubInput::Devanagari(deva_text) => Ok(deva_text.clone()),
+            HubInput::Iso(_) => Err(ConverterError::ConversionFailed {
+                script: script.to_string(),
+                reason: "Devanagari converter expects Devanagari input, got ISO".to_string(),
+            }),
+        }
+    }
+    
     fn supported_scripts(&self) -> Vec<&'static str> {
         vec!["devanagari", "deva"]
     }

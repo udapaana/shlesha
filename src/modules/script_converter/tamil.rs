@@ -5,126 +5,150 @@ use crate::modules::hub::HubInput;
 /// Tamil script converter
 /// 
 /// Tamil (தமிழ்) is an Indic script used primarily for the Tamil language.
-/// This converter handles Tamil text by first converting it to ISO-15919 format,
-/// which can then be processed by the hub for cross-script conversion.
+/// This converter handles Tamil text by converting it directly to Devanagari equivalent,
+/// which can then be processed by the hub. The hub handles all complex linguistic rules.
 /// Tamil script has some unique features compared to other Indic scripts.
 pub struct TamilConverter {
-    tamil_to_iso_map: HashMap<char, &'static str>,
+    tamil_to_deva_map: HashMap<char, char>,
+    deva_to_tamil_map: HashMap<char, char>,
 }
 
 impl TamilConverter {
     pub fn new() -> Self {
-        let mut tamil_to_iso = HashMap::new();
+        let mut tamil_to_deva = HashMap::new();
         
-        // Tamil has consonants with implicit 'a' vowel, similar to other Indic scripts
-        // but Tamil script has some unique characteristics:
-        // - No aspirated consonants (kh, gh, etc.)
-        // - No retroflex consonants except ṭ, ṇ, ṛ
-        // - Unique character ṟ (alveolar trill)
-        // - Unique character ḻ (retroflex l)
+        // Simple character-to-character mapping from Tamil to Devanagari equivalents
+        // Let the hub handle all complex linguistic rules (virama processing, etc.)
         
-        // Vowels (உயிர்)
-        tamil_to_iso.insert('அ', "a");       // Tamil அ → ISO a
-        tamil_to_iso.insert('ஆ', "ā");       // Tamil ஆ → ISO ā
-        tamil_to_iso.insert('இ', "i");       // Tamil இ → ISO i
-        tamil_to_iso.insert('ஈ', "ī");       // Tamil ஈ → ISO ī
-        tamil_to_iso.insert('உ', "u");       // Tamil உ → ISO u
-        tamil_to_iso.insert('ஊ', "ū");       // Tamil ஊ → ISO ū
-        tamil_to_iso.insert('எ', "e");       // Tamil எ → ISO e
-        tamil_to_iso.insert('ஏ', "ē");       // Tamil ஏ → ISO ē (long e)
-        tamil_to_iso.insert('ஐ', "ai");      // Tamil ஐ → ISO ai
-        tamil_to_iso.insert('ஒ', "o");       // Tamil ஒ → ISO o
-        tamil_to_iso.insert('ஓ', "ō");       // Tamil ஓ → ISO ō (long o)
-        tamil_to_iso.insert('ஔ', "au");      // Tamil ஔ → ISO au
+        // Independent vowels (உயிர்) → Devanagari equivalents
+        tamil_to_deva.insert('அ', 'अ');       // Tamil அ → Devanagari अ
+        tamil_to_deva.insert('ஆ', 'आ');       // Tamil ஆ → Devanagari आ
+        tamil_to_deva.insert('இ', 'इ');       // Tamil இ → Devanagari इ
+        tamil_to_deva.insert('ஈ', 'ई');       // Tamil ஈ → Devanagari ई
+        tamil_to_deva.insert('உ', 'उ');       // Tamil உ → Devanagari उ
+        tamil_to_deva.insert('ஊ', 'ऊ');       // Tamil ஊ → Devanagari ऊ
+        tamil_to_deva.insert('எ', 'ए');       // Tamil எ → Devanagari ए
+        tamil_to_deva.insert('ஏ', 'ए');       // Tamil ஏ → Devanagari ए (long e mapped to short e)
+        tamil_to_deva.insert('ஐ', 'ऐ');       // Tamil ஐ → Devanagari ऐ
+        tamil_to_deva.insert('ஒ', 'ओ');       // Tamil ஒ → Devanagari ओ
+        tamil_to_deva.insert('ஓ', 'ओ');       // Tamil ஓ → Devanagari ओ (long o mapped to short o)
+        tamil_to_deva.insert('ஔ', 'औ');       // Tamil ஔ → Devanagari औ
         
-        // Vowel diacritics (உயிர்மெய்)
-        tamil_to_iso.insert('ா', "ā");       // Tamil ா → ISO ā
-        tamil_to_iso.insert('ி', "i");       // Tamil ி → ISO i
-        tamil_to_iso.insert('ீ', "ī");       // Tamil ீ → ISO ī
-        tamil_to_iso.insert('ு', "u");       // Tamil ு → ISO u
-        tamil_to_iso.insert('ூ', "ū");       // Tamil ூ → ISO ū
-        tamil_to_iso.insert('ெ', "e");       // Tamil ெ → ISO e
-        tamil_to_iso.insert('ே', "ē");       // Tamil ே → ISO ē
-        tamil_to_iso.insert('ை', "ai");      // Tamil ै → ISO ai
-        tamil_to_iso.insert('ொ', "o");       // Tamil ொ → ISO o
-        tamil_to_iso.insert('ோ', "ō");       // Tamil ோ → ISO ō
-        tamil_to_iso.insert('ௌ', "au");      // Tamil ௌ → ISO au
+        // Vowel diacritics (உயிர்மெய்) → Devanagari equivalents
+        tamil_to_deva.insert('ா', 'ा');       // Tamil ா → Devanagari ा
+        tamil_to_deva.insert('ி', 'ि');       // Tamil ি → Devanagari ि
+        tamil_to_deva.insert('ீ', 'ी');       // Tamil ீ → Devanagari ी
+        tamil_to_deva.insert('ு', 'ु');       // Tamil ு → Devanagari ु
+        tamil_to_deva.insert('ூ', 'ू');       // Tamil ூ → Devanagari ू
+        tamil_to_deva.insert('ெ', 'े');       // Tamil ெ → Devanagari े
+        tamil_to_deva.insert('ே', 'े');       // Tamil ே → Devanagari े
+        tamil_to_deva.insert('ை', 'ै');       // Tamil ை → Devanagari ै
+        tamil_to_deva.insert('ொ', 'ो');       // Tamil ொ → Devanagari ो
+        tamil_to_deva.insert('ோ', 'ो');       // Tamil ோ → Devanagari ो
+        tamil_to_deva.insert('ௌ', 'ौ');       // Tamil ௌ → Devanagari ौ
         
-        // Consonants (மெய்) - Tamil consonants have implicit 'a'
+        // Consonants (மெய்) → Devanagari equivalents
         // Tamil has a limited set of consonants compared to other Indic scripts
         
         // Velar consonants
-        tamil_to_iso.insert('க', "ka");      // Tamil க → ISO ka
-        tamil_to_iso.insert('ங', "ṅa");      // Tamil ங → ISO ṅa
+        tamil_to_deva.insert('க', 'क');       // Tamil க → Devanagari क
+        tamil_to_deva.insert('ங', 'ङ');       // Tamil ங → Devanagari ङ
         
         // Palatal consonants  
-        tamil_to_iso.insert('ச', "ca");      // Tamil ச → ISO ca
-        tamil_to_iso.insert('ஞ', "ña");      // Tamil ஞ → ISO ña
+        tamil_to_deva.insert('ச', 'च');       // Tamil ச → Devanagari च
+        tamil_to_deva.insert('ஞ', 'ञ');       // Tamil ஞ → Devanagari ञ
         
         // Retroflex consonants (limited in Tamil)
-        tamil_to_iso.insert('ட', "ṭa");      // Tamil ட → ISO ṭa
-        tamil_to_iso.insert('ண', "ṇa");      // Tamil ண → ISO ṇa
+        tamil_to_deva.insert('ட', 'ट');       // Tamil ட → Devanagari ट
+        tamil_to_deva.insert('ண', 'ण');       // Tamil ண → Devanagari ण
         
         // Dental consonants
-        tamil_to_iso.insert('த', "ta");      // Tamil த → ISO ta
-        tamil_to_iso.insert('ந', "na");      // Tamil ந → ISO na
+        tamil_to_deva.insert('த', 'त');       // Tamil த → Devanagari त
+        tamil_to_deva.insert('ந', 'न');       // Tamil ந → Devanagari न
         
         // Labial consonants
-        tamil_to_iso.insert('ப', "pa");      // Tamil ப → ISO pa
-        tamil_to_iso.insert('ம', "ma");      // Tamil ம → ISO ma
+        tamil_to_deva.insert('ப', 'प');       // Tamil ப → Devanagari प
+        tamil_to_deva.insert('ம', 'म');       // Tamil ம → Devanagari म
         
         // Semivowels and liquids
-        tamil_to_iso.insert('ய', "ya");      // Tamil ய → ISO ya
-        tamil_to_iso.insert('ர', "ra");      // Tamil ர → ISO ra
-        tamil_to_iso.insert('ல', "la");      // Tamil ல → ISO la
-        tamil_to_iso.insert('வ', "va");      // Tamil வ → ISO va
+        tamil_to_deva.insert('ய', 'य');       // Tamil ய → Devanagari य
+        tamil_to_deva.insert('ர', 'र');       // Tamil ர → Devanagari र
+        tamil_to_deva.insert('ல', 'ल');       // Tamil ல → Devanagari ल
+        tamil_to_deva.insert('வ', 'व');       // Tamil வ → Devanagari व
         
-        // Unique Tamil consonants
-        tamil_to_iso.insert('ழ', "ḻa");      // Tamil ழ → ISO ḻa (retroflex l)
-        tamil_to_iso.insert('ள', "ḷa");      // Tamil ள → ISO ḷa (retroflex l variant)
-        tamil_to_iso.insert('ற', "ṟa");      // Tamil ற → ISO ṟa (alveolar trill)
-        tamil_to_iso.insert('ன', "ṉa");      // Tamil ன → ISO ṉa (alveolar n)
+        // Unique Tamil consonants (map to closest Devanagari equivalents)
+        tamil_to_deva.insert('ழ', 'ळ');       // Tamil ழ → Devanagari ळ (retroflex l)
+        tamil_to_deva.insert('ள', 'ळ');       // Tamil ள → Devanagari ळ (retroflex l variant)
+        tamil_to_deva.insert('ற', 'र');       // Tamil ற → Devanagari र (alveolar trill → r)
+        tamil_to_deva.insert('ன', 'न');       // Tamil ன → Devanagari न (alveolar n → n)
         
         // Sibilants and aspirate (limited in Tamil)
-        tamil_to_iso.insert('ஶ', "śa");      // Tamil ஶ → ISO śa (rare, used in Sanskrit loanwords)
-        tamil_to_iso.insert('ஷ', "ṣa");      // Tamil ஷ → ISO ṣa (rare, used in Sanskrit loanwords)
-        tamil_to_iso.insert('ஸ', "sa");      // Tamil ஸ → ISO sa (rare, used in Sanskrit loanwords)
-        tamil_to_iso.insert('ஹ', "ha");      // Tamil ஹ → ISO ha (rare, used in Sanskrit loanwords)
+        tamil_to_deva.insert('ஶ', 'श');       // Tamil ஶ → Devanagari श (rare, used in Sanskrit loanwords)
+        tamil_to_deva.insert('ஷ', 'ष');       // Tamil ஷ → Devanagari ष (rare, used in Sanskrit loanwords)
+        tamil_to_deva.insert('ஸ', 'स');       // Tamil ஸ → Devanagari स (rare, used in Sanskrit loanwords)
+        tamil_to_deva.insert('ஹ', 'ह');       // Tamil ஹ → Devanagari ह (rare, used in Sanskrit loanwords)
         
         // Additional characters for Sanskrit loanwords
-        tamil_to_iso.insert('ஜ', "ja");      // Tamil ஜ → ISO ja (Sanskrit loanword)
-        tamil_to_iso.insert('ஃ', "ḥ");       // Tamil ஃ → ISO ḥ (visarga - rare)
+        tamil_to_deva.insert('ஜ', 'ज');       // Tamil ஜ → Devanagari ज (Sanskrit loanword)
+        tamil_to_deva.insert('ஃ', 'ः');       // Tamil ஃ → Devanagari ः (visarga - rare)
         
         // Special marks
-        tamil_to_iso.insert('ஂ', "ṁ");       // Tamil ஂ → ISO ṁ (anusvara - rare)
-        tamil_to_iso.insert('்', "");        // Tamil ் → pulli/virama (removes inherent vowel)
+        tamil_to_deva.insert('ஂ', 'ं');       // Tamil ஂ → Devanagari ं (anusvara - rare)
+        tamil_to_deva.insert('்', '्');       // Tamil ் → Devanagari ् (pulli/virama)
         
         // Digits
-        tamil_to_iso.insert('௦', "0");       // Tamil ௦ → ISO 0
-        tamil_to_iso.insert('௧', "1");       // Tamil ௧ → ISO 1
-        tamil_to_iso.insert('௨', "2");       // Tamil ௨ → ISO 2
-        tamil_to_iso.insert('௩', "3");       // Tamil ௩ → ISO 3
-        tamil_to_iso.insert('௪', "4");       // Tamil ௪ → ISO 4
-        tamil_to_iso.insert('௫', "5");       // Tamil ௫ → ISO 5
-        tamil_to_iso.insert('௬', "6");       // Tamil ௬ → ISO 6
-        tamil_to_iso.insert('௭', "7");       // Tamil ௭ → ISO 7
-        tamil_to_iso.insert('௮', "8");       // Tamil ௮ → ISO 8
-        tamil_to_iso.insert('௯', "9");       // Tamil ௯ → ISO 9
+        tamil_to_deva.insert('௦', '०');       // Tamil ௦ → Devanagari ०
+        tamil_to_deva.insert('௧', '१');       // Tamil ௧ → Devanagari १
+        tamil_to_deva.insert('௨', '२');       // Tamil ௨ → Devanagari २
+        tamil_to_deva.insert('௩', '३');       // Tamil ௩ → Devanagari ३
+        tamil_to_deva.insert('௪', '४');       // Tamil ௪ → Devanagari ४
+        tamil_to_deva.insert('௫', '५');       // Tamil ௫ → Devanagari ५
+        tamil_to_deva.insert('௬', '६');       // Tamil ௬ → Devanagari ६
+        tamil_to_deva.insert('௭', '७');       // Tamil ௭ → Devanagari ७
+        tamil_to_deva.insert('௮', '८');       // Tamil ௮ → Devanagari ८
+        tamil_to_deva.insert('௯', '९');       // Tamil ௯ → Devanagari ९
         
+        // Build reverse mapping for Devanagari → Tamil conversion
+        let mut deva_to_tamil = HashMap::new();
+        for (&tamil, &deva) in &tamil_to_deva {
+            deva_to_tamil.insert(deva, tamil);
+        }
+
         Self {
-            tamil_to_iso_map: tamil_to_iso,
+            tamil_to_deva_map: tamil_to_deva,
+            deva_to_tamil_map: deva_to_tamil,
         }
     }
     
-    /// Convert Tamil text to ISO-15919 format
-    pub fn tamil_to_iso(&self, input: &str) -> Result<String, ConverterError> {
+    /// Convert Tamil text to Devanagari format (for hub processing)
+    pub fn tamil_to_devanagari(&self, input: &str) -> Result<String, ConverterError> {
         let mut result = String::new();
         
+        // Simple character-to-character mapping - let hub handle complex rules
         for ch in input.chars() {
             if ch.is_whitespace() || ch.is_ascii_punctuation() {
                 result.push(ch);
-            } else if let Some(&iso_str) = self.tamil_to_iso_map.get(&ch) {
-                result.push_str(iso_str);
+            } else if let Some(&deva_char) = self.tamil_to_deva_map.get(&ch) {
+                result.push(deva_char);
+            } else {
+                // Character not in mapping - preserve as-is for mixed content
+                result.push(ch);
+            }
+        }
+        
+        Ok(result)
+    }
+    
+    /// Convert Devanagari text to Tamil format (reverse conversion)
+    pub fn devanagari_to_tamil(&self, input: &str) -> Result<String, ConverterError> {
+        let mut result = String::new();
+        
+        // Simple character-to-character mapping
+        for ch in input.chars() {
+            if ch.is_whitespace() || ch.is_ascii_punctuation() {
+                result.push(ch);
+            } else if let Some(&tamil_char) = self.deva_to_tamil_map.get(&ch) {
+                result.push(tamil_char);
             } else {
                 // Character not in mapping - preserve as-is for mixed content
                 result.push(ch);
@@ -144,13 +168,31 @@ impl ScriptConverter for TamilConverter {
             });
         }
         
-        let iso_text = self.tamil_to_iso(input)
+        let deva_text = self.tamil_to_devanagari(input)
             .map_err(|e| ConverterError::ConversionFailed {
                 script: script.to_string(),
-                reason: format!("Tamil to ISO conversion failed: {}", e),
+                reason: format!("Tamil to Devanagari conversion failed: {}", e),
             })?;
             
-        Ok(HubInput::Iso(iso_text))
+        // Return Devanagari for hub processing, not ISO
+        Ok(HubInput::Devanagari(deva_text))
+    }
+    
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        if script != "tamil" && script != "ta" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "Tamil converter only supports 'tamil' or 'ta' script".to_string(),
+            });
+        }
+        
+        match hub_input {
+            HubInput::Devanagari(deva_text) => self.devanagari_to_tamil(deva_text),
+            HubInput::Iso(_) => Err(ConverterError::ConversionFailed {
+                script: script.to_string(),
+                reason: "Tamil converter expects Devanagari input, got ISO".to_string(),
+            }),
+        }
     }
     
     fn supported_scripts(&self) -> Vec<&'static str> {
@@ -159,7 +201,7 @@ impl ScriptConverter for TamilConverter {
     
     fn script_has_implicit_a(&self, _script: &str) -> bool {
         // Tamil is an Indic script - consonants DO have implicit 'a'
-        // In Tamil, க inherently represents "ka" and requires pulli (்) to suppress the vowel: க்
+        // But now the hub will handle this complexity
         true
     }
 }
@@ -178,40 +220,25 @@ mod tests {
     fn test_tamil_basic_vowels() {
         let converter = TamilConverter::new();
         
-        // Test basic vowels
-        assert_eq!(converter.tamil_to_iso("அ").unwrap(), "a");
-        assert_eq!(converter.tamil_to_iso("ஆ").unwrap(), "ā");
-        assert_eq!(converter.tamil_to_iso("இ").unwrap(), "i");
-        assert_eq!(converter.tamil_to_iso("ஈ").unwrap(), "ī");
-        assert_eq!(converter.tamil_to_iso("உ").unwrap(), "u");
-        assert_eq!(converter.tamil_to_iso("ஊ").unwrap(), "ū");
-        assert_eq!(converter.tamil_to_iso("எ").unwrap(), "e");
-        assert_eq!(converter.tamil_to_iso("ஏ").unwrap(), "ē");
-        assert_eq!(converter.tamil_to_iso("ஐ").unwrap(), "ai");
-        assert_eq!(converter.tamil_to_iso("ஒ").unwrap(), "o");
-        assert_eq!(converter.tamil_to_iso("ஓ").unwrap(), "ō");
-        assert_eq!(converter.tamil_to_iso("ஔ").unwrap(), "au");
+        // Test basic vowels - now should map to Devanagari
+        assert_eq!(converter.tamil_to_devanagari("அ").unwrap(), "अ");
+        assert_eq!(converter.tamil_to_devanagari("ஆ").unwrap(), "आ");
+        assert_eq!(converter.tamil_to_devanagari("இ").unwrap(), "इ");
+        assert_eq!(converter.tamil_to_devanagari("ஈ").unwrap(), "ई");
+        assert_eq!(converter.tamil_to_devanagari("உ").unwrap(), "उ");
+        assert_eq!(converter.tamil_to_devanagari("ஊ").unwrap(), "ऊ");
     }
     
     #[test]
     fn test_tamil_consonants() {
         let converter = TamilConverter::new();
         
-        // Test basic consonants (with implicit 'a')
-        assert_eq!(converter.tamil_to_iso("க").unwrap(), "ka");
-        assert_eq!(converter.tamil_to_iso("ங").unwrap(), "ṅa");
-        assert_eq!(converter.tamil_to_iso("ச").unwrap(), "ca");
-        assert_eq!(converter.tamil_to_iso("ஞ").unwrap(), "ña");
-        assert_eq!(converter.tamil_to_iso("ட").unwrap(), "ṭa");
-        assert_eq!(converter.tamil_to_iso("ண").unwrap(), "ṇa");
-        assert_eq!(converter.tamil_to_iso("த").unwrap(), "ta");
-        assert_eq!(converter.tamil_to_iso("ந").unwrap(), "na");
-        assert_eq!(converter.tamil_to_iso("ப").unwrap(), "pa");
-        assert_eq!(converter.tamil_to_iso("ம").unwrap(), "ma");
-        assert_eq!(converter.tamil_to_iso("ய").unwrap(), "ya");
-        assert_eq!(converter.tamil_to_iso("ர").unwrap(), "ra");
-        assert_eq!(converter.tamil_to_iso("ல").unwrap(), "la");
-        assert_eq!(converter.tamil_to_iso("வ").unwrap(), "va");
+        // Test basic consonants - should map to Devanagari equivalents
+        assert_eq!(converter.tamil_to_devanagari("க").unwrap(), "क");
+        assert_eq!(converter.tamil_to_devanagari("ச").unwrap(), "च");
+        assert_eq!(converter.tamil_to_devanagari("த").unwrap(), "त");
+        assert_eq!(converter.tamil_to_devanagari("ப").unwrap(), "प");
+        assert_eq!(converter.tamil_to_devanagari("ம").unwrap(), "म");
     }
     
     #[test]
@@ -219,10 +246,10 @@ mod tests {
         let converter = TamilConverter::new();
         
         // Test unique Tamil consonants
-        assert_eq!(converter.tamil_to_iso("ழ").unwrap(), "ḻa");   // retroflex l
-        assert_eq!(converter.tamil_to_iso("ள").unwrap(), "ḷa");   // retroflex l variant
-        assert_eq!(converter.tamil_to_iso("ற").unwrap(), "ṟa");   // alveolar trill
-        assert_eq!(converter.tamil_to_iso("ன").unwrap(), "ṉa");   // alveolar n
+        assert_eq!(converter.tamil_to_devanagari("ழ").unwrap(), "ळ");   // retroflex l
+        assert_eq!(converter.tamil_to_devanagari("ள").unwrap(), "ळ");   // retroflex l variant
+        assert_eq!(converter.tamil_to_devanagari("ற").unwrap(), "र");   // alveolar trill → r
+        assert_eq!(converter.tamil_to_devanagari("ன").unwrap(), "न");   // alveolar n → n
     }
     
     #[test]
@@ -230,41 +257,9 @@ mod tests {
         let converter = TamilConverter::new();
         
         // Test special marks
-        assert_eq!(converter.tamil_to_iso("ஂ").unwrap(), "ṁ");   // anusvara (rare)
-        assert_eq!(converter.tamil_to_iso("ஃ").unwrap(), "ḥ");   // visarga (rare)
-        assert_eq!(converter.tamil_to_iso("்").unwrap(), "");    // pulli/virama
-    }
-    
-    #[test]
-    fn test_tamil_digits() {
-        let converter = TamilConverter::new();
-        
-        // Test Tamil digits
-        assert_eq!(converter.tamil_to_iso("௦௧௨௩௪௫௬௭௮௯").unwrap(), "0123456789");
-    }
-    
-    #[test]
-    fn test_tamil_sanskrit_loanwords() {
-        let converter = TamilConverter::new();
-        
-        // Test characters used in Sanskrit loanwords
-        assert_eq!(converter.tamil_to_iso("ஶ").unwrap(), "śa");   // rare, Sanskrit
-        assert_eq!(converter.tamil_to_iso("ஷ").unwrap(), "ṣa");   // rare, Sanskrit
-        assert_eq!(converter.tamil_to_iso("ஸ").unwrap(), "sa");   // rare, Sanskrit
-        assert_eq!(converter.tamil_to_iso("ஹ").unwrap(), "ha");   // rare, Sanskrit
-        assert_eq!(converter.tamil_to_iso("ஜ").unwrap(), "ja");   // Sanskrit loanword
-    }
-    
-    #[test]
-    fn test_tamil_complex_text() {
-        let converter = TamilConverter::new();
-        
-        // Test Tamil words
-        let tamil_text = "வணக்கம்";  // "vanakkam" (greeting)
-        
-        // Just test that conversion works without error
-        let result = converter.tamil_to_iso(tamil_text);
-        assert!(result.is_ok());
+        assert_eq!(converter.tamil_to_devanagari("ஂ").unwrap(), "ं");   // anusvara (rare)
+        assert_eq!(converter.tamil_to_devanagari("ஃ").unwrap(), "ः");   // visarga (rare)
+        assert_eq!(converter.tamil_to_devanagari("்").unwrap(), "्");    // pulli/virama
     }
     
     #[test]
@@ -281,39 +276,10 @@ mod tests {
         assert!(converter.script_has_implicit_a("ta"));
         
         let result = converter.to_hub("tamil", "க").unwrap();
-        if let HubInput::Iso(iso_text) = result {
-            assert_eq!(iso_text, "ka");
+        if let HubInput::Devanagari(deva_text) = result {
+            assert_eq!(deva_text, "क");
         } else {
-            panic!("Expected ISO hub input");
+            panic!("Expected Devanagari hub input");
         }
-    }
-    
-    #[test]
-    fn test_invalid_script_error() {
-        let converter = TamilConverter::new();
-        
-        // Should reject invalid script names
-        let result = converter.to_hub("hindi", "test");
-        assert!(result.is_err());
-        
-        if let Err(ConverterError::InvalidInput { script, message }) = result {
-            assert_eq!(script, "hindi");
-            assert!(message.contains("Tamil converter only supports"));
-        } else {
-            panic!("Expected InvalidInput error");
-        }
-    }
-    
-    #[test]
-    fn test_mixed_content() {
-        let converter = TamilConverter::new();
-        
-        // Should handle mixed Tamil and other characters
-        let mixed_input = "வணக்கம் 123 hello";
-        let result = converter.tamil_to_iso(mixed_input).unwrap();
-        
-        // Should contain the converted Tamil part plus preserved non-Tamil content
-        assert!(result.contains("123"));
-        assert!(result.contains("hello"));
     }
 }

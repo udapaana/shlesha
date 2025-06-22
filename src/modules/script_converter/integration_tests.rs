@@ -344,20 +344,14 @@ mod integration_tests {
         ];
         
         for (bengali_input, expected_deva) in test_cases {
-            // Bengali → ISO via script converter
+            // Bengali → Devanagari via script converter (new architecture)
             let hub_input = bengali_converter.to_hub("bengali", bengali_input).unwrap();
-            if let HubInput::Iso(iso_text) = hub_input {
-                // ISO → Devanagari via hub
-                let hub_output = hub.iso_to_deva(&iso_text).unwrap();
-                if let HubOutput::Devanagari(deva_result) = hub_output {
-                    assert_eq!(deva_result, expected_deva,
-                        "Bengali cross-script conversion failed: {} → {} → {}", 
-                        bengali_input, iso_text, deva_result);
-                } else {
-                    panic!("Expected Devanagari output");
-                }
+            if let HubInput::Devanagari(deva_result) = hub_input {
+                assert_eq!(deva_result, expected_deva,
+                    "Bengali to Devanagari conversion failed: {} → {}", 
+                    bengali_input, deva_result);
             } else {
-                panic!("Expected ISO hub input");
+                panic!("Expected Devanagari hub input");
             }
         }
     }
@@ -438,20 +432,14 @@ mod integration_tests {
         ];
         
         for (tamil_input, expected_deva) in test_cases {
-            // Tamil → ISO via script converter
+            // Tamil → Devanagari via script converter (new architecture)
             let hub_input = tamil_converter.to_hub("tamil", tamil_input).unwrap();
-            if let HubInput::Iso(iso_text) = hub_input {
-                // ISO → Devanagari via hub
-                let hub_output = hub.iso_to_deva(&iso_text).unwrap();
-                if let HubOutput::Devanagari(deva_result) = hub_output {
-                    assert_eq!(deva_result, expected_deva,
-                        "Tamil cross-script conversion failed: {} → {} → {}", 
-                        tamil_input, iso_text, deva_result);
-                } else {
-                    panic!("Expected Devanagari output");
-                }
+            if let HubInput::Devanagari(deva_result) = hub_input {
+                assert_eq!(deva_result, expected_deva,
+                    "Tamil to Devanagari conversion failed: {} → {}", 
+                    tamil_input, deva_result);
             } else {
-                panic!("Expected ISO hub input");
+                panic!("Expected Devanagari hub input");
             }
         }
     }
@@ -494,20 +482,14 @@ mod integration_tests {
         ];
         
         for (telugu_input, expected_deva) in test_cases {
-            // Telugu → ISO via script converter
+            // Telugu → Devanagari via script converter (new architecture)
             let hub_input = telugu_converter.to_hub("telugu", telugu_input).unwrap();
-            if let HubInput::Iso(iso_text) = hub_input {
-                // ISO → Devanagari via hub
-                let hub_output = hub.iso_to_deva(&iso_text).unwrap();
-                if let HubOutput::Devanagari(deva_result) = hub_output {
-                    assert_eq!(deva_result, expected_deva,
-                        "Telugu cross-script conversion failed: {} → {} → {}", 
-                        telugu_input, iso_text, deva_result);
-                } else {
-                    panic!("Expected Devanagari output");
-                }
+            if let HubInput::Devanagari(deva_result) = hub_input {
+                assert_eq!(deva_result, expected_deva,
+                    "Telugu to Devanagari conversion failed: {} → {}", 
+                    telugu_input, deva_result);
             } else {
-                panic!("Expected ISO hub input");
+                panic!("Expected Devanagari hub input");
             }
         }
     }

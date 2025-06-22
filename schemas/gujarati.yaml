@@ -1,0 +1,116 @@
+# Gujarati Script Schema
+# Gujarati (ગુજરાતી) is an Indic script used primarily for the Gujarati language
+
+name: "gujarati"
+version: "1.0.0"
+script_type: "brahmic"
+description: "Gujarati script mapping to Devanagari/ISO-15919"
+author: "Shlesha Project"
+
+# Metadata
+metadata:
+  has_implicit_a: true  # Gujarati consonants have inherent 'a' vowel
+  direction: "ltr"
+  case_sensitive: true
+
+# Character mappings (Gujarati to Devanagari equivalent)
+mappings:
+  # Independent vowels
+  vowels:
+    "અ": "अ"    # a
+    "આ": "आ"    # ā
+    "ઇ": "इ"    # i
+    "ઈ": "ई"    # ī
+    "ઉ": "उ"    # u
+    "ઊ": "ऊ"    # ū
+    "ઋ": "ऋ"    # ṛ
+    "ૠ": "ॠ"    # ṝ
+    "ઍ": "ऍ"    # ĕ
+    "એ": "ए"    # e
+    "ઐ": "ऐ"    # ai
+    "ઑ": "ऑ"    # ŏ
+    "ઓ": "ओ"    # o
+    "ઔ": "औ"    # au
+  
+  # Consonants (with inherent 'a')
+  consonants:
+    "ક": "क"    # ka
+    "ખ": "ख"    # kha
+    "ગ": "ग"    # ga
+    "ઘ": "घ"    # gha
+    "ઙ": "ङ"    # ṅa
+    "ચ": "च"    # ca
+    "છ": "छ"    # cha
+    "જ": "ज"    # ja
+    "ઝ": "झ"    # jha
+    "ઞ": "ञ"    # ña
+    "ટ": "ट"    # ṭa
+    "ઠ": "ठ"    # ṭha
+    "ડ": "ड"    # ḍa
+    "ઢ": "ढ"    # ḍha
+    "ણ": "ण"    # ṇa
+    "ત": "त"    # ta
+    "થ": "थ"    # tha
+    "દ": "द"    # da
+    "ધ": "ध"    # dha
+    "ન": "न"    # na
+    "પ": "प"    # pa
+    "ફ": "फ"    # pha
+    "બ": "ब"    # ba
+    "ભ": "भ"    # bha
+    "મ": "म"    # ma
+    "ય": "य"    # ya
+    "ર": "र"    # ra
+    "લ": "ल"    # la
+    "વ": "व"    # va
+    "શ": "श"    # śa
+    "ષ": "ष"    # ṣa
+    "સ": "स"    # sa
+    "હ": "ह"    # ha
+    "ળ": "ळ"    # ḷa
+  
+  # Vowel signs (matras)
+  vowel_signs:
+    "ા": "ा"    # ā
+    "િ": "ि"    # i
+    "ી": "ी"    # ī
+    "ુ": "ु"    # u
+    "ૂ": "ू"    # ū
+    "ૃ": "ृ"    # ṛ
+    "ૄ": "ॄ"    # ṝ
+    "ૅ": "ॅ"    # ĕ
+    "ે": "े"    # e
+    "ૈ": "ै"    # ai
+    "ૉ": "ॉ"    # ŏ
+    "ો": "ो"    # o
+    "ૌ": "ौ"    # au
+  
+  # Special marks
+  marks:
+    "ં": "ं"    # anusvara
+    "ઃ": "ः"    # visarga
+    "્": "्"    # virama/halanta
+    "ઽ": "ऽ"    # avagraha
+    "ૐ": "ॐ"    # om
+  
+  # Digits
+  digits:
+    "૦": "०"    # 0
+    "૧": "१"    # 1
+    "૨": "२"    # 2
+    "૩": "३"    # 3
+    "૪": "४"    # 4
+    "૫": "५"    # 5
+    "૬": "६"    # 6
+    "૭": "७"    # 7
+    "૮": "८"    # 8
+    "૯": "९"    # 9
+
+# Validation rules
+validation:
+  patterns:
+    vowel: "[અઆઇઈઉઊઋૠઍએઐઑઓઔ]"
+    consonant: "[કખગઘઙચછજઝઞટઠડઢણતથદધનપફબભમયરલવશષસહળ]"
+    vowel_sign: "[ાિીુૂૃૄૅેૈૉોૌ]"
+    mark: "[ંઃ્ઽૐ]"
+    digit: "[૦-૯]"

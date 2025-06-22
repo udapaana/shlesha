@@ -12,14 +12,19 @@ repository = "https://github.com/udapaana/shlesha"
 thiserror = "1.0"
 unicode-normalization = "0.1"
 
+# Schema loading dependencies
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+
 # Optional features
-serde = { version = "1.0", features = ["derive"], optional = true }
 clap = { version = "4.0", features = ["derive"], optional = true }
+
+# Python bindings
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
 
 [features]
 default = ["cli"]
 cli = ["dep:clap"]
-serde = ["dep:serde"]
 
 [[bin]]
 name = "shlesha"

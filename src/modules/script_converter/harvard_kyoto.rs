@@ -9,6 +9,7 @@ use crate::modules::hub::HubInput;
 /// on standard keyboards while maintaining readability.
 pub struct HarvardKyotoConverter {
     hk_to_iso_map: HashMap<&'static str, &'static str>,
+    iso_to_hk_map: HashMap<&'static str, &'static str>,
 }
 
 impl HarvardKyotoConverter {
@@ -106,8 +107,15 @@ impl HarvardKyotoConverter {
         hk_to_iso.insert("|", "।");        // HK | → danda
         hk_to_iso.insert("||", "॥");       // HK || → double danda
         
+        // Build reverse mapping for ISO → Harvard-Kyoto conversion
+        let mut iso_to_hk = HashMap::new();
+        for (&hk, &iso) in &hk_to_iso {
+            iso_to_hk.insert(iso, hk);
+        }
+
         Self {
             hk_to_iso_map: hk_to_iso,
+            iso_to_hk_map: iso_to_hk,
         }
     }
     
@@ -160,6 +168,56 @@ impl HarvardKyotoConverter {
         
         Ok(result)
     }
+    
+    /// Convert ISO-15919 text to Harvard-Kyoto format (reverse conversion)
+    pub fn iso_to_hk(&self, input: &str) -> Result<String, ConverterError> {
+        let mut result = String::new();
+        let chars: Vec<char> = input.chars().collect();
+        let mut i = 0;
+        
+        while i < chars.len() {
+            let ch = chars[i];
+            
+            // Handle whitespace (preserve as-is)
+            if ch.is_whitespace() {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            // Handle ASCII punctuation (preserve as-is)
+            if ch.is_ascii_punctuation() && ch != '\'' {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            let mut matched = false;
+            
+            // Try to match sequences of decreasing length (4, 3, 2, 1)
+            for len in (1..=4).rev() {
+                if i + len > chars.len() {
+                    continue;
+                }
+                
+                let seq: String = chars[i..i+len].iter().collect();
+                if let Some(&hk_str) = self.iso_to_hk_map.get(seq.as_str()) {
+                    result.push_str(hk_str);
+                    i += len;
+                    matched = true;
+                    break;
+                }
+            }
+            
+            if !matched {
+                // Character not found in mapping - preserve as-is
+                result.push(ch);
+                i += 1;
+            }
+        }
+        
+        Ok(result)
+    }
 }
 
 impl ScriptConverter for HarvardKyotoConverter {
@@ -178,6 +236,23 @@ impl ScriptConverter for HarvardKyotoConverter {
             })?;
             
         Ok(HubInput::Iso(iso_text))
+    }
+    
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        if script != "harvard_kyoto" && script != "hk" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "Harvard-Kyoto converter only supports 'harvard_kyoto' or 'hk' script".to_string(),
+            });
+        }
+        
+        match hub_input {
+            HubInput::Iso(iso_text) => self.iso_to_hk(iso_text),
+            HubInput::Devanagari(_) => Err(ConverterError::ConversionFailed {
+                script: script.to_string(),
+                reason: "Harvard-Kyoto converter expects ISO input, got Devanagari".to_string(),
+            }),
+        }
     }
     
     fn supported_scripts(&self) -> Vec<&'static str> {

@@ -9,6 +9,7 @@ use crate::modules::hub::HubInput;
 /// It's widely used in digital contexts where diacritical marks are not supported.
 pub struct ITRANSConverter {
     itrans_to_iso_map: HashMap<&'static str, &'static str>,
+    iso_to_itrans_map: HashMap<&'static str, &'static str>,
 }
 
 impl ITRANSConverter {
@@ -119,8 +120,15 @@ impl ITRANSConverter {
         itrans_to_iso.insert("|", "।");       // ITRANS | → danda
         itrans_to_iso.insert("||", "॥");      // ITRANS || → double danda
         
+        // Build reverse mapping for ISO → ITRANS conversion
+        let mut iso_to_itrans = HashMap::new();
+        for (&itrans, &iso) in &itrans_to_iso {
+            iso_to_itrans.insert(iso, itrans);
+        }
+
         Self {
             itrans_to_iso_map: itrans_to_iso,
+            iso_to_itrans_map: iso_to_itrans,
         }
     }
     
@@ -173,6 +181,56 @@ impl ITRANSConverter {
         
         Ok(result)
     }
+    
+    /// Convert ISO-15919 text to ITRANS format (reverse conversion)
+    pub fn iso_to_itrans(&self, input: &str) -> Result<String, ConverterError> {
+        let mut result = String::new();
+        let chars: Vec<char> = input.chars().collect();
+        let mut i = 0;
+        
+        while i < chars.len() {
+            let ch = chars[i];
+            
+            // Handle whitespace (preserve as-is)
+            if ch.is_whitespace() {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            // Handle ASCII punctuation (preserve as-is)
+            if ch.is_ascii_punctuation() && ch != '\'' {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            let mut matched = false;
+            
+            // Try to match sequences of decreasing length (4, 3, 2, 1)
+            for len in (1..=4).rev() {
+                if i + len > chars.len() {
+                    continue;
+                }
+                
+                let seq: String = chars[i..i+len].iter().collect();
+                if let Some(&itrans_str) = self.iso_to_itrans_map.get(seq.as_str()) {
+                    result.push_str(itrans_str);
+                    i += len;
+                    matched = true;
+                    break;
+                }
+            }
+            
+            if !matched {
+                // Character not found in mapping - preserve as-is
+                result.push(ch);
+                i += 1;
+            }
+        }
+        
+        Ok(result)
+    }
 }
 
 impl ScriptConverter for ITRANSConverter {
@@ -191,6 +249,23 @@ impl ScriptConverter for ITRANSConverter {
             })?;
             
         Ok(HubInput::Iso(iso_text))
+    }
+    
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        if script != "itrans" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "ITRANS converter only supports 'itrans' script".to_string(),
+            });
+        }
+        
+        match hub_input {
+            HubInput::Iso(iso_text) => self.iso_to_itrans(iso_text),
+            HubInput::Devanagari(_) => Err(ConverterError::ConversionFailed {
+                script: script.to_string(),
+                reason: "ITRANS converter expects ISO input, got Devanagari".to_string(),
+            }),
+        }
     }
     
     fn supported_scripts(&self) -> Vec<&'static str> {

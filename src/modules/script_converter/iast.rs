@@ -8,6 +8,7 @@ use crate::modules::hub::HubInput;
 /// and has some differences from ISO-15919 that need to be normalized.
 pub struct IASTConverter {
     iast_to_iso_map: HashMap<&'static str, &'static str>,
+    iso_to_iast_map: HashMap<&'static str, &'static str>,
 }
 
 impl IASTConverter {
@@ -132,8 +133,15 @@ impl IASTConverter {
         iast_to_iso.insert("।", "।");     // Danda
         iast_to_iso.insert("॥", "॥");     // Double danda
         
+        // Build reverse mapping for ISO → IAST conversion
+        let mut iso_to_iast = HashMap::new();
+        for (&iast, &iso) in &iast_to_iso {
+            iso_to_iast.insert(iso, iast);
+        }
+
         Self {
             iast_to_iso_map: iast_to_iso,
+            iso_to_iast_map: iso_to_iast,
         }
     }
     
@@ -185,6 +193,56 @@ impl IASTConverter {
         
         Ok(result)
     }
+    
+    /// Convert ISO-15919 text to IAST format (reverse conversion)
+    pub fn iso_to_iast(&self, input: &str) -> Result<String, ConverterError> {
+        let mut result = String::new();
+        let chars: Vec<char> = input.chars().collect();
+        let mut i = 0;
+        
+        while i < chars.len() {
+            let ch = chars[i];
+            
+            // Handle whitespace (preserve as-is)
+            if ch.is_whitespace() {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            // Handle ASCII punctuation (preserve as-is)
+            if ch.is_ascii_punctuation() && ch != '\'' {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            let mut matched = false;
+            
+            // Try to match sequences of decreasing length (4, 3, 2, 1)
+            for len in (1..=4).rev() {
+                if i + len > chars.len() {
+                    continue;
+                }
+                
+                let seq: String = chars[i..i+len].iter().collect();
+                if let Some(&iast_str) = self.iso_to_iast_map.get(seq.as_str()) {
+                    result.push_str(iast_str);
+                    i += len;
+                    matched = true;
+                    break;
+                }
+            }
+            
+            if !matched {
+                // Character not found in mapping - preserve as-is
+                result.push(ch);
+                i += 1;
+            }
+        }
+        
+        Ok(result)
+    }
 }
 
 impl ScriptConverter for IASTConverter {
@@ -203,6 +261,23 @@ impl ScriptConverter for IASTConverter {
             })?;
             
         Ok(HubInput::Iso(iso_text))
+    }
+    
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        if script != "iast" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "IAST converter only supports 'iast' script".to_string(),
+            });
+        }
+        
+        match hub_input {
+            HubInput::Iso(iso_text) => self.iso_to_iast(iso_text),
+            HubInput::Devanagari(_) => Err(ConverterError::ConversionFailed {
+                script: script.to_string(),
+                reason: "IAST converter expects ISO input, got Devanagari".to_string(),
+            }),
+        }
     }
     
     fn supported_scripts(&self) -> Vec<&'static str> {

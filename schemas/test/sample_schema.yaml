@@ -1,0 +1,53 @@
+# Sample Schema for Registry Module Testing
+# This demonstrates the expected schema format
+
+name: "sample"
+version: "1.0.0"
+script_type: "romanized"
+description: "Sample romanization scheme for testing"
+author: "Shlesha Test Suite"
+
+# Metadata
+metadata:
+  has_implicit_a: false
+  direction: "ltr"
+  case_sensitive: true
+
+# Character mappings
+mappings:
+  # Vowels
+  vowels:
+    "a": "अ"
+    "A": "आ"
+    "i": "इ"
+    "I": "ई"
+    "u": "उ"
+    "U": "ऊ"
+  
+  # Consonants
+  consonants:
+    "k": "क्"
+    "kh": "ख्"
+    "g": "ग्"
+    "gh": "घ्"
+    "n": "ङ्"
+  
+  # Special marks
+  marks:
+    "M": "ं"
+    "H": "ः"
+  
+  # Digits
+  digits:
+    "0": "०"
+    "1": "१"
+    "2": "२"
+
+# Validation rules
+validation:
+  # Regular expressions for valid input patterns
+  patterns:
+    vowel: "[aAiIuU]"
+    consonant: "[kKgGnNcCjJTDtdpPbBmyrlvshSH]"
+    mark: "[MH]"
+    digit: "[0-9]"
