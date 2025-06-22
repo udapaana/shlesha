@@ -22,9 +22,25 @@ clap = { version = "4.0", features = ["derive"], optional = true }
 # Python bindings
 pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
 
+# WASM bindings
+wasm-bindgen = { version = "0.2", optional = true }
+js-sys = { version = "0.3", optional = true }
+web-sys = { version = "0.3", optional = true }
+console_error_panic_hook = { version = "0.1", optional = true }
+wasm = "0.0.0"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
+criterion = { version = "0.5", features = ["html_reports"] }
+proptest = "1.2"
+quickcheck = "1.0"
+quickcheck_macros = "1.0"
+
 [features]
 default = ["cli"]
 cli = ["dep:clap"]
+python = ["dep:pyo3"]
+wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys", "dep:console_error_panic_hook"]
 
 [[bin]]
 name = "shlesha"
@@ -34,3 +50,15 @@ required-features = ["cli"]
 [lib]
 name = "shlesha"
 path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+# Python module configuration - PyO3 will use the lib automatically when python feature is enabled
+
+[package.metadata.maturin]
+name = "shlesha"
+python-source = "python"
+module-name = "shlesha._shlesha"
+
+[[bench]]
+name = "comprehensive_benchmark"
+harness = false

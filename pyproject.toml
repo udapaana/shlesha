@@ -1,0 +1,67 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "shlesha"
+description = "High-performance extensible transliteration library for Sanskrit and Indic scripts"
+authors = [
+    {name = "Shlesha Contributors"},
+]
+license = {text = "MIT OR Apache-2.0"}
+keywords = ["transliteration", "sanskrit", "indic", "devanagari", "unicode"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Rust",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.8"
+dependencies = []
+dynamic = ["version"]
+
+[project.urls]
+homepage = "https://github.com/udapaana/shlesha"
+repository = "https://github.com/udapaana/shlesha"
+documentation = "https://github.com/udapaana/shlesha/blob/main/README.md"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-benchmark>=3.4",
+    "maturin>=1.0,<2.0",
+]
+test = [
+    "pytest>=6.0",
+    "pytest-asyncio>=0.20.0",
+]
+docs = [
+    "sphinx>=4.0",
+    "sphinx-rtd-theme>=1.0",
+]
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "shlesha._shlesha"
+python-source = "python"
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]
+python_files = ["test_*.py", "*_test.py"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=6.0",
+    "pytest-benchmark>=3.4",
+    "maturin>=1.0,<2.0",
+]

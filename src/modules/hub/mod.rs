@@ -509,20 +509,64 @@ impl HubTrait for Hub {
             let mut char_consumed = 1;
             
             if i + 1 < chars.len() && chars[i + 1] == '़' {
-                // Handle nukta combinations...
-                char_consumed = 2;
+                // Try to find the precomposed nukta character
+                let nukta_mapping = match current_char {
+                    'क' => Some('\u{0958}'), // क़
+                    'ख' => Some('\u{0959}'), // ख़
+                    'ग' => Some('\u{095A}'), // ग़
+                    'ज' => Some('\u{095B}'), // ज़
+                    'ड' => Some('\u{095C}'), // ड़
+                    'ढ' => Some('\u{095D}'), // ढ़
+                    'फ' => Some('\u{095E}'), // फ़
+                    'य' => Some('\u{095F}'), // य़
+                    _ => None,
+                };
+                
+                if let Some(nukta_char) = nukta_mapping {
+                    effective_char = nukta_char;
+                    char_consumed = 2; // consume both base char and nukta
+                }
             }
 
+            // Check if this is a consonant followed by virama or vowel sign
             if let Some(&iso_str) = self.deva_to_iso_map.get(&effective_char) {
+                // Check next character (considering nukta consumption)
+                if i + char_consumed < chars.len() {
+                    let next_char = chars[i + char_consumed];
+                    
+                    if next_char == '्' {
+                        // Consonant + virama: remove inherent 'a'
+                        if iso_str.ends_with('a') && iso_str.len() > 1 {
+                            result.push_str(&iso_str[..iso_str.len()-1]);
+                        } else {
+                            result.push_str(iso_str);
+                        }
+                        i += char_consumed + 1; // Skip consonant(+nukta) and virama
+                        continue;
+                    } else if let Some(&vowel_sign) = self.deva_to_iso_map.get(&next_char) {
+                        // Check if next character is a vowel sign (mātrā)
+                        let is_vowel_sign = matches!(next_char, 'ा' | 'ि' | 'ी' | 'ु' | 'ू' | 'ृ' | 'ॄ' | 'ॢ' | 'ॣ' | 'े' | 'ै' | 'ो' | 'ौ');
+                        
+                        if is_vowel_sign && iso_str.ends_with('a') && iso_str.len() > 1 {
+                            // Consonant + vowel sign: replace inherent 'a' with the vowel
+                            result.push_str(&iso_str[..iso_str.len()-1]);
+                            result.push_str(vowel_sign);
+                            i += char_consumed + 1; // Skip consonant(+nukta) and vowel sign
+                            continue;
+                        }
+                    }
+                }
+                
+                // Regular character or no special following character
                 result.push_str(iso_str);
+                i += char_consumed;
             } else {
                 // Unknown character - add to metadata and pass through
                 let unknown_token = UnknownToken::new("devanagari", current_char, result.len(), false);
                 metadata.add_unknown(unknown_token);
                 result.push(current_char);
+                i += char_consumed;
             }
-            
-            i += char_consumed;
         }
 
         Ok(HubResult {

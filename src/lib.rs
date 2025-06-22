@@ -24,6 +24,13 @@
 
 pub mod modules;
 
+// Optional binding modules
+#[cfg(feature = "python")]
+pub mod python_bindings;
+
+#[cfg(feature = "wasm")]
+pub mod wasm_bindings;
+
 use modules::hub::{Hub, HubTrait, HubInput, HubOutput};
 use modules::script_converter::ScriptConverterRegistry;
 use modules::registry::{SchemaRegistry, SchemaRegistryTrait};
@@ -254,7 +261,7 @@ mod tests {
         
         // Test metadata collection with unknown characters  
         let result = transliterator.transliterate_with_metadata("धर्मkr", "devanagari", "iso").unwrap();
-        assert_eq!(result.output, "dharamakr");
+        assert_eq!(result.output, "dharmakr");
         // Should have metadata tracking the unknown characters
         assert!(result.metadata.is_some());
     }

@@ -2,6 +2,22 @@
 
 A high-performance, comprehensive transliteration library for Sanskrit and Indic scripts with bidirectional conversion support.
 
+## 🚀 Quick Start for Developers
+
+**New to Shlesha?** Get up and running in one command:
+
+```bash
+./scripts/quick-start.sh
+```
+
+This sets up everything: Rust environment, Python bindings, WASM support, and runs all tests.
+
+**For detailed setup instructions**, see [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md).
+
+**📚 Complete Documentation**: See [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) for all guides and references.
+
+---
+
 ## Overview
 
 Shlesha implements a hub-and-spoke architecture for transliteration between Sanskrit/Indic scripts and romanization schemes. The system uses Devanagari and ISO-15919 as central hub formats, enabling efficient conversion between any supported script pair.
@@ -45,7 +61,7 @@ The system automatically determines the optimal conversion path:
 
 ## Usage
 
-### Basic Transliteration
+### Rust Library
 
 ```rust
 use shlesha::Shlesha;
@@ -58,6 +74,106 @@ println!("{}", result); // "ધર્મ"
 
 let result = transliterator.transliterate("dharma", "iast", "devanagari")?;
 println!("{}", result); // "धर्म"
+```
+
+### Python Bindings
+
+Install and use via Python:
+
+```bash
+# Install (requires maturin)
+pip install maturin
+maturin develop --features python
+
+# Or build wheel
+maturin build --features python
+```
+
+```python
+import shlesha
+
+# Create transliterator
+transliterator = shlesha.Shlesha()
+
+# Basic transliteration
+result = transliterator.transliterate("धर्म", "devanagari", "iast")
+print(result)  # "dharma"
+
+# Convenience function
+result = shlesha.transliterate("धर्म", "devanagari", "iast") 
+print(result)  # "dharma"
+
+# With metadata for unknown tokens
+result = transliterator.transliterate_with_metadata("धर्मkr", "devanagari", "iast")
+print(result.output)  # "dharmakr"
+print(len(result.metadata.unknown_tokens))  # Number of unknown chars
+
+# List supported scripts
+scripts = shlesha.get_supported_scripts()
+print("devanagari" in scripts)  # True
+```
+
+### WebAssembly (JavaScript)
+
+Build for web use:
+
+```bash
+# Install wasm-pack
+cargo install wasm-pack
+
+# Build for web
+wasm-pack build --target web --out-dir pkg --features wasm
+
+# Build for Node.js
+wasm-pack build --target nodejs --out-dir pkg-node --features wasm
+```
+
+```javascript
+import init, { WasmShlesha, transliterate } from './pkg/shlesha.js';
+
+async function main() {
+    // Initialize WASM module
+    await init();
+    
+    // Create transliterator
+    const transliterator = new WasmShlesha();
+    
+    // Basic transliteration
+    const result = transliterator.transliterate("धर्म", "devanagari", "iast");
+    console.log(result); // "dharma"
+    
+    // Convenience function
+    const result2 = transliterate("धर्म", "devanagari", "iast");
+    console.log(result2); // "dharma"
+    
+    // With metadata
+    const resultWithMeta = transliterator.transliterateWithMetadata("धर्मkr", "devanagari", "iast");
+    console.log(resultWithMeta.getOutput()); // "dharmakr"
+    console.log(resultWithMeta.getUnknownTokenCount()); // Number of unknown chars
+    
+    // List scripts
+    const scripts = transliterator.listSupportedScripts();
+    console.log(scripts.includes("devanagari")); // true
+}
+
+main();
+```
+
+### Command Line Interface
+
+```bash
+# Install CLI
+cargo install --path . --features cli
+
+# Basic conversion
+shlesha transliterate --from devanagari --to iast "धर्म"
+
+# With metadata display
+shlesha transliterate --from devanagari --to iast --show-metadata "धर्मkr"
+shlesha transliterate --from devanagari --to iast --verbose "धर्मkr"
+
+# List supported scripts
+shlesha scripts
 ```
 
 ### Script Discovery
@@ -130,6 +246,14 @@ transliterator.transliterate("ధర్మ", "telugu", "tamil")?; // "தர்�
 - ✅ **Smart routing** with automatic path detection
 - ✅ **Virama handling** for proper consonant representation
 - ✅ **Zero-copy optimizations** where possible
+- ✅ **Graceful unknown character handling** with metadata tracking
+
+### Multi-Language Support
+- ✅ **Rust library** - Native performance and safety
+- ✅ **Python bindings** - PyO3-based with full feature parity
+- ✅ **WebAssembly bindings** - Browser and Node.js support
+- ✅ **Command Line Interface** - Easy integration with shell scripts
+- ✅ **Metadata collection** - Track unknown tokens and conversion details
 
 ### Script Classification
 - ✅ **Implicit 'a' detection** - Indic scripts vs. romanizations
@@ -137,7 +261,7 @@ transliterator.transliterate("ధర్మ", "telugu", "tamil")?; // "தர்�
 - ✅ **Comprehensive coverage** - Major Sanskrit/Indic scripts
 
 ### Quality Assurance
-- ✅ **100% test coverage** for all conversion pairs
+- ✅ **193 passing tests** for all conversion pairs and features
 - ✅ **Property-based testing** for edge cases
 - ✅ **Roundtrip validation** for data integrity
 - ✅ **Comprehensive benchmarks** for performance

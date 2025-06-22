@@ -1,0 +1,47 @@
+{
+  "name": "shlesha-wasm",
+  "version": "0.1.0",
+  "description": "High-performance extensible transliteration library for Sanskrit and Indic scripts (WebAssembly bindings)",
+  "main": "pkg/shlesha.js",
+  "types": "pkg/shlesha.d.ts",
+  "files": [
+    "pkg/*",
+    "README.md",
+    "LICENSE*"
+  ],
+  "keywords": [
+    "transliteration",
+    "sanskrit",
+    "indic",
+    "devanagari",
+    "unicode",
+    "webassembly",
+    "wasm",
+    "rust"
+  ],
+  "author": "Shlesha Contributors",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/udapaana/shlesha.git"
+  },
+  "homepage": "https://github.com/udapaana/shlesha",
+  "bugs": {
+    "url": "https://github.com/udapaana/shlesha/issues"
+  },
+  "scripts": {
+    "build": "wasm-pack build --target web --out-dir pkg --features wasm",
+    "build:node": "wasm-pack build --target nodejs --out-dir pkg-node --features wasm",
+    "build:bundler": "wasm-pack build --target bundler --out-dir pkg-bundler --features wasm",
+    "test": "wasm-pack test --node --features wasm",
+    "test:browser": "wasm-pack test --chrome --features wasm",
+    "serve": "python3 -m http.server 8000",
+    "demo": "npm run build && npm run serve"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

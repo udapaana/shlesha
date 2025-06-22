@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shlesha WASM Benchmark</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .progress { margin: 20px 0; }
+        #results { margin-top: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .category { font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Shlesha WASM Performance Benchmark</h1>
+    <div class="progress">
+        <div id="status">Initializing...</div>
+        <div id="progress-bar" style="width: 100%; background-color: #f0f0f0;">
+            <div id="progress" style="width: 0%; height: 20px; background-color: #4CAF50;"></div>
+        </div>
+    </div>
+    
+    <button id="start-benchmark" onclick="runBenchmarks()" disabled>Start Benchmark</button>
+    <button id="download-results" onclick="downloadResults()" style="display: none;">Download Results</button>
+    
+    <div id="results"></div>
+
+    <script type="module">
+        import init, { WasmShlesha, transliterate, getSupportedScripts } from './pkg/shlesha.js';
+        
+        // Test data
+        const SMALL_TEXT = "धर्म";
+        const MEDIUM_TEXT = "धर्म योग भारत संस्कृत वेद उपनिषद् गीता रामायण महाभारत";
+        const LARGE_TEXT = "धर्म योग भारत संस्कृत वेद उपनिषद् गीता रामायण महाभारत पुराण शास्त्र दर्शन आयुर्वेद ज्योतिष व्याकरण छन्द निरुक्त कल्प शिक्षा स्मृति श्रुति आचार विचार संस्कार परम्परा सत्य अहिंसा करुणा दया प्रेम शान्ति आनन्द मोक्ष निर्वाण समाधि ध्यान प्राणायाम आसन मन्त्र यन्त्र तन्त्र";
+        
+        // Script categories
+        const HUB_SCRIPTS = ["devanagari", "iso15919"];
+        const STANDARD_SCRIPTS = ["bengali", "tamil", "telugu", "gujarati", "kannada", "malayalam", "odia"];
+        const EXTENSION_SCRIPTS = ["iast", "itrans", "slp1", "harvard_kyoto", "velthuis", "wx"];
+        
+        let wasmShlesha;
+        let benchmarkResults = [];
+        
+        class BenchmarkResult {
+            constructor(scriptFrom, scriptTo, category, textSize, throughputCharsPerSec, latencyNs, apiType) {
+                this.scriptFrom = scriptFrom;
+                this.scriptTo = scriptTo;
+                this.category = category;
+                this.textSize = textSize;
+                this.throughputCharsPerSec = throughputCharsPerSec;
+                this.latencyNs = latencyNs;
+                this.apiType = apiType;
+            }
+        }
+        
+        async function initializeWasm() {
+            try {
+                await init();
+                wasmShlesha = new WasmShlesha();
+                document.getElementById('status').textContent = 'WASM initialized. Ready to benchmark.';
+                document.getElementById('start-benchmark').disabled = false;
+            } catch (error) {
+                document.getElementById('status').textContent = `Error initializing WASM: ${error}`;
+            }
+        }
+        
+        function benchmarkApiMethod(method, text, fromScript, toScript, iterations = 1000) {
+            const times = [];
+            
+            // Warmup
+            for (let i = 0; i < 10; i++) {
+                method(text, fromScript, toScript);
+            }
+            
+            // Actual benchmark
+            for (let i = 0; i < iterations; i++) {
+                const start = performance.now();
+                method(text, fromScript, toScript);
+                const end = performance.now();
+                times.push((end - start) * 1_000_000); // Convert to nanoseconds
+            }
+            
+            const avgTimeNs = times.reduce((a, b) => a + b) / times.length;
+            const charsCount = text.length;
+            const throughput = charsCount / (avgTimeNs / 1_000_000_000);
+            
+            return { throughput, latency: avgTimeNs };
+        }
+        
+        function benchmarkCategory(categoryName, scripts, progressCallback) {
+            const results = [];
+            let completed = 0;
+            const total = scripts.length * (scripts.length - 1) * 3 * 3; // scripts * scripts * text_sizes * api_types
+            
+            for (const fromScript of scripts) {
+                for (const toScript of scripts) {
+                    if (fromScript === toScript) continue;
+                    
+                    for (const [sizeName, text] of [["small", SMALL_TEXT], ["medium", MEDIUM_TEXT], ["large", LARGE_TEXT]]) {
+                        // Instance method benchmark
+                        const instanceResult = benchmarkApiMethod(
+                            (text, from, to) => wasmShlesha.transliterate(text, from, to),
+                            text, fromScript, toScript
+                        );
+                        results.push(new BenchmarkResult(
+                            fromScript, toScript, categoryName, sizeName,
+                            instanceResult.throughput, instanceResult.latency, "instance_method"
+                        ));
+                        completed++;
+                        
+                        // Convenience function benchmark
+                        const convenienceResult = benchmarkApiMethod(
+                            transliterate, text, fromScript, toScript
+                        );
+                        results.push(new BenchmarkResult(
+                            fromScript, toScript, categoryName, sizeName,
+                            convenienceResult.throughput, convenienceResult.latency, "convenience_function"
+                        ));
+                        completed++;
+                        
+                        // With metadata benchmark
+                        const metadataResult = benchmarkApiMethod(
+                            (text, from, to) => wasmShlesha.transliterateWithMetadata(text, from, to),
+                            text, fromScript, toScript
+                        );
+                        results.push(new BenchmarkResult(
+                            fromScript, toScript, categoryName, sizeName,
+                            metadataResult.throughput, metadataResult.latency, "with_metadata"
+                        ));
+                        completed++;
+                        
+                        progressCallback(completed / total);
+                    }
+                }
+            }
+            
+            return results;
+        }
+        
+        function benchmarkCrossCategory(progressCallback) {
+            const results = [];
+            let completed = 0;
+            const total = (HUB_SCRIPTS.length * STANDARD_SCRIPTS.length + HUB_SCRIPTS.length * EXTENSION_SCRIPTS.length) * 3;
+            
+            // Hub to Standard
+            for (const hubScript of HUB_SCRIPTS) {
+                for (const standardScript of STANDARD_SCRIPTS) {
+                    for (const [sizeName, text] of [["small", SMALL_TEXT], ["medium", MEDIUM_TEXT], ["large", LARGE_TEXT]]) {
+                        const result = benchmarkApiMethod(
+                            (text, from, to) => wasmShlesha.transliterate(text, from, to),
+                            text, hubScript, standardScript
+                        );
+                        results.push(new BenchmarkResult(
+                            hubScript, standardScript, "cross_hub_to_standard", sizeName,
+                            result.throughput, result.latency, "instance_method"
+                        ));
+                        completed++;
+                        progressCallback(completed / total);
+                    }
+                }
+            }
+            
+            // Hub to Extension
+            for (const hubScript of HUB_SCRIPTS) {
+                for (const extScript of EXTENSION_SCRIPTS) {
+                    for (const [sizeName, text] of [["small", SMALL_TEXT], ["medium", MEDIUM_TEXT], ["large", LARGE_TEXT]]) {
+                        const result = benchmarkApiMethod(
+                            (text, from, to) => wasmShlesha.transliterate(text, from, to),
+                            text, hubScript, extScript
+                        );
+                        results.push(new BenchmarkResult(
+                            hubScript, extScript, "cross_hub_to_extension", sizeName,
+                            result.throughput, result.latency, "instance_method"
+                        ));
+                        completed++;
+                        progressCallback(completed / total);
+                    }
+                }
+            }
+            
+            return results;
+        }
+        
+        function updateProgress(percent, status) {
+            document.getElementById('progress').style.width = `${percent * 100}%`;
+            document.getElementById('status').textContent = status;
+        }
+        
+        function generateMarkdownReport(results) {
+            let md = "# Shlesha WASM API Performance Benchmark Results\n\n";
+            
+            // Hub Scripts Performance
+            md += "## Hub Scripts (Devanagari ↔ ISO-15919)\n\n";
+            md += "| From | To | Text Size | API Type | Throughput (chars/sec) | Latency (ns) |\n";
+            md += "|------|----|-----------|---------|-----------------------|-------------|\n";
+            
+            for (const result of results) {
+                if (result.category === "hub") {
+                    md += `| ${result.scriptFrom} | ${result.scriptTo} | ${result.textSize} | ${result.apiType} | ${Math.round(result.throughputCharsPerSec)} | ${Math.round(result.latencyNs)} |\n`;
+                }
+            }
+            
+            // Standard Scripts Performance
+            md += "\n## Standard Indic Scripts\n\n";
+            md += "| From | To | Text Size | API Type | Throughput (chars/sec) | Latency (ns) |\n";
+            md += "|------|----|-----------|---------|-----------------------|-------------|\n";
+            
+            for (const result of results) {
+                if (result.category === "standard") {
+                    md += `| ${result.scriptFrom} | ${result.scriptTo} | ${result.textSize} | ${result.apiType} | ${Math.round(result.throughputCharsPerSec)} | ${Math.round(result.latencyNs)} |\n`;
+                }
+            }
+            
+            // Extension Scripts Performance
+            md += "\n## Extension Scripts (Roman/ASCII)\n\n";
+            md += "| From | To | Text Size | API Type | Throughput (chars/sec) | Latency (ns) |\n";
+            md += "|------|----|-----------|---------|-----------------------|-------------|\n";
+            
+            for (const result of results) {
+                if (result.category === "extension") {
+                    md += `| ${result.scriptFrom} | ${result.scriptTo} | ${result.textSize} | ${result.apiType} | ${Math.round(result.throughputCharsPerSec)} | ${Math.round(result.latencyNs)} |\n`;
+                }
+            }
+            
+            // Cross-Category Performance
+            md += "\n## Cross-Category Performance\n\n";
+            md += "| From | To | Category | Text Size | API Type | Throughput (chars/sec) | Latency (ns) |\n";
+            md += "|------|----|-----------|-----------|---------|-----------------------|-------------|\n";
+            
+            for (const result of results) {
+                if (result.category.startsWith("cross_")) {
+                    md += `| ${result.scriptFrom} | ${result.scriptTo} | ${result.category} | ${result.textSize} | ${result.apiType} | ${Math.round(result.throughputCharsPerSec)} | ${Math.round(result.latencyNs)} |\n`;
+                }
+            }
+            
+            // API Method Comparison
+            md += "\n## API Method Performance Comparison\n\n";
+            const apiStats = {};
+            for (const result of results) {
+                if (!apiStats[result.apiType]) {
+                    apiStats[result.apiType] = [];
+                }
+                apiStats[result.apiType].push(result.throughputCharsPerSec);
+            }
+            
+            md += "| API Method | Average Throughput (chars/sec) | Count |\n";
+            md += "|------------|-------------------------------|-------|\n";
+            
+            for (const [apiType, throughputs] of Object.entries(apiStats)) {
+                const avgThroughput = throughputs.reduce((a, b) => a + b) / throughputs.length;
+                md += `| ${apiType} | ${Math.round(avgThroughput)} | ${throughputs.length} |\n`;
+            }
+            
+            return md;
+        }
+        
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            
+            // Generate HTML table
+            let html = '<h2>Benchmark Results</h2>';
+            html += '<table>';
+            html += '<tr><th>From</th><th>To</th><th>Category</th><th>Text Size</th><th>API Type</th><th>Throughput (chars/sec)</th><th>Latency (ns)</th></tr>';
+            
+            for (const result of results) {
+                html += `<tr>
+                    <td>${result.scriptFrom}</td>
+                    <td>${result.scriptTo}</td>
+                    <td>${result.category}</td>
+                    <td>${result.textSize}</td>
+                    <td>${result.apiType}</td>
+                    <td>${Math.round(result.throughputCharsPerSec)}</td>
+                    <td>${Math.round(result.latencyNs)}</td>
+                </tr>`;
+            }
+            
+            html += '</table>';
+            resultsDiv.innerHTML = html;
+            
+            document.getElementById('download-results').style.display = 'inline-block';
+        }
+        
+        window.runBenchmarks = async function() {
+            document.getElementById('start-benchmark').disabled = true;
+            benchmarkResults = [];
+            
+            try {
+                updateProgress(0, "Running Hub Scripts benchmarks...");
+                const hubResults = benchmarkCategory("hub", HUB_SCRIPTS, (p) => updateProgress(p * 0.25, "Running Hub Scripts benchmarks..."));
+                benchmarkResults.push(...hubResults);
+                
+                updateProgress(0.25, "Running Standard Scripts benchmarks...");
+                const standardResults = benchmarkCategory("standard", STANDARD_SCRIPTS, (p) => updateProgress(0.25 + p * 0.25, "Running Standard Scripts benchmarks..."));
+                benchmarkResults.push(...standardResults);
+                
+                updateProgress(0.5, "Running Extension Scripts benchmarks...");
+                const extensionResults = benchmarkCategory("extension", EXTENSION_SCRIPTS, (p) => updateProgress(0.5 + p * 0.25, "Running Extension Scripts benchmarks..."));
+                benchmarkResults.push(...extensionResults);
+                
+                updateProgress(0.75, "Running Cross-Category benchmarks...");
+                const crossResults = benchmarkCrossCategory((p) => updateProgress(0.75 + p * 0.25, "Running Cross-Category benchmarks..."));
+                benchmarkResults.push(...crossResults);
+                
+                updateProgress(1, `Benchmarks complete! Total measurements: ${benchmarkResults.length}`);
+                displayResults(benchmarkResults);
+                
+            } catch (error) {
+                updateProgress(0, `Error during benchmarking: ${error}`);
+            } finally {
+                document.getElementById('start-benchmark').disabled = false;
+            }
+        };
+        
+        window.downloadResults = function() {
+            // Generate CSV
+            let csv = "script_from,script_to,category,text_size,throughput_chars_per_sec,latency_ns,api_type\n";
+            for (const result of benchmarkResults) {
+                csv += `${result.scriptFrom},${result.scriptTo},${result.category},${result.textSize},${Math.round(result.throughputCharsPerSec)},${Math.round(result.latencyNs)},${result.apiType}\n`;
+            }
+            
+            // Generate markdown
+            const markdown = generateMarkdownReport(benchmarkResults);
+            
+            // Download CSV
+            const csvBlob = new Blob([csv], { type: 'text/csv' });
+            const csvUrl = URL.createObjectURL(csvBlob);
+            const csvLink = document.createElement('a');
+            csvLink.href = csvUrl;
+            csvLink.download = 'wasm_benchmark_results.csv';
+            csvLink.click();
+            
+            // Download Markdown
+            const mdBlob = new Blob([markdown], { type: 'text/markdown' });
+            const mdUrl = URL.createObjectURL(mdBlob);
+            const mdLink = document.createElement('a');
+            mdLink.href = mdUrl;
+            mdLink.download = 'WASM_BENCHMARK_RESULTS.md';
+            mdLink.click();
+        };
+        
+        // Initialize on page load
+        initializeWasm();
+    </script>
+</body>
+</html>

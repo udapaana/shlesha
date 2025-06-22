@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shlesha WASM Demo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Bengali:wght@400;700&family=Noto+Sans+Tamil:wght@400;700&family=Noto+Sans+Telugu:wght@400;700&family=Noto+Sans+Gujarati:wght@400;700&family=Noto+Sans+Kannada:wght@400;700&family=Noto+Sans+Malayalam:wght@400;700&family=Noto+Sans+Oriya:wght@400;700&family=Noto+Sans:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans', 'Noto Sans Devanagari', 'Noto Sans Bengali', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Gujarati', 'Noto Sans Kannada', 'Noto Sans Malayalam', 'Noto Sans Oriya', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .error {
+            background-color: #ffebee;
+            border-left-color: #f44336;
+            color: #c62828;
+        }
+        
+        .metadata {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .unknown-tokens {
+            margin-top: 10px;
+        }
+        
+        .token {
+            display: inline-block;
+            background-color: #fff3e0;
+            border: 1px solid #ffcc02;
+            border-radius: 3px;
+            padding: 2px 6px;
+            margin: 2px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .script-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .script-item {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .script-name {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .script-desc {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .examples {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .example {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: white;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: border-color 0.3s;
+        }
+        
+        .example:hover {
+            border-color: #4CAF50;
+        }
+        
+        .example-text {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .example-desc {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕉️ Shlesha Transliterator</h1>
+        <p class="subtitle">High-performance Sanskrit and Indic script transliteration</p>
+        
+        <div id="loading" class="loading">
+            Loading WebAssembly module...
+        </div>
+        
+        <div id="main-content" style="display: none;">
+            <div class="form-group">
+                <label for="input-text">Text to transliterate:</label>
+                <textarea id="input-text" rows="3" placeholder="Enter text in any supported script...">धर्म</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="from-script">From script:</label>
+                <select id="from-script">
+                    <option value="devanagari">Devanagari (देवनागरी)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="to-script">To script:</label>
+                <select id="to-script">
+                    <option value="iast">IAST</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="show-metadata" checked>
+                    Show metadata (unknown tokens, conversion details)
+                </label>
+            </div>
+            
+            <button onclick="transliterate()">Transliterate</button>
+            
+            <div id="result" style="display: none;"></div>
+            
+            <div class="examples">
+                <h3>Try these examples:</h3>
+                <div class="example" onclick="setExample('धर्म', 'devanagari', 'iast')">
+                    <div class="example-text">धर्म → dharma</div>
+                    <div class="example-desc">Devanagari to IAST</div>
+                </div>
+                <div class="example" onclick="setExample('dharma', 'iast', 'devanagari')">
+                    <div class="example-text">dharma → धर्म</div>
+                    <div class="example-desc">IAST to Devanagari</div>
+                </div>
+                <div class="example" onclick="setExample('धर्म', 'devanagari', 'gujarati')">
+                    <div class="example-text">धर्म → ધર્મ</div>
+                    <div class="example-desc">Devanagari to Gujarati</div>
+                </div>
+                <div class="example" onclick="setExample('dharmakr', 'iast', 'devanagari')">
+                    <div class="example-text">dharmakr → धर्मक्र्</div>
+                    <div class="example-desc">Mixed content with unknowns</div>
+                </div>
+            </div>
+            
+            <div id="script-info">
+                <h3>Supported Scripts:</h3>
+                <div id="scripts-list" class="script-info"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import init, { 
+            WasmShlesha, 
+            transliterate,
+            getSupportedScripts,
+            getVersion 
+        } from './pkg/shlesha.js';
+
+        let transliterator;
+
+        async function initWasm() {
+            try {
+                await init();
+                transliterator = new WasmShlesha();
+                
+                console.log(`Shlesha WASM v${getVersion()} loaded successfully`);
+                
+                populateScriptSelects();
+                populateScriptInfo();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Failed to initialize WASM:', error);
+                document.getElementById('loading').innerHTML = 
+                    '<div class="error">Failed to load WebAssembly module. Please refresh the page.</div>';
+            }
+        }
+
+        function populateScriptSelects() {
+            const scripts = transliterator.listSupportedScripts();
+            const scriptDescriptions = transliterator.getScriptInfo();
+            
+            const fromSelect = document.getElementById('from-script');
+            const toSelect = document.getElementById('to-script');
+            
+            // Clear existing options except first
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+            
+            scripts.forEach(script => {
+                const description = scriptDescriptions[script] || script;
+                const option1 = new Option(`${script} - ${description}`, script);
+                const option2 = new Option(`${script} - ${description}`, script);
+                
+                fromSelect.appendChild(option1);
+                toSelect.appendChild(option2);
+            });
+            
+            // Set default values
+            fromSelect.value = 'devanagari';
+            toSelect.value = 'iast';
+        }
+
+        function populateScriptInfo() {
+            const scriptInfo = transliterator.getScriptInfo();
+            const container = document.getElementById('scripts-list');
+            
+            container.innerHTML = '';
+            
+            Object.entries(scriptInfo).forEach(([script, description]) => {
+                const div = document.createElement('div');
+                div.className = 'script-item';
+                div.innerHTML = `
+                    <div class="script-name">${script}</div>
+                    <div class="script-desc">${description}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        window.transliterate = function() {
+            const text = document.getElementById('input-text').value;
+            const fromScript = document.getElementById('from-script').value;
+            const toScript = document.getElementById('to-script').value;
+            const showMetadata = document.getElementById('show-metadata').checked;
+            
+            const resultDiv = document.getElementById('result');
+            
+            if (!text.trim()) {
+                resultDiv.innerHTML = '<div class="error">Please enter some text to transliterate.</div>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                if (showMetadata) {
+                    const result = transliterator.transliterateWithMetadata(text, fromScript, toScript);
+                    
+                    let html = `
+                        <div class="result">
+                            <strong>Result:</strong> ${result.getOutput()}
+                        </div>
+                    `;
+                    
+                    if (result.hasMetadata()) {
+                        html += `
+                            <div class="metadata">
+                                <strong>Metadata:</strong><br>
+                                Source: ${result.getSourceScript()}<br>
+                                Target: ${result.getTargetScript()}<br>
+                                Unknown tokens: ${result.getUnknownTokenCount()}
+                        `;
+                        
+                        if (result.getUnknownTokenCount() > 0) {
+                            const tokens = result.getUnknownTokens();
+                            html += '<div class="unknown-tokens"><strong>Unknown tokens:</strong><br>';
+                            tokens.forEach(token => {
+                                html += `<span class="token">${token.script}:${token.token}@${token.position}</span>`;
+                            });
+                            html += '</div>';
+                        }
+                        
+                        html += '</div>';
+                    }
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    const result = transliterator.transliterate(text, fromScript, toScript);
+                    resultDiv.innerHTML = `
+                        <div class="result">
+                            <strong>Result:</strong> ${result}
+                        </div>
+                    `;
+                }
+                
+                resultDiv.style.display = 'block';
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message || error}</div>`;
+                resultDiv.style.display = 'block';
+                console.error('Transliteration error:', error);
+            }
+        };
+
+        window.setExample = function(text, fromScript, toScript) {
+            document.getElementById('input-text').value = text;
+            document.getElementById('from-script').value = fromScript;
+            document.getElementById('to-script').value = toScript;
+            
+            // Auto-transliterate
+            transliterate();
+        };
+
+        // Handle Enter key in text area
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('input-text')?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    transliterate();
+                }
+            });
+        });
+
+        // Initialize when page loads
+        initWasm();
+    </script>
+</body>
+</html>

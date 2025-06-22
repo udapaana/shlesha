@@ -118,6 +118,10 @@ impl MalayalamConverter {
             deva_to_malayalam.insert(deva_char, malayalam_char);
         }
         
+        // Override ambiguous mappings with preferred forms
+        // For 'र', prefer standard RA (ര) over alveolar RRA (റ)
+        deva_to_malayalam.insert('र', 'ര');
+        
         Self {
             malayalam_to_deva_map: malayalam_to_deva,
             deva_to_malayalam_map: deva_to_malayalam,

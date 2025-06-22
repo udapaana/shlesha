@@ -46,6 +46,16 @@ wheels/
 .installed.cfg
 *.egg
 
+# Virtual environments (old style - use uv instead)
+.venv/
+venv/
+ENV/
+env/
+
+# uv
+.python-version
+# Keep uv.lock in version control for reproducible builds
+
 # Documentation
 docs/_build/
 
@@ -53,3 +63,20 @@ docs/_build/
 *.tmp
 *.temp
 .cache/
+
+# WASM build artifacts
+/pkg/
+wasm-pack-v*/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Environment config
+.env
