@@ -68,6 +68,10 @@ docs/_build/
 /pkg/
 wasm-pack-v*/
 
+# Benchmark results
+/target/benchmark_results_*.csv
+/target/*BENCHMARK*.md
+
 # Testing
 .pytest_cache/
 .coverage

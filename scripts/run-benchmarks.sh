@@ -34,15 +34,15 @@ fi
 
 # Run Rust benchmarks
 print_status "Running Rust/Criterion benchmarks..."
-cargo bench --bench comprehensive_benchmark --features=cli
+cargo bench --bench comprehensive_benchmark
 print_success "Rust benchmarks complete"
 
 # Run Python benchmarks
 print_status "Running Python benchmarks..."
 if command -v uv &> /dev/null; then
-    uv run python benchmark_python.py
+    uv run python benchmarks/benchmark_python.py
 else
-    python benchmark_python.py
+    python benchmarks/benchmark_python.py
 fi
 print_success "Python benchmarks complete"
 
@@ -53,7 +53,7 @@ if [ ! -d "pkg" ]; then
 fi
 
 # Copy WASM benchmark HTML to target
-cp benchmark_wasm.html target/benchmark_wasm.html
+cp examples/benchmark_wasm.html target/benchmark_wasm.html
 
 print_status "Creating consolidated benchmark report..."
 
@@ -88,7 +88,7 @@ EOF
 if [ -f "target/BENCHMARK_RESULTS.md" ]; then
     tail -n +2 target/BENCHMARK_RESULTS.md >> target/BENCHMARK_REPORT.md
 else
-    echo "Rust benchmark results not found. Run 'cargo bench' first." >> target/BENCHMARK_REPORT.md
+    echo "Rust benchmark results not found. Run 'cargo bench --bench comprehensive_benchmark' first." >> target/BENCHMARK_REPORT.md
 fi
 
 echo -e "\n---\n" >> target/BENCHMARK_REPORT.md
@@ -97,7 +97,7 @@ echo -e "\n---\n" >> target/BENCHMARK_REPORT.md
 if [ -f "target/PYTHON_BENCHMARK_RESULTS.md" ]; then
     tail -n +2 target/PYTHON_BENCHMARK_RESULTS.md >> target/BENCHMARK_REPORT.md
 else
-    echo "Python benchmark results not found." >> target/BENCHMARK_REPORT.md
+    echo "Python benchmark results not found. Run 'python benchmarks/benchmark_python.py' first." >> target/BENCHMARK_REPORT.md
 fi
 
 echo -e "\n---\n" >> target/BENCHMARK_REPORT.md

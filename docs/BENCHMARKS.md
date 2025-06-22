@@ -24,16 +24,26 @@ This will:
 
 #### Rust/Native Benchmarks
 
+Run the focused performance benchmarks (recommended):
+
 ```bash
 cargo bench --bench comprehensive_benchmark
 ```
 
+This runs **23 representative conversions** covering all performance patterns:
+- **Hub conversions** (2): Direct `devanagari` ↔ `iso15919` (fastest)
+- **Indic → Roman** (6): `telugu` → all Roman scripts (2-hop via hub)
+- **Roman → Indic** (7): `iast` → all Indic scripts (2-hop via hub)  
+- **Roman → Roman** (4): Between Roman scripts (1-hop via ISO hub)
+- **Indic → Indic** (4): Between Indic scripts (3-hop via hub)
+
 Results are saved to:
 - `target/benchmark_results_hub.csv`
-- `target/benchmark_results_standard.csv`
-- `target/benchmark_results_extension.csv`
-- `target/benchmark_results_cross_category.csv`
-- `target/BENCHMARK_RESULTS.md`
+- `target/benchmark_results_indic_to_roman.csv`
+- `target/benchmark_results_roman_to_indic.csv`
+- `target/benchmark_results_roman_to_roman.csv`
+- `target/benchmark_results_indic_to_indic.csv`
+- `target/BENCHMARK_RESULTS.md` (summary report)
 
 #### Python API Benchmarks
 

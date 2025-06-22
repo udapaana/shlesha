@@ -12,9 +12,9 @@ A high-performance, comprehensive transliteration library for Sanskrit and Indic
 
 This sets up everything: Rust environment, Python bindings, WASM support, and runs all tests.
 
-**For detailed setup instructions**, see [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md).
+**For detailed setup instructions**, see [DEVELOPER_SETUP.md](docs/DEVELOPER_SETUP.md).
 
-**📚 Complete Documentation**: See [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) for all guides and references.
+**📚 Complete Documentation**: See [DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md) for all guides and references.
 
 ---
 
@@ -272,6 +272,20 @@ transliterator.transliterate("ధర్మ", "telugu", "tamil")?; // "தர்�
 - **Zero-allocation paths** for hub script passthroughs
 - **Optimized string handling** with minimal copying
 - **Benchmarked against** other transliteration libraries
+
+### Running Benchmarks
+
+Test performance across all conversion patterns:
+
+```bash
+# Quick focused benchmarks (23 representative conversions)
+cargo bench --bench comprehensive_benchmark
+
+# All benchmarks including Python/WASM
+./scripts/run-benchmarks.sh
+```
+
+See [BENCHMARKS.md](docs/BENCHMARKS.md) for detailed benchmarking documentation.
 
 ## Testing
 

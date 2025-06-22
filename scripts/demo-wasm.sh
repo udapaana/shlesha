@@ -49,8 +49,8 @@ if [[ ! -d "pkg" ]]; then
 fi
 
 # Check if demo.html exists
-if [[ ! -f "demo.html" ]]; then
-    print_error "demo.html not found. Please ensure you're in the project root."
+if [[ ! -f "examples/demo.html" ]]; then
+    print_error "examples/demo.html not found. Please ensure you're in the project root."
     exit 1
 fi
 
@@ -75,19 +75,19 @@ while netstat -an | grep -q ":$PORT "; do
 done
 
 print_status "Starting local server on port $PORT..."
-print_success "WASM demo will be available at: http://localhost:$PORT/demo.html"
+print_success "WASM demo will be available at: http://localhost:$PORT/examples/demo.html"
 print_status "Press Ctrl+C to stop the server"
 
 # Start server and open browser
 if command -v open &> /dev/null; then
     # macOS
-    (sleep 2 && open "http://localhost:$PORT/demo.html") &
+    (sleep 2 && open "http://localhost:$PORT/examples/demo.html") &
 elif command -v xdg-open &> /dev/null; then
     # Linux
-    (sleep 2 && xdg-open "http://localhost:$PORT/demo.html") &
+    (sleep 2 && xdg-open "http://localhost:$PORT/examples/demo.html") &
 elif command -v start &> /dev/null; then
     # Windows
-    (sleep 2 && start "http://localhost:$PORT/demo.html") &
+    (sleep 2 && start "http://localhost:$PORT/examples/demo.html") &
 fi
 
 # Start the server
