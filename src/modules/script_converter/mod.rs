@@ -294,3 +294,17 @@ pub use gujarati::GujaratiConverter;
 pub use kannada::KannadaConverter;
 pub use malayalam::MalayalamConverter;
 pub use odia::OdiaConverter;
+
+// TODO List for Script Converter Module:
+// - [ ] Handle ambiguous mappings with superscripted numerals when:
+//     - One character in source script maps to multiple characters in destination script
+//     - Multiple characters in source script map to one character in destination script
+//     - Example: Tamil ப could map to ப² (pha), ப³ (ba), or ப⁴ (bha) to disambiguate
+//     - This would help preserve information in bidirectional conversions
+// - [ ] Add support for Grantha script used for Sanskrit in Tamil Nadu
+// - [ ] Add support for Sinhala script
+// - [ ] Add support for Tibetan script
+// - [ ] Add support for Thai/Lao scripts (for Sanskrit/Pali texts)
+// - [ ] Implement contextual conversion rules for better accuracy
+// - [ ] Add script-specific validation rules
+// - [ ] Implement script detection for automatic source script identification
