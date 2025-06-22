@@ -1,5 +1,6 @@
 use thiserror::Error;
 use crate::modules::hub::{HubInput, HubError};
+use crate::modules::core::unknown_handler::{TransliterationResult, TransliterationMetadata};
 
 // Script Converter Module
 //
@@ -63,6 +64,21 @@ pub trait ScriptConverter {
         })
     }
     
+    /// Convert text with metadata collection for unknown tokens
+    fn to_hub_with_metadata(&self, script: &str, input: &str) -> Result<(HubInput, TransliterationMetadata), ConverterError> {
+        // Default implementation - just call regular to_hub and return empty metadata
+        let hub_input = self.to_hub(script, input)?;
+        let metadata = TransliterationMetadata::new(script, "hub");
+        Ok((hub_input, metadata))
+    }
+    
+    /// Convert from hub with metadata collection for unknown tokens
+    fn from_hub_with_metadata(&self, script: &str, hub_input: &HubInput) -> Result<TransliterationResult, ConverterError> {
+        // Default implementation - just call regular from_hub and return simple result
+        let output = self.from_hub(script, hub_input)?;
+        Ok(TransliterationResult::simple(output))
+    }
+    
     /// Get the list of supported scripts for this converter
     fn supported_scripts(&self) -> Vec<&'static str>;
     
@@ -117,6 +133,34 @@ impl ScriptConverterRegistry {
         for converter in &self.converters {
             if converter.supports_script(script) {
                 return converter.from_hub(script, hub_input);
+            }
+        }
+        
+        Err(ConverterError::ConversionFailed {
+            script: script.to_string(),
+            reason: "No converter found for script".to_string(),
+        })
+    }
+    
+    /// Convert text from any supported script to hub format with metadata collection
+    pub fn to_hub_with_metadata(&self, script: &str, input: &str) -> Result<(HubInput, TransliterationMetadata), ConverterError> {
+        for converter in &self.converters {
+            if converter.supports_script(script) {
+                return converter.to_hub_with_metadata(script, input);
+            }
+        }
+        
+        Err(ConverterError::ConversionFailed {
+            script: script.to_string(),
+            reason: "No converter found for script".to_string(),
+        })
+    }
+    
+    /// Convert text from hub format to any supported script with metadata collection
+    pub fn from_hub_with_metadata(&self, script: &str, hub_input: &HubInput) -> Result<TransliterationResult, ConverterError> {
+        for converter in &self.converters {
+            if converter.supports_script(script) {
+                return converter.from_hub_with_metadata(script, hub_input);
             }
         }
         

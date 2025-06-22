@@ -70,6 +70,21 @@ let scripts = transliterator.list_supported_scripts();
 let is_supported = transliterator.supports_script("gujarati");
 ```
 
+### Metadata Collection
+
+```rust
+// Convert with metadata collection for unknown tokens
+let result = transliterator.transliterate_with_metadata("धर्म", "devanagari", "iast")?;
+println!("Output: {}", result.output);
+
+if let Some(metadata) = result.metadata {
+    println!("Source: {} -> Target: {}", metadata.source_script, metadata.target_script);
+    for unknown in metadata.unknown_tokens {
+        println!("Unknown token: {} at position {}", unknown.token, unknown.position);
+    }
+}
+```
+
 ### CLI Usage
 
 ```bash

@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use thiserror::Error;
 use unicode_normalization::UnicodeNormalization;
+use crate::modules::core::unknown_handler::{UnknownToken, TransliterationMetadata};
 
 #[derive(Error, Debug, Clone)]
 pub enum HubError {
@@ -24,10 +25,20 @@ pub enum HubOutput {
     Iso(String),
 }
 
+#[derive(Debug, Clone)]
+pub struct HubResult {
+    pub output: HubOutput,
+    pub metadata: Option<TransliterationMetadata>,
+}
+
 /// Core hub trait for Devanagari ↔ ISO-15919 bidirectional conversion
 pub trait HubTrait {
     fn deva_to_iso(&self, input: &str) -> Result<HubOutput, HubError>;
     fn iso_to_deva(&self, input: &str) -> Result<HubOutput, HubError>;
+    
+    /// Convert with metadata collection
+    fn deva_to_iso_with_metadata(&self, input: &str) -> Result<HubResult, HubError>;
+    fn iso_to_deva_with_metadata(&self, input: &str) -> Result<HubResult, HubError>;
 }
 
 /// Central hub implementing Devanagari ↔ ISO-15919 conversion
@@ -287,8 +298,9 @@ impl HubTrait for Hub {
                 result.push_str(iso_str);
                 i += char_consumed;
             } else {
-                // TODO: Implement preservation tokens for unknown mappings: [<script>:<token>:<unicode_point>]
-                return Err(HubError::MappingNotFound(format!("Character: {}", current_char)));
+                // Unknown character - pass through gracefully
+                result.push(current_char);
+                i += char_consumed;
             }
         }
 
@@ -461,12 +473,116 @@ impl HubTrait for Hub {
             }
                 
             if !parsed {
-                // TODO: Implement preservation tokens for unknown mappings: [<script>:<token>:<unicode_point>]
-                return Err(HubError::MappingNotFound(format!("Character: {}", ch)));
+                // Unknown character - pass through gracefully
+                result.push(ch);
+                i += 1;
             }
         }
 
         Ok(HubOutput::Devanagari(result))
+    }
+    
+    fn deva_to_iso_with_metadata(&self, input: &str) -> Result<HubResult, HubError> {
+        let mut result = String::new();
+        let mut metadata = TransliterationMetadata::new("devanagari", "iso15919");
+        
+        let chars: Vec<char> = input.chars().collect();
+        let mut i = 0;
+
+        while i < chars.len() {
+            let current_char = chars[i];
+            
+            if current_char.is_whitespace() {
+                result.push(current_char);
+                i += 1;
+                continue;
+            }
+            
+            if current_char.is_ascii_punctuation() && current_char != '\'' {
+                result.push(current_char);
+                i += 1;
+                continue;
+            }
+
+            // Check for consonant + nukta combinations (decomposed form)
+            let mut effective_char = current_char;
+            let mut char_consumed = 1;
+            
+            if i + 1 < chars.len() && chars[i + 1] == '़' {
+                // Handle nukta combinations...
+                char_consumed = 2;
+            }
+
+            if let Some(&iso_str) = self.deva_to_iso_map.get(&effective_char) {
+                result.push_str(iso_str);
+            } else {
+                // Unknown character - add to metadata and pass through
+                let unknown_token = UnknownToken::new("devanagari", current_char, result.len(), false);
+                metadata.add_unknown(unknown_token);
+                result.push(current_char);
+            }
+            
+            i += char_consumed;
+        }
+
+        Ok(HubResult {
+            output: HubOutput::Iso(result),
+            metadata: Some(metadata),
+        })
+    }
+    
+    fn iso_to_deva_with_metadata(&self, input: &str) -> Result<HubResult, HubError> {
+        let mut result = String::new();
+        let mut metadata = TransliterationMetadata::new("iso15919", "devanagari");
+        
+        let normalized: String = input.nfc().collect();
+        let chars: Vec<char> = normalized.chars().collect();
+        let mut i = 0;
+
+        while i < chars.len() {
+            let ch = chars[i];
+            
+            if ch.is_whitespace() {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            if ch.is_ascii_punctuation() && ch != '\'' {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+
+            // Try to match sequences with combining characters
+            let mut found = false;
+            let mut extend_len = 1;
+            
+            // Look for longer sequences first
+            while i + extend_len <= chars.len() && extend_len <= 4 {
+                let test_seq = chars[i..i+extend_len].iter().collect::<String>();
+                if self.iso_to_deva_map.contains_key(test_seq.as_str()) {
+                    result.push(self.iso_to_deva_map[test_seq.as_str()]);
+                    i += extend_len;
+                    found = true;
+                    break;
+                }
+                extend_len += 1;
+            }
+            
+            if !found {
+                // Unknown character - add to metadata and pass through
+                let unknown_token = UnknownToken::new("iso15919", ch, result.len(), false);
+                metadata.add_unknown(unknown_token);
+                result.push(ch);
+                i += 1;
+            }
+        }
+
+        Ok(HubResult {
+            output: HubOutput::Devanagari(result),
+            metadata: Some(metadata),
+        })
     }
 }
 
@@ -601,16 +717,23 @@ mod original_tests {
     }
 
     #[test]
-    fn test_invalid_devanagari_character() {
+    fn test_unknown_devanagari_character_passthrough() {
         let hub = Hub::new();
         
-        let result = hub.deva_to_iso("xyz");
-        assert!(result.is_err());
-        
-        if let Err(HubError::MappingNotFound(_)) = result {
-            // Expected error type
+        // Unknown characters should pass through gracefully
+        let result = hub.deva_to_iso("xyz").unwrap();
+        if let HubOutput::Iso(iso) = result {
+            assert_eq!(iso, "xyz"); // Should pass through unchanged
         } else {
-            panic!("Expected MappingNotFound error");
+            panic!("Expected ISO output");
+        }
+        
+        // Test mixed known and unknown
+        let result = hub.deva_to_iso("अxyzआ").unwrap();
+        if let HubOutput::Iso(iso) = result {
+            assert_eq!(iso, "axyzā"); // Should convert known, pass through unknown
+        } else {
+            panic!("Expected ISO output");
         }
     }
 

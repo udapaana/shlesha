@@ -124,10 +124,75 @@ impl Shlesha {
     /// Transliterate text with metadata collection for unknown tokens
     pub fn transliterate_with_metadata(&self, text: &str, from: &str, to: &str) 
         -> Result<crate::modules::core::unknown_handler::TransliterationResult, Box<dyn std::error::Error>> {
-        // For now, just return simple result without metadata
-        // TODO: Implement full metadata collection through hub and converters
-        let output = self.transliterate(text, from, to)?;
-        Ok(crate::modules::core::unknown_handler::TransliterationResult::simple(output))
+        use crate::modules::hub::HubTrait;
+        
+        // Convert source script to hub format with metadata collection
+        let (hub_input, from_metadata) = self.script_converter_registry.to_hub_with_metadata(from, text)?;
+        
+        // Smart hub processing based on input and desired output - with metadata
+        let (result, to_metadata) = match (&hub_input, to.to_lowercase().as_str()) {
+            // Direct passthrough cases - no hub processing needed
+            (modules::hub::HubInput::Devanagari(deva), "devanagari" | "deva") => {
+                let result = modules::core::unknown_handler::TransliterationResult::simple(deva.clone());
+                (result, None)
+            },
+            (modules::hub::HubInput::Iso(iso), "iso" | "iso15919" | "iso-15919") => {
+                let result = modules::core::unknown_handler::TransliterationResult::simple(iso.clone());
+                (result, None)
+            },
+            
+            // Hub processing needed - convert between formats with metadata
+            (modules::hub::HubInput::Devanagari(deva), _) => {
+                // Try direct Devanagari → target conversion first (for Indic scripts)
+                match self.script_converter_registry.from_hub_with_metadata(to, &hub_input) {
+                    Ok(result) => (result, None),
+                    Err(_) => {
+                        // If direct conversion fails, convert through ISO: Devanagari → ISO → target
+                        let hub_result = self.hub.deva_to_iso_with_metadata(&deva)?;
+                        let iso_hub_input = match &hub_result.output {
+                            modules::hub::HubOutput::Iso(iso_result) => modules::hub::HubInput::Iso(iso_result.clone()),
+                            _ => return Err("Expected ISO output from hub".into()),
+                        };
+                        let final_result = self.script_converter_registry.from_hub_with_metadata(to, &iso_hub_input)?;
+                        (final_result, hub_result.metadata)
+                    }
+                }
+            },
+            (modules::hub::HubInput::Iso(iso), _) => {
+                // Try direct ISO → target conversion first
+                match self.script_converter_registry.from_hub_with_metadata(to, &hub_input) {
+                    Ok(result) => (result, None),
+                    Err(_) => {
+                        // If direct conversion fails, convert through Devanagari: ISO → Devanagari → target
+                        let hub_result = self.hub.iso_to_deva_with_metadata(&iso)?;
+                        let deva_hub_input = match &hub_result.output {
+                            modules::hub::HubOutput::Devanagari(deva_result) => modules::hub::HubInput::Devanagari(deva_result.clone()),
+                            _ => return Err("Expected Devanagari output from hub".into()),
+                        };
+                        let final_result = self.script_converter_registry.from_hub_with_metadata(to, &deva_hub_input)?;
+                        (final_result, hub_result.metadata)
+                    }
+                }
+            },
+        };
+        
+        // Combine metadata from different stages
+        let mut final_metadata = result.metadata.unwrap_or_else(|| modules::core::unknown_handler::TransliterationMetadata::new(from, to));
+        
+        // Add from_stage metadata (script → hub)
+        if !from_metadata.unknown_tokens.is_empty() {
+            final_metadata.unknown_tokens.extend(from_metadata.unknown_tokens);
+        }
+        
+        // Add hub_stage metadata if available
+        if let Some(hub_metadata) = to_metadata {
+            final_metadata.unknown_tokens.extend(hub_metadata.unknown_tokens);
+        }
+        
+        Ok(modules::core::unknown_handler::TransliterationResult {
+            output: result.output,
+            metadata: Some(final_metadata),
+        })
     }
 }
 
@@ -153,5 +218,61 @@ mod tests {
     #[test]
     fn test_transliterator_creation() {
         let _transliterator = Shlesha::new();
+    }
+    
+    #[test]
+    fn test_basic_metadata_collection() {
+        let transliterator = Shlesha::new();
+        
+        // Test basic conversion with metadata using a simple vowel
+        let result = transliterator.transliterate_with_metadata("अ", "devanagari", "iast").unwrap();
+        assert_eq!(result.output, "a");
+        assert!(result.metadata.is_some());
+        
+        let metadata = result.metadata.unwrap();
+        assert_eq!(metadata.source_script, "devanagari");
+        assert_eq!(metadata.target_script, "iast");
+        // For a normal conversion, there should be no unknown tokens
+        assert!(metadata.unknown_tokens.is_empty());
+    }
+    
+    #[test]
+    fn test_unknown_character_handling_at_all_levels() {
+        let transliterator = Shlesha::new();
+        
+        // Level 1: Main Shlesha transliterate - should pass through unknown characters
+        let result = transliterator.transliterate("धर्मkr", "devanagari", "iso").unwrap();
+        assert_eq!(result, "dharmakr"); // Unknown 'k' and 'r' should pass through
+        
+        // Level 2: Cross-script with unknown characters (Devanagari → Gujarati)
+        let result = transliterator.transliterate("धर्मkr", "devanagari", "gujarati").unwrap();
+        assert_eq!(result, "ધર્મkr"); // Latin chars should pass through
+        
+        // Level 3: Roman script with unknown characters (IAST → Devanagari)
+        let result = transliterator.transliterate("dharmakr", "iast", "devanagari").unwrap();
+        assert_eq!(result, "धर्मक्र्"); // Should handle known parts, pass through rest
+        
+        // Test metadata collection with unknown characters  
+        let result = transliterator.transliterate_with_metadata("धर्मkr", "devanagari", "iso").unwrap();
+        assert_eq!(result.output, "dharamakr");
+        // Should have metadata tracking the unknown characters
+        assert!(result.metadata.is_some());
+    }
+    
+    #[test] 
+    fn test_mixed_content_graceful_handling() {
+        let transliterator = Shlesha::new();
+        
+        // Test mixed Devanagari and Latin
+        let result = transliterator.transliterate("धर्म hello world", "devanagari", "iso").unwrap();
+        assert_eq!(result, "dharma hello world");
+        
+        // Test mixed with punctuation
+        let result = transliterator.transliterate("धर्म! 123", "devanagari", "iso").unwrap();
+        assert_eq!(result, "dharma! 123");
+        
+        // Test completely unknown string
+        let result = transliterator.transliterate("xyz123", "devanagari", "iso").unwrap();
+        assert_eq!(result, "xyz123"); // Should pass through unchanged
     }
 }
