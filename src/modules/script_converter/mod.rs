@@ -250,6 +250,10 @@ impl ScriptConverterRegistry {
 }
 
 // Submodules for specific script converters
+// Shared processing logic
+pub mod processors;
+
+// Script converters
 pub mod iast;
 pub mod itrans;
 pub mod slp1;

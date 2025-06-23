@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use super::{ScriptConverter, ConverterError};
+use super::processors::RomanScriptProcessor;
 use crate::modules::hub::HubInput;
 
 /// ITRANS (Indian Language Transliteration) to ISO-15919 converter
@@ -134,102 +135,12 @@ impl ITRANSConverter {
     
     /// Convert ITRANS text to ISO-15919 format
     pub fn itrans_to_iso(&self, input: &str) -> Result<String, ConverterError> {
-        let mut result = String::new();
-        let chars: Vec<char> = input.chars().collect();
-        let mut i = 0;
-        
-        while i < chars.len() {
-            let ch = chars[i];
-            
-            if ch.is_whitespace() {
-                result.push(ch);
-                i += 1;
-                continue;
-            }
-            
-            // Handle punctuation that's not in our mapping
-            if ch.is_ascii_punctuation() && ch != '|' && ch != '~' && ch != '\'' && ch != '^' && ch != '.' {
-                result.push(ch);
-                i += 1;
-                continue;
-            }
-            
-            let mut matched = false;
-            
-            // Try to match sequences of decreasing length (5, 4, 3, 2, 1)
-            // ITRANS can have longer sequences like "kSh", ".Dh"
-            for len in (1..=5).rev() {
-                if i + len > chars.len() {
-                    continue;
-                }
-                
-                let seq: String = chars[i..i+len].iter().collect();
-                if let Some(&iso_str) = self.itrans_to_iso_map.get(seq.as_str()) {
-                    result.push_str(iso_str);
-                    i += len;
-                    matched = true;
-                    break;
-                }
-            }
-            
-            if !matched {
-                // Character not found in mapping - preserve as-is
-                result.push(ch);
-                i += 1;
-            }
-        }
-        
-        Ok(result)
+        RomanScriptProcessor::process_optimized(input, &self.itrans_to_iso_map)
     }
     
     /// Convert ISO-15919 text to ITRANS format (reverse conversion)
     pub fn iso_to_itrans(&self, input: &str) -> Result<String, ConverterError> {
-        let mut result = String::new();
-        let chars: Vec<char> = input.chars().collect();
-        let mut i = 0;
-        
-        while i < chars.len() {
-            let ch = chars[i];
-            
-            // Handle whitespace (preserve as-is)
-            if ch.is_whitespace() {
-                result.push(ch);
-                i += 1;
-                continue;
-            }
-            
-            // Handle ASCII punctuation (preserve as-is)
-            if ch.is_ascii_punctuation() && ch != '\'' {
-                result.push(ch);
-                i += 1;
-                continue;
-            }
-            
-            let mut matched = false;
-            
-            // Try to match sequences of decreasing length (4, 3, 2, 1)
-            for len in (1..=4).rev() {
-                if i + len > chars.len() {
-                    continue;
-                }
-                
-                let seq: String = chars[i..i+len].iter().collect();
-                if let Some(&itrans_str) = self.iso_to_itrans_map.get(seq.as_str()) {
-                    result.push_str(itrans_str);
-                    i += len;
-                    matched = true;
-                    break;
-                }
-            }
-            
-            if !matched {
-                // Character not found in mapping - preserve as-is
-                result.push(ch);
-                i += 1;
-            }
-        }
-        
-        Ok(result)
+        RomanScriptProcessor::process_optimized(input, &self.iso_to_itrans_map)
     }
 }
 
