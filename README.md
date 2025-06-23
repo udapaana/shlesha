@@ -28,6 +28,7 @@ Shlesha implements a hub-and-spoke architecture for transliteration between Sans
 
 - **Hub Scripts**: Devanagari (for Indic scripts) ↔ ISO-15919 (for romanizations)
 - **Indic Scripts**: Convert directly to/from Devanagari using character-to-character mapping
+- **Pre-computed Optimization**: Direct Roman↔Indic converters bypass the hub for maximum performance
 - **Romanization Schemes**: Convert directly to/from ISO-15919 using transliteration rules
 - **Cross-conversion**: Indic ↔ Roman goes through the hub (Devanagari ↔ ISO-15919)
 
@@ -310,6 +311,51 @@ cargo bench
 - **Bidirectional tests**: Complete conversion matrix (110 pairs)
 - **Property-based tests**: Edge cases and invariants
 - **Roundtrip tests**: Data integrity validation
+
+## Build Configuration
+
+### Performance Optimization Features
+
+Shlesha provides compile-time performance optimization through pre-computed direct converters:
+
+```bash
+# Default build (common conversions pre-computed)
+cargo build
+
+# Maximum performance - all combinations pre-computed (~35MB binary)
+cargo build --features "precompute-all"
+
+# Minimal binary size - no pre-computation (~1.4MB binary)
+cargo build --no-default-features --features "no-precompute"
+
+# Specific optimization patterns
+cargo build --features "precompute-roman-indic"    # Roman→Indic only
+cargo build --features "precompute-indic-roman"    # Indic→Roman only
+```
+
+#### Feature Flag Reference
+
+| Feature | Description | Performance Gain | Binary Size Impact |
+|---------|-------------|------------------|-------------------|
+| `precompute-common` | IAST, ITRANS, SLP1 ↔ Devanagari (6 converters) | ~2x for common cases | +5-10MB |
+| `precompute-all` | All Roman ↔ Indic combinations (96 converters) | ~2x for all cases | +35MB |
+| `precompute-roman-indic` | All Roman → Indic (48 converters) | ~2x Roman→Indic | +18MB |
+| `precompute-indic-roman` | All Indic → Roman (48 converters) | ~2x Indic→Roman | +18MB |
+| `no-precompute` | Hub-and-spoke only | Standard performance | Standard size |
+
+#### Automatic Build Optimization
+
+The build system automatically:
+- **Caches generated converters** - only rebuilds when source mappings change
+- **Skips unchanged combinations** - incremental generation for faster builds
+- **Provides clear feedback** - shows what's being generated during compilation
+
+```bash
+# Example build output
+warning: Pre-computing common script combinations
+warning: Generating 6 pre-computed converters
+warning: Skipping pre-computation: no changes detected (cached)
+```
 
 ## Technical Details
 

@@ -84,3 +84,6 @@ coverage.xml
 
 # Environment config
 .env
+
+# Build cache
+.shlesha-build-cache

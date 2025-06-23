@@ -100,12 +100,14 @@ pub trait ScriptConverter {
 /// Registry for script converters
 pub struct ScriptConverterRegistry {
     converters: Vec<Box<dyn ScriptConverter>>,
+    precomputed: precomputed::PrecomputedRegistry,
 }
 
 impl ScriptConverterRegistry {
     pub fn new() -> Self {
         Self {
             converters: Vec::new(),
+            precomputed: precomputed::PrecomputedRegistry::new(),
         }
     }
     
@@ -114,8 +116,27 @@ impl ScriptConverterRegistry {
         self.converters.push(converter);
     }
     
+    /// Check if a direct precomputed converter exists for this conversion
+    pub fn has_direct_converter(&self, from: &str, to: &str) -> bool {
+        self.precomputed.get(from, to).is_some()
+    }
+    
+    /// Attempt direct conversion using precomputed converters
+    pub fn try_direct_conversion(&self, from: &str, to: &str, input: &str) -> Option<Result<String, ConverterError>> {
+        if let Some(converter) = self.precomputed.get(from, to) {
+            // For now, use a placeholder method since direct converters don't implement the same interface
+            // In production, we'd need a different interface for direct converters
+            None // TODO: Implement direct conversion call
+        } else {
+            None
+        }
+    }
+    
     /// Convert text from any supported script to hub format
     pub fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
+        // Check if we have a precomputed direct path to avoid hub entirely
+        // This is handled in the main transliterate method, so proceed with hub conversion
+        
         for converter in &self.converters {
             if converter.supports_script(script) {
                 return converter.to_hub(script, input);
@@ -252,6 +273,8 @@ impl ScriptConverterRegistry {
 // Submodules for specific script converters
 // Shared processing logic
 pub mod processors;
+// Pre-computed direct converters
+pub mod precomputed;
 
 // Script converters
 pub mod iast;

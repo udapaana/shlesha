@@ -37,10 +37,21 @@ quickcheck = "1.0"
 quickcheck_macros = "1.0"
 
 [features]
-default = ["cli"]
+default = ["cli", "precompute-common"]
 cli = ["dep:clap"]
 python = ["dep:pyo3"]
 wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys", "dep:console_error_panic_hook"]
+
+# Pre-computation features
+precompute-all = []              # Pre-compute ALL combinations (234 converters)
+precompute-common = []           # Pre-compute only common ones (IAST, ITRANS, SLP1 ↔ Devanagari)
+precompute-roman-indic = []      # Pre-compute all Roman→Indic combinations
+precompute-indic-roman = []      # Pre-compute all Indic→Roman combinations
+no-precompute = []               # Disable all pre-computation
+
+# Script-specific pre-computation
+precompute-iast = []             # Pre-compute only IAST↔all scripts
+precompute-sanskrit-core = []    # IAST, ITRANS, Devanagari, SLP1 combinations
 
 [[bin]]
 name = "shlesha"
