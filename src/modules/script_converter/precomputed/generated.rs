@@ -5,6 +5,11 @@ use std::collections::HashMap;
 use super::super::{ScriptConverter, ConverterError};
 use crate::modules::hub::HubInput;
 
+// Additional trait for direct conversion
+pub trait DirectConverter {
+    fn convert_direct(&self, input: &str) -> Result<String, ConverterError>;
+}
+
 
 /// Direct converter from iast to devanagari
 pub struct IastToDevanagariDirect {
@@ -14,46 +19,76 @@ pub struct IastToDevanagariDirect {
 impl IastToDevanagariDirect {
     pub fn new() -> Self {
         let mut mappings = HashMap::new();
-
-        // Basic vowels
-        mappings.insert("a", "अ");
-        mappings.insert("ā", "आ");
+        mappings.insert("e", "ए");
+        mappings.insert("ṛ", "ऋ");
+        mappings.insert("kha", "ख");
+        mappings.insert("ca", "च");
+        mappings.insert("da", "द");
+        mappings.insert("ra", "र");
+        mappings.insert("au", "औ");
+        mappings.insert("pha", "फ");
+        mappings.insert("ḷ", "ऌ");
+        mappings.insert("gha", "घ");
+        mappings.insert("ba", "ब");
+        mappings.insert("bha", "भ");
+        mappings.insert("ja", "ज");
+        mappings.insert("ṭha", "ठ");
+        mappings.insert("ḍa", "ड");
+        mappings.insert("ta", "त");
+        mappings.insert("ṭa", "ट");
+        mappings.insert("śa", "श");
+        mappings.insert("ṣa", "ष");
+        mappings.insert("ha", "ह");
+        mappings.insert("ṝ", "ॠ");
+        mappings.insert("o", "ओ");
+        mappings.insert("la", "ल");
         mappings.insert("i", "इ");
         mappings.insert("ī", "ई");
-        mappings.insert("u", "उ");
-        mappings.insert("ū", "ऊ");
-        
-        // Consonants with inherent 'a'
-        mappings.insert("ka", "क");
-        mappings.insert("kha", "ख");
-        mappings.insert("ga", "ग");
-        mappings.insert("gha", "घ");
         mappings.insert("ṅa", "ङ");
-        
-        // More mappings would be generated from actual file parsing...
+        mappings.insert("ā", "आ");
+        mappings.insert("a", "अ");
+        mappings.insert("ḹ", "ॡ");
+        mappings.insert("jha", "झ");
+        mappings.insert("ṇa", "ण");
+        mappings.insert("tha", "थ");
+        mappings.insert("dha", "ध");
+        mappings.insert("na", "न");
+        mappings.insert("u", "उ");
+        mappings.insert("ai", "ऐ");
+        mappings.insert("cha", "छ");
+        mappings.insert("ka", "क");
+        mappings.insert("ga", "ग");
+        mappings.insert("pa", "प");
+        mappings.insert("ma", "म");
+        mappings.insert("ya", "य");
+        mappings.insert("ḍha", "ढ");
+        mappings.insert("va", "व");
+        mappings.insert("ū", "ऊ");
+        mappings.insert("sa", "स");
+        mappings.insert("ña", "ञ");
 
         Self { mappings }
     }
     
-    fn convert(&self, input: &str) -> Result<String, ConverterError> {
+    pub fn convert(&self, input: &str) -> Result<String, ConverterError> {
         use super::super::processors::RomanScriptProcessor;
         RomanScriptProcessor::process_optimized(input, &self.mappings)
     }
 }
 
 impl ScriptConverter for IastToDevanagariDirect {
-    fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
+    fn to_hub(&self, _script: &str, _input: &str) -> Result<HubInput, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use to_hub".to_string(),
         })
     }
     
-    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+    fn from_hub(&self, _script: &str, _hub_input: &HubInput) -> Result<String, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use from_hub".to_string(),
         })
     }
@@ -67,6 +102,12 @@ impl ScriptConverter for IastToDevanagariDirect {
     }
 }
 
+impl DirectConverter for IastToDevanagariDirect {
+    fn convert_direct(&self, input: &str) -> Result<String, ConverterError> {
+        self.convert(input)
+    }
+}
+
 /// Direct converter from devanagari to iast
 pub struct DevanagariToIastDirect {
     mappings: HashMap<&'static str, &'static str>,
@@ -75,46 +116,30 @@ pub struct DevanagariToIastDirect {
 impl DevanagariToIastDirect {
     pub fn new() -> Self {
         let mut mappings = HashMap::new();
-
-        // Basic vowels
-        mappings.insert("अ", "a");
-        mappings.insert("आ", "ā");
-        mappings.insert("इ", "i");
-        mappings.insert("ई", "ī");
-        mappings.insert("उ", "u");
-        mappings.insert("ऊ", "ū");
-        
-        // Consonants (without inherent 'a')
         mappings.insert("क", "ka");
-        mappings.insert("ख", "kha");
-        mappings.insert("ग", "ga");
-        mappings.insert("घ", "gha");
-        mappings.insert("ङ", "ṅa");
-        
-        // More mappings would be generated from actual file parsing...
 
         Self { mappings }
     }
     
-    fn convert(&self, input: &str) -> Result<String, ConverterError> {
+    pub fn convert(&self, input: &str) -> Result<String, ConverterError> {
         use super::super::processors::RomanScriptProcessor;
         RomanScriptProcessor::process_optimized(input, &self.mappings)
     }
 }
 
 impl ScriptConverter for DevanagariToIastDirect {
-    fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
+    fn to_hub(&self, _script: &str, _input: &str) -> Result<HubInput, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use to_hub".to_string(),
         })
     }
     
-    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+    fn from_hub(&self, _script: &str, _hub_input: &HubInput) -> Result<String, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use from_hub".to_string(),
         })
     }
@@ -128,6 +153,12 @@ impl ScriptConverter for DevanagariToIastDirect {
     }
 }
 
+impl DirectConverter for DevanagariToIastDirect {
+    fn convert_direct(&self, input: &str) -> Result<String, ConverterError> {
+        self.convert(input)
+    }
+}
+
 /// Direct converter from itrans to devanagari
 pub struct ItransToDevanagariDirect {
     mappings: HashMap<&'static str, &'static str>,
@@ -136,46 +167,39 @@ pub struct ItransToDevanagariDirect {
 impl ItransToDevanagariDirect {
     pub fn new() -> Self {
         let mut mappings = HashMap::new();
-
-        // Basic vowels
         mappings.insert("a", "अ");
-        mappings.insert("ā", "आ");
+        mappings.insert("U", "ऊ");
+        mappings.insert("I", "ई");
         mappings.insert("i", "इ");
-        mappings.insert("ī", "ई");
-        mappings.insert("u", "उ");
-        mappings.insert("ū", "ऊ");
-        
-        // Consonants with inherent 'a'
-        mappings.insert("ka", "क");
-        mappings.insert("kha", "ख");
-        mappings.insert("ga", "ग");
         mappings.insert("gha", "घ");
-        mappings.insert("ṅa", "ङ");
-        
-        // More mappings would be generated from actual file parsing...
+        mappings.insert("ga", "ग");
+        mappings.insert("kha", "ख");
+        mappings.insert("u", "उ");
+        mappings.insert("ka", "क");
+        mappings.insert("A", "आ");
 
         Self { mappings }
     }
     
-    fn convert(&self, input: &str) -> Result<String, ConverterError> {
+    pub fn convert(&self, input: &str) -> Result<String, ConverterError> {
         use super::super::processors::RomanScriptProcessor;
         RomanScriptProcessor::process_optimized(input, &self.mappings)
     }
 }
 
 impl ScriptConverter for ItransToDevanagariDirect {
-    fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
+    fn to_hub(&self, _script: &str, _input: &str) -> Result<HubInput, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use to_hub".to_string(),
         })
     }
     
-    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+    fn from_hub(&self, _script: &str, _hub_input: &HubInput) -> Result<String, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use from_hub".to_string(),
         })
     }
@@ -189,6 +213,12 @@ impl ScriptConverter for ItransToDevanagariDirect {
     }
 }
 
+impl DirectConverter for ItransToDevanagariDirect {
+    fn convert_direct(&self, input: &str) -> Result<String, ConverterError> {
+        self.convert(input)
+    }
+}
+
 /// Direct converter from devanagari to itrans
 pub struct DevanagariToItransDirect {
     mappings: HashMap<&'static str, &'static str>,
@@ -197,46 +227,30 @@ pub struct DevanagariToItransDirect {
 impl DevanagariToItransDirect {
     pub fn new() -> Self {
         let mut mappings = HashMap::new();
-
-        // Basic vowels
-        mappings.insert("अ", "a");
-        mappings.insert("आ", "ā");
-        mappings.insert("इ", "i");
-        mappings.insert("ई", "ī");
-        mappings.insert("उ", "u");
-        mappings.insert("ऊ", "ū");
-        
-        // Consonants (without inherent 'a')
         mappings.insert("क", "ka");
-        mappings.insert("ख", "kha");
-        mappings.insert("ग", "ga");
-        mappings.insert("घ", "gha");
-        mappings.insert("ङ", "ṅa");
-        
-        // More mappings would be generated from actual file parsing...
 
         Self { mappings }
     }
     
-    fn convert(&self, input: &str) -> Result<String, ConverterError> {
+    pub fn convert(&self, input: &str) -> Result<String, ConverterError> {
         use super::super::processors::RomanScriptProcessor;
         RomanScriptProcessor::process_optimized(input, &self.mappings)
     }
 }
 
 impl ScriptConverter for DevanagariToItransDirect {
-    fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
+    fn to_hub(&self, _script: &str, _input: &str) -> Result<HubInput, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use to_hub".to_string(),
         })
     }
     
-    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+    fn from_hub(&self, _script: &str, _hub_input: &HubInput) -> Result<String, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use from_hub".to_string(),
         })
     }
@@ -250,6 +264,12 @@ impl ScriptConverter for DevanagariToItransDirect {
     }
 }
 
+impl DirectConverter for DevanagariToItransDirect {
+    fn convert_direct(&self, input: &str) -> Result<String, ConverterError> {
+        self.convert(input)
+    }
+}
+
 /// Direct converter from slp1 to devanagari
 pub struct Slp1ToDevanagariDirect {
     mappings: HashMap<&'static str, &'static str>,
@@ -258,46 +278,39 @@ pub struct Slp1ToDevanagariDirect {
 impl Slp1ToDevanagariDirect {
     pub fn new() -> Self {
         let mut mappings = HashMap::new();
-
-        // Basic vowels
-        mappings.insert("a", "अ");
-        mappings.insert("ā", "आ");
-        mappings.insert("i", "इ");
-        mappings.insert("ī", "ई");
+        mappings.insert("I", "ई");
         mappings.insert("u", "उ");
-        mappings.insert("ū", "ऊ");
-        
-        // Consonants with inherent 'a'
-        mappings.insert("ka", "क");
-        mappings.insert("kha", "ख");
         mappings.insert("ga", "ग");
-        mappings.insert("gha", "घ");
-        mappings.insert("ṅa", "ङ");
-        
-        // More mappings would be generated from actual file parsing...
+        mappings.insert("Ka", "ख");
+        mappings.insert("Ga", "घ");
+        mappings.insert("i", "इ");
+        mappings.insert("ka", "क");
+        mappings.insert("a", "अ");
+        mappings.insert("A", "आ");
+        mappings.insert("U", "ऊ");
 
         Self { mappings }
     }
     
-    fn convert(&self, input: &str) -> Result<String, ConverterError> {
+    pub fn convert(&self, input: &str) -> Result<String, ConverterError> {
         use super::super::processors::RomanScriptProcessor;
         RomanScriptProcessor::process_optimized(input, &self.mappings)
     }
 }
 
 impl ScriptConverter for Slp1ToDevanagariDirect {
-    fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
+    fn to_hub(&self, _script: &str, _input: &str) -> Result<HubInput, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use to_hub".to_string(),
         })
     }
     
-    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+    fn from_hub(&self, _script: &str, _hub_input: &HubInput) -> Result<String, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use from_hub".to_string(),
         })
     }
@@ -311,6 +324,12 @@ impl ScriptConverter for Slp1ToDevanagariDirect {
     }
 }
 
+impl DirectConverter for Slp1ToDevanagariDirect {
+    fn convert_direct(&self, input: &str) -> Result<String, ConverterError> {
+        self.convert(input)
+    }
+}
+
 /// Direct converter from devanagari to slp1
 pub struct DevanagariToSlp1Direct {
     mappings: HashMap<&'static str, &'static str>,
@@ -319,46 +338,30 @@ pub struct DevanagariToSlp1Direct {
 impl DevanagariToSlp1Direct {
     pub fn new() -> Self {
         let mut mappings = HashMap::new();
-
-        // Basic vowels
-        mappings.insert("अ", "a");
-        mappings.insert("आ", "ā");
-        mappings.insert("इ", "i");
-        mappings.insert("ई", "ī");
-        mappings.insert("उ", "u");
-        mappings.insert("ऊ", "ū");
-        
-        // Consonants (without inherent 'a')
         mappings.insert("क", "ka");
-        mappings.insert("ख", "kha");
-        mappings.insert("ग", "ga");
-        mappings.insert("घ", "gha");
-        mappings.insert("ङ", "ṅa");
-        
-        // More mappings would be generated from actual file parsing...
 
         Self { mappings }
     }
     
-    fn convert(&self, input: &str) -> Result<String, ConverterError> {
+    pub fn convert(&self, input: &str) -> Result<String, ConverterError> {
         use super::super::processors::RomanScriptProcessor;
         RomanScriptProcessor::process_optimized(input, &self.mappings)
     }
 }
 
 impl ScriptConverter for DevanagariToSlp1Direct {
-    fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
+    fn to_hub(&self, _script: &str, _input: &str) -> Result<HubInput, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use to_hub".to_string(),
         })
     }
     
-    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+    fn from_hub(&self, _script: &str, _hub_input: &HubInput) -> Result<String, ConverterError> {
         // Direct converters bypass the hub
         Err(ConverterError::ConversionFailed {
-            script: script.to_string(),
+            script: _script.to_string(),
             reason: "Direct converter should not use from_hub".to_string(),
         })
     }
@@ -369,6 +372,12 @@ impl ScriptConverter for DevanagariToSlp1Direct {
     
     fn script_has_implicit_a(&self, _script: &str) -> bool {
         false // Direct converters handle this internally
+    }
+}
+
+impl DirectConverter for DevanagariToSlp1Direct {
+    fn convert_direct(&self, input: &str) -> Result<String, ConverterError> {
+        self.convert(input)
     }
 }
 
@@ -392,6 +401,16 @@ impl PrecomputedRegistry {
     
     pub fn get(&self, from: &str, to: &str) -> Option<&Box<dyn ScriptConverter>> {
         self.converters.get(&(from.to_string(), to.to_string()))
+    }
+    
+    pub fn has_direct_mapping(&self, from: &str, to: &str) -> bool {
+        self.converters.contains_key(&(from.to_string(), to.to_string()))
+    }
+    
+    pub fn convert_direct(&self, from: &str, to: &str, input: &str) -> Option<Result<String, ConverterError>> {
+        // Since we can't call convert_direct through the trait object,
+        // we'll need to use a different approach or return None to use hub conversion
+        None
     }
 }
 

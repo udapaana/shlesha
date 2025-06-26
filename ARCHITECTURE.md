@@ -76,7 +76,28 @@ pub trait ScriptConverter {
 }
 ```
 
-### 4. Unknown Token Handler (`src/modules/core/unknown_handler.rs`)
+### 4. Schema-Based Converter (`src/modules/script_converter/schema_based.rs`)
+
+**Runtime Extensibility System**:
+```rust
+pub struct SchemaBasedConverter {
+    registry: Arc<SchemaRegistry>,
+}
+
+impl ScriptConverter for SchemaBasedConverter {
+    fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError>;
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError>;
+    fn supports_script(&self, script: &str) -> bool;
+}
+```
+
+**Dynamic Script Support**:
+- Loads custom encoding schemes from YAML files at runtime
+- Character-level mapping with multi-character support
+- Automatic hub routing based on script type
+- Bidirectional conversion support
+
+### 5. Unknown Token Handler (`src/modules/core/unknown_handler.rs`)
 
 **Lightweight Metadata System**:
 ```rust
@@ -141,6 +162,25 @@ Gujarati "ધર્મ" → Devanagari "धर्म" → [Hub] → ISO "dharma"
 **Roman → Indic** (via hub):
 ```
 ITRANS "dharma" → ISO "dharma" → [Hub] → Devanagari "धर्म" → Bengali "ধর্ম"
+```
+
+### 4. Custom Schema Conversions
+
+**Custom Romanized → Indic** (via hub):
+```
+my_encoding "kam" → ISO "kam" → [Hub] → Devanagari "कअम" → Tamil "கअம்"
+```
+
+**Custom Indic → Roman** (via hub):
+```
+my_indic "क" → Devanagari "क" → [Hub] → ISO "ka" → IAST "ka"
+```
+
+**Runtime Loading**:
+```rust
+let mut shlesha = Shlesha::new();
+shlesha.load_schema("custom_encoding.yaml")?;
+let result = shlesha.transliterate("input", "my_encoding", "devanagari")?;
 ```
 
 ## Performance Optimizations
@@ -248,6 +288,19 @@ impl Hub {
     }
 }
 ```
+
+## Task Management Philosophy
+
+### Centralized TODO Management
+
+Shlesha maintains a centralized `TODO.md` file in the project root for all development tasks and module-level todos. This approach provides:
+
+1. **Single Source of Truth**: All tasks in one location for easy tracking
+2. **Better Visibility**: Team members can quickly see all pending work
+3. **Organized Structure**: Tasks grouped by module and priority
+4. **Progress Tracking**: Clear status indicators for each task
+
+The `TODO.md` file replaces scattered TODO comments across module files, ensuring that development priorities and pending work are always visible and well-organized.
 
 ## Design Benefits
 

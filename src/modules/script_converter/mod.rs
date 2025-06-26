@@ -118,28 +118,36 @@ impl ScriptConverterRegistry {
     
     /// Check if a direct precomputed converter exists for this conversion
     pub fn has_direct_converter(&self, from: &str, to: &str) -> bool {
-        self.precomputed.get(from, to).is_some()
+        self.precomputed.has_direct_mapping(from, to)
     }
     
     /// Attempt direct conversion using precomputed converters
     pub fn try_direct_conversion(&self, from: &str, to: &str, input: &str) -> Option<Result<String, ConverterError>> {
-        if let Some(converter) = self.precomputed.get(from, to) {
-            // For now, use a placeholder method since direct converters don't implement the same interface
-            // In production, we'd need a different interface for direct converters
-            None // TODO: Implement direct conversion call
-        } else {
-            None
-        }
+        self.precomputed.convert_direct(from, to, input)
     }
     
     /// Convert text from any supported script to hub format
     pub fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
+        self.to_hub_with_schema_registry(script, input, None)
+    }
+    
+    /// Convert text from any supported script to hub format with optional schema registry
+    pub fn to_hub_with_schema_registry(&self, script: &str, input: &str, schema_registry: Option<&crate::modules::registry::SchemaRegistry>) -> Result<HubInput, ConverterError> {
         // Check if we have a precomputed direct path to avoid hub entirely
         // This is handled in the main transliterate method, so proceed with hub conversion
         
+        // First try hardcoded converters
         for converter in &self.converters {
             if converter.supports_script(script) {
                 return converter.to_hub(script, input);
+            }
+        }
+        
+        // Fallback to schema-based converter for runtime-loaded scripts
+        if let Some(registry) = schema_registry {
+            let schema_converter = schema_based::SchemaBasedConverter::new(std::sync::Arc::new(registry.clone()));
+            if schema_converter.supports_script(script) {
+                return schema_converter.to_hub(script, input);
             }
         }
         
@@ -151,9 +159,23 @@ impl ScriptConverterRegistry {
     
     /// Convert text from hub format to any supported script (reverse conversion)
     pub fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        self.from_hub_with_schema_registry(script, hub_input, None)
+    }
+    
+    /// Convert text from hub format to any supported script with optional schema registry
+    pub fn from_hub_with_schema_registry(&self, script: &str, hub_input: &HubInput, schema_registry: Option<&crate::modules::registry::SchemaRegistry>) -> Result<String, ConverterError> {
+        // First try hardcoded converters
         for converter in &self.converters {
             if converter.supports_script(script) {
                 return converter.from_hub(script, hub_input);
+            }
+        }
+        
+        // Fallback to schema-based converter for runtime-loaded scripts
+        if let Some(registry) = schema_registry {
+            let schema_converter = schema_based::SchemaBasedConverter::new(std::sync::Arc::new(registry.clone()));
+            if schema_converter.supports_script(script) {
+                return schema_converter.from_hub(script, hub_input);
             }
         }
         
@@ -165,11 +187,15 @@ impl ScriptConverterRegistry {
     
     /// Convert text from any supported script to hub format with metadata collection
     pub fn to_hub_with_metadata(&self, script: &str, input: &str) -> Result<(HubInput, TransliterationMetadata), ConverterError> {
+        // First try hardcoded converters
         for converter in &self.converters {
             if converter.supports_script(script) {
                 return converter.to_hub_with_metadata(script, input);
             }
         }
+        
+        // The metadata methods would also need schema registry support
+        // For now, keeping original error until we add schema support here too
         
         Err(ConverterError::ConversionFailed {
             script: script.to_string(),
@@ -179,11 +205,15 @@ impl ScriptConverterRegistry {
     
     /// Convert text from hub format to any supported script with metadata collection
     pub fn from_hub_with_metadata(&self, script: &str, hub_input: &HubInput) -> Result<TransliterationResult, ConverterError> {
+        // First try hardcoded converters
         for converter in &self.converters {
             if converter.supports_script(script) {
                 return converter.from_hub_with_metadata(script, hub_input);
             }
         }
+        
+        // The metadata methods would also need schema registry support
+        // For now, keeping original error until we add schema support here too
         
         Err(ConverterError::ConversionFailed {
             script: script.to_string(),
@@ -275,6 +305,8 @@ impl ScriptConverterRegistry {
 pub mod processors;
 // Pre-computed direct converters
 pub mod precomputed;
+// Schema-based converter for runtime-loaded scripts
+pub mod schema_based;
 
 // Script converters
 pub mod iast;

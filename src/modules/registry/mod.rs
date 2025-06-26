@@ -107,6 +107,7 @@ pub trait SchemaRegistryTrait {
     fn validate_schema(&self, schema: &Schema) -> Result<(), RegistryError>;
 }
 
+#[derive(Clone)]
 pub struct SchemaRegistry {
     schemas: HashMap<String, Schema>,
     schema_cache: HashMap<String, SchemaFile>,

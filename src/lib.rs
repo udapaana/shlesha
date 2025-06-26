@@ -64,8 +64,13 @@ impl Shlesha {
 
     /// Transliterate text from one script to another via the central hub
     pub fn transliterate(&self, text: &str, from: &str, to: &str) -> Result<String, Box<dyn std::error::Error>> {
+        // Check for direct precomputed conversion first
+        if let Some(direct_result) = self.script_converter_registry.try_direct_conversion(from, to, text) {
+            return direct_result.map_err(|e| e.into());
+        }
+        
         // Convert source script to hub format (Devanagari or ISO)
-        let hub_input = self.script_converter_registry.to_hub(from, text)?;
+        let hub_input = self.script_converter_registry.to_hub_with_schema_registry(from, text, Some(&self.registry))?;
         
         // Smart hub processing based on input and desired output
         let result = match (&hub_input, to.to_lowercase().as_str()) {
@@ -77,14 +82,14 @@ impl Shlesha {
             (HubInput::Devanagari(deva), _) => {
                 // Try direct Devanagari → target conversion first (for Indic scripts)
                 let deva_hub_input = HubInput::Devanagari(deva.clone());
-                match self.script_converter_registry.from_hub(to, &deva_hub_input) {
+                match self.script_converter_registry.from_hub_with_schema_registry(to, &deva_hub_input, Some(&self.registry)) {
                     Ok(result) => result,
                     Err(_) => {
                         // If direct conversion fails, convert through ISO: Devanagari → ISO → target
                         let hub_output = self.hub.deva_to_iso(&deva)?;
                         if let HubOutput::Iso(ref iso_result) = hub_output {
                             let iso_hub_input = HubInput::Iso(iso_result.clone());
-                            self.script_converter_registry.from_hub(to, &iso_hub_input)?
+                            self.script_converter_registry.from_hub_with_schema_registry(to, &iso_hub_input, Some(&self.registry))?
                         } else {
                             return Err("Expected ISO output from hub".into());
                         }
@@ -94,14 +99,14 @@ impl Shlesha {
             (HubInput::Iso(iso), _) => {
                 // Try direct ISO → target conversion first
                 let iso_hub_input = HubInput::Iso(iso.clone());
-                match self.script_converter_registry.from_hub(to, &iso_hub_input) {
+                match self.script_converter_registry.from_hub_with_schema_registry(to, &iso_hub_input, Some(&self.registry)) {
                     Ok(result) => result,
                     Err(_) => {
                         // If direct conversion fails, convert through Devanagari: ISO → Devanagari → target
                         let hub_output = self.hub.iso_to_deva(&iso)?;
                         if let HubOutput::Devanagari(ref deva_result) = hub_output {
                             let deva_hub_input = HubInput::Devanagari(deva_result.clone());
-                            self.script_converter_registry.from_hub(to, &deva_hub_input)?
+                            self.script_converter_registry.from_hub_with_schema_registry(to, &deva_hub_input, Some(&self.registry))?
                         } else {
                             return Err("Expected Devanagari output from hub".into());
                         }
@@ -120,12 +125,30 @@ impl Shlesha {
     
     /// Get list of supported scripts
     pub fn list_supported_scripts(&self) -> Vec<&str> {
-        self.script_converter_registry.list_supported_scripts()
+        let mut scripts = self.script_converter_registry.list_supported_scripts();
+        
+        // Add scripts from schema registry
+        use crate::modules::registry::SchemaRegistryTrait;
+        let schema_scripts = self.registry.list_schemas();
+        for script in schema_scripts {
+            scripts.push(script);
+        }
+        
+        scripts.sort();
+        scripts.dedup();
+        scripts
     }
     
     /// Check if a script is supported
     pub fn supports_script(&self, script: &str) -> bool {
-        self.script_converter_registry.supports_script(script)
+        // Check hardcoded converters first
+        if self.script_converter_registry.supports_script(script) {
+            return true;
+        }
+        
+        // Check if it's in the schema registry
+        use crate::modules::registry::SchemaRegistryTrait;
+        self.registry.get_schema(script).is_some()
     }
     
     /// Transliterate text with metadata collection for unknown tokens

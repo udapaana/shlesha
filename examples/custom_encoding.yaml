@@ -1,0 +1,39 @@
+name: "my_custom_encoding"
+version: "1.0.0"
+script_type: "romanized"
+description: "Example custom encoding scheme for testing"
+author: "Shlesha Team"
+
+metadata:
+  has_implicit_a: false
+  direction: "ltr"
+  case_sensitive: true
+
+mappings:
+  consonants:
+    "k": "क"
+    "g": "ग"
+    "c": "च"
+    "j": "ज"
+    "t": "त"
+    "d": "द"
+    "n": "न"
+    "p": "प"
+    "b": "ब"
+    "m": "म"
+    "y": "य"
+    "r": "र"
+    "l": "ल"
+    "v": "व"
+    "s": "स"
+    "h": "ह"
+  
+  vowels:
+    "a": "अ"
+    "i": "इ"
+    "u": "उ"
+    "e": "ए"
+    "o": "ओ"
+
+validation:
+  patterns: {}
