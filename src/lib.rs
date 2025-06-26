@@ -64,11 +64,6 @@ impl Shlesha {
 
     /// Transliterate text from one script to another via the central hub
     pub fn transliterate(&self, text: &str, from: &str, to: &str) -> Result<String, Box<dyn std::error::Error>> {
-        // Check for direct precomputed conversion first
-        if let Some(direct_result) = self.script_converter_registry.try_direct_conversion(from, to, text) {
-            return direct_result.map_err(|e| e.into());
-        }
-        
         // Convert source script to hub format (Devanagari or ISO)
         let hub_input = self.script_converter_registry.to_hub_with_schema_registry(from, text, Some(&self.registry))?;
         

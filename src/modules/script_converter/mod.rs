@@ -101,7 +101,6 @@ pub trait ScriptConverter {
 /// Registry for script converters
 pub struct ScriptConverterRegistry {
     converters: Vec<Box<dyn ScriptConverter>>,
-    precomputed: precomputed::PrecomputedRegistry,
     /// Cache mapping script names to converter indices for O(1) lookup
     script_to_converter: HashMap<String, usize>,
 }
@@ -110,7 +109,6 @@ impl ScriptConverterRegistry {
     pub fn new() -> Self {
         Self {
             converters: Vec::new(),
-            precomputed: precomputed::PrecomputedRegistry::new(),
             script_to_converter: HashMap::new(),
         }
     }
@@ -127,16 +125,6 @@ impl ScriptConverterRegistry {
         self.converters.push(converter);
     }
     
-    /// Check if a direct precomputed converter exists for this conversion
-    pub fn has_direct_converter(&self, from: &str, to: &str) -> bool {
-        self.precomputed.has_direct_mapping(from, to)
-    }
-    
-    /// Attempt direct conversion using precomputed converters
-    pub fn try_direct_conversion(&self, from: &str, to: &str, input: &str) -> Option<Result<String, ConverterError>> {
-        self.precomputed.convert_direct(from, to, input)
-    }
-    
     /// Convert text from any supported script to hub format
     pub fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
         self.to_hub_with_schema_registry(script, input, None)
@@ -144,9 +132,6 @@ impl ScriptConverterRegistry {
     
     /// Convert text from any supported script to hub format with optional schema registry
     pub fn to_hub_with_schema_registry(&self, script: &str, input: &str, schema_registry: Option<&crate::modules::registry::SchemaRegistry>) -> Result<HubInput, ConverterError> {
-        // Check if we have a precomputed direct path to avoid hub entirely
-        // This is handled in the main transliterate method, so proceed with hub conversion
-        
         // Fast lookup using HashMap cache instead of linear search
         if let Some(&converter_index) = self.script_to_converter.get(script) {
             return self.converters[converter_index].to_hub(script, input);
@@ -296,8 +281,6 @@ impl ScriptConverterRegistry {
 // Submodules for specific script converters
 // Shared processing logic
 pub mod processors;
-// Pre-computed direct converters
-pub mod precomputed;
 // Schema-based converter for runtime-loaded scripts
 pub mod schema_based;
 

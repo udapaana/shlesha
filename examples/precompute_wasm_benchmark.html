@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Shlesha WASM Pre-computation Benchmark</title>
+    <style>
+        body {
+            font-family: 'Monaco', 'Menlo', monospace;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+        .benchmark-section {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #2d2d30;
+            border-radius: 8px;
+            border-left: 4px solid #007acc;
+        }
+        .test-group {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #383838;
+            border-radius: 5px;
+        }
+        .conversion-test {
+            margin: 10px 0;
+            padding: 8px;
+            background-color: #404040;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .performance-meter {
+            width: 100%;
+            height: 20px;
+            background-color: #555;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+        .performance-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        .fast { background: linear-gradient(90deg, #4caf50, #8bc34a); }
+        .medium { background: linear-gradient(90deg, #ff9800, #ffc107); }
+        .slow { background: linear-gradient(90deg, #f44336, #e91e63); }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .loading { background-color: #1976d2; }
+        .success { background-color: #388e3c; }
+        .error { background-color: #d32f2f; }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .results-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2d2d30;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+        .feature-info {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧪 Shlesha WASM Pre-computation Benchmark</h1>
+        <p>Testing transliteration performance with and without pre-computation optimizations</p>
+    </div>
+
+    <div class="feature-info">
+        <h3>🔧 Build Configuration</h3>
+        <p>To test different pre-computation settings, rebuild WASM with:</p>
+        <ul>
+            <li><code>wasm-pack build --features precompute-common --target web</code></li>
+            <li><code>wasm-pack build --features precompute-all --target web</code></li>
+            <li><code>wasm-pack build --features no-precompute --target web</code></li>
+        </ul>
+        <p id="current-config">Current configuration: <span id="config-name">Detecting...</span></p>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>🚀 Quick Start</h2>
+        <button onclick="runAllBenchmarks()">Run All Benchmarks</button>
+        <button onclick="runPrecomputeBenchmarks()">Test Pre-computation Impact</button>
+        <button onclick="runControlBenchmarks()">Test Control Group</button>
+        <button onclick="clearResults()">Clear Results</button>
+        <div id="overall-status" class="status loading" style="display: none;">
+            Initializing benchmarks...
+        </div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>📊 Pre-computation Benefit Tests</h2>
+        <p>These conversions should show improvement with pre-computation (3→2 step reduction):</p>
+        <div id="precompute-tests" class="test-group">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2>🔧 Control Group Tests</h2>
+        <p>These conversions should NOT be affected by pre-computation (already optimal):</p>
+        <div id="control-tests" class="test-group">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <div class="results-summary" id="results-summary" style="display: none;">
+        <h2>📈 Performance Summary</h2>
+        <div id="summary-content"></div>
+    </div>
+
+    <script type="module">
+        import init, { Shlesha } from './pkg/shlesha.js';
+
+        // Test data
+        const testData = {
+            small: {
+                iast: "dharma",
+                devanagari: "धर्म"
+            },
+            medium: {
+                iast: "dharma yoga bhārata saṃskṛta veda upaniṣad",
+                devanagari: "धर्म योग भारत संस्कृत वेद उपनिषद्"
+            },
+            large: {
+                iast: "dharma yoga bhārata saṃskṛta veda upaniṣad gītā rāmāyaṇa mahābhārata purāṇa śāstra darśana āyurveda jyotiṣa vyākaraṇa chanda nirukta kalpa śikṣā smṛti śruti ācāra vicāra saṃskāra paramparā satya ahiṃsā karuṇā dayā prema śānti ānanda mokṣa nirvāṇa samādhi dhyāna prāṇāyāma āsana mantra yantra tantra",
+                devanagari: "धर्म योग भारत संस्कृत वेद उपनिषद् गीता रामायण महाभारत पुराण शास्त्र दर्शन आयुर्वेद ज्योतिष व्याकरण छन्द निरुक्त कल्प शिक्षा स्मृति श्रुति आचार विचार संस्कार परम्परा सत्य अहिंसा करुणा दया प्रेम शान्ति आनन्द मोक्ष निर्वाण समाधि ध्यान प्राणायाम आसन मन्त्र यन्त्र तन्त्र"
+            }
+        };
+
+        // Conversions that should benefit from pre-computation
+        const precomputeBenefitTests = [
+            {from: "iast", to: "devanagari", desc: "Roman→Indic (3→2 steps)"},
+            {from: "devanagari", to: "iast", desc: "Indic→Roman (3→2 steps)"},
+            {from: "itrans", to: "devanagari", desc: "Roman→Indic (3→2 steps)"},
+            {from: "devanagari", to: "itrans", desc: "Indic→Roman (3→2 steps)"},
+        ];
+
+        // Control conversions (should not benefit)
+        const controlTests = [
+            {from: "devanagari", to: "telugu", desc: "Indic→Indic (already optimal)"},
+            {from: "iast", to: "itrans", desc: "Roman→Roman (already optimal)"},
+            {from: "telugu", to: "devanagari", desc: "Indic→Indic (already optimal)"},
+            {from: "itrans", to: "slp1", desc: "Roman→Roman (already optimal)"},
+        ];
+
+        let shlesha = null;
+        let benchmarkResults = {
+            precompute: {},
+            control: {}
+        };
+
+        async function initializeWasm() {
+            try {
+                await init();
+                shlesha = new Shlesha();
+                
+                document.getElementById('config-name').textContent = 'Loaded successfully';
+                document.getElementById('overall-status').style.display = 'none';
+                
+                return true;
+            } catch (error) {
+                console.error('Failed to initialize WASM:', error);
+                document.getElementById('config-name').textContent = 'Failed to load';
+                document.getElementById('overall-status').textContent = 'Failed to initialize WASM';
+                document.getElementById('overall-status').className = 'status error';
+                return false;
+            }
+        }
+
+        function getTestText(script, size) {
+            if (script === 'devanagari' || script === 'telugu') {
+                return testData[size].devanagari;
+            }
+            return testData[size].iast;
+        }
+
+        async function benchmarkConversion(fromScript, toScript, text, iterations = 100) {
+            // Warm up
+            for (let i = 0; i < 10; i++) {
+                try {
+                    shlesha.transliterate(text, fromScript, toScript);
+                } catch (e) {
+                    return null; // Conversion not supported
+                }
+            }
+
+            // Actual timing
+            const times = [];
+            for (let i = 0; i < iterations; i++) {
+                const start = performance.now();
+                try {
+                    const result = shlesha.transliterate(text, fromScript, toScript);
+                    const end = performance.now();
+                    times.push(end - start);
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            return {
+                mean: times.reduce((a, b) => a + b) / times.length,
+                median: times.sort((a, b) => a - b)[Math.floor(times.length / 2)],
+                min: Math.min(...times),
+                max: Math.max(...times),
+                iterations: iterations
+            };
+        }
+
+        function createTestElement(test, type) {
+            const div = document.createElement('div');
+            div.className = 'conversion-test';
+            div.id = `test-${type}-${test.from}-${test.to}`;
+            
+            div.innerHTML = `
+                <div><strong>${test.from} → ${test.to}</strong> - ${test.desc}</div>
+                <div class="performance-meter">
+                    <div class="performance-bar" style="width: 0%"></div>
+                </div>
+                <div class="test-results">Ready to test...</div>
+            `;
+            
+            return div;
+        }
+
+        function updateTestElement(elementId, stats, size) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            const resultDiv = element.querySelector('.test-results');
+            const bar = element.querySelector('.performance-bar');
+
+            if (stats) {
+                resultDiv.innerHTML = `
+                    ${size}: ${stats.mean.toFixed(2)}ms avg 
+                    (${stats.min.toFixed(2)}-${stats.max.toFixed(2)}ms range)
+                `;
+                
+                // Color code based on performance
+                if (stats.mean < 1) {
+                    bar.className = 'performance-bar fast';
+                    bar.style.width = '30%';
+                } else if (stats.mean < 5) {
+                    bar.className = 'performance-bar medium';
+                    bar.style.width = '60%';
+                } else {
+                    bar.className = 'performance-bar slow';
+                    bar.style.width = '100%';
+                }
+            } else {
+                resultDiv.textContent = `${size}: Not supported`;
+                bar.style.width = '0%';
+            }
+        }
+
+        async function runTestGroup(tests, groupType) {
+            const container = document.getElementById(`${groupType}-tests`);
+            container.innerHTML = '';
+            
+            // Create test elements
+            tests.forEach(test => {
+                const element = createTestElement(test, groupType);
+                container.appendChild(element);
+            });
+
+            // Run tests
+            for (const test of tests) {
+                const elementId = `test-${groupType}-${test.from}-${test.to}`;
+                
+                for (const size of ['small', 'medium', 'large']) {
+                    const text = getTestText(test.from, size);
+                    const stats = await benchmarkConversion(test.from, test.to, text);
+                    
+                    updateTestElement(elementId, stats, size);
+                    
+                    // Store results
+                    if (!benchmarkResults[groupType][`${test.from}-${test.to}`]) {
+                        benchmarkResults[groupType][`${test.from}-${test.to}`] = {};
+                    }
+                    benchmarkResults[groupType][`${test.from}-${test.to}`][size] = stats;
+                }
+            }
+        }
+
+        function updateSummary() {
+            const summaryElement = document.getElementById('results-summary');
+            const contentElement = document.getElementById('summary-content');
+            
+            // Calculate averages
+            const precomputeAvg = calculateGroupAverage(benchmarkResults.precompute);
+            const controlAvg = calculateGroupAverage(benchmarkResults.control);
+            
+            let summaryHTML = '<h3>📊 Performance Comparison</h3>';
+            
+            if (precomputeAvg && controlAvg) {
+                const improvement = ((controlAvg - precomputeAvg) / controlAvg * 100);
+                
+                summaryHTML += `
+                    <div>
+                        <p><strong>Pre-computation benefit group average:</strong> ${precomputeAvg.toFixed(2)}ms</p>
+                        <p><strong>Control group average:</strong> ${controlAvg.toFixed(2)}ms</p>
+                `;
+                
+                if (improvement > 0) {
+                    summaryHTML += `<p style="color: #4caf50;"><strong>🚀 Pre-computation shows ${improvement.toFixed(1)}% improvement!</strong></p>`;
+                } else {
+                    summaryHTML += `<p style="color: #ff9800;"><strong>⚠️ Pre-computation shows ${Math.abs(improvement).toFixed(1)}% overhead</strong></p>`;
+                }
+                
+                summaryHTML += '</div>';
+            }
+            
+            summaryHTML += `
+                <h3>💡 Interpretation</h3>
+                <ul>
+                    <li><strong>Pre-computation benefit tests</strong> should be faster with pre-computation enabled</li>
+                    <li><strong>Control tests</strong> should show similar performance regardless of pre-computation</li>
+                    <li>Large improvements suggest effective step reduction (3→2 steps)</li>
+                    <li>To see full impact, compare builds with different feature flags</li>
+                </ul>
+            `;
+            
+            contentElement.innerHTML = summaryHTML;
+            summaryElement.style.display = 'block';
+        }
+
+        function calculateGroupAverage(group) {
+            const allTimes = [];
+            
+            for (const conversion in group) {
+                for (const size in group[conversion]) {
+                    const stats = group[conversion][size];
+                    if (stats && stats.mean) {
+                        allTimes.push(stats.mean);
+                    }
+                }
+            }
+            
+            if (allTimes.length === 0) return null;
+            return allTimes.reduce((a, b) => a + b) / allTimes.length;
+        }
+
+        // Global functions for buttons
+        window.runAllBenchmarks = async function() {
+            if (!shlesha) {
+                alert('WASM not initialized yet');
+                return;
+            }
+            
+            document.getElementById('overall-status').style.display = 'block';
+            document.getElementById('overall-status').textContent = 'Running all benchmarks...';
+            document.getElementById('overall-status').className = 'status loading';
+            
+            await runTestGroup(precomputeBenefitTests, 'precompute');
+            await runTestGroup(controlTests, 'control');
+            
+            updateSummary();
+            
+            document.getElementById('overall-status').textContent = 'All benchmarks completed!';
+            document.getElementById('overall-status').className = 'status success';
+        };
+
+        window.runPrecomputeBenchmarks = async function() {
+            if (!shlesha) {
+                alert('WASM not initialized yet');
+                return;
+            }
+            await runTestGroup(precomputeBenefitTests, 'precompute');
+            updateSummary();
+        };
+
+        window.runControlBenchmarks = async function() {
+            if (!shlesha) {
+                alert('WASM not initialized yet');
+                return;
+            }
+            await runTestGroup(controlTests, 'control');
+            updateSummary();
+        };
+
+        window.clearResults = function() {
+            document.getElementById('precompute-tests').innerHTML = '';
+            document.getElementById('control-tests').innerHTML = '';
+            document.getElementById('results-summary').style.display = 'none';
+            benchmarkResults = { precompute: {}, control: {} };
+        };
+
+        // Initialize on page load
+        document.getElementById('overall-status').style.display = 'block';
+        initializeWasm();
+    </script>
+</body>
+</html>

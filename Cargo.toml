@@ -11,10 +11,13 @@ repository = "https://github.com/udapaana/shlesha"
 # Core dependencies - keeping minimal for now
 thiserror = "1.0"
 unicode-normalization = "0.1"
+once_cell = "1.19"
 
 # Schema loading dependencies
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 serde_yaml = "0.9"
+toml = "0.8"
 
 # Optional features
 clap = { version = "4.0", features = ["derive"], optional = true }
@@ -37,26 +40,16 @@ quickcheck = "1.0"
 quickcheck_macros = "1.0"
 
 [features]
-default = ["cli", "precompute-common"]
+default = ["cli"]
 cli = ["dep:clap"]
 python = ["dep:pyo3"]
 wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys", "dep:console_error_panic_hook"]
-
-# Pre-computation features
-precompute-all = []              # Pre-compute ALL combinations (234 converters)
-precompute-common = []           # Pre-compute only common ones (IAST, ITRANS, SLP1 ↔ Devanagari)
-precompute-roman-indic = []      # Pre-compute all Roman→Indic combinations
-precompute-indic-roman = []      # Pre-compute all Indic→Roman combinations
-no-precompute = []               # Disable all pre-computation
-
-# Script-specific pre-computation
-precompute-iast = []             # Pre-compute only IAST↔all scripts
-precompute-sanskrit-core = []    # IAST, ITRANS, Devanagari, SLP1 combinations
 
 [[bin]]
 name = "shlesha"
 path = "src/main.rs"
 required-features = ["cli"]
+
 
 [lib]
 name = "shlesha"
