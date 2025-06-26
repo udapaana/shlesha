@@ -220,75 +220,79 @@ impl Hub {
 
 impl HubTrait for Hub {
     fn deva_to_iso(&self, input: &str) -> Result<HubOutput, HubError> {
-        let mut result = String::new();
-        // Don't normalize - handle both composed and decomposed forms
-        let chars: Vec<char> = input.chars().collect();
-        let mut i = 0;
-
-        while i < chars.len() {
-            let current_char = chars[i];
+        // Pre-calculate capacity: Devanagari -> ISO typically expands due to romanization
+        let estimated_capacity = input.len() * 2;
+        let mut result = String::with_capacity(estimated_capacity);
+        
+        // Use char_indices for efficient iteration without Vec allocation
+        let mut chars = input.char_indices().peekable();
+        
+        while let Some((_byte_pos, current_char)) = chars.next() {
             
             if current_char.is_whitespace() {
                 result.push(current_char);
-                i += 1;
                 continue;
             }
             
             // Handle ASCII punctuation except for characters that might be in our mapping
             if current_char.is_ascii_punctuation() && current_char != '\'' {
                 result.push(current_char);
-                i += 1;
                 continue;
             }
 
             // Check for consonant + nukta combinations (decomposed form)
             let mut effective_char = current_char;
-            let mut char_consumed = 1;
+            let mut skip_next = false;
             
-            if i + 1 < chars.len() && chars[i + 1] == '़' {
-                // Try to find the precomposed nukta character
-                let nukta_mapping = match current_char {
-                    'क' => Some('\u{0958}'), // क़
-                    'ख' => Some('\u{0959}'), // ख़
-                    'ग' => Some('\u{095A}'), // ग़
-                    'ज' => Some('\u{095B}'), // ज़
-                    'ड' => Some('\u{095C}'), // ड़
-                    'ढ' => Some('\u{095D}'), // ढ़
-                    'फ' => Some('\u{095E}'), // फ़
-                    'य' => Some('\u{095F}'), // य़
-                    _ => None,
-                };
-                
-                if let Some(nukta_char) = nukta_mapping {
-                    effective_char = nukta_char;
-                    char_consumed = 2; // consume both base char and nukta
+            if let Some((_, next_char)) = chars.peek() {
+                if *next_char == '़' {
+                    // Try to find the precomposed nukta character
+                    let nukta_mapping = match current_char {
+                        'क' => Some('\u{0958}'), // क़
+                        'ख' => Some('\u{0959}'), // ख़
+                        'ग' => Some('\u{095A}'), // ग़
+                        'ज' => Some('\u{095B}'), // ज़
+                        'ड' => Some('\u{095C}'), // ड़
+                        'ढ' => Some('\u{095D}'), // ढ़
+                        'फ' => Some('\u{095E}'), // फ़
+                        'य' => Some('\u{095F}'), // य़
+                        _ => None,
+                    };
+                    
+                    if let Some(nukta_char) = nukta_mapping {
+                        effective_char = nukta_char;
+                        skip_next = true; // consume nukta on next iteration
+                    }
                 }
             }
 
+            // Skip nukta if we just processed it
+            if skip_next {
+                chars.next(); // consume the nukta character
+            }
+            
             // Check if this is a consonant followed by virama or vowel sign
             if let Some(&iso_str) = self.deva_to_iso_map.get(&effective_char) {
-                // Check next character (considering nukta consumption)
-                if i + char_consumed < chars.len() {
-                    let next_char = chars[i + char_consumed];
-                    
-                    if next_char == '्' {
+                // Peek at next character to determine processing
+                if let Some((_, next_char)) = chars.peek() {
+                    if *next_char == '्' {
                         // Consonant + virama: remove inherent 'a'
                         if iso_str.ends_with('a') && iso_str.len() > 1 {
                             result.push_str(&iso_str[..iso_str.len()-1]);
                         } else {
                             result.push_str(iso_str);
                         }
-                        i += char_consumed + 1; // Skip consonant(+nukta) and virama
+                        chars.next(); // consume the virama
                         continue;
-                    } else if let Some(&vowel_sign) = self.deva_to_iso_map.get(&next_char) {
+                    } else if let Some(&vowel_sign) = self.deva_to_iso_map.get(next_char) {
                         // Check if next character is a vowel sign (mātrā)
-                        let is_vowel_sign = matches!(next_char, 'ा' | 'ि' | 'ी' | 'ु' | 'ू' | 'ृ' | 'ॄ' | 'ॢ' | 'ॣ' | 'े' | 'ै' | 'ो' | 'ौ');
+                        let is_vowel_sign = matches!(*next_char, 'ा' | 'ि' | 'ी' | 'ु' | 'ू' | 'ृ' | 'ॄ' | 'ॢ' | 'ॣ' | 'े' | 'ै' | 'ो' | 'ौ');
                         
                         if is_vowel_sign && iso_str.ends_with('a') && iso_str.len() > 1 {
                             // Consonant + vowel sign: replace inherent 'a' with the vowel
                             result.push_str(&iso_str[..iso_str.len()-1]);
                             result.push_str(vowel_sign);
-                            i += char_consumed + 1; // Skip consonant(+nukta) and vowel sign
+                            chars.next(); // consume the vowel sign
                             continue;
                         }
                     }
@@ -296,11 +300,9 @@ impl HubTrait for Hub {
                 
                 // Regular character or no special following character
                 result.push_str(iso_str);
-                i += char_consumed;
             } else {
                 // Unknown character - pass through gracefully
                 result.push(current_char);
-                i += char_consumed;
             }
         }
 
@@ -308,10 +310,13 @@ impl HubTrait for Hub {
     }
 
     fn iso_to_deva(&self, input: &str) -> Result<HubOutput, HubError> {
-        let mut result = String::new();
+        // Pre-calculate capacity: ISO -> Devanagari typically contracts due to combining
+        let estimated_capacity = input.len().max(32); // Minimum reasonable size
+        let mut result = String::with_capacity(estimated_capacity);
+        
         // Normalize ISO input to composed form (NFC) to handle combining characters
         let normalized: String = input.nfc().collect();
-        let chars: Vec<char> = normalized.chars().collect();
+        let chars: Vec<char> = normalized.chars().collect(); // Keep Vec for complex lookahead logic
         let mut i = 0;
 
         while i < chars.len() {

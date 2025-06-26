@@ -343,8 +343,68 @@ Adding new scripts requires only:
 - Context-aware conversion rules
 - Statistical transliteration models
 
-### 3. Performance Improvements
+### 3. Performance Strategy & Competitive Position
 
-- SIMD optimizations for character processing
-- Parallel processing for large texts
-- Memory-mapped file processing
+#### Performance Philosophy
+
+Shlesha prioritizes **extensibility, maintainability, and correctness** over raw performance. While specialized libraries like Vidyut achieve 18.9x faster performance on average, Shlesha's hub-and-spoke architecture provides unique benefits:
+
+- **Runtime Extensibility**: Add new scripts without recompilation via schema loading
+- **Architectural Consistency**: Centralized linguistic rules ensure uniform behavior
+- **Maintainability**: Clean separation of concerns enables rapid development
+- **Future-proofing**: Easy to adapt to new transliteration requirements
+
+#### Current Performance Analysis
+
+**Competitive Positioning vs Vidyut:**
+- **Roman → Devanagari**: 75x performance gap (biggest optimization target)
+- **Roman ↔ Roman**: 44x performance gap
+- **Devanagari → Roman**: 27x performance gap  
+- **Indic ↔ Indic**: 3.3x performance gap (most competitive area)
+
+**Root Causes of Performance Gap:**
+1. **Hub Architecture Overhead**: Multi-step routing (Roman → ISO → Devanagari → Target)
+2. **Generality Tax**: Generic framework vs specialized implementation
+3. **Safety/Validation Layers**: Additional error handling and validation
+4. **Memory Allocation Patterns**: String operations and character processing
+
+#### Pre-computation System Decision
+
+**Removed after analysis showing:**
+- **Minimal gains**: Only 1.5-6.5% performance improvement
+- **High complexity**: 1,500+ lines of build system and generated code
+- **Maintenance burden**: Every hub change requires regenerating mappings
+- **Better alternatives**: Simple optimizations can achieve similar benefits
+
+The pre-computation system was technically impressive but over-engineered for its modest benefits.
+
+#### Optimization Roadmap
+
+**Phase 1: Memory & Allocation Optimizations** (Completed)
+- ✅ Iterator-based character processing (eliminated Vec allocations)
+- ✅ String capacity pre-calculation (reduced reallocation overhead)
+- ✅ HashMap converter lookup cache (O(1) vs O(n) script resolution)
+
+**Phase 2: Hot Path Optimizations** (High Impact)
+- Perfect hash tables for small, fixed mappings
+- SIMD-based string processing for ASCII-heavy text
+- Stack allocation for small string operations
+- Optimized longest-match algorithms for multi-character sequences
+
+**Phase 3: Algorithmic Improvements** (Medium Impact)
+- Trie-based sequence matching for complex patterns
+- Batch character processing to reduce function call overhead
+- Memory layout optimization for cache efficiency
+- Specialized fast paths for common conversion patterns
+
+**Performance Goals:**
+- **Short-term**: Close gap from 18.9x to ~10x through simple optimizations
+- **Medium-term**: Achieve competitive performance on Indic ↔ Indic conversions
+- **Long-term**: Maintain architectural advantages while minimizing performance tax
+
+#### Future Performance Enhancements
+
+- **SIMD optimizations** for character processing
+- **Parallel processing** for large texts
+- **Memory-mapped file processing** for bulk operations
+- **GPU acceleration** for batch processing scenarios

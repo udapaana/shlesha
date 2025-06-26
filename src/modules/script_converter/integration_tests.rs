@@ -503,7 +503,7 @@ mod integration_tests {
         registry.register_converter(Box::new(SLP1Converter::new()));
         
         // Test supported scripts
-        let supported = registry.supported_scripts();
+        let supported = registry.list_supported_scripts();
         assert!(supported.contains(&"iast"));
         assert!(supported.contains(&"itrans"));
         assert!(supported.contains(&"slp1"));

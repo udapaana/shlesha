@@ -1,4 +1,5 @@
 use thiserror::Error;
+use std::collections::HashMap;
 use crate::modules::hub::{HubInput, HubError};
 use crate::modules::core::unknown_handler::{TransliterationResult, TransliterationMetadata};
 
@@ -101,6 +102,8 @@ pub trait ScriptConverter {
 pub struct ScriptConverterRegistry {
     converters: Vec<Box<dyn ScriptConverter>>,
     precomputed: precomputed::PrecomputedRegistry,
+    /// Cache mapping script names to converter indices for O(1) lookup
+    script_to_converter: HashMap<String, usize>,
 }
 
 impl ScriptConverterRegistry {
@@ -108,11 +111,19 @@ impl ScriptConverterRegistry {
         Self {
             converters: Vec::new(),
             precomputed: precomputed::PrecomputedRegistry::new(),
+            script_to_converter: HashMap::new(),
         }
     }
     
     /// Register a script converter
     pub fn register_converter(&mut self, converter: Box<dyn ScriptConverter>) {
+        let converter_index = self.converters.len();
+        
+        // Cache script mappings for fast lookup
+        for script in converter.supported_scripts() {
+            self.script_to_converter.insert(script.to_string(), converter_index);
+        }
+        
         self.converters.push(converter);
     }
     
@@ -136,11 +147,9 @@ impl ScriptConverterRegistry {
         // Check if we have a precomputed direct path to avoid hub entirely
         // This is handled in the main transliterate method, so proceed with hub conversion
         
-        // First try hardcoded converters
-        for converter in &self.converters {
-            if converter.supports_script(script) {
-                return converter.to_hub(script, input);
-            }
+        // Fast lookup using HashMap cache instead of linear search
+        if let Some(&converter_index) = self.script_to_converter.get(script) {
+            return self.converters[converter_index].to_hub(script, input);
         }
         
         // Fallback to schema-based converter for runtime-loaded scripts
@@ -164,11 +173,9 @@ impl ScriptConverterRegistry {
     
     /// Convert text from hub format to any supported script with optional schema registry
     pub fn from_hub_with_schema_registry(&self, script: &str, hub_input: &HubInput, schema_registry: Option<&crate::modules::registry::SchemaRegistry>) -> Result<String, ConverterError> {
-        // First try hardcoded converters
-        for converter in &self.converters {
-            if converter.supports_script(script) {
-                return converter.from_hub(script, hub_input);
-            }
+        // Fast lookup using HashMap cache instead of linear search
+        if let Some(&converter_index) = self.script_to_converter.get(script) {
+            return self.converters[converter_index].from_hub(script, hub_input);
         }
         
         // Fallback to schema-based converter for runtime-loaded scripts
@@ -187,11 +194,9 @@ impl ScriptConverterRegistry {
     
     /// Convert text from any supported script to hub format with metadata collection
     pub fn to_hub_with_metadata(&self, script: &str, input: &str) -> Result<(HubInput, TransliterationMetadata), ConverterError> {
-        // First try hardcoded converters
-        for converter in &self.converters {
-            if converter.supports_script(script) {
-                return converter.to_hub_with_metadata(script, input);
-            }
+        // Fast lookup using HashMap cache instead of linear search
+        if let Some(&converter_index) = self.script_to_converter.get(script) {
+            return self.converters[converter_index].to_hub_with_metadata(script, input);
         }
         
         // The metadata methods would also need schema registry support
@@ -205,11 +210,9 @@ impl ScriptConverterRegistry {
     
     /// Convert text from hub format to any supported script with metadata collection
     pub fn from_hub_with_metadata(&self, script: &str, hub_input: &HubInput) -> Result<TransliterationResult, ConverterError> {
-        // First try hardcoded converters
-        for converter in &self.converters {
-            if converter.supports_script(script) {
-                return converter.from_hub_with_metadata(script, hub_input);
-            }
+        // Fast lookup using HashMap cache instead of linear search
+        if let Some(&converter_index) = self.script_to_converter.get(script) {
+            return self.converters[converter_index].from_hub_with_metadata(script, hub_input);
         }
         
         // The metadata methods would also need schema registry support
@@ -221,14 +224,15 @@ impl ScriptConverterRegistry {
         })
     }
     
+    /// Check if a script is supported by any converter
+    pub fn supports_script(&self, script: &str) -> bool {
+        self.script_to_converter.contains_key(script)
+    }
+    
     /// Get all supported scripts across all converters
-    pub fn supported_scripts(&self) -> Vec<&str> {
-        let mut scripts = Vec::new();
-        for converter in &self.converters {
-            scripts.extend(converter.supported_scripts());
-        }
+    pub fn list_supported_scripts(&self) -> Vec<&str> {
+        let mut scripts: Vec<&str> = self.script_to_converter.keys().map(|s| s.as_str()).collect();
         scripts.sort();
-        scripts.dedup();
         scripts
     }
 }
@@ -269,16 +273,6 @@ impl ScriptConverterRegistry {
         registry
     }
     
-    /// Get all supported script names across all registered converters
-    pub fn list_supported_scripts(&self) -> Vec<&str> {
-        self.supported_scripts()
-    }
-    
-    /// Check if a script is supported by any registered converter
-    pub fn supports_script(&self, script: &str) -> bool {
-        self.supported_scripts().contains(&script)
-    }
-    
     /// Convert text from any supported script to hub format
     /// Returns an error if the script is not supported
     pub fn convert_to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
@@ -287,10 +281,9 @@ impl ScriptConverterRegistry {
     
     /// Get information about whether a script has implicit vowels
     pub fn script_has_implicit_vowels(&self, script: &str) -> Result<bool, ConverterError> {
-        for converter in &self.converters {
-            if converter.supports_script(script) {
-                return Ok(converter.script_has_implicit_a(script));
-            }
+        // Fast lookup using HashMap cache instead of linear search
+        if let Some(&converter_index) = self.script_to_converter.get(script) {
+            return Ok(self.converters[converter_index].script_has_implicit_a(script));
         }
         
         Err(ConverterError::ConversionFailed {
