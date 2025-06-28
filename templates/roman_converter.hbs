@@ -1,8 +1,8 @@
-{{!-- Template for Optimized Roman script converters using OptimizedRomanScriptProcessor --}}
+{{!-- Template for Optimized Roman script converters using RomanScriptProcessor with FxHashMap --}}
 
-// Pre-computed static mappings
-static {{uppercase script_name}}_TO_ISO_MAP: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(|| {
-    let mut map = HashMap::new();
+// Pre-computed static mappings with FxHashMap for performance
+static {{uppercase script_name}}_TO_ISO_MAP: Lazy<FxHashMap<&'static str, &'static str>> = Lazy::new(|| {
+    let mut map = FxHashMap::default();
     
 {{#each mappings}}
     map.insert("{{escape @key}}", "{{escape this}}");
@@ -11,8 +11,8 @@ static {{uppercase script_name}}_TO_ISO_MAP: Lazy<HashMap<&'static str, &'static
     map
 });
 
-static ISO_TO_{{uppercase script_name}}_MAP: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(|| {
-    let mut map = HashMap::new();
+static ISO_TO_{{uppercase script_name}}_MAP: Lazy<FxHashMap<&'static str, &'static str>> = Lazy::new(|| {
+    let mut map = FxHashMap::default();
     
     // Build reverse mapping with explicit precedence for multi-character sequences
     // Handle longer sequences first to avoid conflicts
@@ -30,10 +30,10 @@ static ISO_TO_{{uppercase script_name}}_MAP: Lazy<HashMap<&'static str, &'static
     map
 });
 
-/// Optimized {{script_name}} converter with eliminated allocations
+/// Optimized {{script_name}} converter with FxHashMap for performance
 pub struct {{struct_name}} {
-    {{lowercase script_name}}_to_iso_map: &'static HashMap<&'static str, &'static str>,
-    iso_to_{{lowercase script_name}}_map: &'static HashMap<&'static str, &'static str>,
+    {{lowercase script_name}}_to_iso_map: &'static FxHashMap<&'static str, &'static str>,
+    iso_to_{{lowercase script_name}}_map: &'static FxHashMap<&'static str, &'static str>,
 }
 
 impl {{struct_name}} {
@@ -45,23 +45,13 @@ impl {{struct_name}} {
     }
     
     /// Convert {{script_name}} to ISO-15919 using optimized processor
-    pub fn {{lowercase script_name}}_to_iso_optimized(&self, input: &str) -> Result<String, ConverterError> {
-        OptimizedRomanScriptProcessor::process_auto(input, self.{{lowercase script_name}}_to_iso_map)
+    pub fn {{lowercase script_name}}_to_iso(&self, input: &str) -> Result<String, ConverterError> {
+        RomanScriptProcessor::process_with_fx_hashmap(input, self.{{lowercase script_name}}_to_iso_map)
     }
     
     /// Convert ISO-15919 to {{script_name}} using optimized processor
-    pub fn iso_to_{{lowercase script_name}}_optimized(&self, input: &str) -> Result<String, ConverterError> {
-        OptimizedRomanScriptProcessor::process_auto(input, self.iso_to_{{lowercase script_name}}_map)
-    }
-    
-    /// Compatibility method: Convert {{script_name}} to ISO-15919 (same as optimized version)
-    pub fn {{lowercase script_name}}_to_iso(&self, input: &str) -> Result<String, ConverterError> {
-        self.{{lowercase script_name}}_to_iso_optimized(input)
-    }
-    
-    /// Compatibility method: Convert ISO-15919 to {{script_name}} (same as optimized version)
     pub fn iso_to_{{lowercase script_name}}(&self, input: &str) -> Result<String, ConverterError> {
-        self.iso_to_{{lowercase script_name}}_optimized(input)
+        RomanScriptProcessor::process_with_fx_hashmap(input, self.iso_to_{{lowercase script_name}}_map)
     }
     
     {{#each aliases}}
@@ -81,7 +71,7 @@ impl ScriptConverter for {{struct_name}} {
             });
         }
 
-        let iso_text = self.{{lowercase script_name}}_to_iso_optimized(input)?;
+        let iso_text = self.{{lowercase script_name}}_to_iso(input)?;
         Ok(HubInput::Iso(iso_text))
     }
 
@@ -94,7 +84,7 @@ impl ScriptConverter for {{struct_name}} {
         }
 
         match hub_input {
-            HubInput::Iso(iso_text) => self.iso_to_{{lowercase script_name}}_optimized(iso_text),
+            HubInput::Iso(iso_text) => self.iso_to_{{lowercase script_name}}(iso_text),
             HubInput::Devanagari(_) => Err(ConverterError::ConversionFailed {
                 script: script.to_string(),
                 reason: "{{struct_name}} converter expects ISO input, got Devanagari".to_string(),

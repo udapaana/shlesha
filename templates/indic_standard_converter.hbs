@@ -1,22 +1,22 @@
-{{!-- Template for Optimized Indic script converters using HashMap<char, char> for performance --}}
+{{!-- Template for Optimized Indic script converters using FxHashMap<char, char> for performance --}}
 
-/// Optimized {{script_name}} converter with pre-computed character mappings
+/// Optimized {{script_name}} converter with pre-computed character mappings using FxHashMap
 pub struct {{struct_name}} {
-    {{lowercase script_name}}_to_deva_map: HashMap<char, char>,
-    deva_to_{{lowercase script_name}}_map: HashMap<char, char>,
+    {{lowercase script_name}}_to_deva_map: FxHashMap<char, char>,
+    deva_to_{{lowercase script_name}}_map: FxHashMap<char, char>,
 }
 
 impl {{struct_name}} {
     pub fn new() -> Self {
-        let mut {{lowercase script_name}}_to_deva = HashMap::new();
+        let mut {{lowercase script_name}}_to_deva = FxHashMap::default();
         
-        // Character mappings for performance (HashMap<char, char>)
+        // Character mappings for performance (FxHashMap<char, char>)
 {{#each char_mappings}}
         {{lowercase ../script_name}}_to_deva.insert('{{@key}}', '{{this}}');
 {{/each}}
         
         // Generate reverse mapping
-        let mut deva_to_{{lowercase script_name}} = HashMap::new();
+        let mut deva_to_{{lowercase script_name}} = FxHashMap::default();
         for (&{{lowercase script_name}}_char, &deva_char) in &{{lowercase script_name}}_to_deva {
             deva_to_{{lowercase script_name}}.insert(deva_char, {{lowercase script_name}}_char);
         }
@@ -29,7 +29,7 @@ impl {{struct_name}} {
     
     /// Convert {{script_name}} to Devanagari using optimized character mapping
     pub fn {{lowercase script_name}}_to_devanagari(&self, input: &str) -> Result<String, ConverterError> {
-        let mut result = String::new();
+        let mut result = String::with_capacity(input.len());
         
         for ch in input.chars() {
             if ch.is_whitespace() || ch.is_ascii_punctuation() {
@@ -46,7 +46,7 @@ impl {{struct_name}} {
     
     /// Convert Devanagari to {{script_name}} using optimized character mapping
     pub fn devanagari_to_{{lowercase script_name}}(&self, input: &str) -> Result<String, ConverterError> {
-        let mut result = String::new();
+        let mut result = String::with_capacity(input.len());
         
         for ch in input.chars() {
             if ch.is_whitespace() || ch.is_ascii_punctuation() {

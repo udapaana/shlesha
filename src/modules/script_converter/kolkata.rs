@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use super::{ScriptConverter, ConverterError};
-use super::processors_optimized::OptimizedRomanScriptProcessor;
+use super::processors::RomanScriptProcessor;
 use crate::modules::hub::HubInput;
 
 /// Kolkata (Calcutta) romanization scheme converter
@@ -113,14 +113,14 @@ impl KolkataConverter {
         }
     }
     
-    /// Convert Kolkata romanization to ISO-15919 (optimized)
-    pub fn kolkata_to_iso_optimized(&self, input: &str) -> Result<String, ConverterError> {
-        OptimizedRomanScriptProcessor::process_auto(input, &self.kolkata_to_iso_map)
+    /// Convert Kolkata romanization to ISO-15919
+    pub fn kolkata_to_iso(&self, input: &str) -> Result<String, ConverterError> {
+        RomanScriptProcessor::process(input, &self.kolkata_to_iso_map)
     }
     
-    /// Convert ISO-15919 to Kolkata romanization (optimized)
-    pub fn iso_to_kolkata_optimized(&self, input: &str) -> Result<String, ConverterError> {
-        OptimizedRomanScriptProcessor::process_auto(input, &self.iso_to_kolkata_map)
+    /// Convert ISO-15919 to Kolkata romanization
+    pub fn iso_to_kolkata(&self, input: &str) -> Result<String, ConverterError> {
+        RomanScriptProcessor::process(input, &self.iso_to_kolkata_map)
     }
 }
 
@@ -133,7 +133,7 @@ impl ScriptConverter for KolkataConverter {
             });
         }
         
-        let iso_text = self.kolkata_to_iso_optimized(input)
+        let iso_text = self.kolkata_to_iso(input)
             .map_err(|e| ConverterError::ConversionFailed {
                 script: script.to_string(),
                 reason: format!("Kolkata to ISO conversion failed: {}", e),
@@ -151,7 +151,7 @@ impl ScriptConverter for KolkataConverter {
         }
         
         match hub_input {
-            HubInput::Iso(iso_text) => self.iso_to_kolkata_optimized(iso_text),
+            HubInput::Iso(iso_text) => self.iso_to_kolkata(iso_text),
             HubInput::Devanagari(_) => Err(ConverterError::ConversionFailed {
                 script: script.to_string(),
                 reason: "Kolkata converter expects ISO input, got Devanagari".to_string(),
@@ -183,28 +183,28 @@ mod tests {
     fn test_kolkata_vowels() {
         let converter = KolkataConverter::new();
         
-        assert_eq!(converter.kolkata_to_iso_optimized("a").unwrap(), "a");
-        assert_eq!(converter.kolkata_to_iso_optimized("ā").unwrap(), "ā");
-        assert_eq!(converter.kolkata_to_iso_optimized("ṛ").unwrap(), "r̥");
-        assert_eq!(converter.kolkata_to_iso_optimized("ṝ").unwrap(), "r̥̄");
+        assert_eq!(converter.kolkata_to_iso("a").unwrap(), "a");
+        assert_eq!(converter.kolkata_to_iso("ā").unwrap(), "ā");
+        assert_eq!(converter.kolkata_to_iso("ṛ").unwrap(), "r̥");
+        assert_eq!(converter.kolkata_to_iso("ṝ").unwrap(), "r̥̄");
     }
     
     #[test]
     fn test_kolkata_consonants() {
         let converter = KolkataConverter::new();
         
-        assert_eq!(converter.kolkata_to_iso_optimized("k").unwrap(), "k");
-        assert_eq!(converter.kolkata_to_iso_optimized("kh").unwrap(), "kh");
-        assert_eq!(converter.kolkata_to_iso_optimized("ṭ").unwrap(), "ṭ");
-        assert_eq!(converter.kolkata_to_iso_optimized("ṣ").unwrap(), "ṣ");
+        assert_eq!(converter.kolkata_to_iso("k").unwrap(), "k");
+        assert_eq!(converter.kolkata_to_iso("kh").unwrap(), "kh");
+        assert_eq!(converter.kolkata_to_iso("ṭ").unwrap(), "ṭ");
+        assert_eq!(converter.kolkata_to_iso("ṣ").unwrap(), "ṣ");
     }
     
     #[test]
     fn test_kolkata_compounds() {
         let converter = KolkataConverter::new();
         
-        assert_eq!(converter.kolkata_to_iso_optimized("kṣ").unwrap(), "kṣ");
-        assert_eq!(converter.kolkata_to_iso_optimized("jñ").unwrap(), "jñ");
+        assert_eq!(converter.kolkata_to_iso("kṣ").unwrap(), "kṣ");
+        assert_eq!(converter.kolkata_to_iso("jñ").unwrap(), "jñ");
     }
     
     #[test]
@@ -231,8 +231,8 @@ mod tests {
         
         // Test bidirectional conversion
         let original = "dharmaṣāstra";
-        let to_iso = converter.kolkata_to_iso_optimized(original).unwrap();
-        let back_to_kolkata = converter.iso_to_kolkata_optimized(&to_iso).unwrap();
+        let to_iso = converter.kolkata_to_iso(original).unwrap();
+        let back_to_kolkata = converter.iso_to_kolkata(&to_iso).unwrap();
         assert_eq!(original, back_to_kolkata);
     }
 }
