@@ -1,0 +1,114 @@
+metadata:
+  name: "odia"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Odia (ଓଡ଼ିଆ) script used for Odia language"
+
+mappings:
+  vowels:
+    "ଅ": "अ"    # a
+    "ଆ": "आ"    # ā
+    "ଇ": "इ"    # i
+    "ଈ": "ई"    # ī
+    "ଉ": "उ"    # u
+    "ଊ": "ऊ"    # ū
+    "ଋ": "ऋ"    # r̥
+    "ୠ": "ॠ"    # r̥̄
+    "ଌ": "ऌ"    # l̥
+    "ୡ": "ॡ"    # l̥̄
+    "ଏ": "ए"    # e
+    "ଐ": "ऐ"    # ai
+    "ଓ": "ओ"    # o
+    "ଔ": "औ"    # au
+
+  vowel_signs:
+    "ା": "ा"    # ā
+    "ି": "ि"    # i
+    "ୀ": "ी"    # ī
+    "ୁ": "ु"    # u
+    "ୂ": "ू"    # ū
+    "ୃ": "ृ"    # r̥
+    "ୄ": "ॄ"    # r̥̄
+    "େ": "े"    # e
+    "ୈ": "ै"    # ai
+    "ୋ": "ो"    # o
+    "ୌ": "ौ"    # au
+
+  consonants:
+    # Velar
+    "କ": "क"    # ka
+    "ଖ": "ख"    # kha
+    "ଗ": "ग"    # ga
+    "ଘ": "घ"    # gha
+    "ଙ": "ङ"    # ṅa
+    
+    # Palatal
+    "ଚ": "च"    # ca
+    "ଛ": "छ"    # cha
+    "ଜ": "ज"    # ja
+    "ଝ": "झ"    # jha
+    "ଞ": "ञ"    # ña
+    
+    # Retroflex
+    "ଟ": "ट"    # ṭa
+    "ଠ": "ठ"    # ṭha
+    "ଡ": "ड"    # ḍa
+    "ଢ": "ढ"    # ḍha
+    "ଣ": "ण"    # ṇa
+    
+    # Dental
+    "ତ": "त"    # ta
+    "ଥ": "थ"    # tha
+    "ଦ": "द"    # da
+    "ଧ": "ध"    # dha
+    "ନ": "न"    # na
+    
+    # Labial
+    "ପ": "प"    # pa
+    "ଫ": "फ"    # pha
+    "ବ": "ब"    # ba
+    "ଭ": "भ"    # bha
+    "ମ": "म"    # ma
+    
+    # Semivowels and liquids
+    "ଯ": "य"    # ya
+    "ର": "र"    # ra
+    "ଲ": "ल"    # la
+    "ଳ": "ळ"    # ḷa (retroflex la)
+    "ୱ": "व"    # va/wa
+    
+    # Sibilants and aspirate
+    "ଶ": "श"    # śa
+    "ଷ": "ष"    # ṣa
+    "ସ": "स"    # sa
+    "ହ": "ह"    # ha
+
+  marks:
+    "ଂ": "ं"    # anusvara
+    "ଃ": "ः"    # visarga
+    "ଁ": "ँ"    # candrabindu
+    "଼": "़"    # nukta
+    "୍": "्"    # virama/halanta
+    "ଽ": "ऽ"    # avagraha
+
+  special:
+    # Nukta forms
+    "ଡ଼": "ड़"    # ṛa
+    "ଢ଼": "ढ़"    # ṛha
+    "ୟ": "य़"    # ẏa (additional ya)
+
+  digits:
+    "୦": "०"    # 0
+    "୧": "१"    # 1
+    "୨": "२"    # 2
+    "୩": "३"    # 3
+    "୪": "४"    # 4
+    "୫": "५"    # 5
+    "୬": "६"    # 6
+    "୭": "७"    # 7
+    "୮": "८"    # 8
+    "୯": "९"    # 9
+
+codegen:
+  mapping_type: "char_hashmap"
+  processor_type: "indic_standard"

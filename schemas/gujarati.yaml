@@ -1,17 +1,8 @@
 # Gujarati Script Schema
-# Gujarati (ગુજરાતી) is an Indic script used primarily for the Gujarati language
-
-name: "gujarati"
-version: "1.0.0"
-script_type: "brahmic"
-description: "Gujarati script mapping to Devanagari/ISO-15919"
-author: "Shlesha Project"
-
-# Metadata
 metadata:
-  has_implicit_a: true  # Gujarati consonants have inherent 'a' vowel
-  direction: "ltr"
-  case_sensitive: true
+  name: "gujarati"
+  script_type: "brahmic"
+  has_implicit_a: true
 
 # Character mappings (Gujarati to Devanagari equivalent)
 mappings:
@@ -106,11 +97,6 @@ mappings:
     "૮": "८"    # 8
     "૯": "९"    # 9
 
-# Validation rules
-validation:
-  patterns:
-    vowel: "[અઆઇઈઉઊઋૠઍએઐઑઓઔ]"
-    consonant: "[કખગઘઙચછજઝઞટઠડઢણતથદધનપફબભમયરલવશષસહળ]"
-    vowel_sign: "[ાિીુૂૃૄૅેૈૉોૌ]"
-    mark: "[ંઃ્ઽૐ]"
-    digit: "[૦-૯]"
+codegen:
+  mapping_type: "char_hashmap"
+  processor_type: "indic_standard"

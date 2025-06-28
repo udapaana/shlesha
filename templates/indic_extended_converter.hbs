@@ -1,0 +1,109 @@
+{{!-- Template for Extended Indic script converters using HashMap<String, String> for complex mappings --}}
+
+/// Extended {{script_name}} converter with superscript and complex mapping support
+pub struct {{struct_name}} {
+    {{lowercase script_name}}_to_deva_map: HashMap<String, String>,
+    deva_to_{{lowercase script_name}}_map: HashMap<String, String>,
+}
+
+impl {{struct_name}} {
+    pub fn new() -> Self {
+        let mut {{lowercase script_name}}_to_deva = HashMap::new();
+        
+        // String-based mappings for complex characters (including superscripts)
+{{#each string_mappings}}
+        {{lowercase ../script_name}}_to_deva.insert("{{escape @key}}".to_string(), "{{escape this}}".to_string());
+{{/each}}
+        
+        // Generate reverse mapping
+        let mut deva_to_{{lowercase script_name}} = HashMap::new();
+        for ({{lowercase script_name}}_str, deva_str) in &{{lowercase script_name}}_to_deva {
+            deva_to_{{lowercase script_name}}.insert(deva_str.clone(), {{lowercase script_name}}_str.clone());
+        }
+        
+        Self {
+            {{lowercase script_name}}_to_deva_map: {{lowercase script_name}}_to_deva,
+            deva_to_{{lowercase script_name}}_map: deva_to_{{lowercase script_name}},
+        }
+    }
+    
+    /// Convert {{script_name}} to Devanagari with superscript support
+    pub fn {{lowercase script_name}}_to_devanagari(&self, input: &str) -> Result<String, ConverterError> {
+        let mut result = String::new();
+        let mut chars = input.chars().peekable();
+        
+        while let Some(ch) = chars.next() {
+            if ch.is_whitespace() || ch.is_ascii_punctuation() {
+                result.push(ch);
+                continue;
+            }
+            
+            // Check for superscript combinations (base + superscript)
+            if let Some(&next_ch) = chars.peek() {
+                if is_superscript(next_ch) {
+                    let combined = format!("{}{}", ch, next_ch);
+                    if let Some(mapped) = self.{{lowercase script_name}}_to_deva_map.get(&combined) {
+                        result.push_str(mapped);
+                        chars.next(); // consume the superscript
+                        continue;
+                    }
+                }
+            }
+            
+            // Single character lookup
+            let single_char = ch.to_string();
+            if let Some(mapped) = self.{{lowercase script_name}}_to_deva_map.get(&single_char) {
+                result.push_str(mapped);
+            } else {
+                result.push(ch);
+            }
+        }
+        
+        Ok(result)
+    }
+    
+    /// Compatibility method alias for optimized version
+    pub fn {{lowercase script_name}}_to_deva(&self, input: &str) -> Result<String, ConverterError> {
+        self.{{lowercase script_name}}_to_devanagari(input)
+    }
+}
+
+fn is_superscript(ch: char) -> bool {
+    matches!(ch, '²' | '³' | '⁴' | '⁵' | '⁶' | '⁷' | '⁸' | '⁹')
+}
+
+impl ScriptConverter for {{struct_name}} {
+    fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
+        if script != "{{script_name}}" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "{{struct_name}} converter only supports '{{script_name}}' script".to_string(),
+            });
+        }
+        
+        let deva_text = self.{{lowercase script_name}}_to_devanagari(input)?;
+        Ok(HubInput::Devanagari(deva_text))
+    }
+    
+    fn from_hub(&self, _script: &str, _hub_input: &HubInput) -> Result<String, ConverterError> {
+        // Extended converters typically don't support reverse conversion due to ambiguity
+        Err(ConverterError::ConversionFailed {
+            script: "{{script_name}}".to_string(),
+            reason: "Reverse conversion not supported for extended script".to_string(),
+        })
+    }
+    
+    fn supported_scripts(&self) -> Vec<&'static str> {
+        vec!["{{script_name}}"]
+    }
+    
+    fn script_has_implicit_a(&self, _script: &str) -> bool {
+        {{has_implicit_a}}
+    }
+}
+
+impl Default for {{struct_name}} {
+    fn default() -> Self {
+        Self::new()
+    }
+}

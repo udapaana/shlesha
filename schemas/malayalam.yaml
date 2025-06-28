@@ -1,0 +1,122 @@
+metadata:
+  name: "malayalam"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Malayalam (മലയാളം) script used for Malayalam language"
+
+mappings:
+  vowels:
+    "അ": "अ"    # a
+    "ആ": "आ"    # ā
+    "ഇ": "इ"    # i
+    "ഈ": "ई"    # ī
+    "ഉ": "उ"    # u
+    "ഊ": "ऊ"    # ū
+    "ഋ": "ऋ"    # r̥
+    "ൠ": "ॠ"    # r̥̄
+    "ഌ": "ऌ"    # l̥
+    "ൡ": "ॡ"    # l̥̄
+    "എ": "ए"    # e
+    "ഏ": "ए"    # ē (maps to same)
+    "ഐ": "ऐ"    # ai
+    "ഒ": "ओ"    # o
+    "ഓ": "ओ"    # ō (maps to same)
+    "ഔ": "औ"    # au
+
+  vowel_signs:
+    "ാ": "ा"    # ā
+    "ി": "ि"    # i
+    "ീ": "ी"    # ī
+    "ു": "ु"    # u
+    "ൂ": "ू"    # ū
+    "ൃ": "ृ"    # r̥
+    "ൄ": "ॄ"    # r̥̄
+    "െ": "े"    # e
+    "േ": "े"    # ē (maps to same)
+    "ൈ": "ै"    # ai
+    "ൊ": "ो"    # o
+    "ോ": "ो"    # ō (maps to same)
+    "ൌ": "ौ"    # au
+
+  consonants:
+    # Velar
+    "ക": "क"    # ka
+    "ഖ": "ख"    # kha
+    "ഗ": "ग"    # ga
+    "ഘ": "घ"    # gha
+    "ങ": "ङ"    # ṅa
+    
+    # Palatal
+    "ച": "च"    # ca
+    "ഛ": "छ"    # cha
+    "ജ": "ज"    # ja
+    "ഝ": "झ"    # jha
+    "ഞ": "ञ"    # ña
+    
+    # Retroflex
+    "ട": "ट"    # ṭa
+    "ഠ": "ठ"    # ṭha
+    "ഡ": "ड"    # ḍa
+    "ഢ": "ढ"    # ḍha
+    "ണ": "ण"    # ṇa
+    
+    # Dental
+    "ത": "त"    # ta
+    "ഥ": "थ"    # tha
+    "ദ": "द"    # da
+    "ധ": "ध"    # dha
+    "ന": "न"    # na
+    
+    # Labial
+    "പ": "प"    # pa
+    "ഫ": "फ"    # pha
+    "ബ": "ब"    # ba
+    "ഭ": "भ"    # bha
+    "മ": "म"    # ma
+    
+    # Semivowels and liquids
+    "യ": "य"    # ya
+    "ര": "र"    # ra
+    "ല": "ल"    # la
+    "വ": "व"    # va
+    "ള": "ळ"    # ḷa (retroflex la)
+    "ഴ": "ऴ"    # ḻa (Malayalam specific)
+    "റ": "ऱ"    # ṟa (alveolar trill)
+    
+    # Sibilants and aspirate
+    "ശ": "श"    # śa
+    "ഷ": "ष"    # ṣa
+    "സ": "स"    # sa
+    "ഹ": "ह"    # ha
+
+  marks:
+    "ം": "ं"    # anusvara
+    "ഃ": "ः"    # visarga
+    "ഁ": "ँ"    # candrabindu
+    "്": "्"    # virama/chandrakkala
+    "ഽ": "ऽ"    # avagraha
+
+  special:
+    # Chillu letters (pure consonants)
+    "ൺ": "ण्"   # ṇ
+    "ൻ": "न्"   # n
+    "ർ": "र्"   # r
+    "ൽ": "ल्"   # l
+    "ൾ": "ळ्"   # ḷ
+    "ൿ": "क्"   # k
+
+  digits:
+    "൦": "०"    # 0
+    "൧": "१"    # 1
+    "൨": "२"    # 2
+    "൩": "३"    # 3
+    "൪": "४"    # 4
+    "൫": "५"    # 5
+    "൬": "६"    # 6
+    "൭": "७"    # 7
+    "൮": "८"    # 8
+    "൯": "९"    # 9
+
+codegen:
+  mapping_type: "char_hashmap"
+  processor_type: "indic_standard"

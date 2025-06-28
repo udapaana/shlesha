@@ -1,0 +1,51 @@
+# Sinhala Script Schema
+metadata:
+  name: "sinhala"
+  script_type: "brahmic"
+  has_implicit_a: true
+
+mappings:
+  vowels:
+    "අ": "अ"    # a
+    "ආ": "आ"    # ā
+    "ඇ": "ऍ"    # æ (Sinhala-specific)
+    "ඈ": "ऑ"    # ǣ (Sinhala-specific)
+    "ඉ": "इ"    # i
+    "ඊ": "ई"    # ī
+    "උ": "उ"    # u
+    "ඌ": "ऊ"    # ū
+  
+  consonants:
+    "ක": "क"    # ka
+    "ඛ": "ख"    # kha
+    "ග": "ग"    # ga
+    "ඝ": "घ"    # gha
+    "ඞ": "ङ"    # ṅa
+    "ඟ": "ग"    # ṅga (prenasalized, unique to Sinhala)
+    "ච": "च"    # ca
+    "ඡ": "छ"    # cha
+    "ජ": "ज"    # ja
+    "ඣ": "झ"    # jha
+    "ඤ": "ञ"    # ña
+  
+  vowel_signs:
+    "ා": "ा"    # ā
+    "ැ": "ॅ"    # æ (Sinhala-specific)
+    "ි": "ि"    # i
+    "ී": "ी"    # ī
+    "ු": "ु"    # u
+    "ූ": "ू"    # ū
+  
+  marks:
+    "ං": "ं"    # anusvara
+    "ඃ": "ः"    # visarga
+    "්": "्"    # virama/al-lakuna
+  
+  digits:
+    "෧": "१"    # 1
+    "෨": "२"    # 2
+    "෩": "३"    # 3
+
+codegen:
+  mapping_type: "char_hashmap"
+  processor_type: "indic_standard"

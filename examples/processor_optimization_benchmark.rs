@@ -1,5 +1,5 @@
 use std::time::Instant;
-use shlesha::modules::script_converter::{ScriptConverter, SLP1Converter, OptimizedSLP1Converter};
+use shlesha::modules::script_converter::{ScriptConverter, Slp1Converter};
 
 fn main() {
     println!("Roman Script Processor Optimization Benchmark");
@@ -15,8 +15,8 @@ fn main() {
     println!("");
     
     // Create converters
-    let original_converter = SLP1Converter::new();
-    let optimized_converter = OptimizedSLP1Converter::new();
+    let original_converter = Slp1Converter::new();
+    let optimized_converter = Slp1Converter::new(); // Now using the same optimized implementation
     
     // Warm up both converters
     println!("Warming up...");

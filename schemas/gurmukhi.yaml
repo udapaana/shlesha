@@ -1,0 +1,108 @@
+metadata:
+  name: "gurmukhi"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Gurmukhi (ਗੁਰਮੁਖੀ) script used for Punjabi language"
+
+mappings:
+  vowels:
+    "ਅ": "अ"    # a
+    "ਆ": "आ"    # ā
+    "ਇ": "इ"    # i
+    "ਈ": "ई"    # ī
+    "ਉ": "उ"    # u
+    "ਊ": "ऊ"    # ū
+    "ਏ": "ए"    # e
+    "ਐ": "ऐ"    # ai
+    "ਓ": "ओ"    # o
+    "ਔ": "औ"    # au
+
+  vowel_signs:
+    "ਾ": "ा"    # ā (kanna)
+    "ਿ": "ि"    # i (sihari)
+    "ੀ": "ी"    # ī (bihari)
+    "ੁ": "ु"    # u (aunkar)
+    "ੂ": "ू"    # ū (dulainkar)
+    "ੇ": "े"    # e (lavan)
+    "ੈ": "ै"    # ai (dulavan)
+    "ੋ": "ो"    # o (hora)
+    "ੌ": "ौ"    # au (kanaura)
+
+  consonants:
+    # Velar
+    "ਕ": "क"    # ka
+    "ਖ": "ख"    # kha
+    "ਗ": "ग"    # ga
+    "ਘ": "घ"    # gha
+    "ਙ": "ङ"    # ṅa
+    
+    # Palatal
+    "ਚ": "च"    # ca
+    "ਛ": "छ"    # cha
+    "ਜ": "ज"    # ja
+    "ਝ": "झ"    # jha
+    "ਞ": "ञ"    # ña
+    
+    # Retroflex
+    "ਟ": "ट"    # ṭa
+    "ਠ": "ठ"    # ṭha
+    "ਡ": "ड"    # ḍa
+    "ਢ": "ढ"    # ḍha
+    "ਣ": "ण"    # ṇa
+    
+    # Dental
+    "ਤ": "त"    # ta
+    "ਥ": "थ"    # tha
+    "ਦ": "द"    # da
+    "ਧ": "ध"    # dha
+    "ਨ": "न"    # na
+    
+    # Labial
+    "ਪ": "प"    # pa
+    "ਫ": "फ"    # pha
+    "ਬ": "ब"    # ba
+    "ਭ": "भ"    # bha
+    "ਮ": "म"    # ma
+    
+    # Semivowels and liquids
+    "ਯ": "य"    # ya
+    "ਰ": "र"    # ra
+    "ਲ": "ल"    # la
+    "ਵ": "व"    # va
+    "ੜ": "ळ"    # ḷa (retroflex la)
+    
+    # Sibilants and aspirate
+    "ਸ": "स"    # sa
+    "ਹ": "ह"    # ha
+
+  marks:
+    "ਂ": "ं"    # bindi (anusvara)
+    "ਃ": "ः"    # visarga
+    "ਁ": "ँ"    # adak bindi (candrabindu)
+    "਼": "़"    # nukta
+    "੍": "्"    # halant (virama)
+
+  special:
+    # Nukta forms (Persian/Arabic sounds)
+    "ਸ਼": "श"    # śa (sha)
+    "ਖ਼": "ख़"    # ḵẖa (khha)
+    "ਗ਼": "ग़"    # ġa (ghha)
+    "ਜ਼": "ज़"    # za
+    "ਫ਼": "फ़"    # fa
+    "ਲ਼": "ऴ"    # ḷa
+
+  digits:
+    "੦": "०"    # 0
+    "੧": "१"    # 1
+    "੨": "२"    # 2
+    "੩": "३"    # 3
+    "੪": "४"    # 4
+    "੫": "५"    # 5
+    "੬": "६"    # 6
+    "੭": "७"    # 7
+    "੮": "८"    # 8
+    "੯": "९"    # 9
+
+codegen:
+  mapping_type: "char_hashmap"
+  processor_type: "indic_standard"

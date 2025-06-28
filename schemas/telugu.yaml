@@ -1,0 +1,118 @@
+metadata:
+  name: "telugu"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Telugu (తెలుగు) script used for Telugu language"
+
+mappings:
+  vowels:
+    "అ": "अ"    # a
+    "ఆ": "आ"    # ā
+    "ఇ": "इ"    # i
+    "ఈ": "ई"    # ī
+    "ఉ": "उ"    # u
+    "ఊ": "ऊ"    # ū
+    "ఋ": "ऋ"    # r̥
+    "ౠ": "ॠ"    # r̥̄
+    "ఌ": "ऌ"    # l̥
+    "ౡ": "ॡ"    # l̥̄
+    "ఎ": "ए"    # e (short)
+    "ఏ": "ए"    # ē (long, maps to same)
+    "ఐ": "ऐ"    # ai
+    "ఒ": "ओ"    # o (short)
+    "ఓ": "ओ"    # ō (long, maps to same)
+    "ఔ": "औ"    # au
+
+  vowel_signs:
+    "ా": "ा"    # ā
+    "ి": "ि"    # i
+    "ీ": "ी"    # ī
+    "ు": "ु"    # u
+    "ూ": "ू"    # ū
+    "ృ": "ृ"    # r̥
+    "ౄ": "ॄ"    # r̥̄
+    "ె": "े"    # e (short)
+    "ే": "े"    # ē (long, maps to same)
+    "ై": "ै"    # ai
+    "ొ": "ो"    # o (short)
+    "ో": "ो"    # ō (long, maps to same)
+    "ౌ": "ौ"    # au
+
+  consonants:
+    # Velar
+    "క": "क"    # ka
+    "ఖ": "ख"    # kha
+    "గ": "ग"    # ga
+    "ఘ": "घ"    # gha
+    "ఙ": "ङ"    # ṅa
+    
+    # Palatal
+    "చ": "च"    # ca
+    "ఛ": "छ"    # cha
+    "జ": "ज"    # ja
+    "ఝ": "झ"    # jha
+    "ఞ": "ञ"    # ña
+    
+    # Retroflex
+    "ట": "ट"    # ṭa
+    "ఠ": "ठ"    # ṭha
+    "డ": "ड"    # ḍa
+    "ఢ": "ढ"    # ḍha
+    "ణ": "ण"    # ṇa
+    
+    # Dental
+    "త": "त"    # ta
+    "థ": "थ"    # tha
+    "ద": "द"    # da
+    "ధ": "ध"    # dha
+    "న": "न"    # na
+    
+    # Labial
+    "ప": "प"    # pa
+    "ఫ": "फ"    # pha
+    "బ": "ब"    # ba
+    "భ": "भ"    # bha
+    "మ": "म"    # ma
+    
+    # Semivowels and liquids
+    "య": "य"    # ya
+    "ర": "र"    # ra
+    "ల": "ल"    # la
+    "వ": "व"    # va
+    "ళ": "ळ"    # ḷa (retroflex la)
+    
+    # Sibilants and aspirate
+    "శ": "श"    # śa
+    "ష": "ष"    # ṣa
+    "స": "स"    # sa
+    "హ": "ह"    # ha
+
+  marks:
+    "ం": "ं"    # anusvara/sunna
+    "ః": "ः"    # visarga
+    "ఁ": "ँ"    # candrabindu
+    "్": "्"    # virama/pollu
+    "ఽ": "ऽ"    # avagraha
+
+  special:
+    # Telugu-specific
+    "ౘ": "च"    # tsa (borrowed)
+    "ౙ": "ज"    # dza (borrowed)
+    "ఱ": "ऱ"    # rra (old ra)
+    "ౚ": "ऱ"    # rrra
+
+  digits:
+    "౦": "०"    # 0
+    "౧": "१"    # 1
+    "౨": "२"    # 2
+    "౩": "३"    # 3
+    "౪": "४"    # 4
+    "౫": "५"    # 5
+    "౬": "६"    # 6
+    "౭": "७"    # 7
+    "౮": "८"    # 8
+    "౯": "९"    # 9
+
+codegen:
+  mapping_type: "char_hashmap"
+  processor_type: "indic_standard"

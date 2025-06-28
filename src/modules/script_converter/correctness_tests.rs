@@ -1,12 +1,12 @@
 #[cfg(test)]
 mod correctness_tests {
-    use crate::modules::script_converter::{IASTConverter, ITRANSConverter, SLP1Converter, HarvardKyotoConverter, VelthuisConverter, WXConverter};
+    use crate::modules::script_converter::{IASTConverter, ItransConverter, Slp1Converter, HarvardKyotoConverter, VelthuisConverter, WxConverter};
     
     /// Test that romanization schemes map correctly without adding inherent vowels
     /// Both ITRANS and ISO-15919 are explicit about vowels - no implicit 'a'
     #[test]
     fn test_itrans_consonant_mapping_correctness() {
-        let converter = ITRANSConverter::new();
+        let converter = ItransConverter::new();
         
         // Basic consonants should map without inherent 'a'
         let consonant_tests = vec![
@@ -37,7 +37,7 @@ mod correctness_tests {
     
     #[test]
     fn test_itrans_aspirated_consonants() {
-        let converter = ITRANSConverter::new();
+        let converter = ItransConverter::new();
         
         let aspirated_tests = vec![
             ("kh", "kh"),     // not "kha"
@@ -60,7 +60,7 @@ mod correctness_tests {
     
     #[test]
     fn test_itrans_retroflex_consonants() {
-        let converter = ITRANSConverter::new();
+        let converter = ItransConverter::new();
         
         let retroflex_tests = vec![
             ("T", "ṭ"),       // not "ṭa"
@@ -80,7 +80,7 @@ mod correctness_tests {
     
     #[test]
     fn test_itrans_sibilants() {
-        let converter = ITRANSConverter::new();
+        let converter = ItransConverter::new();
         
         let sibilant_tests = vec![
             ("sh", "ś"),      // not "śa" - this was your correction!
@@ -97,7 +97,7 @@ mod correctness_tests {
     
     #[test]
     fn test_itrans_nasals() {
-        let converter = ITRANSConverter::new();
+        let converter = ItransConverter::new();
         
         let nasal_tests = vec![
             ("~N", "ṅ"),      // not "ṅa"
@@ -116,7 +116,7 @@ mod correctness_tests {
     
     #[test]
     fn test_itrans_with_explicit_vowels() {
-        let converter = ITRANSConverter::new();
+        let converter = ItransConverter::new();
         
         // When vowels are explicit, they should be preserved
         let vowel_tests = vec![
@@ -140,7 +140,7 @@ mod correctness_tests {
     
     #[test]
     fn test_real_world_itrans_words() {
-        let converter = ITRANSConverter::new();
+        let converter = ItransConverter::new();
         
         // Real ITRANS words should convert correctly
         let word_tests = vec![
@@ -161,7 +161,7 @@ mod correctness_tests {
     
     #[test]
     fn test_slp1_consonant_mapping_correctness() {
-        let converter = SLP1Converter::new();
+        let converter = Slp1Converter::new();
         
         // SLP1 consonants should also map without inherent 'a'
         let consonant_tests = vec![
@@ -610,7 +610,7 @@ mod correctness_tests {
     
     #[test]
     fn test_wx_consonant_mapping_correctness() {
-        let converter = WXConverter::new();
+        let converter = WxConverter::new();
         
         // WX consonants should also map without inherent 'a'
         let consonant_tests = vec![
@@ -659,7 +659,7 @@ mod correctness_tests {
     
     #[test]
     fn test_wx_retroflex_consonants() {
-        let converter = WXConverter::new();
+        let converter = WxConverter::new();
         
         // WX uses specific characters for retroflex consonants
         let retroflex_tests = vec![
@@ -680,7 +680,7 @@ mod correctness_tests {
     
     #[test]
     fn test_wx_aspirated_consonants() {
-        let converter = WXConverter::new();
+        let converter = WxConverter::new();
         
         // WX aspirated consonants should not have inherent 'a'
         let aspirated_tests = vec![
@@ -706,7 +706,7 @@ mod correctness_tests {
     
     #[test]
     fn test_wx_nasals() {
-        let converter = WXConverter::new();
+        let converter = WxConverter::new();
         
         // WX nasal consonants should not have inherent 'a'
         let nasal_tests = vec![
@@ -727,7 +727,7 @@ mod correctness_tests {
     
     #[test]
     fn test_wx_sibilants() {
-        let converter = WXConverter::new();
+        let converter = WxConverter::new();
         
         // WX sibilants should not have inherent 'a'
         let sibilant_tests = vec![
@@ -746,7 +746,7 @@ mod correctness_tests {
     
     #[test]
     fn test_wx_with_explicit_vowels() {
-        let converter = WXConverter::new();
+        let converter = WxConverter::new();
         
         // Test that explicit consonant+vowel combinations work correctly
         let cv_tests = vec![
@@ -773,7 +773,7 @@ mod correctness_tests {
     
     #[test]
     fn test_real_world_wx_words() {
-        let converter = WXConverter::new();
+        let converter = WxConverter::new();
         
         // Real WX words should convert correctly  
         let word_tests = vec![

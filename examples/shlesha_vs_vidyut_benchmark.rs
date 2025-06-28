@@ -1,5 +1,5 @@
 use std::time::Instant;
-use shlesha::modules::script_converter::{ScriptConverter, SLP1Converter, ITRANSConverter, IASTConverter, TeluguConverter};
+use shlesha::modules::script_converter::{ScriptConverter, Slp1Converter, ItransConverter, IASTConverter, TeluguConverter};
 use vidyut_lipi::{Lipika, Scheme};
 
 fn main() {
@@ -8,8 +8,8 @@ fn main() {
     println!("");
     
     // Initialize converters
-    let shlesha_slp1 = SLP1Converter::new();
-    let shlesha_itrans = ITRANSConverter::new();
+    let shlesha_slp1 = Slp1Converter::new();
+    let shlesha_itrans = ItransConverter::new();
     let shlesha_iast = IASTConverter::new();
     let shlesha_telugu = TeluguConverter::new();
     
@@ -88,7 +88,7 @@ fn main() {
     print_summary();
 }
 
-fn benchmark_slp1(shlesha: &SLP1Converter, vidyut: &mut Lipika, text: &str) {
+fn benchmark_slp1(shlesha: &Slp1Converter, vidyut: &mut Lipika, text: &str) {
     let iterations = if text.len() < 100 { 10000 } else if text.len() < 10000 { 1000 } else { 100 };
     
     // Warm up
@@ -130,7 +130,7 @@ fn benchmark_slp1(shlesha: &SLP1Converter, vidyut: &mut Lipika, text: &str) {
              shlesha_result, vidyut_result);
 }
 
-fn benchmark_itrans(shlesha: &ITRANSConverter, vidyut: &mut Lipika, text: &str) {
+fn benchmark_itrans(shlesha: &ItransConverter, vidyut: &mut Lipika, text: &str) {
     let iterations = if text.len() < 100 { 10000 } else if text.len() < 10000 { 1000 } else { 100 };
     
     // Warm up

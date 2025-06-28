@@ -1,5 +1,5 @@
 use std::time::Instant;
-use shlesha::modules::script_converter::{ScriptConverter, TeluguConverter, OptimizedTeluguConverter};
+use shlesha::modules::script_converter::{ScriptConverter, TeluguConverter};
 
 fn main() {
     println!("String Allocation Optimization Comparison");
@@ -14,7 +14,7 @@ fn main() {
     
     // Create converters
     let regular_converter = TeluguConverter::new();
-    let optimized_converter = OptimizedTeluguConverter::new();
+    let optimized_converter = TeluguConverter::new(); // Now using the same optimized implementation
     
     // Warm up both converters
     for _ in 0..100 {

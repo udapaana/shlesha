@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod integration_tests {
     use crate::modules::hub::{Hub, HubTrait, HubInput, HubOutput};
-    use crate::modules::script_converter::{IASTConverter, ITRANSConverter, SLP1Converter, HarvardKyotoConverter, VelthuisConverter, WXConverter, DevanagariConverter, BengaliConverter, ISO15919Converter, TamilConverter, TeluguConverter, ScriptConverterRegistry, ScriptConverter};
+    use crate::modules::script_converter::{IASTConverter, ItransConverter, Slp1Converter, HarvardKyotoConverter, VelthuisConverter, WxConverter, BengaliConverter, ISO15919Converter, TamilConverter, TeluguConverter, ScriptConverterRegistry, ScriptConverter};
     
     /// Test roundtrip conversion: Script → Hub → Devanagari
     #[test]
@@ -43,7 +43,7 @@ mod integration_tests {
     /// Test roundtrip conversion: Script → Hub → ISO
     #[test]
     fn test_itrans_to_iso_roundtrip() {
-        let itrans_converter = ITRANSConverter::new();
+        let itrans_converter = ItransConverter::new();
         
         let test_cases = vec![
             ("A", "ā"),
@@ -78,7 +78,7 @@ mod integration_tests {
     #[test]
     fn test_slp1_to_devanagari_roundtrip() {
         let hub = Hub::new();
-        let slp1_converter = SLP1Converter::new();
+        let slp1_converter = Slp1Converter::new();
         
         let test_cases = vec![
             ("A", "आ"),
@@ -222,7 +222,7 @@ mod integration_tests {
     #[test]
     fn test_wx_to_devanagari_roundtrip() {
         let hub = Hub::new();
-        let wx_converter = WXConverter::new();
+        let wx_converter = WxConverter::new();
         
         let test_cases = vec![
             ("a", "अ"),
@@ -271,7 +271,7 @@ mod integration_tests {
     #[test]
     fn test_devanagari_to_iso_roundtrip() {
         let hub = Hub::new();
-        let deva_converter = DevanagariConverter::new();
+        // Devanagari is the hub format, so we test the hub directly
         
         let test_cases = vec![
             ("अ", "a"),
@@ -298,20 +298,14 @@ mod integration_tests {
         ];
         
         for (deva_input, expected_iso) in test_cases {
-            // Devanagari → Hub (passthrough)
-            let hub_input = deva_converter.to_hub("devanagari", deva_input).unwrap();
-            if let HubInput::Devanagari(deva_text) = hub_input {
-                // Hub: Devanagari → ISO
-                let hub_output = hub.deva_to_iso(&deva_text).unwrap();
-                if let HubOutput::Iso(iso_result) = hub_output {
-                    assert_eq!(iso_result, expected_iso,
-                        "Devanagari roundtrip failed: {} → {} → {}", 
-                        deva_input, deva_text, iso_result);
-                } else {
-                    panic!("Expected ISO output");
-                }
+            // Devanagari is the hub format, so test direct hub conversion
+            let hub_output = hub.deva_to_iso(deva_input).unwrap();
+            if let HubOutput::Iso(iso_result) = hub_output {
+                assert_eq!(iso_result, expected_iso,
+                    "Devanagari to ISO conversion failed: {} → {}", 
+                    deva_input, iso_result);
             } else {
-                panic!("Expected Devanagari hub input");
+                panic!("Hub should return ISO output for deva_to_iso");
             }
         }
     }
@@ -499,8 +493,8 @@ mod integration_tests {
     fn test_script_converter_registry() {
         let mut registry = ScriptConverterRegistry::new();
         registry.register_converter(Box::new(IASTConverter::new()));
-        registry.register_converter(Box::new(ITRANSConverter::new()));
-        registry.register_converter(Box::new(SLP1Converter::new()));
+        registry.register_converter(Box::new(ItransConverter::new()));
+        registry.register_converter(Box::new(Slp1Converter::new()));
         
         // Test supported scripts
         let supported = registry.list_supported_scripts();
@@ -537,11 +531,11 @@ mod integration_tests {
         let hub = Hub::new();
         let mut registry = ScriptConverterRegistry::new();
         registry.register_converter(Box::new(IASTConverter::new()));
-        registry.register_converter(Box::new(ITRANSConverter::new()));
-        registry.register_converter(Box::new(SLP1Converter::new()));
+        registry.register_converter(Box::new(ItransConverter::new()));
+        registry.register_converter(Box::new(Slp1Converter::new()));
         registry.register_converter(Box::new(HarvardKyotoConverter::new()));
         registry.register_converter(Box::new(VelthuisConverter::new()));
-        registry.register_converter(Box::new(WXConverter::new()));
+        registry.register_converter(Box::new(WxConverter::new()));
         
         // All these should produce the same Devanagari output (bare consonant)
         let test_cases = vec![

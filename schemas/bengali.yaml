@@ -1,0 +1,114 @@
+metadata:
+  name: "bengali"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Bengali (বাংলা) script used for Bengali and other languages"
+
+mappings:
+  vowels:
+    "অ": "अ"    # a
+    "আ": "आ"    # ā
+    "ই": "इ"    # i
+    "ঈ": "ई"    # ī
+    "উ": "उ"    # u
+    "ঊ": "ऊ"    # ū
+    "ঋ": "ऋ"    # r̥
+    "ৠ": "ॠ"    # r̥̄
+    "ঌ": "ऌ"    # l̥
+    "ৡ": "ॡ"    # l̥̄
+    "এ": "ए"    # e
+    "ঐ": "ऐ"    # ai
+    "ও": "ओ"    # o
+    "ঔ": "औ"    # au
+
+  vowel_signs:
+    "া": "ा"    # ā
+    "ি": "ि"    # i
+    "ী": "ी"    # ī
+    "ু": "ु"    # u
+    "ূ": "ू"    # ū
+    "ৃ": "ृ"    # r̥
+    "ৄ": "ॄ"    # r̥̄
+    "ৢ": "ॢ"    # l̥
+    "ৣ": "ॣ"    # l̥̄
+    "ে": "े"    # e
+    "ৈ": "ै"    # ai
+    "ো": "ो"    # o
+    "ৌ": "ौ"    # au
+
+  consonants:
+    # Velar
+    "ক": "क"    # ka
+    "খ": "ख"    # kha
+    "গ": "ग"    # ga
+    "ঘ": "घ"    # gha
+    "ঙ": "ङ"    # ṅa
+    
+    # Palatal
+    "চ": "च"    # ca
+    "ছ": "छ"    # cha
+    "জ": "ज"    # ja
+    "ঝ": "झ"    # jha
+    "ঞ": "ञ"    # ña
+    
+    # Retroflex
+    "ট": "ट"    # ṭa
+    "ঠ": "ठ"    # ṭha
+    "ড": "ड"    # ḍa
+    "ঢ": "ढ"    # ḍha
+    "ণ": "ण"    # ṇa
+    
+    # Dental
+    "ত": "त"    # ta
+    "থ": "थ"    # tha
+    "দ": "द"    # da
+    "ধ": "ध"    # dha
+    "ন": "न"    # na
+    
+    # Labial
+    "প": "प"    # pa
+    "ফ": "फ"    # pha
+    "ব": "ब"    # ba
+    "ভ": "भ"    # bha
+    "ম": "म"    # ma
+    
+    # Semivowels and liquids
+    "য": "य"    # ya
+    "র": "र"    # ra
+    "ল": "ल"    # la
+    
+    # Sibilants and aspirate
+    "শ": "श"    # śa
+    "ষ": "ष"    # ṣa
+    "স": "स"    # sa
+    "হ": "ह"    # ha
+
+  marks:
+    "ং": "ं"    # anusvara
+    "ঃ": "ः"    # visarga
+    "ঁ": "ँ"    # candrabindu
+    "়": "़"    # nukta
+    "্": "्"    # virama/hasanta
+    "ঽ": "ऽ"    # avagraha
+
+  special:
+    # Nukta forms
+    "ড়": "ड़"    # ṛa
+    "ঢ়": "ढ़"    # ṛha
+    "য়": "य़"    # ẏa
+
+  digits:
+    "০": "०"    # 0
+    "১": "१"    # 1
+    "২": "२"    # 2
+    "৩": "३"    # 3
+    "৪": "४"    # 4
+    "৫": "५"    # 5
+    "৬": "६"    # 6
+    "৭": "७"    # 7
+    "৮": "८"    # 8
+    "৯": "९"    # 9
+
+codegen:
+  mapping_type: "char_hashmap"
+  processor_type: "indic_standard"

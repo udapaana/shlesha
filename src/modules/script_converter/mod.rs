@@ -135,9 +135,17 @@ impl ScriptConverterRegistry {
     
     /// Convert text from any supported script to hub format with optional schema registry
     pub fn to_hub_with_schema_registry(&self, script: &str, input: &str, schema_registry: Option<&crate::modules::registry::SchemaRegistry>) -> Result<HubInput, ConverterError> {
+        // Special case: if source is already Devanagari (hub format), return directly
+        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
+            return Ok(HubInput::Devanagari(input.to_string()));
+        }
+        
+        // Resolve aliases first
+        let canonical_script = self.resolve_script_alias(script);
+        
         // Fast lookup using HashMap cache instead of linear search
-        if let Some(&converter_index) = self.script_to_converter.get(script) {
-            return self.converters[converter_index].to_hub(script, input);
+        if let Some(&converter_index) = self.script_to_converter.get(canonical_script) {
+            return self.converters[converter_index].to_hub(canonical_script, input);
         }
         
         // Fallback to schema-based converter for runtime-loaded scripts
@@ -161,6 +169,17 @@ impl ScriptConverterRegistry {
     
     /// Convert text from hub format to any supported script with optional schema registry
     pub fn from_hub_with_schema_registry(&self, script: &str, hub_input: &HubInput, schema_registry: Option<&crate::modules::registry::SchemaRegistry>) -> Result<String, ConverterError> {
+        // Special case: if target is Devanagari (hub format), return directly
+        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
+            match hub_input {
+                HubInput::Devanagari(deva_text) => return Ok(deva_text.clone()),
+                HubInput::Iso(_) => {
+                    // Need to convert ISO to Devanagari via hub
+                    // This will be handled by the calling code
+                }
+            }
+        }
+        
         // Fast lookup using HashMap cache instead of linear search
         if let Some(&converter_index) = self.script_to_converter.get(script) {
             return self.converters[converter_index].from_hub(script, hub_input);
@@ -182,6 +201,12 @@ impl ScriptConverterRegistry {
     
     /// Convert text from any supported script to hub format with metadata collection
     pub fn to_hub_with_metadata(&self, script: &str, input: &str) -> Result<(HubInput, TransliterationMetadata), ConverterError> {
+        // Special case: if source is already Devanagari (hub format), return directly
+        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
+            let metadata = TransliterationMetadata::new(script, "hub");
+            return Ok((HubInput::Devanagari(input.to_string()), metadata));
+        }
+        
         // Fast lookup using HashMap cache instead of linear search
         if let Some(&converter_index) = self.script_to_converter.get(script) {
             return self.converters[converter_index].to_hub_with_metadata(script, input);
@@ -198,6 +223,18 @@ impl ScriptConverterRegistry {
     
     /// Convert text from hub format to any supported script with metadata collection
     pub fn from_hub_with_metadata(&self, script: &str, hub_input: &HubInput) -> Result<TransliterationResult, ConverterError> {
+        // Special case: if target is Devanagari (hub format), return directly
+        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
+            match hub_input {
+                HubInput::Devanagari(deva_text) => {
+                    return Ok(TransliterationResult::simple(deva_text.clone()));
+                },
+                HubInput::Iso(_) => {
+                    // Need to convert ISO to Devanagari via hub - this will be handled by calling code
+                }
+            }
+        }
+        
         // Fast lookup using HashMap cache instead of linear search
         if let Some(&converter_index) = self.script_to_converter.get(script) {
             return self.converters[converter_index].from_hub_with_metadata(script, hub_input);
@@ -214,13 +251,48 @@ impl ScriptConverterRegistry {
     
     /// Check if a script is supported by any converter
     pub fn supports_script(&self, script: &str) -> bool {
-        self.script_to_converter.contains_key(script)
+        // Special case: Devanagari is always supported (hub format)
+        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
+            return true;
+        }
+        
+        // Check direct script name
+        if self.script_to_converter.contains_key(script) {
+            return true;
+        }
+        
+        // Check common aliases
+        let canonical_script = self.resolve_script_alias(script);
+        self.script_to_converter.contains_key(canonical_script)
+    }
+    
+    /// Resolve script aliases to canonical script names
+    fn resolve_script_alias<'a>(&self, script: &'a str) -> &'a str {
+        match script {
+            "hk" => "harvard_kyoto",
+            "bn" => "bengali", 
+            "ta" => "tamil",
+            "te" => "telugu",
+            "gu" => "gujarati",
+            "kn" => "kannada",
+            "ml" => "malayalam",
+            "or" => "odia",
+            "pa" => "gurmukhi",
+            "si" => "sinhala",
+            "deva" => "devanagari",
+            _ => script,
+        }
     }
     
     /// Get all supported scripts across all converters
     pub fn list_supported_scripts(&self) -> Vec<&str> {
         let mut scripts: Vec<&str> = self.script_to_converter.keys().map(|s| s.as_str()).collect();
+        
+        // Add Devanagari as it's always supported (hub format)
+        scripts.push("devanagari");
+        
         scripts.sort();
+        scripts.dedup();
         scripts
     }
 }
@@ -237,26 +309,12 @@ impl ScriptConverterRegistry {
     pub fn new_with_all_converters() -> Self {
         let mut registry = Self::new();
         
-        // Register all available romanization scheme converters
-        registry.register_converter(Box::new(IASTConverter::new()));
-        registry.register_converter(Box::new(ITRANSConverter::new()));
-        registry.register_converter(Box::new(SLP1Converter::new()));
-        registry.register_converter(Box::new(HarvardKyotoConverter::new()));
-        registry.register_converter(Box::new(VelthuisConverter::new()));
-        registry.register_converter(Box::new(WXConverter::new()));
-        registry.register_converter(Box::new(KolkataConverter::new()));
+        // Register all schema-generated converters (TOML/YAML based)
+        register_schema_generated_converters(&mut registry);
         
-        // Register Indic script converters
-        registry.register_converter(Box::new(DevanagariConverter::new()));
-        registry.register_converter(Box::new(BengaliConverter::new()));
-        registry.register_converter(Box::new(TamilConverter::new()));
-        registry.register_converter(Box::new(TeluguConverter::new()));
-        registry.register_converter(Box::new(GujaratiConverter::new()));
-        registry.register_converter(Box::new(KannadaConverter::new()));
-        registry.register_converter(Box::new(MalayalamConverter::new()));
-        registry.register_converter(Box::new(OdiaConverter::new()));
-        registry.register_converter(Box::new(GurmukhiConverter::new()));
-        registry.register_converter(Box::new(SinhalaConverter::new()));
+        // Register remaining hand-coded converters that don't have schemas yet
+        registry.register_converter(Box::new(IASTConverter::new()));
+        registry.register_converter(Box::new(KolkataConverter::new()));
         registry.register_converter(Box::new(GranthaConverter::new()));
         
         // Register ISO-15919 hub format converter
@@ -273,9 +331,17 @@ impl ScriptConverterRegistry {
     
     /// Get information about whether a script has implicit vowels
     pub fn script_has_implicit_vowels(&self, script: &str) -> Result<bool, ConverterError> {
+        // Special case: Devanagari (hub format) always has implicit 'a' vowels
+        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
+            return Ok(true);
+        }
+        
+        // Resolve aliases first
+        let canonical_script = self.resolve_script_alias(script);
+        
         // Fast lookup using HashMap cache instead of linear search
-        if let Some(&converter_index) = self.script_to_converter.get(script) {
-            return Ok(self.converters[converter_index].script_has_implicit_a(script));
+        if let Some(&converter_index) = self.script_to_converter.get(canonical_script) {
+            return Ok(self.converters[converter_index].script_has_implicit_a(canonical_script));
         }
         
         Err(ConverterError::ConversionFailed {
@@ -295,28 +361,36 @@ pub mod processors_optimized;
 // Schema-based converter for runtime-loaded scripts
 pub mod schema_based;
 
+// Include generated schema-based converters
+include!(concat!(env!("OUT_DIR"), "/schema_generated.rs"));
+
 // Script converters
 pub mod iast;
-pub mod itrans;
-pub mod slp1;
-pub mod harvard_kyoto;
-pub mod velthuis;
-pub mod wx;
-pub mod devanagari;
-pub mod bengali;
+// Roman script converters replaced by schema-generated ones
+// pub mod itrans;
+// pub mod slp1;
+// pub mod harvard_kyoto;
+// pub mod velthuis;
+// pub mod wx;
+// Hand-coded converters replaced by schema-generated ones
+// pub mod devanagari;
+// pub mod bengali;
+// pub mod tamil;
+// pub mod telugu;
+// pub mod optimized_telugu;
+// pub mod gujarati;
+// pub mod kannada;
+// pub mod malayalam;
+// pub mod odia;
+// pub mod gurmukhi;
+// pub mod sinhala;
+
 pub mod iso15919;
-pub mod tamil;
-pub mod telugu;
-pub mod optimized_telugu;
-pub mod slp1_optimized;
-pub mod gujarati;
-pub mod kannada;
-pub mod malayalam;
-pub mod odia;
-pub mod gurmukhi;
-pub mod sinhala;
 pub mod kolkata;
 pub mod grantha;
+
+// Legacy optimized converters (replaced by schema-generated ones)
+// pub mod slp1_optimized;
 
 // Integration tests
 #[cfg(test)]
@@ -332,24 +406,25 @@ pub use ScriptConverterRegistry as ConverterRegistry;  // Main interface for cal
 
 // Re-export individual converters (for advanced usage)
 pub use iast::IASTConverter;
-pub use itrans::ITRANSConverter;
-pub use slp1::SLP1Converter;
-pub use harvard_kyoto::HarvardKyotoConverter;
-pub use velthuis::VelthuisConverter;
-pub use wx::WXConverter;
-pub use devanagari::DevanagariConverter;
-pub use bengali::BengaliConverter;
+// Schema-generated converters are automatically available (no re-export needed)
+// pub use itrans::ITRANSConverter;
+// pub use slp1::SLP1Converter;  
+// pub use harvard_kyoto::HarvardKyotoConverter;
+// pub use velthuis::VelthuisConverter;
+// pub use wx::WXConverter;
+// pub use devanagari::DevanagariConverter;
+// pub use bengali::BengaliConverter;
+// pub use tamil::TamilConverter;
+// pub use telugu::TeluguConverter;
+// pub use optimized_telugu::OptimizedTeluguConverter;
+// pub use slp1_optimized::OptimizedSLP1Converter;
+// pub use gujarati::GujaratiConverter;
+// pub use kannada::KannadaConverter;
+// pub use malayalam::MalayalamConverter;
+// pub use odia::OdiaConverter;
+// pub use gurmukhi::GurmukhiConverter;
+// pub use sinhala::SinhalaConverter;
 pub use iso15919::ISO15919Converter;
-pub use tamil::TamilConverter;
-pub use telugu::TeluguConverter;
-pub use optimized_telugu::OptimizedTeluguConverter;
-pub use slp1_optimized::OptimizedSLP1Converter;
-pub use gujarati::GujaratiConverter;
-pub use kannada::KannadaConverter;
-pub use malayalam::MalayalamConverter;
-pub use odia::OdiaConverter;
-pub use gurmukhi::GurmukhiConverter;
-pub use sinhala::SinhalaConverter;
 pub use kolkata::KolkataConverter;
 pub use grantha::GranthaConverter;
 

@@ -1,5 +1,5 @@
 use std::time::Instant;
-use shlesha::modules::script_converter::{ScriptConverter, SLP1Converter};
+use shlesha::modules::script_converter::{ScriptConverter, Slp1Converter};
 
 fn main() {
     println!("Roman Script Allocation Analysis");
@@ -13,7 +13,7 @@ fn main() {
              long_text.chars().count(), long_text.len());
     
     // Create converter
-    let converter = SLP1Converter::new();
+    let converter = Slp1Converter::new();
     
     // Warm up
     for _ in 0..100 {

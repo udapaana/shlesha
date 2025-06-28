@@ -1,18 +1,8 @@
 # Tamil Script Schema with Sanskrit Superscript Support
-# Tamil (தமிழ்) with full Sanskrit phonetic coverage using scholarly superscript notation
-
-name: "tamil"
-version: "1.0.0"
-script_type: "brahmic"
-description: "Tamil script with Sanskrit superscript extensions"
-author: "Shlesha Project"
-
-# Metadata
 metadata:
-  has_implicit_a: true  # Tamil consonants have inherent 'a' vowel
-  direction: "ltr"
-  case_sensitive: true
-  supports_superscripts: true  # Special flag for Sanskrit extensions
+  name: "tamil"
+  script_type: "brahmic"
+  has_implicit_a: true
 
 # Character mappings (Tamil to Devanagari equivalent)
 mappings:
@@ -142,36 +132,5 @@ mappings:
 
 # Processing instructions for code generation
 codegen:
-  # Use string-based HashMap for superscript support
-  mapping_type: "string_hashmap"  # HashMap<String, String>
-  processor_type: "indic_extended"  # Extended Indic processor with superscript support
-  optimization_level: "high"
-  
-# Validation rules
-validation:
-  patterns:
-    vowel: "[அஆஇஈஉஊஎஏஐஒஓஔ]"
-    consonant: "[கஙசஞடணதநபமயரலவழளறனஸஹ]"
-    superscript_consonant: "[கசடதப][²³⁴⁵⁶⁷⁸⁹]|ஸ[²³]|[ரல்][²³]"
-    vowel_sign: "[ாிீுூெேைொோௌ]"
-    mark: "[ஂஃ்]"
-    digit: "[௦-௯]"
-    
-# Example usage patterns
-examples:
-  basic_tamil: "தமிழ்"  # tamiḻ
-  sanskrit_aspirated: "த⁴ர்மா"  # dharmā (dharma with Tamil + Sanskrit)
-  mixed_text: "யே த⁴ர்மா ஹேதுப்ரப⁴வா"  # ye dharmā hetuprabhavā
-  
-# Notes for developers
-notes: |
-  This schema represents Tamil script with scholarly extensions for Sanskrit.
-  Superscript notation follows academic conventions:
-  - ² = aspirated/voiceless variant
-  - ³ = voiced variant  
-  - ⁴ = aspirated voiced variant
-  
-  The build system should generate:
-  1. HashMap<String, String> for complex mappings
-  2. Efficient string processing with superscript detection
-  3. Fallback to basic Tamil for non-Sanskrit content
+  mapping_type: "string_hashmap"
+  processor_type: "indic_extended"
