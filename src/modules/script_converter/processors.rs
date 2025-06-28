@@ -1,5 +1,45 @@
 use std::collections::HashMap;
+use rustc_hash::FxHashMap;
 use super::ConverterError;
+
+/// Helper to build optimized mapping structures for fast lookup
+pub struct FastMappingBuilder;
+
+impl FastMappingBuilder {
+    /// Build optimized FxHashMap with first-character indexing for schema-generated converters
+    pub fn build_optimized_mapping<'a>(
+        mappings: &'a [(&'a str, &'a str)]
+    ) -> (FxHashMap<&'a str, &'a str>, FxHashMap<char, Vec<&'a str>>) {
+        let mut mapping = FxHashMap::default();
+        let mut by_first_char: FxHashMap<char, Vec<&'a str>> = FxHashMap::default();
+        
+        // Build both mappings simultaneously
+        for &(from, to) in mappings {
+            mapping.insert(from, to);
+            
+            // Index by first character for fast prefix lookup
+            if let Some(first_char) = from.chars().next() {
+                by_first_char.entry(first_char).or_default().push(from);
+            }
+        }
+        
+        // Sort candidates by length descending for greedy longest match
+        for candidates in by_first_char.values_mut() {
+            candidates.sort_by(|a, b| b.len().cmp(&a.len()));
+        }
+        
+        (mapping, by_first_char)
+    }
+    
+    /// Convert std::HashMap to FxHashMap for improved performance
+    pub fn to_fx_hashmap<'a>(std_map: &'a HashMap<&'a str, &'a str>) -> FxHashMap<&'a str, &'a str> {
+        let mut fx_map = FxHashMap::default();
+        for (&key, &value) in std_map {
+            fx_map.insert(key, value);
+        }
+        fx_map
+    }
+}
 
 /// Shared processor for Roman script conversions (IAST, ITRANS, SLP1, etc.)
 /// Handles the common logic for all Roman transliteration schemes
@@ -7,10 +47,21 @@ pub struct RomanScriptProcessor;
 
 impl RomanScriptProcessor {
     /// Process Roman script text using the provided mapping table
-    /// This is the optimized implementation that all Roman converters will use
+    /// Uses optimized algorithm with FxHashMap internally for better performance
     pub fn process(
         input: &str, 
         mapping: &HashMap<&str, &str>
+    ) -> Result<String, ConverterError> {
+        // Convert to FxHashMap for better performance, then use optimized algorithm
+        let fx_mapping = FastMappingBuilder::to_fx_hashmap(mapping);
+        Self::process_with_fx_hashmap(input, &fx_mapping)
+    }
+    
+    /// Optimized version using FxHashMap for better performance
+    /// This is used internally by schema-generated converters
+    pub fn process_with_fx_hashmap(
+        input: &str,
+        mapping: &FxHashMap<&str, &str>
     ) -> Result<String, ConverterError> {
         let mut result = String::with_capacity(input.len() * 2); // Pre-allocate for worst case
         let mut chars = input.char_indices();
@@ -22,20 +73,32 @@ impl RomanScriptProcessor {
                 continue;
             }
             
-            // Note: Don't preserve punctuation as-is since some schemes (Velthuis, WX) 
-            // use punctuation characters as part of their encoding
-            
             let mut matched = false;
             let remaining = &input[i..];
             
             // Try to match sequences of decreasing length (4, 3, 2, 1)
-            // This handles multi-character sequences like "kh", "gh", "r̥̄", etc.
+            // OPTIMIZED: Direct string slicing instead of Vec/String allocation
             for len in (1..=4).rev() {
-                // Get the substring containing the next 'len' characters
-                let chars_to_take: Vec<char> = remaining.chars().take(len).collect();
-                if chars_to_take.len() == len {
-                    let seq: String = chars_to_take.iter().collect();
-                    if let Some(&mapped_str) = mapping.get(seq.as_str()) {
+                // Find the end position for a sequence of 'len' characters
+                let mut end_pos = 0;
+                let mut char_count = 0;
+                for (pos, _) in remaining.char_indices() {
+                    char_count += 1;
+                    if char_count == len {
+                        end_pos = pos + remaining[pos..].chars().next().map_or(0, |c| c.len_utf8());
+                        break;
+                    }
+                }
+                
+                if char_count == len || (len == 1 && !remaining.is_empty()) {
+                    let seq = if char_count == len {
+                        &remaining[..end_pos]
+                    } else {
+                        // Single character case - take first character
+                        &remaining[..remaining.chars().next().unwrap().len_utf8()]
+                    };
+                    
+                    if let Some(&mapped_str) = mapping.get(seq) {
                         result.push_str(mapped_str);
                         // Skip the matched characters (len - 1 because we already have the first one)
                         for _ in 1..len {
@@ -56,15 +119,67 @@ impl RomanScriptProcessor {
         Ok(result)
     }
     
-    /// Optimized version for processing with early exit on ASCII-only text
-    pub fn process_optimized(
+    /// High-performance version with first-character indexing for maximum speed
+    pub fn process_with_fast_lookup(
         input: &str,
-        mapping: &HashMap<&str, &str>
+        mapping: &FxHashMap<&str, &str>,
+        by_first_char: &FxHashMap<char, Vec<&str>>,
     ) -> Result<String, ConverterError> {
-        // For now, just use the general processor to ensure it works correctly
-        // TODO: Re-enable optimizations after fixing the logic
-        Self::process(input, mapping)
+        let mut result = String::with_capacity(input.len() * 2); // Pre-allocate for worst case
+        let mut i = 0;
+        let input_bytes = input.as_bytes();
+        
+        while i < input_bytes.len() {
+            let ch = input_bytes[i] as char;
+            
+            // Fast path for whitespace
+            if ch.is_whitespace() {
+                result.push(ch);
+                i += 1;
+                continue;
+            }
+            
+            let mut matched = false;
+            
+            // Use first-character indexing for O(1) prefix lookup (Vidyut technique)
+            if let Some(candidates) = by_first_char.get(&ch) {
+                // Candidates are pre-sorted by length descending for greedy longest match
+                for &candidate in candidates.iter() {
+                    let candidate_len = candidate.len();
+                    
+                    // Check if we have enough characters remaining
+                    if i + candidate_len <= input.len() {
+                        // Direct byte slice comparison - no allocations!
+                        if let Ok(slice) = std::str::from_utf8(&input_bytes[i..i + candidate_len]) {
+                            if slice == candidate {
+                                if let Some(&mapped_str) = mapping.get(candidate) {
+                                    result.push_str(mapped_str);
+                                    i += candidate_len;
+                                    matched = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if !matched {
+                // Single character fallback - check if it's in mapping
+                let ch_str = std::str::from_utf8(&input_bytes[i..i+1]).unwrap_or("");
+                if let Some(&mapped_str) = mapping.get(ch_str) {
+                    result.push_str(mapped_str);
+                } else {
+                    // Character not found in mapping - preserve as-is
+                    result.push(ch);
+                }
+                i += 1;
+            }
+        }
+        
+        Ok(result)
     }
+    
     
     /// Fast path for pure ASCII text without diacritics
     fn process_ascii_fast(

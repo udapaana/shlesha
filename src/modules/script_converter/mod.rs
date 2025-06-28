@@ -354,10 +354,6 @@ impl ScriptConverterRegistry {
 // Submodules for specific script converters
 // Shared processing logic
 pub mod processors;
-// Optimized processors with reduced allocations
-pub mod optimized_processors;
-// Optimized processors with eliminated allocations
-pub mod processors_optimized;
 // Schema-based converter for runtime-loaded scripts
 pub mod schema_based;
 

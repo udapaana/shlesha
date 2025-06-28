@@ -1,14 +1,14 @@
-{{!-- Template for Extended Indic script converters using HashMap<String, String> for complex mappings --}}
+{{!-- Template for Extended Indic script converters using FxHashMap<String, String> for complex mappings --}}
 
-/// Extended {{script_name}} converter with superscript and complex mapping support
+/// Extended {{script_name}} converter with superscript and complex mapping support using FxHashMap
 pub struct {{struct_name}} {
-    {{lowercase script_name}}_to_deva_map: HashMap<String, String>,
-    deva_to_{{lowercase script_name}}_map: HashMap<String, String>,
+    {{lowercase script_name}}_to_deva_map: FxHashMap<String, String>,
+    deva_to_{{lowercase script_name}}_map: FxHashMap<String, String>,
 }
 
 impl {{struct_name}} {
     pub fn new() -> Self {
-        let mut {{lowercase script_name}}_to_deva = HashMap::new();
+        let mut {{lowercase script_name}}_to_deva = FxHashMap::default();
         
         // String-based mappings for complex characters (including superscripts)
 {{#each string_mappings}}
@@ -16,7 +16,7 @@ impl {{struct_name}} {
 {{/each}}
         
         // Generate reverse mapping
-        let mut deva_to_{{lowercase script_name}} = HashMap::new();
+        let mut deva_to_{{lowercase script_name}} = FxHashMap::default();
         for ({{lowercase script_name}}_str, deva_str) in &{{lowercase script_name}}_to_deva {
             deva_to_{{lowercase script_name}}.insert(deva_str.clone(), {{lowercase script_name}}_str.clone());
         }

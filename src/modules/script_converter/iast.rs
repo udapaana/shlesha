@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use once_cell::sync::Lazy;
 use super::{ScriptConverter, ConverterError};
-use super::processors_optimized::OptimizedRomanScriptProcessor;
+use super::processors::RomanScriptProcessor;
 use crate::modules::hub::HubInput;
 
 /// Optimized IAST (International Alphabet of Sanskrit Transliteration) to ISO-15919 converter
@@ -126,14 +126,14 @@ impl IASTConverter {
         }
     }
     
-    /// Convert IAST to ISO-15919 using optimized processor
+    /// Convert IAST to ISO-15919
     pub fn iast_to_iso(&self, input: &str) -> Result<String, ConverterError> {
-        OptimizedRomanScriptProcessor::process_auto(input, self.iast_to_iso_map)
+        RomanScriptProcessor::process(input, self.iast_to_iso_map)
     }
     
-    /// Convert ISO-15919 to IAST using optimized processor
+    /// Convert ISO-15919 to IAST
     pub fn iso_to_iast(&self, input: &str) -> Result<String, ConverterError> {
-        OptimizedRomanScriptProcessor::process_auto(input, self.iso_to_iast_map)
+        RomanScriptProcessor::process(input, self.iso_to_iast_map)
     }
 }
 
