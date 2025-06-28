@@ -134,8 +134,8 @@ mod tests {
         assert_eq!(OptimizedRomanScriptProcessor::get_char_boundary(text, 1), Some(1)); // 'k'
         assert_eq!(OptimizedRomanScriptProcessor::get_char_boundary(text, 2), Some(3)); // 'kā' (ā is 2 bytes)
         assert_eq!(OptimizedRomanScriptProcessor::get_char_boundary(text, 3), Some(5)); // 'kāñ' (ñ is 2 bytes)
-        assert_eq!(OptimizedRomanScriptProcessor::get_char_boundary(text, 8), Some(text.len())); // Full string
-        assert_eq!(OptimizedRomanScriptProcessor::get_char_boundary(text, 9), None); // Too many chars
+        assert_eq!(OptimizedRomanScriptProcessor::get_char_boundary(text, 7), Some(text.len())); // Full string (7 chars)
+        assert_eq!(OptimizedRomanScriptProcessor::get_char_boundary(text, 8), None); // Too many chars
     }
     
     #[test]

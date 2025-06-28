@@ -91,9 +91,30 @@ static SLP1_TO_ISO_MAP: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(||
 static ISO_TO_SLP1_MAP: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(|| {
     let mut map = HashMap::new();
     
-    // Build reverse mapping
+    // Build reverse mapping with explicit precedence for multi-character sequences
+    // Handle longer sequences first to avoid conflicts
+    map.insert("r̥̄", "F");
+    map.insert("l̥̄", "X");
+    map.insert("r̥", "f");
+    map.insert("l̥", "x");
+    map.insert("kh", "K");
+    map.insert("gh", "G");
+    map.insert("ch", "C");
+    map.insert("jh", "J");
+    map.insert("ṭh", "W");
+    map.insert("ḍh", "Q");
+    map.insert("th", "T");
+    map.insert("dh", "D");
+    map.insert("ph", "P");
+    map.insert("bh", "B");
+    map.insert("ai", "E");
+    map.insert("au", "O");
+    
+    // Then build the rest avoiding conflicts
     for (&slp1, &iso) in SLP1_TO_ISO_MAP.iter() {
-        map.insert(iso, slp1);
+        if !map.contains_key(iso) {
+            map.insert(iso, slp1);
+        }
     }
     
     map
@@ -192,7 +213,11 @@ mod tests {
     fn test_optimized_round_trip() {
         let converter = OptimizedSLP1Converter::new();
         
-        let original = "dharmakSetra";
+        // Test individual character mappings first
+        assert_eq!(converter.slp1_to_iso_optimized("D").unwrap(), "dh");
+        assert_eq!(converter.iso_to_slp1_optimized("dh").unwrap(), "D");
+        
+        let original = "DarmakSetra"; // Fixed: use D instead of dh in SLP1
         let iso = converter.slp1_to_iso_optimized(original).unwrap();
         let back_to_slp1 = converter.iso_to_slp1_optimized(&iso).unwrap();
         

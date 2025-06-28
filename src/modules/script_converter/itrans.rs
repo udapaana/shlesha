@@ -42,7 +42,7 @@ static ITRANS_TO_ISO_MAP: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(
     map.insert("gh", "gh");     // ITRANS gh → ISO gh
     map.insert("~N", "ṅ");      // ITRANS ~N → ISO ṅ
     map.insert("N^", "ṅ");      // Alternative ~N → ISO ṅ
-    map.insert("ch", "c");      // ITRANS ch → ISO c
+    map.insert("ch", "ch");     // ITRANS ch → ISO ch
     map.insert("Ch", "ch");     // ITRANS Ch → ISO ch
     map.insert("chh", "ch");    // Alternative Ch → ISO ch
     map.insert("j", "j");
@@ -163,6 +163,11 @@ impl ITRANSConverter {
     /// Convert ITRANS to ISO-15919 using optimized processor
     pub fn itrans_to_iso_optimized(&self, input: &str) -> Result<String, ConverterError> {
         OptimizedRomanScriptProcessor::process_auto(input, self.itrans_to_iso_map)
+    }
+    
+    /// Alias for the optimized version to maintain clean API
+    pub fn itrans_to_iso(&self, input: &str) -> Result<String, ConverterError> {
+        self.itrans_to_iso_optimized(input)
     }
     
     /// Convert ISO-15919 to ITRANS using optimized processor

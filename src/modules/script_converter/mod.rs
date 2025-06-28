@@ -22,6 +22,8 @@ use crate::modules::core::unknown_handler::{TransliterationResult, Transliterati
 // - Malayalam (മലയാളം)
 // - Odia (ଓଡ଼ିଆ)
 // - Gurmukhi (ਗੁਰਮੁਖੀ)
+// - Sinhala (සිංහල)
+// - Grantha (𑌗𑍍𑌰𑌨𑍍𑌥)
 // 
 // In these scripts, the consonant क inherently represents "ka", and requires 
 // a virama (्) to suppress the vowel: क्.
@@ -35,6 +37,7 @@ use crate::modules::core::unknown_handler::{TransliterationResult, Transliterati
 // - Harvard-Kyoto
 // - Velthuis
 // - WX notation
+// - Kolkata/Calcutta scheme
 // 
 // In these schemes, "k" represents just the consonant sound, and vowels 
 // must be explicitly written: "ka", "ki", "ku", etc.
@@ -241,6 +244,7 @@ impl ScriptConverterRegistry {
         registry.register_converter(Box::new(HarvardKyotoConverter::new()));
         registry.register_converter(Box::new(VelthuisConverter::new()));
         registry.register_converter(Box::new(WXConverter::new()));
+        registry.register_converter(Box::new(KolkataConverter::new()));
         
         // Register Indic script converters
         registry.register_converter(Box::new(DevanagariConverter::new()));
@@ -251,6 +255,9 @@ impl ScriptConverterRegistry {
         registry.register_converter(Box::new(KannadaConverter::new()));
         registry.register_converter(Box::new(MalayalamConverter::new()));
         registry.register_converter(Box::new(OdiaConverter::new()));
+        registry.register_converter(Box::new(GurmukhiConverter::new()));
+        registry.register_converter(Box::new(SinhalaConverter::new()));
+        registry.register_converter(Box::new(GranthaConverter::new()));
         
         // Register ISO-15919 hub format converter
         registry.register_converter(Box::new(ISO15919Converter::new()));
@@ -306,6 +313,10 @@ pub mod gujarati;
 pub mod kannada;
 pub mod malayalam;
 pub mod odia;
+pub mod gurmukhi;
+pub mod sinhala;
+pub mod kolkata;
+pub mod grantha;
 
 // Integration tests
 #[cfg(test)]
@@ -337,6 +348,10 @@ pub use gujarati::GujaratiConverter;
 pub use kannada::KannadaConverter;
 pub use malayalam::MalayalamConverter;
 pub use odia::OdiaConverter;
+pub use gurmukhi::GurmukhiConverter;
+pub use sinhala::SinhalaConverter;
+pub use kolkata::KolkataConverter;
+pub use grantha::GranthaConverter;
 
 // TODO List for Script Converter Module:
 // - [ ] Handle ambiguous mappings with superscripted numerals when:

@@ -1,0 +1,177 @@
+# Tamil Script Schema with Sanskrit Superscript Support
+# Tamil (தமிழ்) with full Sanskrit phonetic coverage using scholarly superscript notation
+
+name: "tamil"
+version: "1.0.0"
+script_type: "brahmic"
+description: "Tamil script with Sanskrit superscript extensions"
+author: "Shlesha Project"
+
+# Metadata
+metadata:
+  has_implicit_a: true  # Tamil consonants have inherent 'a' vowel
+  direction: "ltr"
+  case_sensitive: true
+  supports_superscripts: true  # Special flag for Sanskrit extensions
+
+# Character mappings (Tamil to Devanagari equivalent)
+mappings:
+  # Independent vowels (standard Tamil)
+  vowels:
+    "அ": "अ"    # a
+    "ஆ": "आ"    # ā
+    "இ": "इ"    # i
+    "ஈ": "ई"    # ī
+    "உ": "उ"    # u
+    "ஊ": "ऊ"    # ū
+    "எ": "ए"    # e
+    "ஏ": "ए"    # ē (mapped to e)
+    "ஐ": "ऐ"    # ai
+    "ஒ": "ओ"    # o
+    "ஓ": "ओ"    # ō (mapped to o)
+    "ஔ": "औ"    # au
+  
+  # Consonants - Basic Tamil set
+  consonants:
+    # Velar series
+    "க": "क"    # ka (unaspirated voiceless)
+    "ங": "ङ"    # ṅa (nasal)
+    
+    # Palatal series
+    "ச": "च"    # ca (unaspirated voiceless)
+    "ஞ": "ञ"    # ña (nasal)
+    
+    # Retroflex series
+    "ட": "ट"    # ṭa (unaspirated voiceless)
+    "ண": "ण"    # ṇa (nasal)
+    
+    # Dental series
+    "த": "त"    # ta (unaspirated voiceless)
+    "ந": "न"    # na (nasal)
+    
+    # Labial series
+    "ப": "प"    # pa (unaspirated voiceless)
+    "ம": "म"    # ma (nasal)
+    
+    # Semivowels
+    "ய": "य"    # ya
+    "ர": "र"    # ra
+    "ல": "ल"    # la
+    "வ": "व"    # va
+    
+    # Tamil-specific
+    "ழ": "ळ"    # ḻa (Tamil retroflex l)
+    "ள": "ळ"    # ḷa (Tamil lateral)
+    "ற": "र"    # ṟa (Tamil alveolar r)
+    "ன": "न"    # ṉa (Tamil alveolar n)
+    
+    # Sibilants (base form)
+    "ஸ": "स"    # sa (dental sibilant)
+    "ஹ": "ह"    # ha (aspirate)
+
+  # Sanskrit Extensions with Superscripts
+  # These represent sounds not native to Tamil
+  sanskrit_extensions:
+    # Velar series extensions
+    "க²": "ख"    # kha (aspirated voiceless)
+    "க³": "ग"    # ga (unaspirated voiced)
+    "க⁴": "घ"    # gha (aspirated voiced)
+    
+    # Palatal series extensions
+    "ச²": "छ"    # cha (aspirated voiceless)
+    "ச³": "ज"    # ja (unaspirated voiced)
+    "ச⁴": "झ"    # jha (aspirated voiced)
+    
+    # Retroflex series extensions
+    "ட²": "ठ"    # ṭha (aspirated voiceless)
+    "ட³": "ड"    # ḍa (unaspirated voiced)
+    "ட⁴": "ढ"    # ḍha (aspirated voiced)
+    
+    # Dental series extensions
+    "த²": "थ"    # tha (aspirated voiceless)
+    "த³": "द"    # da (unaspirated voiced)
+    "த⁴": "ध"    # dha (aspirated voiced)
+    
+    # Labial series extensions
+    "ப²": "फ"    # pha (aspirated voiceless)
+    "ப³": "ब"    # ba (unaspirated voiced)
+    "ப⁴": "भ"    # bha (aspirated voiced)
+    
+    # Sibilant extensions
+    "ஸ²": "श"    # śa (palatal sibilant)
+    "ஸ³": "ष"    # ṣa (retroflex sibilant)
+    
+    # Vocalic consonants
+    "ர்²": "ऋ"    # r̥ (vocalic r)
+    "ர்³": "ॠ"    # r̥̄ (long vocalic r)
+    "ல்²": "ऌ"    # l̥ (vocalic l)
+    "ல்³": "ॡ"    # l̥̄ (long vocalic l)
+  
+  # Vowel signs (matras) - standard Tamil
+  vowel_signs:
+    "ா": "ा"    # ā
+    "ி": "ि"    # i
+    "ீ": "ी"    # ī
+    "ு": "ु"    # u
+    "ூ": "ू"    # ū
+    "ெ": "े"    # e
+    "ே": "े"    # ē
+    "ை": "ै"    # ai
+    "ொ": "ो"    # o
+    "ோ": "ो"    # ō
+    "ௌ": "ौ"    # au
+  
+  # Special marks
+  marks:
+    "ஂ": "ं"    # anusvara (rare in Tamil)
+    "ஃ": "ः"    # visarga (rare in Tamil)
+    "்": "्"    # virama/pulli
+  
+  # Digits (Tamil numerals)
+  digits:
+    "௦": "०"    # 0
+    "௧": "१"    # 1
+    "௨": "२"    # 2
+    "௩": "३"    # 3
+    "௪": "४"    # 4
+    "௫": "५"    # 5
+    "௬": "६"    # 6
+    "௭": "७"    # 7
+    "௮": "८"    # 8
+    "௯": "९"    # 9
+
+# Processing instructions for code generation
+codegen:
+  # Use string-based HashMap for superscript support
+  mapping_type: "string_hashmap"  # HashMap<String, String>
+  processor_type: "indic_extended"  # Extended Indic processor with superscript support
+  optimization_level: "high"
+  
+# Validation rules
+validation:
+  patterns:
+    vowel: "[அஆஇஈஉஊஎஏஐஒஓஔ]"
+    consonant: "[கஙசஞடணதநபமயரலவழளறனஸஹ]"
+    superscript_consonant: "[கசடதப][²³⁴⁵⁶⁷⁸⁹]|ஸ[²³]|[ரல்][²³]"
+    vowel_sign: "[ாிீுூெேைொோௌ]"
+    mark: "[ஂஃ்]"
+    digit: "[௦-௯]"
+    
+# Example usage patterns
+examples:
+  basic_tamil: "தமிழ்"  # tamiḻ
+  sanskrit_aspirated: "த⁴ர்மா"  # dharmā (dharma with Tamil + Sanskrit)
+  mixed_text: "யே த⁴ர்மா ஹேதுப்ரப⁴வா"  # ye dharmā hetuprabhavā
+  
+# Notes for developers
+notes: |
+  This schema represents Tamil script with scholarly extensions for Sanskrit.
+  Superscript notation follows academic conventions:
+  - ² = aspirated/voiceless variant
+  - ³ = voiced variant  
+  - ⁴ = aspirated voiced variant
+  
+  The build system should generate:
+  1. HashMap<String, String> for complex mappings
+  2. Efficient string processing with superscript detection
+  3. Fallback to basic Tamil for non-Sanskrit content

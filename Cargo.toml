@@ -38,6 +38,7 @@ criterion = { version = "0.5", features = ["html_reports"] }
 proptest = "1.2"
 quickcheck = "1.0"
 quickcheck_macros = "1.0"
+vidyut-lipi = "0.2.0"
 
 [features]
 default = ["cli"]

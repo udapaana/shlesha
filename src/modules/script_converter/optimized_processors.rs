@@ -107,12 +107,12 @@ impl OptimizedIndicScriptProcessor {
                     } else if vowel_sign_map.contains_key(&next_ch) {
                         // Consonant with explicit vowel sign - don't add 'a'
                     } else {
-                        // Consonant with implicit 'a'
-                        result.push('a');
+                        // Consonant with implicit 'a' - add Devanagari vowel sign
+                        result.push('ा');
                     }
                 } else {
-                    // End of string - add implicit 'a'
-                    result.push('a');
+                    // End of string - add implicit 'a' as Devanagari vowel sign
+                    result.push('ा');
                 }
             }
             // Check for independent vowels - no more to_string() allocations!
@@ -164,7 +164,7 @@ mod tests {
         mapping.insert("k", "k");
         
         let result = OptimizedRomanScriptProcessor::process_optimized("kha", &mapping).unwrap();
-        assert_eq!(result, "kh");
+        assert_eq!(result, "kha");
         
         let result = OptimizedRomanScriptProcessor::process_optimized("ka", &mapping).unwrap();
         assert_eq!(result, "ka");
