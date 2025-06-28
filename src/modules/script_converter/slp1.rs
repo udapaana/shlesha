@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use super::{ScriptConverter, ConverterError};
-use super::processors::RomanScriptProcessor;
+use super::processors_optimized::OptimizedRomanScriptProcessor;
 use crate::modules::hub::HubInput;
 
 /// SLP1 (Sanskrit Library Phonetic Basic) to ISO-15919 converter
@@ -130,12 +130,12 @@ impl SLP1Converter {
     
     /// Convert SLP1 text to ISO-15919 format
     pub fn slp1_to_iso(&self, input: &str) -> Result<String, ConverterError> {
-        RomanScriptProcessor::process_optimized(input, &self.slp1_to_iso_map)
+        OptimizedRomanScriptProcessor::process_auto(input, &self.slp1_to_iso_map)
     }
     
     /// Convert ISO-15919 text to SLP1 format (reverse conversion)
     pub fn iso_to_slp1(&self, input: &str) -> Result<String, ConverterError> {
-        RomanScriptProcessor::process_optimized(input, &self.iso_to_slp1_map)
+        OptimizedRomanScriptProcessor::process_auto(input, &self.iso_to_slp1_map)
     }
 }
 

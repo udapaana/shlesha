@@ -5,7 +5,7 @@ use super::processors_optimized::OptimizedRomanScriptProcessor;
 use crate::modules::hub::HubInput;
 
 /// Optimized ITRANS (Indian Language Transliteration) to ISO-15919 converter
-pub struct ITRANSConverter {
+pub struct OptimizedITRANSConverter {
     itrans_to_iso_map: &'static HashMap<&'static str, &'static str>,
     iso_to_itrans_map: &'static HashMap<&'static str, &'static str>,
 }
@@ -152,7 +152,7 @@ static ISO_TO_ITRANS_MAP: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(
     map
 });
 
-impl ITRANSConverter {
+impl OptimizedITRANSConverter {
     pub fn new() -> Self {
         Self {
             itrans_to_iso_map: &ITRANS_TO_ISO_MAP,
@@ -171,7 +171,7 @@ impl ITRANSConverter {
     }
 }
 
-impl ScriptConverter for ITRANSConverter {
+impl ScriptConverter for OptimizedITRANSConverter {
     fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
         if script != "itrans" {
             return Err(ConverterError::InvalidInput {
@@ -210,7 +210,7 @@ impl ScriptConverter for ITRANSConverter {
     }
 }
 
-impl Default for ITRANSConverter {
+impl Default for OptimizedITRANSConverter {
     fn default() -> Self {
         Self::new()
     }
@@ -222,7 +222,7 @@ mod tests {
     
     #[test]
     fn test_optimized_itrans_basic() {
-        let converter = ITRANSConverter::new();
+        let converter = OptimizedITRANSConverter::new();
         
         // Test simple conversions
         assert_eq!(converter.itrans_to_iso_optimized("a").unwrap(), "a");
@@ -233,7 +233,7 @@ mod tests {
     
     #[test]
     fn test_optimized_itrans_special() {
-        let converter = ITRANSConverter::new();
+        let converter = OptimizedITRANSConverter::new();
         
         // Test special combinations
         assert_eq!(converter.itrans_to_iso_optimized("x").unwrap(), "kṣ");
@@ -244,7 +244,7 @@ mod tests {
     
     #[test]
     fn test_optimized_round_trip() {
-        let converter = ITRANSConverter::new();
+        let converter = OptimizedITRANSConverter::new();
         
         let original = "dharma";
         let iso = converter.itrans_to_iso_optimized(original).unwrap();
