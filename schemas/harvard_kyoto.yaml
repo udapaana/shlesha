@@ -1,0 +1,72 @@
+metadata:
+  name: "harvard_kyoto"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "Harvard-Kyoto ASCII transliteration scheme"
+  aliases: ["hk"]
+
+target: "iso15919"
+
+mappings:
+  vowels:
+    "a": "a"
+    "A": "ā"
+    "aa": "ā"
+    "i": "i"
+    "I": "ī"
+    "ii": "ī"
+    "u": "u"
+    "U": "ū"
+    "uu": "ū"
+    "R": "r̥"
+    "RR": "r̥̄"
+    "lR": "l̥"
+    "lRR": "l̥̄"
+    "e": "e"
+    "ai": "ai"
+    "o": "o"
+    "au": "au"
+
+  consonants:
+    "k": "k"
+    "kh": "kh"
+    "g": "g"
+    "gh": "gh"
+    "G": "ṅ"
+    "c": "c"
+    "ch": "ch"
+    "j": "j"
+    "jh": "jh"
+    "J": "ñ"
+    "T": "ṭ"
+    "Th": "ṭh"
+    "D": "ḍ"
+    "Dh": "ḍh"
+    "N": "ṇ"
+    "t": "t"
+    "th": "th"
+    "d": "d"
+    "dh": "dh"
+    "n": "n"
+    "p": "p"
+    "ph": "ph"
+    "b": "b"
+    "bh": "bh"
+    "m": "m"
+    "y": "y"
+    "r": "r"
+    "l": "l"
+    "v": "v"
+    "z": "ś"      # Harvard-Kyoto uses 'z' for palatal sh
+    "S": "ṣ"
+    "s": "s"
+    "h": "h"
+
+  marks:
+    "M": "ṁ"      # anusvara
+    "H": "ḥ"      # visarga
+
+  special:
+    "L": "ḷ"      # Vedic/Dravidian
+    "|": "।"      # danda
+    "||": "॥"     # double danda

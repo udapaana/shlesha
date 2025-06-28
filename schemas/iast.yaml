@@ -1,0 +1,82 @@
+metadata:
+  name: "iast"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "International Alphabet of Sanskrit Transliteration"
+
+target: "iso15919"
+
+mappings:
+  # IAST and ISO-15919 are very similar, but have key differences
+  vowels:
+    "a": "a"
+    "ā": "ā"
+    "i": "i"
+    "ī": "ī"
+    "u": "u"
+    "ū": "ū"
+    "ṛ": "r̥"     # IAST ṛ → ISO r̥
+    "ṝ": "r̥̄"    # IAST ṝ → ISO r̥̄
+    "ḷ": "l̥"     # IAST ḷ → ISO l̥
+    "ḹ": "l̥̄"    # IAST ḹ → ISO l̥̄
+    "e": "e"
+    "ai": "ai"
+    "o": "o"
+    "au": "au"
+  
+  consonants:
+    "k": "k"
+    "kh": "kh"
+    "g": "g"
+    "gh": "gh"
+    "ṅ": "ṅ"
+    "c": "c"
+    "ch": "ch"
+    "j": "j"
+    "jh": "jh"
+    "ñ": "ñ"
+    "ṭ": "ṭ"
+    "ṭh": "ṭh"
+    "ḍ": "ḍ"
+    "ḍh": "ḍh"
+    "ṇ": "ṇ"
+    "t": "t"
+    "th": "th"
+    "d": "d"
+    "dh": "dh"
+    "n": "n"
+    "p": "p"
+    "ph": "ph"
+    "b": "b"
+    "bh": "bh"
+    "m": "m"
+    "y": "y"
+    "r": "r"
+    "l": "l"
+    "v": "v"
+    "ś": "ś"
+    "ṣ": "ṣ"
+    "s": "s"
+    "h": "h"
+  
+  marks:
+    "ṃ": "ṁ"      # IAST ṃ → ISO ṁ (anusvara)
+    "ḥ": "ḥ"      # Same (visarga)
+    "m̐": "m̐"     # Same (candrabindu)
+    "'": "'"      # Avagraha
+  
+  special:
+    "kṣ": "kṣ"
+    "jñ": "jñ"
+  
+  digits:
+    "0": "0"
+    "1": "1"
+    "2": "2"
+    "3": "3"
+    "4": "4"
+    "5": "5"
+    "6": "6"
+    "7": "7"
+    "8": "8"
+    "9": "9"

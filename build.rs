@@ -32,13 +32,13 @@ struct CodegenConfig {
 #[derive(serde::Deserialize, Debug)]
 struct ScriptSchema {
     metadata: ScriptMetadata,
+    target: Option<String>,  // "iso15919" for Roman, "devanagari" for Indic (default)
     mappings: ScriptMappings,
     codegen: Option<CodegenConfig>,
 }
 
 fn main() {
     println!("cargo:rerun-if-changed=schemas/");
-    println!("cargo:rerun-if-changed=mappings/");
     
     if let Err(e) = generate_schema_based_converters() {
         println!("cargo:warning=Failed to generate schema-based converters: {}", e);
@@ -48,7 +48,6 @@ fn main() {
 fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> {
     let out_dir = PathBuf::from(env::var("OUT_DIR")?);
     let schemas_dir = Path::new("schemas");
-    let mappings_dir = Path::new("mappings");
     
     // Initialize Handlebars template engine
     let mut handlebars = Handlebars::new();
@@ -102,33 +101,6 @@ use crate::modules::script_converter::processors::RomanScriptProcessor;
         }
     }
     
-    // Process TOML mappings 
-    if mappings_dir.exists() {
-        for entry in fs::read_dir(mappings_dir)? {
-            let entry = entry?;
-            let path = entry.path();
-            
-            if path.is_dir() {
-                continue;
-            }
-            
-            if path.extension().and_then(|s| s.to_str()) == Some("toml") {
-                println!("cargo:rerun-if-changed={}", path.display());
-                
-                let content = fs::read_to_string(&path)?;
-                let toml_value: toml::Value = toml::from_str(&content)?;
-                
-                if let Some(converter_code) = generate_converter_from_toml(&handlebars, &toml_value)? {
-                    generated_code.push_str(&converter_code);
-                    
-                    // Extract script name from filename
-                    if let Some(stem) = path.file_stem().and_then(|s| s.to_str()) {
-                        converter_registrations.push(format!("{}Converter", capitalize_first(stem)));
-                    }
-                }
-            }
-        }
-    }
     
     // Add registration function
     generated_code.push_str(&format!(r#"
@@ -153,9 +125,25 @@ fn generate_converter_from_schema(handlebars: &Handlebars, schema: &ScriptSchema
     let script_name = &schema.metadata.name;
     let struct_name = format!("{}Converter", capitalize_first(script_name));
     
+    // Determine processor type based on target or script_type
     let processor_type = schema.codegen.as_ref()
         .map(|c| c.processor_type.as_str())
-        .unwrap_or(if schema.metadata.script_type == "roman" { "roman" } else { "indic_standard" });
+        .unwrap_or_else(|| {
+            // Use target field to determine processor type
+            match schema.target.as_deref() {
+                Some("iso15919") => "roman",
+                Some("devanagari") => "indic_standard",
+                None => {
+                    // Fallback to script_type for backward compatibility
+                    if schema.metadata.script_type == "roman" { 
+                        "roman" 
+                    } else { 
+                        "indic_standard" 
+                    }
+                }
+                _ => "indic_standard"
+            }
+        });
     
     // Combine all mappings
     let mut all_mappings = HashMap::new();
@@ -189,57 +177,6 @@ fn generate_converter_from_schema(handlebars: &Handlebars, schema: &ScriptSchema
     }
 }
 
-fn generate_converter_from_toml(handlebars: &Handlebars, toml_value: &toml::Value) -> Result<Option<String>, Box<dyn std::error::Error>> {
-    // Extract metadata
-    let metadata = toml_value.get("metadata").ok_or("Missing metadata section")?;
-    let script_name = match metadata.get("script").and_then(|v| v.as_str()) {
-        Some(name) => name,
-        None => return Ok(None), // Skip files that don't define a script converter
-    };
-    let script_type = metadata.get("script_type")
-        .and_then(|v| v.as_str())
-        .unwrap_or("roman");
-    let has_implicit_a = metadata.get("has_implicit_a")
-        .and_then(|v| v.as_bool())
-        .unwrap_or(false);
-    
-    if script_type != "roman" {
-        return Ok(None); // Skip non-Roman scripts from TOML for now
-    }
-    
-    let struct_name = format!("{}Converter", capitalize_first(script_name));
-    
-    // Extract mappings
-    let mut mappings = HashMap::new();
-    if let Some(to_iso) = toml_value.get("to_iso") {
-        extract_toml_mappings(to_iso, &mut mappings);
-    }
-    
-    let metadata_struct = ScriptMetadata {
-        name: script_name.to_string(),
-        script_type: script_type.to_string(),
-        has_implicit_a,
-    };
-    
-    let code = generate_roman_converter_with_template(handlebars, &struct_name, script_name, &mappings, &metadata_struct)?;
-    Ok(Some(code))
-}
-
-fn extract_toml_mappings(value: &toml::Value, mappings: &mut HashMap<String, String>) {
-    match value {
-        toml::Value::Table(table) => {
-            for (key, val) in table {
-                if let toml::Value::Table(_) = val {
-                    // Handle nested tables (like vowels, consonants, etc.)
-                    extract_toml_mappings(val, mappings);
-                } else if let Some(string_val) = val.as_str() {
-                    mappings.insert(key.clone(), string_val.to_string());
-                }
-            }
-        },
-        _ => {}
-    }
-}
 
 fn capitalize_first(s: &str) -> String {
     // Convert kebab-case and snake_case to PascalCase

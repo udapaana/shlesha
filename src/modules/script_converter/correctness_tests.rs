@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod correctness_tests {
-    use crate::modules::script_converter::{IASTConverter, ItransConverter, Slp1Converter, HarvardKyotoConverter, VelthuisConverter, WxConverter};
+    use crate::modules::script_converter::{IastConverter, ItransConverter, Slp1Converter, HarvardKyotoConverter, VelthuisConverter, WxConverter};
     
     /// Test that romanization schemes map correctly without adding inherent vowels
     /// Both ITRANS and ISO-15919 are explicit about vowels - no implicit 'a'
@@ -206,7 +206,7 @@ mod correctness_tests {
     
     #[test]
     fn test_iast_consonant_mapping_correctness() {
-        let converter = IASTConverter::new();
+        let converter = IastConverter::new();
         
         // IAST consonants should also map without inherent 'a'
         let consonant_tests = vec![

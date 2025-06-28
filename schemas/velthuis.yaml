@@ -1,0 +1,71 @@
+metadata:
+  name: "velthuis"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "Velthuis ASCII transliteration scheme developed by Frans Velthuis"
+
+target: "iso15919"
+
+mappings:
+  vowels:
+    "a": "a"
+    "aa": "ā"
+    "A": "ā"
+    "i": "i"
+    "ii": "ī"
+    "I": "ī"
+    "u": "u"
+    "uu": "ū"
+    "U": "ū"
+    ".r": "r̥"
+    ".R": "r̥̄"
+    ".l": "l̥"
+    ".L": "l̥̄"
+    "e": "e"
+    "ai": "ai"
+    "o": "o"
+    "au": "au"
+
+  consonants:
+    "k": "k"
+    "kh": "kh"
+    "g": "g"
+    "gh": "gh"
+    "\"n": "ṅ"
+    "c": "c"
+    "ch": "ch"
+    "j": "j"
+    "jh": "jh"
+    "~n": "ñ"
+    ".t": "ṭ"
+    ".th": "ṭh"
+    ".d": "ḍ"
+    ".dh": "ḍh"
+    ".n": "ṇ"
+    "t": "t"
+    "th": "th"
+    "d": "d"
+    "dh": "dh"
+    "n": "n"
+    "p": "p"
+    "ph": "ph"
+    "b": "b"
+    "bh": "bh"
+    "m": "m"
+    "y": "y"
+    "r": "r"
+    "l": "l"
+    "v": "v"
+    "\"s": "ś"
+    ".s": "ṣ"
+    "s": "s"
+    "h": "h"
+
+  marks:
+    ".m": "ṁ"      # anusvara
+    ".h": "ḥ"      # visarga
+
+  special:
+    ".l": "ḷ"      # Vedic/Dravidian (when not followed by vowel marker)
+    "|": "।"       # danda
+    "||": "॥"      # double danda

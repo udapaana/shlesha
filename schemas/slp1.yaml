@@ -1,0 +1,68 @@
+metadata:
+  name: "slp1"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "Sanskrit Library Phonetic encoding"
+
+target: "iso15919"
+
+mappings:
+  vowels:
+    "a": "a"
+    "A": "ā"
+    "i": "i"
+    "I": "ī"
+    "u": "u"
+    "U": "ū"
+    "f": "r̥"
+    "F": "r̥̄"
+    "x": "l̥"
+    "X": "l̥̄"
+    "e": "e"
+    "o": "o"
+    "E": "ai"
+    "O": "au"
+
+  consonants:
+    "k": "k"
+    "K": "kh"
+    "g": "g"
+    "G": "gh"
+    "N": "ṅ"
+    "c": "c"
+    "C": "ch"
+    "j": "j"
+    "J": "jh"
+    "Y": "ñ"
+    "w": "ṭ"
+    "W": "ṭh"
+    "q": "ḍ"
+    "Q": "ḍh"
+    "R": "ṇ"
+    "t": "t"
+    "T": "th"
+    "d": "d"
+    "D": "dh"
+    "n": "n"
+    "p": "p"
+    "P": "ph"
+    "b": "b"
+    "B": "bh"
+    "m": "m"
+    "y": "y"
+    "r": "r"
+    "l": "l"
+    "v": "v"
+    "S": "ś"
+    "z": "ṣ"
+    "s": "s"
+    "h": "h"
+
+  marks:
+    "M": "ṁ"      # anusvara
+    "H": "ḥ"      # visarga
+
+  special:
+    "L": "ḷ"      # Vedic
+    "|": "।"      # danda
+    "||": "॥"     # double danda

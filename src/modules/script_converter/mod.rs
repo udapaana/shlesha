@@ -312,11 +312,6 @@ impl ScriptConverterRegistry {
         // Register all schema-generated converters (TOML/YAML based)
         register_schema_generated_converters(&mut registry);
         
-        // Register remaining hand-coded converters that don't have schemas yet
-        registry.register_converter(Box::new(IASTConverter::new()));
-        registry.register_converter(Box::new(KolkataConverter::new()));
-        registry.register_converter(Box::new(GranthaConverter::new()));
-        
         // Register ISO-15919 hub format converter
         registry.register_converter(Box::new(ISO15919Converter::new()));
         
@@ -360,30 +355,10 @@ pub mod schema_based;
 // Include generated schema-based converters
 include!(concat!(env!("OUT_DIR"), "/schema_generated.rs"));
 
-// Script converters
-pub mod iast;
-// Roman script converters replaced by schema-generated ones
-// pub mod itrans;
-// pub mod slp1;
-// pub mod harvard_kyoto;
-// pub mod velthuis;
-// pub mod wx;
-// Hand-coded converters replaced by schema-generated ones
-// pub mod devanagari;
-// pub mod bengali;
-// pub mod tamil;
-// pub mod telugu;
-// pub mod optimized_telugu;
-// pub mod gujarati;
-// pub mod kannada;
-// pub mod malayalam;
-// pub mod odia;
-// pub mod gurmukhi;
-// pub mod sinhala;
-
+// All script converters are now schema-generated
+// Hand-coded converters (iast.rs, kolkata.rs, grantha.rs) have been migrated to schemas/
+// The ISO-15919 converter is special as it's a passthrough converter (no schema needed)
 pub mod iso15919;
-pub mod kolkata;
-pub mod grantha;
 
 // Legacy optimized converters (replaced by schema-generated ones)
 // pub mod slp1_optimized;
@@ -401,28 +376,8 @@ pub use ScriptConverterRegistry as ConverterRegistry;  // Main interface for cal
 // Note: ScriptConverter, ConverterError already public in this module
 
 // Re-export individual converters (for advanced usage)
-pub use iast::IASTConverter;
 // Schema-generated converters are automatically available (no re-export needed)
-// pub use itrans::ITRANSConverter;
-// pub use slp1::SLP1Converter;  
-// pub use harvard_kyoto::HarvardKyotoConverter;
-// pub use velthuis::VelthuisConverter;
-// pub use wx::WXConverter;
-// pub use devanagari::DevanagariConverter;
-// pub use bengali::BengaliConverter;
-// pub use tamil::TamilConverter;
-// pub use telugu::TeluguConverter;
-// pub use optimized_telugu::OptimizedTeluguConverter;
-// pub use slp1_optimized::OptimizedSLP1Converter;
-// pub use gujarati::GujaratiConverter;
-// pub use kannada::KannadaConverter;
-// pub use malayalam::MalayalamConverter;
-// pub use odia::OdiaConverter;
-// pub use gurmukhi::GurmukhiConverter;
-// pub use sinhala::SinhalaConverter;
-pub use iso15919::ISO15919Converter;
-pub use kolkata::KolkataConverter;
-pub use grantha::GranthaConverter;
+pub use iso15919::ISO15919Converter;  // Special passthrough converter
 
 // TODO List for Script Converter Module:
 // - [ ] Handle ambiguous mappings with superscripted numerals when:

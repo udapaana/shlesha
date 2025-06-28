@@ -1,13 +1,13 @@
 #[cfg(test)]
 mod integration_tests {
     use crate::modules::hub::{Hub, HubTrait, HubInput, HubOutput};
-    use crate::modules::script_converter::{IASTConverter, ItransConverter, Slp1Converter, HarvardKyotoConverter, VelthuisConverter, WxConverter, BengaliConverter, ISO15919Converter, TamilConverter, TeluguConverter, ScriptConverterRegistry, ScriptConverter};
+    use crate::modules::script_converter::{IastConverter, ItransConverter, Slp1Converter, HarvardKyotoConverter, VelthuisConverter, WxConverter, BengaliConverter, ISO15919Converter, TamilConverter, TeluguConverter, ScriptConverterRegistry, ScriptConverter};
     
     /// Test roundtrip conversion: Script → Hub → Devanagari
     #[test]
     fn test_iast_to_devanagari_roundtrip() {
         let hub = Hub::new();
-        let iast_converter = IASTConverter::new();
+        let iast_converter = IastConverter::new();
         
         let test_cases = vec![
             ("ā", "आ"),
@@ -492,7 +492,7 @@ mod integration_tests {
     #[test]
     fn test_script_converter_registry() {
         let mut registry = ScriptConverterRegistry::new();
-        registry.register_converter(Box::new(IASTConverter::new()));
+        registry.register_converter(Box::new(IastConverter::new()));
         registry.register_converter(Box::new(ItransConverter::new()));
         registry.register_converter(Box::new(Slp1Converter::new()));
         
@@ -530,7 +530,7 @@ mod integration_tests {
     fn test_multi_script_to_common_target() {
         let hub = Hub::new();
         let mut registry = ScriptConverterRegistry::new();
-        registry.register_converter(Box::new(IASTConverter::new()));
+        registry.register_converter(Box::new(IastConverter::new()));
         registry.register_converter(Box::new(ItransConverter::new()));
         registry.register_converter(Box::new(Slp1Converter::new()));
         registry.register_converter(Box::new(HarvardKyotoConverter::new()));

@@ -1,5 +1,5 @@
 use std::time::Instant;
-use shlesha::modules::script_converter::{ScriptConverter, Slp1Converter, ItransConverter, IASTConverter, TeluguConverter};
+use shlesha::modules::script_converter::{ScriptConverter, Slp1Converter, ItransConverter, IastConverter, TeluguConverter};
 use vidyut_lipi::{Lipika, Scheme};
 
 fn main() {
@@ -10,7 +10,7 @@ fn main() {
     // Initialize converters
     let shlesha_slp1 = Slp1Converter::new();
     let shlesha_itrans = ItransConverter::new();
-    let shlesha_iast = IASTConverter::new();
+    let shlesha_iast = IastConverter::new();
     let shlesha_telugu = TeluguConverter::new();
     
     // Initialize Vidyut
@@ -164,7 +164,7 @@ fn benchmark_itrans(shlesha: &ItransConverter, vidyut: &mut Lipika, text: &str) 
              if speed_ratio > 1.0 { "faster" } else { "slower" });
 }
 
-fn benchmark_iast(shlesha: &IASTConverter, vidyut: &mut Lipika, text: &str) {
+fn benchmark_iast(shlesha: &IastConverter, vidyut: &mut Lipika, text: &str) {
     let iterations = if text.len() < 100 { 10000 } else if text.len() < 10000 { 1000 } else { 100 };
     
     // Convert SLP1 text to IAST for testing

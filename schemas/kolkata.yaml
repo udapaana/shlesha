@@ -1,0 +1,73 @@
+metadata:
+  name: "kolkata"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "Kolkata/Calcutta romanization for Bengali"
+  aliases: ["calcutta"]
+
+target: "iso15919"
+
+mappings:
+  vowels:
+    "a": "a"
+    "ā": "ā"
+    "i": "i"
+    "ī": "ī"
+    "u": "u"
+    "ū": "ū"
+    "ṛ": "r̥"
+    "ṝ": "r̥̄"
+    "ḷ": "l̥"
+    "e": "e"
+    "ai": "ai"
+    "o": "o"
+    "au": "au"
+
+  consonants:
+    "k": "k"
+    "kh": "kh"
+    "g": "g"
+    "gh": "gh"
+    "ṅ": "ṅ"
+    "c": "c"
+    "ch": "ch"
+    "j": "j"
+    "jh": "jh"
+    "ñ": "ñ"
+    "ṭ": "ṭ"
+    "ṭh": "ṭh"
+    "ḍ": "ḍ"
+    "ḍh": "ḍh"
+    "ṇ": "ṇ"
+    "t": "t"
+    "th": "th"
+    "d": "d"
+    "dh": "dh"
+    "n": "n"
+    "p": "p"
+    "ph": "ph"
+    "b": "b"
+    "bh": "bh"
+    "m": "m"
+    "y": "y"
+    "r": "r"
+    "l": "l"
+    "v": "v"
+    "ś": "ś"
+    "ṣ": "ṣ"
+    "s": "s"
+    "h": "h"
+
+  marks:
+    "ṃ": "ṁ"      # anusvara
+    "ḥ": "ḥ"      # visarga
+    "'": "'"      # avagraha
+    "m̐": "m̐"     # candrabindu
+
+  special:
+    # Bengali-specific characters in Kolkata romanization
+    "ẏ": "ẏ"      # য় (ya with nukta)
+    "ṛ": "ṛ"      # ড় (da with nukta)  
+    "ṛh": "ṛh"    # ঢ় (dha with nukta)
+    "kṣ": "kṣ"
+    "jñ": "jñ"

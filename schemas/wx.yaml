@@ -1,0 +1,68 @@
+metadata:
+  name: "wx"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "WX notation developed by IIIT Hyderabad for computational linguistics"
+
+target: "iso15919"
+
+mappings:
+  vowels:
+    "a": "a"
+    "A": "ā"
+    "i": "i"
+    "I": "ī"
+    "u": "u"
+    "U": "ū"
+    "e": "e"
+    "E": "ai"
+    "o": "o"
+    "O": "au"
+    "q": "r̥"
+    "Q": "r̥̄"
+    "L": "l̥"
+    "lY": "l̥̄"
+
+  consonants:
+    "k": "k"
+    "K": "kh"
+    "g": "g"
+    "G": "gh"
+    "f": "ṅ"
+    "c": "c"
+    "C": "ch"
+    "j": "j"
+    "J": "jh"
+    "F": "ñ"
+    "w": "ṭ"
+    "W": "ṭh"
+    "x": "ḍ"
+    "X": "ḍh"
+    "N": "ṇ"
+    "t": "t"
+    "T": "th"
+    "d": "d"
+    "D": "dh"
+    "n": "n"
+    "p": "p"
+    "P": "ph"
+    "b": "b"
+    "B": "bh"
+    "m": "m"
+    "y": "y"
+    "r": "r"
+    "l": "l"
+    "v": "v"
+    "S": "ś"
+    "z": "ṣ"
+    "s": "s"
+    "h": "h"
+
+  marks:
+    "M": "ṁ"      # anusvara
+    "H": "ḥ"      # visarga
+
+  special:
+    "lY": "ḷ"     # Vedic/Dravidian
+    "|": "।"      # danda
+    "||": "॥"     # double danda

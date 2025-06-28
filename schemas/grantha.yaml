@@ -1,0 +1,87 @@
+metadata:
+  name: "grantha"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Grantha script used for writing Sanskrit, particularly in Tamil Nadu and Kerala"
+
+mappings:
+  vowels:
+    "𑌅": "अ"       # Grantha 𑌅 → Devanagari अ
+    "𑌆": "आ"       # Grantha 𑌆 → Devanagari आ
+    "𑌇": "इ"       # Grantha 𑌇 → Devanagari इ
+    "𑌈": "ई"       # Grantha 𑌈 → Devanagari ई
+    "𑌉": "उ"       # Grantha 𑌉 → Devanagari उ
+    "𑌊": "ऊ"       # Grantha 𑌊 → Devanagari ऊ
+    "𑌋": "ऋ"       # Grantha 𑌋 → Devanagari ऋ
+    "𑌌": "ऌ"       # Grantha 𑌌 → Devanagari ऌ
+    "𑌏": "ए"       # Grantha 𑌏 → Devanagari ए
+    "𑌐": "ऐ"       # Grantha 𑌐 → Devanagari ऐ
+    "𑌓": "ओ"       # Grantha 𑌓 → Devanagari ओ
+    "𑌔": "औ"       # Grantha 𑌔 → Devanagari औ
+
+  vowel_signs:
+    "𑌾": "ा"       # Grantha 𑌾 → Devanagari ा
+    "𑌿": "ि"       # Grantha 𑌿 → Devanagari ि
+    "𑍀": "ी"       # Grantha 𑍀 → Devanagari ी
+    "𑍁": "ु"       # Grantha 𑍁 → Devanagari ु
+    "𑍂": "ू"       # Grantha 𑍂 → Devanagari ू
+    "𑍃": "ृ"       # Grantha 𑍃 → Devanagari ृ
+    "𑍄": "ॄ"       # Grantha 𑍄 → Devanagari ॄ
+    "𑍇": "े"       # Grantha 𑍇 → Devanagari े
+    "𑍈": "ै"       # Grantha 𑍈 → Devanagari ै
+    "𑍋": "ो"       # Grantha 𑍋 → Devanagari ो
+    "𑍌": "ौ"       # Grantha 𑍌 → Devanagari ौ
+
+  consonants:
+    # Velar consonants
+    "𑌕": "क"       # Grantha 𑌕 → Devanagari क
+    "𑌖": "ख"       # Grantha 𑌖 → Devanagari ख
+    "𑌗": "ग"       # Grantha 𑌗 → Devanagari ग
+    "𑌘": "घ"       # Grantha 𑌘 → Devanagari घ
+    "𑌙": "ङ"       # Grantha 𑌙 → Devanagari ङ
+    
+    # Palatal consonants
+    "𑌚": "च"       # Grantha 𑌚 → Devanagari च
+    "𑌛": "छ"       # Grantha 𑌛 → Devanagari छ
+    "𑌜": "ज"       # Grantha 𑌜 → Devanagari ज
+    "𑌝": "झ"       # Grantha 𑌝 → Devanagari झ
+    "𑌞": "ञ"       # Grantha 𑌞 → Devanagari ञ
+    
+    # Retroflex consonants
+    "𑌟": "ट"       # Grantha 𑌟 → Devanagari ट
+    "𑌠": "ठ"       # Grantha 𑌠 → Devanagari ठ
+    "𑌡": "ड"       # Grantha 𑌡 → Devanagari ड
+    "𑌢": "ढ"       # Grantha 𑌢 → Devanagari ढ
+    "𑌣": "ण"       # Grantha 𑌣 → Devanagari ण
+    
+    # Dental consonants
+    "𑌤": "त"       # Grantha 𑌤 → Devanagari त
+    "𑌥": "थ"       # Grantha 𑌥 → Devanagari थ
+    "𑌦": "द"       # Grantha 𑌦 → Devanagari द
+    "𑌧": "ध"       # Grantha 𑌧 → Devanagari ध
+    "𑌨": "न"       # Grantha 𑌨 → Devanagari न
+    
+    # Labial consonants
+    "𑌪": "प"       # Grantha 𑌪 → Devanagari प
+    "𑌫": "फ"       # Grantha 𑌫 → Devanagari फ
+    "𑌬": "ब"       # Grantha 𑌬 → Devanagari ब
+    "𑌭": "भ"       # Grantha 𑌭 → Devanagari भ
+    "𑌮": "म"       # Grantha 𑌮 → Devanagari म
+    
+    # Semivowels and liquids
+    "𑌯": "य"       # Grantha 𑌯 → Devanagari य
+    "𑌰": "र"       # Grantha 𑌰 → Devanagari र
+    "𑌲": "ल"       # Grantha 𑌲 → Devanagari ल
+    "𑌵": "व"       # Grantha 𑌵 → Devanagari व
+    "𑌳": "ळ"       # Grantha 𑌳 → Devanagari ळ
+    
+    # Sibilants and aspirate
+    "𑌶": "श"       # Grantha 𑌶 → Devanagari श
+    "𑌷": "ष"       # Grantha 𑌷 → Devanagari ष
+    "𑌸": "स"       # Grantha 𑌸 → Devanagari स
+    "𑌹": "ह"       # Grantha 𑌹 → Devanagari ह
+
+  special_marks:
+    "𑌂": "ं"       # Grantha 𑌂 → Devanagari ं (anusvara)
+    "𑌃": "ः"       # Grantha 𑌃 → Devanagari ः (visarga)
+    "𑍍": "्"       # Grantha 𑍍 → Devanagari ् (virama)

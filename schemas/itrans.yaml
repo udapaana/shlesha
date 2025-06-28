@@ -1,0 +1,91 @@
+metadata:
+  name: "itrans"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "ITRANS transliteration scheme using ASCII combinations"
+  aliases: ["i-trans"]
+
+# For Roman scripts, the direction is TO ISO-15919
+# For Indic scripts, the direction is TO/FROM Devanagari
+target: "iso15919"  # or "devanagari" for Indic scripts
+
+mappings:
+  vowels:
+    "a": "a"
+    "A": "ā"
+    "aa": "ā"
+    "i": "i"
+    "I": "ī"
+    "ii": "ī"
+    "u": "u"
+    "U": "ū"
+    "uu": "ū"
+    "R": "r̥"
+    "RR": "r̥̄"
+    "lR": "l̥"
+    "lRR": "l̥̄"
+    "L": "l̥"
+    "LL": "l̥̄"
+    "e": "e"
+    "ai": "ai"
+    "o": "o"
+    "au": "au"
+
+  consonants:
+    "k": "k"
+    "kh": "kh"
+    "g": "g"
+    "gh": "gh"
+    "~N": "ṅ"
+    "N^": "ṅ"
+    "ch": "ch"
+    "Ch": "ch"
+    "chh": "ch"
+    "j": "j"
+    "jh": "jh"
+    "~n": "ñ"
+    "JN": "ñ"
+    "T": "ṭ"
+    "Th": "ṭh"
+    "D": "ḍ"
+    "Dh": "ḍh"
+    "N": "ṇ"
+    "t": "t"
+    "th": "th"
+    "d": "d"
+    "dh": "dh"
+    "n": "n"
+    "p": "p"
+    "ph": "ph"
+    "b": "b"
+    "bh": "bh"
+    "m": "m"
+    "y": "y"
+    "r": "r"
+    "l": "l"
+    "v": "v"
+    "sh": "ś"
+    "Sh": "ṣ"
+    "shh": "ṣ"
+    "s": "s"
+    "h": "h"
+
+  marks:
+    "M": "ṁ"      # anusvara
+    "H": "ḥ"      # visarga
+    ".N": "ṁ"     # anusvara
+    ".n": "ṁ"     # anusvara
+
+  special:
+    "OM": "oṁ"
+    "AUM": "oṁ"
+    "kSh": "kṣ"
+    "ksh": "kṣ"
+    "x": "kṣ"
+    "GY": "jñ"
+    "gy": "jñ"
+    "j~n": "jñ"
+    "dny": "jñ"
+
+  # For better matching, longer sequences should be checked first
+  # The build process will handle this automatically
