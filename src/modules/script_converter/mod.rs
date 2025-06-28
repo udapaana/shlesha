@@ -281,6 +281,10 @@ impl ScriptConverterRegistry {
 // Submodules for specific script converters
 // Shared processing logic
 pub mod processors;
+// Optimized processors with reduced allocations
+pub mod optimized_processors;
+// Optimized processors with eliminated allocations
+pub mod processors_optimized;
 // Schema-based converter for runtime-loaded scripts
 pub mod schema_based;
 
@@ -296,6 +300,8 @@ pub mod bengali;
 pub mod iso15919;
 pub mod tamil;
 pub mod telugu;
+pub mod optimized_telugu;
+pub mod slp1_optimized;
 pub mod gujarati;
 pub mod kannada;
 pub mod malayalam;
@@ -325,6 +331,8 @@ pub use bengali::BengaliConverter;
 pub use iso15919::ISO15919Converter;
 pub use tamil::TamilConverter;
 pub use telugu::TeluguConverter;
+pub use optimized_telugu::OptimizedTeluguConverter;
+pub use slp1_optimized::OptimizedSLP1Converter;
 pub use gujarati::GujaratiConverter;
 pub use kannada::KannadaConverter;
 pub use malayalam::MalayalamConverter;
