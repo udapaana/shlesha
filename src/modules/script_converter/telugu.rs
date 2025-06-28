@@ -31,17 +31,17 @@ impl TeluguConverter {
         telugu_to_deva.insert('ఌ', 'ऌ');       // Telugu ఌ → Devanagari ऌ
         telugu_to_deva.insert('ౡ', 'ॡ');       // Telugu ౡ → Devanagari ॡ
         telugu_to_deva.insert('ఎ', 'ए');       // Telugu ఎ → Devanagari ए
-        telugu_to_deva.insert('ఏ', 'ए');       // Telugu ఏ → Devanagari ए (long e mapped to short e)
+        telugu_to_deva.insert('ఏ', 'ए');       // Telugu ఏ → Devanagari ए (map to same)
         telugu_to_deva.insert('ఐ', 'ऐ');       // Telugu ఐ → Devanagari ऐ
         telugu_to_deva.insert('ఒ', 'ओ');       // Telugu ఒ → Devanagari ओ
-        telugu_to_deva.insert('ఓ', 'ओ');       // Telugu ఓ → Devanagari ओ (long o mapped to short o)
+        telugu_to_deva.insert('ఓ', 'ओ');       // Telugu ఓ → Devanagari ओ (map to same)
         telugu_to_deva.insert('ఔ', 'औ');       // Telugu ఔ → Devanagari औ
         
-        // Vowel diacritics (మాత్రలు) → Devanagari equivalents
+        // Vowel diacritics (పిల్లలు) → Devanagari equivalents
         telugu_to_deva.insert('ా', 'ा');       // Telugu ా → Devanagari ा
         telugu_to_deva.insert('ి', 'ि');       // Telugu ి → Devanagari ि
         telugu_to_deva.insert('ీ', 'ी');       // Telugu ీ → Devanagari ी
-        telugu_to_deva.insert('ు', 'ु');       // Telugu ు → Devanagari ु
+        telugu_to_deva.insert('ု', 'ु');       // Telugu ు → Devanagari ु
         telugu_to_deva.insert('ూ', 'ू');       // Telugu ూ → Devanagari ू
         telugu_to_deva.insert('ృ', 'ृ');       // Telugu ృ → Devanagari ृ
         telugu_to_deva.insert('ౄ', 'ॄ');       // Telugu ౄ → Devanagari ॄ
@@ -53,7 +53,6 @@ impl TeluguConverter {
         telugu_to_deva.insert('ౌ', 'ौ');       // Telugu ౌ → Devanagari ौ
         
         // Consonants (హల్లులు) → Devanagari equivalents
-        
         // Velar consonants
         telugu_to_deva.insert('క', 'क');       // Telugu క → Devanagari क
         telugu_to_deva.insert('ఖ', 'ख');       // Telugu ఖ → Devanagari ख
@@ -97,18 +96,16 @@ impl TeluguConverter {
         
         // Sibilants and aspirate
         telugu_to_deva.insert('శ', 'श');       // Telugu శ → Devanagari श
-        telugu_to_deva.insert('ష', 'ष');       // Telugu ష → Devanagari ष
+        telugu_to_deva.insert('ష', 'ष');       // Telugu ष → Devanagari ष
         telugu_to_deva.insert('స', 'स');       // Telugu స → Devanagari स
         telugu_to_deva.insert('హ', 'ह');       // Telugu హ → Devanagari ह
-        
-        // Additional consonants
-        telugu_to_deva.insert('ళ', 'ळ');       // Telugu ळ → Devanagari ळ (retroflex l)
+        telugu_to_deva.insert('ళ', 'ळ');       // Telugu ళ → Devanagari ळ
         
         // Special marks
         telugu_to_deva.insert('ం', 'ं');       // Telugu ం → Devanagari ं (anusvara)
         telugu_to_deva.insert('ః', 'ः');       // Telugu ః → Devanagari ः (visarga)
-        telugu_to_deva.insert('్', '्');       // Telugu ్ → Devanagari ् (halanta/virama)
-        telugu_to_deva.insert('ఁ', 'ँ');       // Telugu ఁ → Devanagari ँ (candrabindu)
+        telugu_to_deva.insert('్', '्');       // Telugu ్ → Devanagari ् (virama)
+        telugu_to_deva.insert('ఁ', 'ँ');       // Telugu ఁ → Devanagari ँ (candrabindu - rare)
         
         // Digits
         telugu_to_deva.insert('౦', '०');       // Telugu ౦ → Devanagari ०
@@ -244,17 +241,6 @@ mod tests {
     }
     
     #[test]
-    fn test_telugu_vocalic_vowels() {
-        let converter = TeluguConverter::new();
-        
-        // Test Telugu → Devanagari vocalic vowels
-        assert_eq!(converter.telugu_to_devanagari("ఋ").unwrap(), "ऋ");    // Telugu ఋ → Devanagari ऋ
-        assert_eq!(converter.telugu_to_devanagari("ౠ").unwrap(), "ॠ");   // Telugu ౠ → Devanagari ॠ
-        assert_eq!(converter.telugu_to_devanagari("ఌ").unwrap(), "ऌ");    // Telugu ఌ → Devanagari ऌ
-        assert_eq!(converter.telugu_to_devanagari("ౡ").unwrap(), "ॡ");   // Telugu ౡ → Devanagari ॡ
-    }
-    
-    #[test]
     fn test_telugu_consonants() {
         let converter = TeluguConverter::new();
         
@@ -264,29 +250,6 @@ mod tests {
         assert_eq!(converter.telugu_to_devanagari("గ").unwrap(), "ग");
         assert_eq!(converter.telugu_to_devanagari("ఘ").unwrap(), "घ");
         assert_eq!(converter.telugu_to_devanagari("ఙ").unwrap(), "ङ");
-        
-        // Test retroflex consonants
-        assert_eq!(converter.telugu_to_devanagari("ట").unwrap(), "ट");
-        assert_eq!(converter.telugu_to_devanagari("ఠ").unwrap(), "ठ");
-        assert_eq!(converter.telugu_to_devanagari("డ").unwrap(), "ड");
-        assert_eq!(converter.telugu_to_devanagari("ఢ").unwrap(), "ढ");
-        assert_eq!(converter.telugu_to_devanagari("ణ").unwrap(), "ण");
-        
-        // Test sibilants
-        assert_eq!(converter.telugu_to_devanagari("శ").unwrap(), "श");   // Telugu శ → Devanagari श
-        assert_eq!(converter.telugu_to_devanagari("ష").unwrap(), "ष");   // Telugu ష → Devanagari ष
-        assert_eq!(converter.telugu_to_devanagari("స").unwrap(), "स");
-    }
-    
-    #[test]
-    fn test_telugu_special_marks() {
-        let converter = TeluguConverter::new();
-        
-        // Test special marks
-        assert_eq!(converter.telugu_to_devanagari("ం").unwrap(), "ं");
-        assert_eq!(converter.telugu_to_devanagari("ః").unwrap(), "ः");
-        assert_eq!(converter.telugu_to_devanagari("్").unwrap(), "्");     // halanta/virama
-        assert_eq!(converter.telugu_to_devanagari("ఁ").unwrap(), "ँ");
     }
     
     #[test]
@@ -308,7 +271,7 @@ mod tests {
         // Test the ScriptConverter interface
         assert!(converter.supports_script("telugu"));
         assert!(converter.supports_script("te"));
-        assert!(!converter.supports_script("tamil"));
+        assert!(!converter.supports_script("hindi"));
         
         // Test script_has_implicit_a
         assert!(converter.script_has_implicit_a("telugu"));

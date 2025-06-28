@@ -86,7 +86,7 @@ fn measure_latency(shlesha: &Shlesha, from: &str, to: &str, text: &str, iteratio
         times.push(duration.as_nanos() as f64);
     }
     
-    times.iter().sum::<f64>() / times.len()
+    times.iter().sum::<f64>() / times.len() as f64
 }
 
 fn test_direct_mapping_usage(shlesha: &Shlesha) {

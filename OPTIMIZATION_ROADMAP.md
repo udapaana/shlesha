@@ -35,20 +35,38 @@ For each optimization attempt:
 
 ## Phase 2: Hot Path Optimizations (HIGH IMPACT - NEXT)
 
-### 1. Perfect Hash Tables for Fixed Mappings
+### 1. ❌ Perfect Hash Tables for Fixed Mappings (ATTEMPTED - REVERTED)
+**Status**: Attempted and reverted - complexity not justified by performance gains
 **Target**: Character mapping lookups in script converters
 **Strategy**: Replace HashMap with perfect hash tables for small, fixed character sets
-**Expected Impact**: 30-50% faster character lookups
+**Expected Impact**: 30-50% faster character lookups ❌ **ACTUAL: 16.7% slower**
+**Key Learnings**:
+- Modern HashMap<char, char> is already highly optimized for 77-character mappings
+- PHF overhead (complex hash function) outweighs benefits for small maps
+- Added wrapper enums introduce indirection overhead
+- Character lookups have excellent hash distribution making HashMap near-optimal
+- FxHashMap provides minimal improvement due to wrapper overhead
+- **Conclusion**: Keep simple HashMap<char, char> - premature optimization
 **Implementation**:
 ```rust
-// Replace HashMap<char, char> with perfect hash lookup
-const GUJARATI_TO_DEVA: [(char, char); 256] = [...];
-fn lookup_char(ch: char) -> Option<char> {
-    // Perfect hash function for character range
-}
+// REVERTED: Complex generic optimization framework
+// KEEPING: Simple HashMap<char, char> - already near-optimal
+let mut char_map = HashMap::new();
+char_map.insert('అ', 'अ'); // Simple and fast
 ```
 
-### 2. SIMD String Processing for ASCII
+### 2. String Allocation Reduction (HIGH PRIORITY - NEXT)
+**Target**: Reduce string allocations in hot conversion paths
+**Strategy**: Pre-calculate result string capacity, use string builders, reuse buffers
+**Expected Impact**: 25-40% faster through reduced allocation overhead
+**Implementation**:
+```rust
+// Pre-calculate result size to avoid reallocations
+let mut result = String::with_capacity(input.len() * 2); // Conservative estimate
+// Or use stack-allocated strings for small results
+```
+
+### 3. SIMD String Processing for ASCII
 **Target**: Roman script processing (IAST, ITRANS, ISO-15919)
 **Strategy**: Use SIMD instructions for ASCII character validation/conversion
 **Expected Impact**: 40-60% faster for ASCII-heavy Roman texts
