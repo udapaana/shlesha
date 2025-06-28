@@ -20,41 +20,54 @@ pub enum RegistryError {
     ParseError(String),
 }
 
-/// Represents metadata about a schema
+/// Represents metadata about a schema (unified format matching build system)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SchemaMetadata {
+    pub name: String,
+    pub script_type: String,
     pub has_implicit_a: bool,
-    pub direction: String,
-    pub case_sensitive: bool,
+    pub description: Option<String>,
+    pub aliases: Option<Vec<String>>,
 }
 
 impl Default for SchemaMetadata {
     fn default() -> Self {
         Self {
+            name: String::new(),
+            script_type: "roman".to_string(),
             has_implicit_a: false,
-            direction: "ltr".to_string(),
-            case_sensitive: true,
+            description: None,
+            aliases: None,
         }
     }
 }
 
-/// Validation rules for a schema
+/// Script mappings structure (matches build system)
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ValidationRules {
-    pub patterns: HashMap<String, String>,
+pub struct SchemaMapping {
+    pub vowels: Option<HashMap<String, String>>,
+    pub consonants: Option<HashMap<String, String>>,
+    pub vowel_signs: Option<HashMap<String, String>>,
+    pub marks: Option<HashMap<String, String>>,
+    pub digits: Option<HashMap<String, String>>,
+    pub sanskrit_extensions: Option<HashMap<String, String>>,
+    pub special: Option<HashMap<String, String>>,
 }
 
-/// Represents a complete schema loaded from YAML
+/// Code generation configuration (optional)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CodegenConfig {
+    pub mapping_type: Option<String>,
+    pub processor_type: Option<String>,
+}
+
+/// Represents a complete schema loaded from YAML (unified format)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SchemaFile {
-    pub name: String,
-    pub version: String,
-    pub script_type: String,
-    pub description: String,
-    pub author: String,
     pub metadata: SchemaMetadata,
-    pub mappings: HashMap<String, HashMap<String, String>>,
-    pub validation: ValidationRules,
+    pub target: Option<String>,  // "iso15919" for Roman, "devanagari" for Indic (default)
+    pub mappings: SchemaMapping,
+    pub codegen: Option<CodegenConfig>,
 }
 
 /// Represents a schema in the registry
@@ -62,7 +75,7 @@ pub struct SchemaFile {
 pub struct Schema {
     pub name: String,
     pub script_type: String,
-    pub version: String,
+    pub target: String,
     pub mappings: HashMap<String, String>,
     pub metadata: SchemaMetadata,
 }
@@ -70,11 +83,17 @@ pub struct Schema {
 impl Schema {
     pub fn new(name: String, script_type: String) -> Self {
         Self {
-            name,
-            script_type,
-            version: "1.0.0".to_string(),
+            name: name.clone(),
+            script_type: script_type.clone(),
+            target: if script_type == "roman" { "iso15919".to_string() } else { "devanagari".to_string() },
             mappings: HashMap::new(),
-            metadata: SchemaMetadata::default(),
+            metadata: SchemaMetadata {
+                name,
+                script_type,
+                has_implicit_a: false,
+                description: None,
+                aliases: None,
+            },
         }
     }
     
@@ -83,16 +102,53 @@ impl Schema {
         // Flatten the nested mappings structure
         let mut flattened_mappings = HashMap::new();
         
-        for (_category, mappings) in schema_file.mappings {
-            for (key, value) in mappings {
-                flattened_mappings.insert(key, value);
-            }
+        // Flatten vowels
+        if let Some(vowels) = &schema_file.mappings.vowels {
+            flattened_mappings.extend(vowels.clone());
         }
         
+        // Flatten consonants
+        if let Some(consonants) = &schema_file.mappings.consonants {
+            flattened_mappings.extend(consonants.clone());
+        }
+        
+        // Flatten vowel signs
+        if let Some(vowel_signs) = &schema_file.mappings.vowel_signs {
+            flattened_mappings.extend(vowel_signs.clone());
+        }
+        
+        // Flatten marks
+        if let Some(marks) = &schema_file.mappings.marks {
+            flattened_mappings.extend(marks.clone());
+        }
+        
+        // Flatten digits
+        if let Some(digits) = &schema_file.mappings.digits {
+            flattened_mappings.extend(digits.clone());
+        }
+        
+        // Flatten sanskrit extensions
+        if let Some(sanskrit_extensions) = &schema_file.mappings.sanskrit_extensions {
+            flattened_mappings.extend(sanskrit_extensions.clone());
+        }
+        
+        // Flatten special characters
+        if let Some(special) = &schema_file.mappings.special {
+            flattened_mappings.extend(special.clone());
+        }
+        
+        let target = schema_file.target.unwrap_or_else(|| {
+            if schema_file.metadata.script_type == "roman" {
+                "iso15919".to_string()
+            } else {
+                "devanagari".to_string()
+            }
+        });
+        
         Ok(Self {
-            name: schema_file.name,
-            script_type: schema_file.script_type,
-            version: schema_file.version,
+            name: schema_file.metadata.name.clone(),
+            script_type: schema_file.metadata.script_type.clone(),
+            target,
             mappings: flattened_mappings,
             metadata: schema_file.metadata,
         })
@@ -128,7 +184,7 @@ impl SchemaRegistry {
     fn register_builtin_schemas(&mut self) {
         // Register core schemas that are always available
         let devanagari_schema = Schema::new("devanagari".to_string(), "brahmic".to_string());
-        let iso_schema = Schema::new("iso15919".to_string(), "romanized".to_string());
+        let iso_schema = Schema::new("iso15919".to_string(), "roman".to_string());
         
         // For now, register empty schemas as placeholders
         let _ = self.register_schema("devanagari".to_string(), devanagari_schema);
@@ -146,7 +202,7 @@ impl SchemaRegistry {
             .map_err(|e| RegistryError::ParseError(format!("Failed to parse YAML: {}", e)))?;
         
         // Cache the schema file
-        self.schema_cache.insert(schema_file.name.clone(), schema_file.clone());
+        self.schema_cache.insert(schema_file.metadata.name.clone(), schema_file.clone());
         
         // Convert to Schema
         Schema::from_schema_file(schema_file)
@@ -238,9 +294,9 @@ impl SchemaRegistryTrait for SchemaRegistry {
             return Err(RegistryError::InvalidSchema("Script type cannot be empty".to_string()));
         }
         
-        // Validate version format (basic check)
-        if !schema.version.contains('.') {
-            return Err(RegistryError::InvalidSchema("Invalid version format".to_string()));
+        // Validate script type
+        if !["roman", "brahmic"].contains(&schema.script_type.as_str()) {
+            return Err(RegistryError::InvalidSchema("Invalid script type".to_string()));
         }
         
         Ok(())
@@ -273,10 +329,16 @@ mod tests {
         
         let test_schema = Schema {
             name: "test".to_string(),
-            script_type: "romanized".to_string(),
-            version: "1.0.0".to_string(),
+            script_type: "roman".to_string(),
+            target: "iso15919".to_string(),
             mappings: HashMap::new(),
-            metadata: SchemaMetadata::default(),
+            metadata: SchemaMetadata {
+                name: "test".to_string(),
+                script_type: "roman".to_string(),
+                has_implicit_a: false,
+                description: None,
+                aliases: None,
+            },
         };
         
         assert!(registry.register_schema("test".to_string(), test_schema).is_ok());
@@ -290,24 +352,24 @@ mod tests {
         // Test empty name
         let invalid_schema = Schema {
             name: "".to_string(),
-            script_type: "romanized".to_string(),
-            version: "1.0.0".to_string(),
+            script_type: "roman".to_string(),
+            target: "iso15919".to_string(),
             mappings: HashMap::new(),
             metadata: SchemaMetadata::default(),
         };
         
         assert!(registry.validate_schema(&invalid_schema).is_err());
         
-        // Test invalid version
-        let invalid_version_schema = Schema {
+        // Test invalid script type
+        let invalid_script_type_schema = Schema {
             name: "test".to_string(),
-            script_type: "romanized".to_string(),
-            version: "100".to_string(),
+            script_type: "invalid".to_string(),
+            target: "iso15919".to_string(),
             mappings: HashMap::new(),
             metadata: SchemaMetadata::default(),
         };
         
-        assert!(registry.validate_schema(&invalid_version_schema).is_err());
+        assert!(registry.validate_schema(&invalid_script_type_schema).is_err());
     }
     
     #[test]
@@ -326,8 +388,8 @@ mod tests {
             
             let schema = schema.unwrap();
             assert_eq!(schema.name, "sample");
-            assert_eq!(schema.version, "1.0.0");
-            assert_eq!(schema.script_type, "romanized");
+            assert_eq!(schema.script_type, "roman");
+            assert_eq!(schema.target, "devanagari");
             assert!(!schema.metadata.has_implicit_a);
         }
     }
@@ -338,7 +400,7 @@ mod tests {
         
         // Add schemas in non-alphabetical order
         let schema1 = Schema::new("zulu".to_string(), "brahmic".to_string());
-        let schema2 = Schema::new("arabic".to_string(), "abjad".to_string());
+        let schema2 = Schema::new("arabic".to_string(), "roman".to_string());
         
         registry.register_schema("zulu".to_string(), schema1).unwrap();
         registry.register_schema("arabic".to_string(), schema2).unwrap();
@@ -377,16 +439,16 @@ mod tests {
         // Create a schema with specific metadata
         let mut schema = Schema::new("test_meta".to_string(), "brahmic".to_string());
         schema.metadata.has_implicit_a = true;
-        schema.metadata.direction = "rtl".to_string();
-        schema.metadata.case_sensitive = false;
+        schema.metadata.description = Some("Test description".to_string());
+        schema.metadata.aliases = Some(vec!["test_alias".to_string()]);
         
         registry.register_schema("test_meta".to_string(), schema).unwrap();
         
         // Retrieve and verify metadata
         let retrieved = registry.get_schema("test_meta").unwrap();
         assert!(retrieved.metadata.has_implicit_a);
-        assert_eq!(retrieved.metadata.direction, "rtl");
-        assert!(!retrieved.metadata.case_sensitive);
+        assert_eq!(retrieved.metadata.description, Some("Test description".to_string()));
+        assert_eq!(retrieved.metadata.aliases, Some(vec!["test_alias".to_string()]));
     }
     
     #[test]
@@ -402,8 +464,8 @@ mod tests {
             assert!(registry.schema_cache.contains_key("sample"));
             
             let cached = registry.schema_cache.get("sample").unwrap();
-            assert_eq!(cached.version, "1.0.0");
-            assert_eq!(cached.author, "Shlesha Test Suite");
+            assert_eq!(cached.metadata.name, "sample");
+            assert_eq!(cached.metadata.script_type, "roman");
         }
     }
 }
