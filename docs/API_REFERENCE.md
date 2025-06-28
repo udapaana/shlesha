@@ -25,7 +25,7 @@ let result = transliterator.transliterate_with_metadata("धर्मkr", "devan
 let scripts = transliterator.list_supported_scripts();
 let supported = transliterator.supports_script("devanagari");
 
-// Runtime schema loading
+// Runtime schema loading  
 transliterator.load_schema("path/to/schema.yaml")?;
 ```
 
@@ -53,6 +53,42 @@ pub struct UnknownToken {
     pub unicode: String,
     pub is_extension: bool,
 }
+```
+
+### Runtime Schema Management
+
+```rust
+use shlesha::modules::registry::{SchemaRegistry, SchemaRegistryTrait};
+
+// Create registry
+let mut registry = SchemaRegistry::new();
+
+// List available schemas
+let schemas = registry.list_schemas();
+for name in schemas {
+    println!("Available: {}", name);
+}
+
+// Load schema from file
+registry.load_schema("path/to/custom_script.yaml")?;
+
+// Load all schemas from directory
+let count = registry.load_schemas_from_directory("schemas/")?;
+println!("Loaded {} schemas", count);
+
+// Get schema details
+if let Some(schema) = registry.get_schema("iast") {
+    println!("Script type: {}", schema.script_type);
+    println!("Target: {}", schema.target);
+    println!("Mappings: {}", schema.mappings.len());
+}
+
+// Register custom schema programmatically
+let custom_schema = Schema::new("my_script".to_string(), "roman".to_string());
+registry.register_schema("my_script".to_string(), custom_schema)?;
+
+// Validate schema
+registry.validate_schema(&schema)?;
 ```
 
 ## 🐍 Python API

@@ -4,7 +4,12 @@ This document provides a comprehensive reference for Shlesha's YAML schema forma
 
 ## Overview
 
-Shlesha uses YAML schemas to define how text should be converted between different scripts. These schemas are processed at build time to generate highly optimized Rust converters.
+Shlesha uses YAML schemas to define how text should be converted between different scripts. These schemas serve dual purposes:
+
+1. **Build-time code generation** - Processed during compilation to generate highly optimized Rust converters
+2. **Runtime schema loading** - Can be dynamically loaded to add new script support without recompilation
+
+Both systems use the **identical unified schema format** for consistency.
 
 ## Schema Format
 
@@ -284,12 +289,34 @@ mappings:
 
 ## Testing Your Schema
 
-After creating a schema:
+### Build-time Testing
+
+After creating a schema for build-time use:
 
 1. **Build the library**: `cargo build`
 2. **Run tests**: `cargo test`
 3. **Test conversion**: Use examples to verify correct conversion
 4. **Add test cases**: Create comprehensive test cases in the test suite
+
+### Runtime Testing
+
+To test runtime schema loading:
+
+```rust
+use shlesha::modules::registry::{SchemaRegistry, SchemaRegistryTrait};
+
+let mut registry = SchemaRegistry::new();
+
+// Load your schema
+registry.load_schema("path/to/your/schema.yaml")?;
+
+// Verify it's loaded
+if let Some(schema) = registry.get_schema("your_script") {
+    println!("Loaded {} mappings", schema.mappings.len());
+}
+```
+
+See `examples/test_runtime_schema_loading.rs` for a complete example.
 
 ## Error Handling
 
