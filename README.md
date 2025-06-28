@@ -34,34 +34,35 @@ Shlesha delivers **exceptional performance** competitive with the fastest transl
 
 Shlesha uses a **revolutionary schema-driven approach** where converters are generated at compile-time from declarative schemas:
 
-```toml
-# mappings/slp1.toml - Generates optimized SLP1 converter
-[metadata]
-name = "SLP1"
-description = "Sanskrit Library Phonetic Basic"
-target_format = "iso15919"
+```yaml
+# schemas/slp1.yaml - Generates optimized SLP1 converter
+metadata:
+  name: "slp1"
+  script_type: "roman"
+  description: "Sanskrit Library Phonetic Basic"
 
-[mappings.vowels]
-"A" = "ā"
-"I" = "ī" 
-"U" = "ū"
-# ... more mappings
+target: "iso15919"
+
+mappings:
+  vowels:
+    "A": "ā"
+    "I": "ī" 
+    "U": "ū"
+    # ... more mappings
 ```
 
 ```yaml
 # schemas/bengali.yaml - Generates optimized Bengali converter  
 metadata:
-  name: Bengali
-  description: Bengali/Bangla script
-  unicode_block: "Bengali"
+  name: "bengali"
+  script_type: "brahmic"
+  description: "Bengali/Bangla script"
 
 mappings:
   vowels:
-    - source: "অ"
-      target: "अ"
-    - source: "আ" 
-      target: "आ"
-# ... more mappings
+    "অ": "अ"    # Bengali A → Devanagari A
+    "আ": "आ"    # Bengali AA → Devanagari AA
+    # ... more mappings
 ```
 
 ### Build-Time Optimization
@@ -70,10 +71,9 @@ The build system automatically generates highly optimized converters:
 
 ```bash
 # Build output showing schema processing
-warning: Processing TOML schemas for Roman scripts...
-warning: Processing YAML schemas for Indic scripts...  
+warning: Processing YAML schemas...
 warning: Generating optimized converters with Handlebars templates...
-warning: Created 14 schema-generated converters with O(1) lookups
+warning: Created 18 schema-generated converters with O(1) lookups
 ```
 
 ## 🎯 Hub-and-Spoke Architecture

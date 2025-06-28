@@ -6,29 +6,38 @@ Complete guide to all Shlesha documentation and resources.
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| [README.md](README.md) | Project overview & quick start | All users |
+| [README.md](../README.md) | Project overview & quick start | All users |
+| [CONTRIBUTING.md](../CONTRIBUTING.md) | Contribution guidelines | Contributors |
 | [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md) | Development environment setup | Developers |
 | [API_REFERENCE.md](API_REFERENCE.md) | Complete API documentation | API users |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | System design & architecture | Architects |
+| [SCHEMA_REFERENCE.md](SCHEMA_REFERENCE.md) | YAML schema format guide | Schema authors |
+| [PERFORMANCE.md](PERFORMANCE.md) | Performance guide & benchmarks | Performance engineers |
+| [ARCHITECTURE.md](../ARCHITECTURE.md) | System design & architecture | Architects |
 | [BINDINGS.md](BINDINGS.md) | Language bindings guide | Integration developers |
 
 ## 📖 Documentation Structure
 
 ### 🚀 Getting Started
-1. **[README.md](README.md)** - Start here
+1. **[README.md](../README.md)** - Start here
    - Project overview
    - Supported scripts
    - Basic usage examples
    - Quick start command
 
-2. **[DEVELOPER_SETUP.md](DEVELOPER_SETUP.md)** - Environment setup
+2. **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Contribution guidelines
+   - Development workflow
+   - Adding new scripts
+   - Code standards
+   - Testing requirements
+
+3. **[DEVELOPER_SETUP.md](DEVELOPER_SETUP.md)** - Environment setup
    - One-command setup (`./scripts/quick-start.sh`)
    - Manual setup instructions
    - Troubleshooting guides
    - Development workflow
 
 ### 🔧 Technical Reference
-3. **[API_REFERENCE.md](API_REFERENCE.md)** - Complete API docs
+4. **[API_REFERENCE.md](API_REFERENCE.md)** - Complete API docs
    - Rust native API
    - Python bindings API
    - WASM/JavaScript API
@@ -36,13 +45,27 @@ Complete guide to all Shlesha documentation and resources.
    - Error handling
    - Integration examples
 
-4. **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design
+5. **[SCHEMA_REFERENCE.md](SCHEMA_REFERENCE.md)** - Schema format guide
+   - YAML schema structure
+   - Roman vs Indic script schemas
+   - Complete examples
+   - Validation rules
+   - Best practices
+
+6. **[PERFORMANCE.md](PERFORMANCE.md)** - Performance guide
+   - Benchmarking methodology
+   - Performance metrics
+   - Optimization strategies
+   - Profiling tools
+   - Tuning recommendations
+
+7. **[ARCHITECTURE.md](../ARCHITECTURE.md)** - System design
    - Hub-and-spoke architecture
    - Performance optimizations
    - Module structure
    - Design decisions
 
-5. **[BINDINGS.md](BINDINGS.md)** - Language bindings
+8. **[BINDINGS.md](BINDINGS.md)** - Language bindings
    - Python integration details
    - WASM deployment guide
    - CLI usage patterns

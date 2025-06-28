@@ -26,11 +26,11 @@ mappings:
   
   # Consonants
   consonants:
-    "k": "क्"
-    "kh": "ख्"
-    "g": "ग्"
-    "gh": "घ्"
-    "n": "ङ्"
+    "k": "क"
+    "kh": "ख"
+    "g": "ग"
+    "gh": "घ"
+    "n": "ङ"
   
   # Special marks
   marks:
