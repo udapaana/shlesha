@@ -20,7 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     
     // Load the custom schema
     println!("\n3. Loading custom schema...");
-    transliterator.load_schema("examples/custom_encoding.yaml")?;
+    transliterator.load_schema_from_file("examples/custom_encoding.yaml")?;
     println!("Custom schema loaded successfully!");
     
     // Test if the custom script is now supported

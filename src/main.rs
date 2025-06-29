@@ -119,7 +119,7 @@ fn main() {
             let scripts = transliterator.list_supported_scripts();
             for script in scripts {
                 // Provide descriptions for known scripts
-                let description = match script {
+                let description = match script.as_str() {
                     "iast" => "IAST (International Alphabet of Sanskrit Transliteration)",
                     "itrans" => "ITRANS (ASCII transliteration)",
                     "slp1" => "SLP1 (Sanskrit Library Phonetic scheme)",
