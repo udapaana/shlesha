@@ -40,9 +40,7 @@ fn main() {
     println!("cargo:rerun-if-changed=schemas/");
 
     if let Err(e) = generate_schema_based_converters() {
-        println!(
-            "cargo:warning=Failed to generate schema-based converters: {e}"
-        );
+        println!("cargo:warning=Failed to generate schema-based converters: {e}");
     }
 }
 
