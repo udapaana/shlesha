@@ -142,7 +142,7 @@ fn test_multiple_conversions_performance() {
 #[test]
 fn test_transliterator_creation_performance() {
     // Transliterator creation should be fast (initialization overhead)
-    let (transliterator, duration) = measure_time(|| Shlesha::new());
+    let (transliterator, duration) = measure_time(Shlesha::new);
 
     // Test that it actually works
     let result = transliterator.transliterate("test", "iso15919", "devanagari");
@@ -225,7 +225,7 @@ fn test_concurrent_performance() {
 #[test]
 fn test_schema_loading_performance() {
     // Test that runtime schema loading doesn't cause major slowdowns
-    let (mut transliterator, creation_duration) = measure_time(|| Shlesha::new());
+    let (mut transliterator, creation_duration) = measure_time(Shlesha::new);
 
     // Try to load a schema if available (this might fail in CI, which is OK)
     if std::path::Path::new("schemas/test").exists() {

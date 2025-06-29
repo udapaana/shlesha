@@ -7,7 +7,7 @@ use vidyut_lipi::{Lipika, Scheme};
 fn main() {
     println!("🏆 Shlesha vs Vidyut Comprehensive Performance Comparison");
     println!("=======================================================");
-    println!("");
+    println!();
 
     // Initialize converters
     let shlesha_slp1 = Slp1Converter::new();
@@ -21,7 +21,7 @@ fn main() {
     println!("Testing libraries:");
     println!("  📚 Shlesha: Optimized transliterator (our implementation)");
     println!("  🚀 Vidyut: High-performance Sanskrit toolkit");
-    println!("");
+    println!();
 
     // Test data sets of different sizes and complexity
     let test_cases = vec![
@@ -344,7 +344,7 @@ fn compare_features() {
     println!("    ✅ Python and WASM bindings");
     println!("    ✅ 15+ script support with easy addition");
     println!("    ✅ Modular design for custom workflows");
-    println!("");
+    println!();
     println!("  🚀 Vidyut Advantages:");
     println!("    ✅ Highly optimized for speed");
     println!("    ✅ Comprehensive Sanskrit toolkit");
@@ -355,16 +355,16 @@ fn compare_features() {
 
 fn print_summary() {
     println!("Performance positioning after optimization:");
-    println!("");
+    println!();
     println!("🎯 TARGET ACHIEVEMENT:");
     println!("  Goal: Outperform Aksharamukha and Dharmamitra");
     println!("  Accept: Being ~19x slower than Vidyut for extensibility benefits");
-    println!("");
+    println!();
     println!("📈 ACTUAL RESULTS:");
     println!("  Roman Scripts: 131.7% improvement (2.32x faster than before)");
     println!("  Indic Scripts: Already highly efficient (10.99 MB/s)");
     println!("  Architecture: Extensible hub-and-spoke vs pure performance");
-    println!("");
+    println!();
     println!("🏆 CONCLUSION:");
     println!("  Shlesha provides excellent performance with superior extensibility");
     println!("  Roman script optimizations bring us much closer to Vidyut");

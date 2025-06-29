@@ -5,11 +5,11 @@ use vidyut_lipi::{Lipika, Scheme};
 fn main() {
     println!("🌟 Hub-and-Spoke vs Direct Conversion Performance");
     println!("=================================================");
-    println!("");
+    println!();
     println!("Comparing identical conversions:");
     println!("  📚 Shlesha: Hub-and-spoke (2-3 hops through Devanagari/ISO-15919)");
     println!("  🚀 Vidyut: Direct conversion (optimized single-step)");
-    println!("");
+    println!();
 
     // Initialize transliterators
     let shlesha = Shlesha::new();
@@ -223,11 +223,11 @@ fn main() {
                     }
                 }
             }
-            println!("");
+            println!();
         }
 
         println!("────────────────────────────────────────────────────────────");
-        println!("");
+        println!();
     }
 
     // Architecture analysis
@@ -237,12 +237,12 @@ fn main() {
     println!("  📚 Indic → Roman: Script → Devanagari → ISO-15919 → Roman (2 hops)");
     println!("  📚 Roman → Indic: Roman → ISO-15919 → Devanagari → Script (2 hops)");
     println!("  📚 Cross-Indic:   Source → Devanagari → Target (1 hop)");
-    println!("");
+    println!();
     println!("Vidyut Direct Conversions:");
     println!("  🚀 Any → Any: Optimized direct mapping (0 hops)");
     println!("  🚀 Compile-time optimization for each path");
     println!("  🚀 No intermediate representations");
-    println!("");
+    println!();
 
     println!("🏆 PERFORMANCE TRADE-OFFS");
     println!("=========================");
@@ -251,13 +251,13 @@ fn main() {
     println!("  ✅ Consistent conversion paths (via proven hubs)");
     println!("  ✅ Easy to add scripts (just map to/from hub)");
     println!("  ✅ Unified architecture for all conversions");
-    println!("");
+    println!();
     println!("Vidyut Advantages:");
     println!("  ✅ Maximum performance (direct conversions)");
     println!("  ✅ No intermediate conversion overhead");
     println!("  ✅ Highly optimized for each conversion path");
     println!("  ✅ Minimal memory allocation");
-    println!("");
+    println!();
     println!("Trade-off Summary:");
     println!("  📊 Shlesha: Slight performance cost for major extensibility gain");
     println!("  📊 Vidyut: Maximum performance, limited extensibility");

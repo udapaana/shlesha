@@ -101,7 +101,7 @@ fn main() {
                                         let annotation =
                                             format!("[{}:{}]", token.script, token.token);
                                         // Insert annotation after the token position
-                                        if token.position + 1 <= output.len() {
+                                        if token.position < output.len() {
                                             output.insert_str(token.position + 1, &annotation);
                                         } else {
                                             output.push_str(&annotation);

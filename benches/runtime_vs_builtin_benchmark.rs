@@ -198,11 +198,11 @@ fn bench_schema_loading_overhead(c: &mut Criterion) {
 
     // Benchmark transliterator creation with runtime schema
     group.bench_function("create_with_runtime_schema", |b| {
-        b.iter(|| setup_runtime_transliterator())
+        b.iter(setup_runtime_transliterator)
     });
 
     // Benchmark built-in transliterator creation (baseline)
-    group.bench_function("create_builtin_only", |b| b.iter(|| Shlesha::new()));
+    group.bench_function("create_builtin_only", |b| b.iter(Shlesha::new));
 
     group.finish();
 }
@@ -210,7 +210,7 @@ fn bench_schema_loading_overhead(c: &mut Criterion) {
 fn bench_script_management(c: &mut Criterion) {
     let mut group = c.benchmark_group("script_management");
 
-    let mut transliterator = setup_runtime_transliterator();
+    let transliterator = setup_runtime_transliterator();
 
     // Benchmark listing supported scripts
     group.bench_function("list_supported_scripts", |b| {
