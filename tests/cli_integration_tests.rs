@@ -143,7 +143,7 @@ mod cli_tests {
         stdin
             .write_all("अ".as_bytes())
             .expect("Failed to write to stdin");
-        drop(stdin); // Close stdin to signal EOF
+        let _ = child.stdin.take(); // Close stdin to signal EOF
 
         let output = child.wait_with_output().expect("Failed to wait for CLI");
         assert!(output.status.success());
