@@ -24,7 +24,7 @@ toml = "0.8"
 clap = { version = "4.0", features = ["derive"], optional = true }
 
 # Python bindings
-pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+pyo3 = { version = "0.25", features = ["extension-module"], optional = true }
 
 # WASM bindings
 wasm-bindgen = { version = "0.2", optional = true }
