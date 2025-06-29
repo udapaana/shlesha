@@ -552,6 +552,10 @@ let result = hub.deva_to_iso_with_metadata("धर्म")?;
 - [**Performance Guide**](docs/PERFORMANCE.md) - Optimization techniques and benchmarks
 - [**API Reference**](docs/API_REFERENCE.md) - Complete function and type reference
 - [**Developer Setup**](docs/DEVELOPER_SETUP.md) - Development environment setup
+- [**Release System**](docs/RELEASE_SYSTEM.md) - Automated release workflow overview
+- [**Deployment Guide**](DEPLOYMENT.md) - Complete deployment and environment setup
+- [**crates.io RC Support**](docs/CRATES_IO_RC_SUPPORT.md) - Release candidate publishing guide
+- [**Security Setup**](docs/SECURITY_SETUP.md) - Token management and environment security
 - [**Contributing Guide**](CONTRIBUTING.md) - Guidelines for contributors
 
 ### Quick Reference
@@ -567,6 +571,30 @@ cargo run --example roman_allocation_analysis
 # Performance testing
 cargo bench
 ```
+
+## 🚀 Releases
+
+Shlesha uses an automated release system for publishing to multiple package registries:
+
+### Quick Release
+```bash
+# Guided release process
+./scripts/release.sh
+```
+
+### Package Installation
+```bash
+# Python (PyPI)
+pip install shlesha
+
+# WASM (npm)  
+npm install shlesha-wasm
+
+# Rust (crates.io)
+cargo add shlesha
+```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete release documentation.
 
 ## 🤝 Contributing
 

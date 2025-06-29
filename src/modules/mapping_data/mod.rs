@@ -11,13 +11,12 @@ pub mod generated;
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::sync::Mutex;
-use std::fs;
 use std::path::Path;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::modules::{ModuleTodoQueue, TodoItem, TodoResponse};
-use self::loader::{load_mapping_file, flatten_mappings, MappingFile};
+use self::loader::{load_mapping_file, flatten_mappings};
 
 /// Mapping data types
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -107,7 +106,7 @@ impl MappingDataManager {
     }
     
     /// Handle validate_mappings request
-    fn handle_validate_mappings(&self, todo: &TodoItem) -> Result<Value, Box<dyn std::error::Error>> {
+    fn handle_validate_mappings(&self, _todo: &TodoItem) -> Result<Value, Box<dyn std::error::Error>> {
         // TODO: Implement mapping validation
         Ok(json!({
             "valid": true,
@@ -117,9 +116,9 @@ impl MappingDataManager {
     
     /// Handle compose_mappings request
     fn handle_compose_mappings(&self, todo: &TodoItem) -> Result<Value, Box<dyn std::error::Error>> {
-        let first_step = todo.data.get("first_step")
+        let _first_step = todo.data.get("first_step")
             .ok_or("Missing first_step")?;
-        let second_step = todo.data.get("second_step")
+        let _second_step = todo.data.get("second_step")
             .ok_or("Missing second_step")?;
         
         // TODO: Implement mapping composition

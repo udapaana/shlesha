@@ -25,7 +25,6 @@ struct ScriptMappings {
 
 #[derive(serde::Deserialize, Debug)]
 struct CodegenConfig {
-    mapping_type: String,
     processor_type: String,
 }
 
@@ -210,7 +209,7 @@ fn generate_roman_converter_with_template(
     
     // Prepare reverse priority mappings for template
     let reverse_priority_mappings: HashMap<&str, &str> = sorted_mappings.iter()
-        .filter(|(from, to)| to.len() > 1) // Multi-character sequences get priority
+        .filter(|(_from, to)| to.len() > 1) // Multi-character sequences get priority
         .map(|(from, to)| (to.as_str(), from.as_str()))
         .collect();
     

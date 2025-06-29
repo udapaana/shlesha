@@ -1,0 +1,144 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  # Create GitHub release
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: ${{ contains(github.ref, 'rc') }}
+          body: |
+            ## Changes in this Release
+            
+            ### 🎯 Highlights
+            - 
+            
+            ### 🐛 Bug Fixes
+            - 
+            
+            ### 📚 Documentation
+            - 
+            
+            ### Installation
+            
+            #### Python (PyPI)
+            ```bash
+            pip install shlesha==${{ github.ref_name }}
+            ```
+            
+            #### JavaScript/TypeScript (npm)
+            ```bash
+            npm install shlesha-wasm@${{ github.ref_name }}
+            ```
+            
+            #### Rust (crates.io)
+            ```toml
+            shlesha = "${{ github.ref_name }}"
+            ```
+
+  # Build CLI binaries for multiple platforms
+  build-cli:
+    name: Build CLI for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: create-release
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            binary: shlesha
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            binary: shlesha
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            binary: shlesha
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            binary: shlesha.exe
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Build CLI
+        run: cargo build --release --features cli --target ${{ matrix.target }}
+      
+      - name: Create archive
+        shell: bash
+        run: |
+          staging="shlesha-${{ github.ref_name }}-${{ matrix.target }}"
+          mkdir -p "$staging"
+          cp "target/${{ matrix.target }}/release/${{ matrix.binary }}" "$staging/"
+          cp README.md LICENSE-MIT LICENSE-APACHE "$staging/"
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            7z a "$staging.zip" "$staging"
+            echo "ASSET=$staging.zip" >> $GITHUB_ENV
+          else
+            tar czf "$staging.tar.gz" "$staging"
+            echo "ASSET=$staging.tar.gz" >> $GITHUB_ENV
+          fi
+      
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.ASSET }}
+          asset_name: ${{ env.ASSET }}
+          asset_content_type: application/octet-stream
+
+  # Publish to crates.io (RC releases)
+  publish-crates-rc:
+    name: Publish to crates.io (RC)
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.ref, 'rc') }}
+    needs: create-release
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      
+      - name: Publish RC to crates.io
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        continue-on-error: true # Allow failure for now
+
+  # Publish to crates.io (stable releases)
+  publish-crates:
+    name: Publish to crates.io (Stable)
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.ref, 'rc') }}
+    needs: create-release
+    environment: prd
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      
+      - name: Publish to crates.io
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        continue-on-error: true # Allow failure for now

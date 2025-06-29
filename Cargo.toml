@@ -47,6 +47,7 @@ proptest = "1.2"
 quickcheck = "1.0"
 quickcheck_macros = "1.0"
 vidyut-lipi = "0.2.0"
+tempfile = "3.8"
 
 [features]
 default = ["cli"]

@@ -157,7 +157,7 @@ impl TransliterationResult {
                     // Insert annotation after the unknown character
                     if let Some(char_boundary) = result.char_indices()
                         .find(|(i, _)| *i == token.position)
-                        .and_then(|(i, ch)| result.char_indices()
+                        .and_then(|(i, _ch)| result.char_indices()
                             .find(|(j, _)| *j > i)
                             .map(|(j, _)| j)
                             .or(Some(result.len()))) {

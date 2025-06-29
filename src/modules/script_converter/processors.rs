@@ -180,54 +180,6 @@ impl RomanScriptProcessor {
         Ok(result)
     }
     
-    
-    /// Fast path for pure ASCII text without diacritics
-    fn process_ascii_fast(
-        input: &str,
-        mapping: &HashMap<&str, &str>
-    ) -> Result<String, ConverterError> {
-        let mut result = String::with_capacity(input.len() * 2);
-        let bytes = input.as_bytes();
-        let mut i = 0;
-        
-        while i < bytes.len() {
-            let ch = bytes[i] as char;
-            
-            if ch.is_whitespace() {
-                result.push(ch);
-                i += 1;
-                continue;
-            }
-            
-            // Note: Don't preserve punctuation as-is since some schemes (Velthuis, WX) 
-            // use punctuation characters as part of their encoding
-            
-            let mut matched = false;
-            
-            // For ASCII, we can work directly with byte slices
-            for len in (1..=4).rev() {
-                if i + len > bytes.len() {
-                    continue;
-                }
-                
-                if let Ok(seq) = std::str::from_utf8(&bytes[i..i + len]) {
-                    if let Some(&mapped_str) = mapping.get(seq) {
-                        result.push_str(mapped_str);
-                        i += len;
-                        matched = true;
-                        break;
-                    }
-                }
-            }
-            
-            if !matched {
-                result.push(ch);
-                i += 1;
-            }
-        }
-        
-        Ok(result)
-    }
 }
 
 /// Shared processor for Indic script conversions (Devanagari, Bengali, Tamil, etc.)
@@ -301,7 +253,7 @@ impl IndicScriptProcessor {
     pub fn from_hub(
         input: &str,
         mapping: &HashMap<&str, &str>,
-        has_implicit_a: bool,
+        _has_implicit_a: bool,
     ) -> Result<String, ConverterError> {
         // For now, use the same logic as Roman scripts
         // TODO: Implement proper Indic-specific logic for vowel marks

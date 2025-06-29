@@ -20,6 +20,23 @@ pub enum RegistryError {
     ParseError(String),
 }
 
+/// Statistics about the schema registry
+#[derive(Debug, Clone)]
+pub struct RegistryStats {
+    /// Total number of registered schemas
+    pub total_schemas: usize,
+    /// Number of Roman script schemas
+    pub roman_scripts: usize,
+    /// Number of Brahmic script schemas  
+    pub brahmic_scripts: usize,
+    /// Number of schemas with implicit 'a' vowels
+    pub implicit_a_scripts: usize,
+    /// Number of schemas currently cached
+    pub cached_schemas: usize,
+    /// Total number of mappings across all schemas
+    pub total_mappings: usize,
+}
+
 /// Represents metadata about a schema (unified format matching build system)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SchemaMetadata {
@@ -165,6 +182,18 @@ pub trait SchemaRegistryTrait {
     fn validate_schema(&self, schema: &Schema) -> Result<(), RegistryError>;
     fn remove_schema(&mut self, script_name: &str) -> bool;
     fn clear(&mut self);
+    
+    /// Get the count of registered schemas
+    fn schema_count(&self) -> usize;
+    
+    /// Check if a schema with given name exists
+    fn has_schema(&self, script_name: &str) -> bool;
+    
+    /// Get schema metadata without returning the full schema
+    fn get_schema_metadata(&self, script_name: &str) -> Option<&SchemaMetadata>;
+    
+    /// Get statistics about the registry
+    fn get_registry_stats(&self) -> RegistryStats;
 }
 
 #[derive(Clone)]
@@ -254,6 +283,59 @@ impl SchemaRegistry {
         
         Ok(loaded_count)
     }
+    
+    /// Get schemas by script type
+    pub fn get_schemas_by_type(&self, script_type: &str) -> Vec<&Schema> {
+        self.schemas.values()
+            .filter(|schema| schema.script_type == script_type)
+            .collect()
+    }
+    
+    /// Get all schemas with implicit 'a' vowels
+    pub fn get_implicit_a_schemas(&self) -> Vec<&Schema> {
+        self.schemas.values()
+            .filter(|schema| schema.metadata.has_implicit_a)
+            .collect()
+    }
+    
+    /// Find schemas by alias
+    pub fn find_schema_by_alias(&self, alias: &str) -> Option<&Schema> {
+        self.schemas.values()
+            .find(|schema| {
+                schema.metadata.aliases
+                    .as_ref()
+                    .map(|aliases| aliases.contains(&alias.to_string()))
+                    .unwrap_or(false)
+            })
+    }
+    
+    /// Check if registry is empty (only built-in schemas)
+    pub fn is_empty(&self) -> bool {
+        // Consider empty if only built-in schemas remain
+        self.schemas.len() <= 2 // devanagari and iso15919
+    }
+    
+    /// Export registry configuration as YAML (useful for debugging)
+    pub fn export_summary(&self) -> String {
+        let stats = self.get_registry_stats();
+        format!(
+            "Registry Summary:\n\
+            - Total schemas: {}\n\
+            - Roman scripts: {}\n\
+            - Brahmic scripts: {}\n\
+            - Schemas with implicit 'a': {}\n\
+            - Cached schemas: {}\n\
+            - Total mappings: {}\n\
+            - Schema names: [{}]",
+            stats.total_schemas,
+            stats.roman_scripts,
+            stats.brahmic_scripts,
+            stats.implicit_a_scripts,
+            stats.cached_schemas,
+            stats.total_mappings,
+            self.list_schemas().join(", ")
+        )
+    }
 }
 
 impl SchemaRegistryTrait for SchemaRegistry {
@@ -338,6 +420,44 @@ impl SchemaRegistryTrait for SchemaRegistry {
         self.schemas.clear();
         self.schema_cache.clear();
     }
+    
+    fn schema_count(&self) -> usize {
+        self.schemas.len()
+    }
+    
+    fn has_schema(&self, script_name: &str) -> bool {
+        self.schemas.contains_key(script_name)
+    }
+    
+    fn get_schema_metadata(&self, script_name: &str) -> Option<&SchemaMetadata> {
+        self.schemas.get(script_name).map(|schema| &schema.metadata)
+    }
+    
+    fn get_registry_stats(&self) -> RegistryStats {
+        let total_schemas = self.schemas.len();
+        let roman_scripts = self.schemas.values()
+            .filter(|schema| schema.script_type == "roman")
+            .count();
+        let brahmic_scripts = self.schemas.values()
+            .filter(|schema| schema.script_type == "brahmic")
+            .count();
+        let implicit_a_scripts = self.schemas.values()
+            .filter(|schema| schema.metadata.has_implicit_a)
+            .count();
+        let cached_schemas = self.schema_cache.len();
+        let total_mappings = self.schemas.values()
+            .map(|schema| schema.mappings.len())
+            .sum();
+            
+        RegistryStats {
+            total_schemas,
+            roman_scripts,
+            brahmic_scripts,
+            implicit_a_scripts,
+            cached_schemas,
+            total_mappings,
+        }
+    }
 }
 
 impl Default for SchemaRegistry {
@@ -345,6 +465,11 @@ impl Default for SchemaRegistry {
         Self::new()
     }
 }
+
+mod error_tests;
+
+#[cfg(test)]
+mod validation_tests;
 
 #[cfg(test)]
 mod tests {
@@ -486,6 +611,48 @@ mod tests {
         assert!(retrieved.metadata.has_implicit_a);
         assert_eq!(retrieved.metadata.description, Some("Test description".to_string()));
         assert_eq!(retrieved.metadata.aliases, Some(vec!["test_alias".to_string()]));
+    }
+    
+    #[test]
+    fn test_new_interface_methods() {
+        let mut registry = SchemaRegistry::new();
+        
+        // Test schema count
+        let initial_count = registry.schema_count();
+        assert_eq!(initial_count, 2); // Built-in schemas
+        
+        // Add a test schema
+        let test_schema = Schema::new("test_interface".to_string(), "roman".to_string());
+        registry.register_schema("test_interface".to_string(), test_schema).unwrap();
+        
+        // Test has_schema
+        assert!(registry.has_schema("test_interface"));
+        assert!(!registry.has_schema("nonexistent"));
+        
+        // Test schema count after addition
+        assert_eq!(registry.schema_count(), 3);
+        
+        // Test get_schema_metadata
+        let metadata = registry.get_schema_metadata("test_interface");
+        assert!(metadata.is_some());
+        assert_eq!(metadata.unwrap().name, "test_interface");
+        
+        // Test get_registry_stats
+        let stats = registry.get_registry_stats();
+        assert_eq!(stats.total_schemas, 3);
+        assert!(stats.roman_scripts >= 1);
+        
+        // Test get_schemas_by_type
+        let roman_schemas = registry.get_schemas_by_type("roman");
+        assert!(roman_schemas.len() >= 1);
+        
+        // Test export_summary
+        let summary = registry.export_summary();
+        assert!(summary.contains("Registry Summary"));
+        assert!(summary.contains("test_interface"));
+        
+        // Test is_empty (should be false after adding schemas)
+        assert!(!registry.is_empty());
     }
     
     #[test]

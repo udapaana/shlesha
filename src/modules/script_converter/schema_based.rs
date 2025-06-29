@@ -5,7 +5,7 @@
 
 use std::sync::Arc;
 use std::collections::HashMap;
-use crate::modules::hub::{HubInput, HubError};
+use crate::modules::hub::HubInput;
 use crate::modules::core::unknown_handler::{TransliterationResult, TransliterationMetadata, UnknownToken};
 use crate::modules::registry::{SchemaRegistry, SchemaRegistryTrait, Schema};
 use super::{ScriptConverter, ConverterError};
@@ -67,7 +67,6 @@ impl SchemaBasedConverter {
             if !matched {
                 if let Some(mapped) = mapping_to_use.get(&ch_str) {
                     result.push_str(mapped);
-                    matched = true;
                 } else {
                     // Unknown character - pass through
                     result.push(ch);

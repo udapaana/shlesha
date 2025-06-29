@@ -17,7 +17,8 @@ extern "C" {
     fn log(s: &str);
 }
 
-// Macro for console logging
+// Macro for console logging (currently unused but kept for future debugging)
+#[allow(unused_macros)]
 macro_rules! console_log {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
@@ -159,7 +160,7 @@ impl WasmShlesha {
         let scripts = self.inner.list_supported_scripts();
         let array = Array::new();
         for script in scripts {
-            array.push(&JsValue::from_str(script));
+            array.push(&JsValue::from_str(&script));
         }
         array
     }
@@ -193,7 +194,7 @@ impl WasmShlesha {
     #[wasm_bindgen(js_name = loadSchema)]
     pub fn load_schema(&mut self, schema_path: &str) -> Result<(), JsValue> {
         self.inner
-            .load_schema(schema_path)
+            .load_schema_from_file(schema_path)
             .map_err(|e| JsValue::from_str(&format!("Schema loading failed: {}", e)))
     }
 
@@ -212,7 +213,7 @@ impl WasmShlesha {
         let obj = Object::new();
         
         for script in self.inner.list_supported_scripts() {
-            let description = match script {
+            let description = match script.as_str() {
                 "iast" => "IAST (International Alphabet of Sanskrit Transliteration)",
                 "itrans" => "ITRANS (ASCII transliteration)",
                 "slp1" => "SLP1 (Sanskrit Library Phonetic scheme)",
@@ -231,7 +232,7 @@ impl WasmShlesha {
                 _ => "Unknown script type",
             };
             
-            Reflect::set(&obj, &JsValue::from_str(script), &JsValue::from_str(description))
+            Reflect::set(&obj, &JsValue::from_str(&script), &JsValue::from_str(description))
                 .map_err(|_| JsValue::from_str("Failed to set property"))?;
         }
         
@@ -463,7 +464,7 @@ pub fn get_supported_scripts() -> Array {
     let scripts = transliterator.list_supported_scripts();
     let array = Array::new();
     for script in scripts {
-        array.push(&JsValue::from_str(script));
+        array.push(&JsValue::from_str(&script));
     }
     array
 }

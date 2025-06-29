@@ -1,0 +1,87 @@
+name: WASM
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  # Test WASM build
+  test-wasm:
+    name: Test WASM Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Build WASM for web
+        run: wasm-pack build --target web --out-dir pkg --features wasm
+      
+      - name: Build WASM for Node.js
+        run: wasm-pack build --target nodejs --out-dir pkg-node --features wasm
+      
+      - name: Run WASM tests
+        run: wasm-pack test --node --features wasm
+
+  # Build and publish to npm
+  publish-npm:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    needs: test-wasm
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Build WASM package
+        run: |
+          wasm-pack build --target web --out-dir pkg --features wasm
+          # Update package.json version to match tag
+          cd pkg
+          npm version ${GITHUB_REF#refs/tags/v} --no-git-tag-version
+      
+      - name: Publish to npm (dry run)
+        run: |
+          cd pkg
+          npm publish --dry-run
+      
+      - name: Publish to npm
+        run: |
+          cd pkg
+          if [[ "${GITHUB_REF}" == *"rc"* ]]; then
+            echo "Publishing release candidate with 'rc' tag"
+            npm publish --access public --tag rc
+          else
+            echo "Publishing stable release with 'latest' tag"
+            npm publish --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

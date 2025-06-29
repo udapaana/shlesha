@@ -13,17 +13,36 @@ pub enum HubError {
     ConversionFailed(String),
 }
 
-#[derive(Debug, Clone)]
-pub enum HubInput {
+/// Hub format representation - used for both input and output
+#[derive(Debug, Clone, PartialEq)]
+pub enum HubFormat {
     Devanagari(String),
     Iso(String),
 }
 
-#[derive(Debug, Clone)]
-pub enum HubOutput {
-    Devanagari(String),
-    Iso(String),
+impl HubFormat {
+    /// Extract the string content regardless of format
+    pub fn as_str(&self) -> &str {
+        match self {
+            HubFormat::Devanagari(s) => s,
+            HubFormat::Iso(s) => s,
+        }
+    }
+    
+    /// Check if this is Devanagari format
+    pub fn is_devanagari(&self) -> bool {
+        matches!(self, HubFormat::Devanagari(_))
+    }
+    
+    /// Check if this is ISO format
+    pub fn is_iso(&self) -> bool {
+        matches!(self, HubFormat::Iso(_))
+    }
 }
+
+// Type aliases for backward compatibility
+pub type HubInput = HubFormat;
+pub type HubOutput = HubFormat;
 
 #[derive(Debug, Clone)]
 pub struct HubResult {
@@ -33,12 +52,31 @@ pub struct HubResult {
 
 /// Core hub trait for Devanagari ↔ ISO-15919 bidirectional conversion
 pub trait HubTrait {
+    /// Convert Devanagari to ISO-15919
     fn deva_to_iso(&self, input: &str) -> Result<HubOutput, HubError>;
+    
+    /// Convert ISO-15919 to Devanagari
     fn iso_to_deva(&self, input: &str) -> Result<HubOutput, HubError>;
     
     /// Convert with metadata collection
     fn deva_to_iso_with_metadata(&self, input: &str) -> Result<HubResult, HubError>;
     fn iso_to_deva_with_metadata(&self, input: &str) -> Result<HubResult, HubError>;
+    
+    /// Generic conversion between hub formats
+    fn convert(&self, input: &HubInput) -> Result<HubOutput, HubError> {
+        match input {
+            HubFormat::Devanagari(text) => self.deva_to_iso(text),
+            HubFormat::Iso(text) => self.iso_to_deva(text),
+        }
+    }
+    
+    /// Generic conversion with metadata
+    fn convert_with_metadata(&self, input: &HubInput) -> Result<HubResult, HubError> {
+        match input {
+            HubFormat::Devanagari(text) => self.deva_to_iso_with_metadata(text),
+            HubFormat::Iso(text) => self.iso_to_deva_with_metadata(text),
+        }
+    }
 }
 
 /// Central hub implementing Devanagari ↔ ISO-15919 conversion
@@ -658,6 +696,9 @@ mod unicode_coverage_test;
 
 #[cfg(test)]
 mod extended_coverage_tests;
+
+#[cfg(test)]
+mod malformed_input_tests;
 
 #[cfg(test)]
 mod original_tests {

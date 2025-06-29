@@ -265,7 +265,7 @@ impl PyShlesha {
         let mut info = HashMap::new();
         
         for script in self.inner.list_supported_scripts() {
-            let description = match script {
+            let description = match script.as_str() {
                 "iast" => "IAST (International Alphabet of Sanskrit Transliteration)",
                 "itrans" => "ITRANS (ASCII transliteration)",
                 "slp1" => "SLP1 (Sanskrit Library Phonetic scheme)",

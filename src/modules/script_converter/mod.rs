@@ -54,13 +54,26 @@ pub enum ConverterError {
     HubError(#[from] HubError),
 }
 
-/// Core trait for converting from various scripts to hub format (ISO-15919)
+/// Statistics about converter capabilities
+#[derive(Debug, Clone)]
+pub struct ConverterStats {
+    /// Total number of registered converters
+    pub total_converters: usize,
+    /// Total number of supported scripts (including aliases)
+    pub total_scripts: usize,
+    /// Number of scripts that support bidirectional conversion
+    pub bidirectional_scripts: usize,
+    /// Number of scripts with implicit 'a' vowels (Indic scripts)
+    pub implicit_a_scripts: usize,
+}
+
+/// Core trait for converting from various scripts to hub format
 pub trait ScriptConverter {
     /// Convert text from a specific script to hub input format
     fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError>;
     
     /// Convert text from hub format to a specific script (reverse conversion)
-    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+    fn from_hub(&self, script: &str, _hub_input: &HubInput) -> Result<String, ConverterError> {
         // Default implementation for converters that don't support reverse conversion
         Err(ConverterError::ConversionFailed {
             script: script.to_string(),
@@ -99,6 +112,14 @@ pub trait ScriptConverter {
     /// Returns false for romanization schemes (ITRANS, SLP1, IAST, ISO-15919)
     /// where consonants are explicitly written without vowels.
     fn script_has_implicit_a(&self, script: &str) -> bool;
+    
+    /// Check if this converter supports bidirectional conversion
+    fn supports_reverse_conversion(&self, script: &str) -> bool {
+        // Default implementation - try a dummy conversion to see if it errors
+        use crate::modules::hub::HubFormat;
+        let dummy_input = HubFormat::Iso("test".to_string());
+        self.from_hub(script, &dummy_input).is_ok()
+    }
 }
 
 /// Registry for script converters
@@ -294,6 +315,64 @@ impl ScriptConverterRegistry {
         scripts.sort();
         scripts.dedup();
         scripts
+    }
+    
+    /// Check if a converter supports bidirectional conversion for a specific script
+    pub fn supports_reverse_conversion(&self, script: &str) -> bool {
+        // Special case: Devanagari always supports reverse conversion (hub format)
+        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
+            return true;
+        }
+        
+        // Resolve aliases first
+        let canonical_script = self.resolve_script_alias(script);
+        
+        // Fast lookup using HashMap cache
+        if let Some(&converter_index) = self.script_to_converter.get(canonical_script) {
+            return self.converters[converter_index].supports_reverse_conversion(canonical_script);
+        }
+        
+        false
+    }
+    
+    /// Check if a script has implicit 'a' vowel in consonants
+    pub fn script_has_implicit_a(&self, script: &str) -> bool {
+        // Special case: Devanagari always has implicit 'a' vowels
+        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
+            return true;
+        }
+        
+        // Resolve aliases first
+        let canonical_script = self.resolve_script_alias(script);
+        
+        // Fast lookup using HashMap cache
+        if let Some(&converter_index) = self.script_to_converter.get(canonical_script) {
+            return self.converters[converter_index].script_has_implicit_a(canonical_script);
+        }
+        
+        // Default to false for unknown scripts
+        false
+    }
+    
+    /// Get converter statistics and capabilities
+    pub fn get_stats(&self) -> ConverterStats {
+        let total_converters = self.converters.len();
+        let total_scripts = self.list_supported_scripts().len();
+        let bidirectional_scripts = self.list_supported_scripts()
+            .iter()
+            .filter(|script| self.supports_reverse_conversion(script))
+            .count();
+        let implicit_a_scripts = self.list_supported_scripts()
+            .iter()
+            .filter(|script| self.script_has_implicit_a(script))
+            .count();
+        
+        ConverterStats {
+            total_converters,
+            total_scripts,
+            bidirectional_scripts,
+            implicit_a_scripts,
+        }
     }
 }
 
