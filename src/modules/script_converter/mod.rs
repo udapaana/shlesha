@@ -73,6 +73,7 @@ pub trait ScriptConverter {
     fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError>;
 
     /// Convert text from hub format to a specific script (reverse conversion)
+    #[allow(clippy::wrong_self_convention)]
     fn from_hub(&self, script: &str, _hub_input: &HubInput) -> Result<String, ConverterError> {
         // Default implementation for converters that don't support reverse conversion
         Err(ConverterError::ConversionFailed {
@@ -94,6 +95,7 @@ pub trait ScriptConverter {
     }
 
     /// Convert from hub with metadata collection for unknown tokens
+    #[allow(clippy::wrong_self_convention)]
     fn from_hub_with_metadata(
         &self,
         script: &str,

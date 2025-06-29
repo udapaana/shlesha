@@ -50,6 +50,7 @@ pub struct WasmUnknownToken {
 pub struct WasmTransliterationMetadata {
     source_script: String,
     target_script: String,
+    #[allow(dead_code)]
     used_extensions: String,
     unknown_tokens: Vec<WasmUnknownToken>,
 }
@@ -72,6 +73,7 @@ impl WasmShlesha {
     /// const transliterator = new WasmShlesha();
     /// ```
     #[wasm_bindgen(constructor)]
+    #[allow(clippy::new_without_default)]
     pub fn new() -> WasmShlesha {
         WasmShlesha {
             inner: Shlesha::new(),

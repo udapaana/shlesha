@@ -101,7 +101,7 @@ impl Shlesha {
                     Ok(result) => result,
                     Err(_) => {
                         // If direct conversion fails, convert through ISO: Devanagari → ISO → target
-                        let hub_output = self.hub.deva_to_iso(&deva)?;
+                        let hub_output = self.hub.deva_to_iso(deva)?;
                         if let HubOutput::Iso(ref iso_result) = hub_output {
                             let iso_hub_input = HubInput::Iso(iso_result.clone());
                             self.script_converter_registry
@@ -126,7 +126,7 @@ impl Shlesha {
                     Ok(result) => result,
                     Err(_) => {
                         // If direct conversion fails, convert through Devanagari: ISO → Devanagari → target
-                        let hub_output = self.hub.iso_to_deva(&iso)?;
+                        let hub_output = self.hub.iso_to_deva(iso)?;
                         if let HubOutput::Devanagari(ref deva_result) = hub_output {
                             let deva_hub_input = HubInput::Devanagari(deva_result.clone());
                             self.script_converter_registry

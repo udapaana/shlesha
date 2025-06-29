@@ -25,7 +25,7 @@ impl FastMappingBuilder {
 
         // Sort candidates by length descending for greedy longest match
         for candidates in by_first_char.values_mut() {
-            candidates.sort_by(|a, b| b.len().cmp(&a.len()));
+            candidates.sort_by_key(|b| std::cmp::Reverse(b.len()));
         }
 
         (mapping, by_first_char)

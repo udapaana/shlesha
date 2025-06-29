@@ -62,7 +62,7 @@ impl ModuleTodoQueue {
         let mut queues = self.queues.lock().unwrap();
         let module_queue = queues
             .entry(todo.module.clone())
-            .or_insert_with(VecDeque::new);
+            .or_default();
 
         // Insert based on priority
         let position = module_queue
@@ -83,7 +83,7 @@ impl ModuleTodoQueue {
     /// Check if a module has pending todos
     pub fn has_todos(&self, module: &str) -> bool {
         let queues = self.queues.lock().unwrap();
-        queues.get(module).map_or(false, |queue| !queue.is_empty())
+        queues.get(module).is_some_and(|queue| !queue.is_empty())
     }
 
     /// Create a request/response pair for synchronous communication

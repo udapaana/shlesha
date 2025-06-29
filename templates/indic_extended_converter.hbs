@@ -1,6 +1,7 @@
 {{!-- Template for Extended Indic script converters using FxHashMap<String, String> for complex mappings --}}
 
 /// Extended {{script_name}} converter with superscript and complex mapping support using FxHashMap
+#[allow(dead_code)]
 pub struct {{struct_name}} {
     {{lowercase script_name}}_to_deva_map: FxHashMap<String, String>,
     deva_to_{{lowercase script_name}}_map: FxHashMap<String, String>,
