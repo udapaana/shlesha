@@ -187,7 +187,7 @@ impl Shlesha {
                     Ok(result) => (result, None),
                     Err(_) => {
                         // If direct conversion fails, convert through ISO: Devanagari → ISO → target
-                        let hub_result = self.hub.deva_to_iso_with_metadata(&deva)?;
+                        let hub_result = self.hub.deva_to_iso_with_metadata(deva)?;
                         let iso_hub_input = match &hub_result.output {
                             modules::hub::HubOutput::Iso(iso_result) => {
                                 modules::hub::HubInput::Iso(iso_result.clone())
@@ -210,7 +210,7 @@ impl Shlesha {
                     Ok(result) => (result, None),
                     Err(_) => {
                         // If direct conversion fails, convert through Devanagari: ISO → Devanagari → target
-                        let hub_result = self.hub.iso_to_deva_with_metadata(&iso)?;
+                        let hub_result = self.hub.iso_to_deva_with_metadata(iso)?;
                         let deva_hub_input = match &hub_result.output {
                             modules::hub::HubOutput::Devanagari(deva_result) => {
                                 modules::hub::HubInput::Devanagari(deva_result.clone())
