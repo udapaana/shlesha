@@ -26,7 +26,6 @@ const INDIC_TO_ROMAN: &[(&str, &str)] = &[
 const ROMAN_TO_INDIC: &[(&str, &str)] = &[
     ("iast", "devanagari"),
     ("iast", "bengali"),
-    ("iast", "tamil"),
     ("iast", "telugu"),
     ("iast", "gujarati"),
     ("iast", "kannada"),
@@ -44,10 +43,17 @@ const ROMAN_TO_ROMAN: &[(&str, &str)] = &[
 ];
 
 const INDIC_TO_INDIC: &[(&str, &str)] = &[
-    ("bengali", "tamil"),
-    ("tamil", "bengali"),
+    ("bengali", "telugu"),
+    ("telugu", "bengali"),
     ("telugu", "malayalam"),
     ("malayalam", "telugu"),
+];
+
+// Tamil only supports one-way conversion (from Tamil to other scripts)
+const TAMIL_ONE_WAY: &[(&str, &str)] = &[
+    ("tamil", "devanagari"),
+    ("tamil", "iast"),      // Tamil → Devanagari → ISO → IAST
+    ("tamil", "slp1"),      // Tamil → Devanagari → ISO → SLP1
 ];
 
 struct BenchmarkResult {
@@ -132,7 +138,7 @@ fn write_benchmark_results(category: &str, results: &[BenchmarkResult]) {
 }
 
 fn generate_markdown_report() {
-    let categories = ["hub", "indic_to_roman", "roman_to_indic", "roman_to_roman", "indic_to_indic"];
+    let categories = ["hub", "indic_to_roman", "roman_to_indic", "roman_to_roman", "indic_to_indic", "tamil_one_way"];
     let mut all_results = Vec::new();
     
     // Read all CSV files
@@ -241,6 +247,21 @@ fn generate_markdown_report() {
         }
     }
     
+    // Tamil One-way Performance
+    md_content.push_str("\n## Tamil One-way Conversions\n\n");
+    md_content.push_str("| From | To | Text Size | Throughput (chars/sec) | Latency (ns) |\n");
+    md_content.push_str("|------|----|-----------|-----------------------|-------------|\n");
+    
+    for result in &all_results {
+        if result.category == "tamil_one_way" {
+            md_content.push_str(&format!(
+                "| {} | {} | {} | {:.0} | {:.0} |\n",
+                result.script_from, result.script_to, result.text_size,
+                result.throughput_chars_per_sec, result.latency_ns
+            ));
+        }
+    }
+    
     // Performance Analysis
     md_content.push_str("\n## Performance Analysis\n\n");
     
@@ -272,6 +293,7 @@ fn generate_markdown_report() {
             "roman_to_indic" => "Roman → Indic (2-hop)",
             "roman_to_roman" => "Roman → Roman (1-hop)",
             "indic_to_indic" => "Indic → Indic (3-hop)",
+            "tamil_one_way" => "Tamil (One-way)",
             _ => category,
         };
         md_content.push_str(&format!(
@@ -303,12 +325,16 @@ fn bench_indic_to_indic(c: &mut Criterion) {
     benchmark_conversion_set(c, "indic_to_indic", INDIC_TO_INDIC);
 }
 
+fn bench_tamil_one_way(c: &mut Criterion) {
+    benchmark_conversion_set(c, "tamil_one_way", TAMIL_ONE_WAY);
+}
+
 criterion_group!(
     name = benches;
     config = Criterion::default()
         .measurement_time(Duration::from_secs(5))
         .sample_size(50);
-    targets = bench_hub_conversions, bench_indic_to_roman, bench_roman_to_indic, bench_roman_to_roman, bench_indic_to_indic
+    targets = bench_hub_conversions, bench_indic_to_roman, bench_roman_to_indic, bench_roman_to_roman, bench_indic_to_indic, bench_tamil_one_way
 );
 
 criterion_main!(benches);
