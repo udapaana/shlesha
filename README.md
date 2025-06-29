@@ -206,6 +206,163 @@ async function demo() {
 }
 ```
 
+## 🔧 Runtime Schema Loading
+
+**NEW**: Shlesha now supports **runtime schema loading** across all APIs, enabling you to add custom scripts without recompilation.
+
+### Rust API
+
+```rust
+use shlesha::Shlesha;
+
+let mut transliterator = Shlesha::new();
+
+// Load custom schema from YAML content
+let custom_schema = r#"
+metadata:
+  name: "my_custom_script"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "My custom transliteration scheme"
+
+target: "iso15919"
+
+mappings:
+  vowels:
+    "a": "a"
+    "e": "ē"
+  consonants:
+    "k": "k"
+    "t": "ṭ"
+"#;
+
+// Load the schema at runtime
+transliterator.load_schema_from_string(custom_schema, "my_custom_script")?;
+
+// Use immediately without recompilation
+let result = transliterator.transliterate("kate", "my_custom_script", "devanagari")?;
+println!("{}", result); // "काटे"
+
+// Schema management
+let info = transliterator.get_schema_info("my_custom_script").unwrap();
+println!("Loaded {} with {} mappings", info.name, info.mapping_count);
+```
+
+### Python API
+
+```python
+import shlesha
+
+transliterator = shlesha.Shlesha()
+
+# Load schema from YAML string
+yaml_content = """
+metadata:
+  name: "custom_script"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "Custom transliteration"
+
+target: "iso15919"
+
+mappings:
+  vowels:
+    "a": "a"
+  consonants:
+    "k": "k"
+"""
+
+# Runtime loading
+transliterator.load_schema_from_string(yaml_content, "custom_script")
+
+# Immediate usage
+result = transliterator.transliterate("ka", "custom_script", "devanagari")
+print(result)  # "क"
+
+# Schema info
+info = transliterator.get_schema_info("custom_script")
+print(f"Script: {info['name']}, Mappings: {info['mapping_count']}")
+
+# Schema management
+transliterator.remove_schema("custom_script")
+transliterator.clear_runtime_schemas()
+```
+
+### JavaScript/WASM API
+
+```javascript
+import init, { WasmShlesha } from './pkg/shlesha.js';
+
+async function loadCustomScript() {
+    await init();
+    const transliterator = new WasmShlesha();
+    
+    // Define custom schema
+    const yamlContent = `
+metadata:
+  name: "custom_script"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "Custom script"
+
+target: "iso15919"
+
+mappings:
+  vowels:
+    "a": "a"
+  consonants:
+    "k": "k"
+`;
+    
+    // Load at runtime
+    transliterator.loadSchemaFromString(yamlContent, "custom_script");
+    
+    // Use immediately
+    const result = transliterator.transliterate("ka", "custom_script", "devanagari");
+    console.log(result); // "क"
+    
+    // Get schema information
+    const info = transliterator.getSchemaInfo("custom_script");
+    console.log(`Name: ${info.name}, Mappings: ${info.mapping_count}`);
+}
+```
+
+### Key Runtime Features
+
+- ✅ **Load from YAML strings** - No file system required
+- ✅ **Load from file paths** - For development workflows  
+- ✅ **Schema validation** - Automatic error checking
+- ✅ **Hot reloading** - Add/remove schemas dynamically
+- ✅ **Schema introspection** - Get metadata about loaded schemas
+- ✅ **Memory management** - Clear schemas when done
+- ✅ **Cross-platform** - Identical API across Rust, Python, WASM
+
+### Use Cases
+
+**Development & Testing**
+```rust
+// Test schema variations quickly
+transliterator.load_schema_from_string(variant_a, "test_a")?;
+transliterator.load_schema_from_string(variant_b, "test_b")?;
+// Compare results immediately
+```
+
+**Dynamic Applications**
+```python
+# User uploads custom transliteration scheme
+user_schema = request.files['schema'].read().decode('utf-8')
+transliterator.load_schema_from_string(user_schema, user_id)
+# Use immediately in application
+```
+
+**Configuration-Driven Systems**
+```javascript
+// Load schemas from configuration
+config.schemas.forEach(schema => {
+    transliterator.loadSchemaFromString(schema.content, schema.name);
+});
+```
+
 ## ⚡ Performance & Benchmarks
 
 ### Competitive Performance Analysis

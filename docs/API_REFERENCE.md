@@ -26,7 +26,8 @@ let scripts = transliterator.list_supported_scripts();
 let supported = transliterator.supports_script("devanagari");
 
 // Runtime schema loading  
-transliterator.load_schema("path/to/schema.yaml")?;
+transliterator.load_schema_from_file("path/to/schema.yaml")?;
+transliterator.load_schema_from_string(yaml_content, "custom_script")?;
 ```
 
 ### Types
@@ -57,38 +58,76 @@ pub struct UnknownToken {
 
 ### Runtime Schema Management
 
+**NEW**: Direct schema management through the main `Shlesha` API:
+
+```rust
+use shlesha::{Shlesha, SchemaInfo};
+
+let mut transliterator = Shlesha::new();
+
+// Load schema from file
+transliterator.load_schema_from_file("path/to/custom_script.yaml")?;
+
+// Load schema from YAML string
+let yaml_content = r#"
+metadata:
+  name: "my_script"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "My custom script"
+target: "iso15919"
+mappings:
+  vowels:
+    "a": "a"
+  consonants:
+    "k": "k"
+"#;
+transliterator.load_schema_from_string(yaml_content, "my_script")?;
+
+// Get schema information
+if let Some(info) = transliterator.get_schema_info("my_script") {
+    println!("Name: {}", info.name);
+    println!("Description: {}", info.description);
+    println!("Type: {}", info.script_type);
+    println!("Runtime loaded: {}", info.is_runtime_loaded);
+    println!("Mapping count: {}", info.mapping_count);
+}
+
+// List all supported scripts (built-in + runtime)
+let scripts = transliterator.list_supported_scripts();
+println!("Available scripts: {:?}", scripts);
+
+// Check if script is supported
+if transliterator.supports_script("my_script") {
+    println!("Custom script is ready to use!");
+}
+
+// Remove a runtime schema
+let removed = transliterator.remove_schema("my_script");
+println!("Schema removed: {}", removed);
+
+// Clear all runtime schemas
+transliterator.clear_runtime_schemas();
+
+// Create with custom registry
+use shlesha::modules::registry::SchemaRegistry;
+let mut registry = SchemaRegistry::new();
+registry.load_schema("custom.yaml")?;
+let transliterator = Shlesha::with_registry(registry);
+```
+
+**Legacy Registry API** (still available for advanced use cases):
+
 ```rust
 use shlesha::modules::registry::{SchemaRegistry, SchemaRegistryTrait};
 
-// Create registry
 let mut registry = SchemaRegistry::new();
-
-// List available schemas
-let schemas = registry.list_schemas();
-for name in schemas {
-    println!("Available: {}", name);
-}
-
-// Load schema from file
 registry.load_schema("path/to/custom_script.yaml")?;
+registry.load_schemas_from_directory("schemas/")?;
 
-// Load all schemas from directory
-let count = registry.load_schemas_from_directory("schemas/")?;
-println!("Loaded {} schemas", count);
-
-// Get schema details
-if let Some(schema) = registry.get_schema("iast") {
-    println!("Script type: {}", schema.script_type);
-    println!("Target: {}", schema.target);
-    println!("Mappings: {}", schema.mappings.len());
+if let Some(schema) = registry.get_schema("script_name") {
+    // Access raw schema data
 }
-
-// Register custom schema programmatically
-let custom_schema = Schema::new("my_script".to_string(), "roman".to_string());
-registry.register_schema("my_script".to_string(), custom_schema)?;
-
-// Validate schema
-registry.validate_schema(&schema)?;
 ```
 
 ## 🐍 Python API
@@ -142,6 +181,56 @@ scripts = shlesha.get_supported_scripts()
 t = shlesha.create_transliterator()
 ```
 
+### Runtime Schema Loading
+
+**NEW**: Python bindings now support comprehensive runtime schema loading:
+
+```python
+import shlesha
+
+# Create transliterator
+transliterator = shlesha.Shlesha()
+
+# Load schema from file
+transliterator.load_schema_from_file("path/to/custom_script.yaml")
+
+# Load schema from YAML string
+yaml_content = """
+metadata:
+  name: "my_script"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "My custom script"
+target: "iso15919"
+mappings:
+  vowels:
+    "a": "a"
+  consonants:
+    "k": "k"
+"""
+transliterator.load_schema_from_string(yaml_content, "my_script")
+
+# Get schema information
+info = transliterator.get_schema_info("my_script")
+if info:
+    print(f"Name: {info['name']}")
+    print(f"Description: {info['description']}")
+    print(f"Type: {info['script_type']}")
+    print(f"Runtime loaded: {info['is_runtime_loaded']}")
+    print(f"Mapping count: {info['mapping_count']}")
+
+# Use the runtime schema
+result = transliterator.transliterate("ka", "my_script", "devanagari")
+print(result)  # "क"
+
+# Remove a runtime schema
+removed = transliterator.remove_schema("my_script")
+print(f"Schema removed: {removed}")
+
+# Clear all runtime schemas
+transliterator.clear_runtime_schemas()
+```
+
 ### Classes
 
 ```python
@@ -150,8 +239,15 @@ class Shlesha:
     def transliterate_with_metadata(self, text: str, from_script: str, to_script: str) -> TransliterationResult
     def list_supported_scripts(self) -> List[str]
     def supports_script(self, script: str) -> bool
-    def load_schema(self, schema_path: str) -> None
+    def load_schema(self, schema_path: str) -> None  # Legacy method
     def get_script_info(self) -> Dict[str, str]
+    
+    # Runtime schema loading methods
+    def load_schema_from_file(self, file_path: str) -> None
+    def load_schema_from_string(self, yaml_content: str, schema_name: str) -> None
+    def get_schema_info(self, script_name: str) -> Optional[Dict[str, Any]]
+    def remove_schema(self, script_name: str) -> bool
+    def clear_runtime_schemas(self) -> None
 
 class TransliterationResult:
     output: str
@@ -209,6 +305,58 @@ const supported = transliterator.supportsScript("devanagari");
 const info = transliterator.getScriptInfo();
 ```
 
+### Runtime Schema Loading
+
+**NEW**: WASM bindings now support comprehensive runtime schema loading:
+
+```javascript
+import init, { WasmShlesha } from './pkg/shlesha.js';
+
+async function loadCustomScript() {
+    await init();
+    const transliterator = new WasmShlesha();
+    
+    // Load schema from YAML string
+    const yamlContent = `
+metadata:
+  name: "custom_script"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "Custom script"
+target: "iso15919"
+mappings:
+  vowels:
+    "a": "a"
+  consonants:
+    "k": "k"
+`;
+    
+    // Load at runtime
+    transliterator.loadSchemaFromString(yamlContent, "custom_script");
+    
+    // Use immediately
+    const result = transliterator.transliterate("ka", "custom_script", "devanagari");
+    console.log(result); // "क"
+    
+    // Get schema information
+    const info = transliterator.getSchemaInfo("custom_script");
+    if (info) {
+        console.log(`Name: ${info.name}`);
+        console.log(`Description: ${info.description}`);
+        console.log(`Type: ${info.script_type}`);
+        console.log(`Runtime loaded: ${info.is_runtime_loaded}`);
+        console.log(`Mapping count: ${info.mapping_count}`);
+    }
+    
+    // Remove schema
+    const removed = transliterator.removeSchema("custom_script");
+    console.log(`Schema removed: ${removed}`);
+    
+    // Clear all runtime schemas
+    transliterator.clearRuntimeSchemas();
+}
+```
+
 ### Classes
 
 ```javascript
@@ -217,9 +365,16 @@ class WasmShlesha {
     transliterateWithMetadata(text, fromScript, toScript) // -> WasmTransliterationResult
     listSupportedScripts() // -> Array<string>
     supportsScript(script) // -> boolean
-    loadSchema(schemaPath) // -> void
+    loadSchema(schemaPath) // -> void  // Legacy method
     getScriptInfo() // -> Object
     getSupportedScriptCount() // -> number
+    
+    // Runtime schema loading methods
+    loadSchemaFromFile(filePath) // -> void
+    loadSchemaFromString(yamlContent, schemaName) // -> void
+    getSchemaInfo(scriptName) // -> Object|undefined
+    removeSchema(scriptName) // -> boolean
+    clearRuntimeSchemas() // -> void
 }
 
 class WasmTransliterationResult {
@@ -439,18 +594,85 @@ echo $?  # Non-zero exit code
 
 ## 🔧 Configuration
 
-### Schema Loading
-All APIs support runtime schema loading for custom scripts:
+### Runtime Schema Loading
+All APIs support comprehensive runtime schema loading for custom scripts. You can load schemas from files or directly from YAML strings:
 
 ```rust
-// Rust
-transliterator.load_schema("path/to/custom.yaml")?;
+// Rust API
+let mut transliterator = Shlesha::new();
 
-// Python  
-transliterator.load_schema("path/to/custom.yaml")
+// From file
+transliterator.load_schema_from_file("path/to/custom.yaml")?;
 
-// JavaScript
-transliterator.loadSchema("path/to/custom.yaml");
+// From YAML string
+let yaml_content = r#"
+metadata:
+  name: "custom"
+  script_type: "roman"
+  has_implicit_a: false
+target: "iso15919"
+mappings:
+  vowels:
+    "a": "a"
+"#;
+transliterator.load_schema_from_string(yaml_content, "custom")?;
+
+// Schema management
+let info = transliterator.get_schema_info("custom");
+transliterator.remove_schema("custom");
+transliterator.clear_runtime_schemas();
+```
+
+```python
+# Python API
+import shlesha
+transliterator = shlesha.Shlesha()
+
+# From file
+transliterator.load_schema_from_file("path/to/custom.yaml")
+
+# From YAML string
+yaml_content = """
+metadata:
+  name: "custom"
+  script_type: "roman"
+  has_implicit_a: false
+target: "iso15919"
+mappings:
+  vowels:
+    "a": "a"
+"""
+transliterator.load_schema_from_string(yaml_content, "custom")
+
+# Schema management
+info = transliterator.get_schema_info("custom")
+transliterator.remove_schema("custom")
+transliterator.clear_runtime_schemas()
+```
+
+```javascript
+// JavaScript/WASM API
+import init, { WasmShlesha } from './pkg/shlesha.js';
+await init();
+const transliterator = new WasmShlesha();
+
+// From YAML string
+const yamlContent = `
+metadata:
+  name: "custom"
+  script_type: "roman"
+  has_implicit_a: false
+target: "iso15919"
+mappings:
+  vowels:
+    "a": "a"
+`;
+transliterator.loadSchemaFromString(yamlContent, "custom");
+
+// Schema management
+const info = transliterator.getSchemaInfo("custom");
+transliterator.removeSchema("custom");
+transliterator.clearRuntimeSchemas();
 ```
 
 ### Environment Variables
