@@ -245,6 +245,105 @@ impl WasmShlesha {
     pub fn get_supported_script_count(&self) -> usize {
         self.inner.list_supported_scripts().len()
     }
+
+    /// Load a schema from a file path for runtime script support
+    /// Note: In WASM context, this would typically load from a URL or local storage
+    /// 
+    /// @param {string} filePath - Path to YAML schema file
+    /// @throws {Error} If schema loading fails
+    /// 
+    /// @example
+    /// ```javascript
+    /// const transliterator = new WasmShlesha();
+    /// await transliterator.loadSchemaFromFile("/schemas/custom.yaml");
+    /// ```
+    #[wasm_bindgen(js_name = loadSchemaFromFile)]
+    pub fn load_schema_from_file(&mut self, file_path: &str) -> Result<(), JsValue> {
+        self.inner
+            .load_schema_from_file(file_path)
+            .map_err(|e| JsValue::from_str(&format!("Schema loading failed: {}", e)))
+    }
+
+    /// Load a schema from YAML content string
+    /// 
+    /// @param {string} yamlContent - YAML schema content
+    /// @param {string} schemaName - Name for the schema
+    /// @throws {Error} If schema loading fails
+    /// 
+    /// @example
+    /// ```javascript
+    /// const yamlContent = `
+    /// metadata:
+    ///   name: "custom"
+    ///   script_type: "roman"
+    /// mappings:
+    ///   vowels:
+    ///     "a": "a"
+    /// `;
+    /// const transliterator = new WasmShlesha();
+    /// transliterator.loadSchemaFromString(yamlContent, "custom");
+    /// ```
+    #[wasm_bindgen(js_name = loadSchemaFromString)]
+    pub fn load_schema_from_string(&mut self, yaml_content: &str, schema_name: &str) -> Result<(), JsValue> {
+        self.inner
+            .load_schema_from_string(yaml_content, schema_name)
+            .map_err(|e| JsValue::from_str(&format!("Schema loading failed: {}", e)))
+    }
+
+    /// Get information about a loaded runtime schema
+    /// 
+    /// @param {string} scriptName - Name of the script
+    /// @returns {Object|undefined} Schema information object or undefined if not found
+    /// 
+    /// @example
+    /// ```javascript
+    /// const info = transliterator.getSchemaInfo("custom");
+    /// if (info) {
+    ///     console.log(info.description);
+    ///     console.log(info.mapping_count);
+    /// }
+    /// ```
+    #[wasm_bindgen(js_name = getSchemaInfo)]
+    pub fn get_schema_info(&self, script_name: &str) -> Option<Object> {
+        self.inner.get_schema_info(script_name).map(|info| {
+            let obj = Object::new();
+            
+            // Use Reflect to set properties
+            let _ = Reflect::set(&obj, &"name".into(), &JsValue::from_str(&info.name));
+            let _ = Reflect::set(&obj, &"description".into(), &JsValue::from_str(&info.description));
+            let _ = Reflect::set(&obj, &"script_type".into(), &JsValue::from_str(&info.script_type));
+            let _ = Reflect::set(&obj, &"is_runtime_loaded".into(), &JsValue::from_bool(info.is_runtime_loaded));
+            let _ = Reflect::set(&obj, &"mapping_count".into(), &JsValue::from_f64(info.mapping_count as f64));
+            
+            obj
+        })
+    }
+
+    /// Remove a runtime loaded schema
+    /// 
+    /// @param {string} scriptName - Name of the script to remove
+    /// @returns {boolean} True if schema was removed, false if not found
+    /// 
+    /// @example
+    /// ```javascript
+    /// const success = transliterator.removeSchema("custom");
+    /// console.log(success); // true if removed
+    /// ```
+    #[wasm_bindgen(js_name = removeSchema)]
+    pub fn remove_schema(&mut self, script_name: &str) -> bool {
+        self.inner.remove_schema(script_name)
+    }
+
+    /// Clear all runtime loaded schemas
+    /// 
+    /// @example
+    /// ```javascript
+    /// transliterator.clearRuntimeSchemas();
+    /// ```
+    #[wasm_bindgen(js_name = clearRuntimeSchemas)]
+    pub fn clear_runtime_schemas(&mut self) {
+        self.inner.clear_runtime_schemas()
+    }
 }
 
 #[wasm_bindgen]

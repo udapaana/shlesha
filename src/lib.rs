@@ -42,6 +42,16 @@ pub use modules::core::unknown_handler::{
     UnknownToken,
 };
 
+/// Information about a schema (built-in or runtime loaded)
+#[derive(Debug, Clone)]
+pub struct SchemaInfo {
+    pub name: String,
+    pub description: String,
+    pub script_type: String,
+    pub is_runtime_loaded: bool,
+    pub mapping_count: usize,
+}
+
 /// Main transliterator struct implementing hub-and-spoke architecture
 pub struct Shlesha {
     hub: Hub,
@@ -113,38 +123,7 @@ impl Shlesha {
         Ok(result)
     }
 
-    /// Load a new script schema at runtime
-    pub fn load_schema(&mut self, schema_path: &str) -> Result<(), Box<dyn std::error::Error>> {
-        Ok(self.registry.load_schema(schema_path)?)
-    }
     
-    /// Get list of supported scripts
-    pub fn list_supported_scripts(&self) -> Vec<&str> {
-        let mut scripts = self.script_converter_registry.list_supported_scripts();
-        
-        // Add scripts from schema registry
-        use crate::modules::registry::SchemaRegistryTrait;
-        let schema_scripts = self.registry.list_schemas();
-        for script in schema_scripts {
-            scripts.push(script);
-        }
-        
-        scripts.sort();
-        scripts.dedup();
-        scripts
-    }
-    
-    /// Check if a script is supported
-    pub fn supports_script(&self, script: &str) -> bool {
-        // Check hardcoded converters first
-        if self.script_converter_registry.supports_script(script) {
-            return true;
-        }
-        
-        // Check if it's in the schema registry
-        use crate::modules::registry::SchemaRegistryTrait;
-        self.registry.get_schema(script).is_some()
-    }
     
     /// Transliterate text with metadata collection for unknown tokens
     pub fn transliterate_with_metadata(&self, text: &str, from: &str, to: &str) 
@@ -218,6 +197,72 @@ impl Shlesha {
             output: result.output,
             metadata: Some(final_metadata),
         })
+    }
+    
+    /// Load a schema from a file path for runtime script support
+    pub fn load_schema_from_file(&mut self, file_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+        self.registry.load_schema(file_path)?;
+        Ok(())
+    }
+    
+    /// Load a schema from YAML content string
+    pub fn load_schema_from_string(&mut self, yaml_content: &str, schema_name: &str) -> Result<(), Box<dyn std::error::Error>> {
+        self.registry.load_schema_from_string(yaml_content, schema_name)?;
+        Ok(())
+    }
+    
+    /// Get list of all available scripts (built-in + runtime loaded)
+    pub fn list_supported_scripts(&self) -> Vec<String> {
+        let mut scripts = self.script_converter_registry.list_supported_scripts()
+            .iter()
+            .map(|s| s.to_string())
+            .collect::<Vec<_>>();
+        
+        // Add runtime loaded schemas
+        let runtime_scripts = self.registry.list_schemas_owned();
+        scripts.extend(runtime_scripts);
+        
+        scripts.sort();
+        scripts.dedup();
+        scripts
+    }
+    
+    /// Check if a specific script is supported (built-in or runtime)
+    pub fn supports_script(&self, script_name: &str) -> bool {
+        self.script_converter_registry.supports_script(script_name) || 
+        self.registry.get_schema(script_name).is_some()
+    }
+    
+    /// Get information about a loaded runtime schema
+    pub fn get_schema_info(&self, script_name: &str) -> Option<SchemaInfo> {
+        self.registry.get_schema(script_name).map(|schema| SchemaInfo {
+            name: schema.metadata.name.clone(),
+            description: schema.metadata.description.clone().unwrap_or_default(),
+            script_type: schema.metadata.script_type.clone(),
+            is_runtime_loaded: true,
+            mapping_count: schema.mappings.values().map(|m| m.len()).sum(),
+        })
+    }
+    
+    /// Remove a runtime loaded schema
+    pub fn remove_schema(&mut self, script_name: &str) -> bool {
+        self.registry.remove_schema(script_name)
+    }
+    
+    /// Clear all runtime loaded schemas
+    pub fn clear_runtime_schemas(&mut self) {
+        self.registry.clear();
+    }
+    
+    /// Create a new Shlesha instance with a custom registry
+    pub fn with_registry(registry: SchemaRegistry) -> Self {
+        let script_converter_registry = ScriptConverterRegistry::default();
+        
+        Self {
+            hub: Hub::new(),
+            script_converter_registry,
+            registry,
+        }
     }
 }
 

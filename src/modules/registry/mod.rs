@@ -159,8 +159,12 @@ pub trait SchemaRegistryTrait {
     fn get_schema(&self, script_name: &str) -> Option<&Schema>;
     fn register_schema(&mut self, name: String, schema: Schema) -> Result<(), RegistryError>;
     fn load_schema(&mut self, schema_path: &str) -> Result<(), RegistryError>;
+    fn load_schema_from_string(&mut self, yaml_content: &str, schema_name: &str) -> Result<(), RegistryError>;
     fn list_schemas(&self) -> Vec<&str>;
+    fn list_schemas_owned(&self) -> Vec<String>;
     fn validate_schema(&self, schema: &Schema) -> Result<(), RegistryError>;
+    fn remove_schema(&mut self, script_name: &str) -> bool;
+    fn clear(&mut self);
 }
 
 #[derive(Clone)]
@@ -300,6 +304,39 @@ impl SchemaRegistryTrait for SchemaRegistry {
         }
         
         Ok(())
+    }
+    
+    fn load_schema_from_string(&mut self, yaml_content: &str, schema_name: &str) -> Result<(), RegistryError> {
+        // Parse YAML content
+        let schema_file: SchemaFile = serde_yaml::from_str(yaml_content)
+            .map_err(|e| RegistryError::ParseError(format!("Failed to parse YAML: {}", e)))?;
+        
+        // Create schema from parsed content
+        let mut schema = Schema::from_schema_file(schema_file)?;
+        
+        // Override name if provided
+        if !schema_name.is_empty() {
+            schema.name = schema_name.to_string();
+        }
+        
+        // Register the schema
+        let name = schema.name.clone();
+        self.register_schema(name, schema)
+    }
+    
+    fn list_schemas_owned(&self) -> Vec<String> {
+        let mut schemas: Vec<String> = self.schemas.keys().cloned().collect();
+        schemas.sort();
+        schemas
+    }
+    
+    fn remove_schema(&mut self, script_name: &str) -> bool {
+        self.schemas.remove(script_name).is_some()
+    }
+    
+    fn clear(&mut self) {
+        self.schemas.clear();
+        self.schema_cache.clear();
     }
 }
 

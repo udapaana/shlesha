@@ -166,21 +166,95 @@ impl PyShlesha {
         self.inner.supports_script(script)
     }
 
-    /// Load a new script schema at runtime
+    /// Load a schema from a file path for runtime script support
     /// 
     /// Args:
-    ///     schema_path (str): Path to YAML schema file
+    ///     file_path (str): Path to YAML schema file
     /// 
     /// Raises:
     ///     RuntimeError: If schema loading fails
     /// 
     /// Example:
     ///     >>> transliterator = Shlesha()
-    ///     >>> transliterator.load_schema("custom_script.yaml")
-    fn load_schema(&mut self, schema_path: &str) -> PyResult<()> {
+    ///     >>> transliterator.load_schema_from_file("custom_script.yaml")
+    fn load_schema_from_file(&mut self, file_path: &str) -> PyResult<()> {
         self.inner
-            .load_schema(schema_path)
+            .load_schema_from_file(file_path)
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Schema loading failed: {}", e)))
+    }
+
+    /// Load a schema from YAML content string
+    /// 
+    /// Args:
+    ///     yaml_content (str): YAML schema content
+    ///     schema_name (str): Name for the schema
+    /// 
+    /// Raises:
+    ///     RuntimeError: If schema loading fails
+    /// 
+    /// Example:
+    ///     >>> yaml_content = '''
+    ///     ... metadata:
+    ///     ...   name: "custom"
+    ///     ...   script_type: "roman"
+    ///     ... mappings:
+    ///     ...   vowels:
+    ///     ...     "a": "a"
+    ///     ... '''
+    ///     >>> transliterator = Shlesha()
+    ///     >>> transliterator.load_schema_from_string(yaml_content, "custom")
+    fn load_schema_from_string(&mut self, yaml_content: &str, schema_name: &str) -> PyResult<()> {
+        self.inner
+            .load_schema_from_string(yaml_content, schema_name)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Schema loading failed: {}", e)))
+    }
+
+    /// Get information about a loaded runtime schema
+    /// 
+    /// Args:
+    ///     script_name (str): Name of the script
+    /// 
+    /// Returns:
+    ///     Dict[str, Any] | None: Schema information or None if not found
+    /// 
+    /// Example:
+    ///     >>> info = transliterator.get_schema_info("custom")
+    ///     >>> print(info["description"])
+    fn get_schema_info(&self, script_name: &str) -> Option<HashMap<String, PyObject>> {
+        self.inner.get_schema_info(script_name).map(|info| {
+            Python::with_gil(|py| {
+                let mut dict = HashMap::new();
+                dict.insert("name".to_string(), info.name.into_py(py));
+                dict.insert("description".to_string(), info.description.into_py(py));
+                dict.insert("script_type".to_string(), info.script_type.into_py(py));
+                dict.insert("is_runtime_loaded".to_string(), info.is_runtime_loaded.into_py(py));
+                dict.insert("mapping_count".to_string(), info.mapping_count.into_py(py));
+                dict
+            })
+        })
+    }
+
+    /// Remove a runtime loaded schema
+    /// 
+    /// Args:
+    ///     script_name (str): Name of the script to remove
+    /// 
+    /// Returns:
+    ///     bool: True if schema was removed, False if not found
+    /// 
+    /// Example:
+    ///     >>> success = transliterator.remove_schema("custom")
+    ///     >>> print(success)  # True if removed
+    fn remove_schema(&mut self, script_name: &str) -> bool {
+        self.inner.remove_schema(script_name)
+    }
+
+    /// Clear all runtime loaded schemas
+    /// 
+    /// Example:
+    ///     >>> transliterator.clear_runtime_schemas()
+    fn clear_runtime_schemas(&mut self) {
+        self.inner.clear_runtime_schemas()
     }
 
     /// Get script information as a dictionary
