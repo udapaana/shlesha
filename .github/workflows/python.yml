@@ -42,7 +42,7 @@ jobs:
       
       - name: Run Python tests
         run: |
-          python -m pytest python/tests -v
+          python -m pytest tests -v
           python -c "import shlesha; print(shlesha.__version__)"
 
   # Build wheels for multiple platforms
