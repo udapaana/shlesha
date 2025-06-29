@@ -256,7 +256,8 @@ impl PyShlesha {
             dict.set_item("name", info.name).unwrap();
             dict.set_item("description", info.description).unwrap();
             dict.set_item("script_type", info.script_type).unwrap();
-            dict.set_item("is_runtime_loaded", info.is_runtime_loaded).unwrap();
+            dict.set_item("is_runtime_loaded", info.is_runtime_loaded)
+                .unwrap();
             dict.set_item("mapping_count", info.mapping_count).unwrap();
             dict.into()
         }))
