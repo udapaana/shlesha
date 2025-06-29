@@ -60,9 +60,7 @@ impl ModuleTodoQueue {
     /// Add a todo item to the queue
     pub fn add_todo(&self, todo: TodoItem) {
         let mut queues = self.queues.lock().unwrap();
-        let module_queue = queues
-            .entry(todo.module.clone())
-            .or_default();
+        let module_queue = queues.entry(todo.module.clone()).or_default();
 
         // Insert based on priority
         let position = module_queue
