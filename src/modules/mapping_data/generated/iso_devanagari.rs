@@ -3,8 +3,8 @@
 
 #![allow(dead_code)]
 
-use std::collections::HashMap;
 use once_cell::sync::Lazy;
+use std::collections::HashMap;
 
 /// ISO to Devanagari character mappings
 pub static ISO_TO_DEVA: Lazy<HashMap<&'static str, char>> = Lazy::new(|| {

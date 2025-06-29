@@ -1,5 +1,5 @@
 //! Python bindings for Shlesha transliteration library
-//! 
+//!
 //! This module provides Python access to all Shlesha functionality including:
 //! - Basic transliteration between scripts
 //! - Metadata collection for unknown tokens
@@ -67,18 +67,18 @@ impl PyShlesha {
     }
 
     /// Transliterate text from one script to another
-    /// 
+    ///
     /// Args:
     ///     text (str): Text to transliterate
     ///     from_script (str): Source script name
     ///     to_script (str): Target script name
-    /// 
+    ///
     /// Returns:
     ///     str: Transliterated text
-    /// 
+    ///
     /// Raises:
     ///     RuntimeError: If transliteration fails
-    /// 
+    ///
     /// Example:
     ///     >>> transliterator = Shlesha()
     ///     >>> result = transliterator.transliterate("धर्म", "devanagari", "iast")
@@ -86,34 +86,52 @@ impl PyShlesha {
     fn transliterate(&self, text: &str, from_script: &str, to_script: &str) -> PyResult<String> {
         self.inner
             .transliterate(text, from_script, to_script)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Transliteration failed: {}", e)))
+            .map_err(|e| {
+                PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
+                    "Transliteration failed: {}",
+                    e
+                ))
+            })
     }
 
     /// Transliterate text with metadata collection for unknown tokens
-    /// 
+    ///
     /// Args:
     ///     text (str): Text to transliterate
     ///     from_script (str): Source script name
     ///     to_script (str): Target script name
-    /// 
+    ///
     /// Returns:
     ///     PyTransliterationResult: Result with output and metadata
-    /// 
+    ///
     /// Raises:
     ///     RuntimeError: If transliteration fails
-    /// 
+    ///
     /// Example:
     ///     >>> transliterator = Shlesha()
     ///     >>> result = transliterator.transliterate_with_metadata("धर्मkr", "devanagari", "iast")
     ///     >>> print(result.output)  # "dharmakr"
     ///     >>> print(len(result.metadata.unknown_tokens))  # 2 (for 'k' and 'r')
-    fn transliterate_with_metadata(&self, text: &str, from_script: &str, to_script: &str) -> PyResult<PyTransliterationResult> {
-        let result = self.inner
+    fn transliterate_with_metadata(
+        &self,
+        text: &str,
+        from_script: &str,
+        to_script: &str,
+    ) -> PyResult<PyTransliterationResult> {
+        let result = self
+            .inner
             .transliterate_with_metadata(text, from_script, to_script)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Transliteration failed: {}", e)))?;
-        
+            .map_err(|e| {
+                PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
+                    "Transliteration failed: {}",
+                    e
+                ))
+            })?;
+
         let py_metadata = result.metadata.map(|metadata| {
-            let unknown_tokens = metadata.unknown_tokens.into_iter()
+            let unknown_tokens = metadata
+                .unknown_tokens
+                .into_iter()
                 .map(|token| PyUnknownToken {
                     script: token.script,
                     token: token.token.to_string(),
@@ -122,7 +140,7 @@ impl PyShlesha {
                     is_extension: token.is_extension,
                 })
                 .collect();
-            
+
             PyTransliterationMetadata {
                 source_script: metadata.source_script,
                 target_script: metadata.target_script,
@@ -130,7 +148,7 @@ impl PyShlesha {
                 unknown_tokens,
             }
         });
-        
+
         Ok(PyTransliterationResult {
             output: result.output,
             metadata: py_metadata,
@@ -138,26 +156,30 @@ impl PyShlesha {
     }
 
     /// Get list of supported scripts
-    /// 
+    ///
     /// Returns:
     ///     List[str]: List of supported script names
-    /// 
+    ///
     /// Example:
     ///     >>> transliterator = Shlesha()
     ///     >>> scripts = transliterator.list_supported_scripts()
     ///     >>> print("devanagari" in scripts)  # True
     fn list_supported_scripts(&self) -> Vec<String> {
-        self.inner.list_supported_scripts().into_iter().map(|s| s.to_string()).collect()
+        self.inner
+            .list_supported_scripts()
+            .into_iter()
+            .map(|s| s.to_string())
+            .collect()
     }
 
     /// Check if a script is supported
-    /// 
+    ///
     /// Args:
     ///     script (str): Script name to check
-    /// 
+    ///
     /// Returns:
     ///     bool: True if script is supported
-    /// 
+    ///
     /// Example:
     ///     >>> transliterator = Shlesha()
     ///     >>> print(transliterator.supports_script("devanagari"))  # True
@@ -167,31 +189,34 @@ impl PyShlesha {
     }
 
     /// Load a schema from a file path for runtime script support
-    /// 
+    ///
     /// Args:
     ///     file_path (str): Path to YAML schema file
-    /// 
+    ///
     /// Raises:
     ///     RuntimeError: If schema loading fails
-    /// 
+    ///
     /// Example:
     ///     >>> transliterator = Shlesha()
     ///     >>> transliterator.load_schema_from_file("custom_script.yaml")
     fn load_schema_from_file(&mut self, file_path: &str) -> PyResult<()> {
-        self.inner
-            .load_schema_from_file(file_path)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Schema loading failed: {}", e)))
+        self.inner.load_schema_from_file(file_path).map_err(|e| {
+            PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
+                "Schema loading failed: {}",
+                e
+            ))
+        })
     }
 
     /// Load a schema from YAML content string
-    /// 
+    ///
     /// Args:
     ///     yaml_content (str): YAML schema content
     ///     schema_name (str): Name for the schema
-    /// 
+    ///
     /// Raises:
     ///     RuntimeError: If schema loading fails
-    /// 
+    ///
     /// Example:
     ///     >>> yaml_content = '''
     ///     ... metadata:
@@ -206,17 +231,22 @@ impl PyShlesha {
     fn load_schema_from_string(&mut self, yaml_content: &str, schema_name: &str) -> PyResult<()> {
         self.inner
             .load_schema_from_string(yaml_content, schema_name)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Schema loading failed: {}", e)))
+            .map_err(|e| {
+                PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
+                    "Schema loading failed: {}",
+                    e
+                ))
+            })
     }
 
     /// Get information about a loaded runtime schema
-    /// 
+    ///
     /// Args:
     ///     script_name (str): Name of the script
-    /// 
+    ///
     /// Returns:
     ///     Dict[str, Any] | None: Schema information or None if not found
-    /// 
+    ///
     /// Example:
     ///     >>> info = transliterator.get_schema_info("custom")
     ///     >>> print(info["description"])
@@ -227,7 +257,10 @@ impl PyShlesha {
                 dict.insert("name".to_string(), info.name.into_py(py));
                 dict.insert("description".to_string(), info.description.into_py(py));
                 dict.insert("script_type".to_string(), info.script_type.into_py(py));
-                dict.insert("is_runtime_loaded".to_string(), info.is_runtime_loaded.into_py(py));
+                dict.insert(
+                    "is_runtime_loaded".to_string(),
+                    info.is_runtime_loaded.into_py(py),
+                );
                 dict.insert("mapping_count".to_string(), info.mapping_count.into_py(py));
                 dict
             })
@@ -235,13 +268,13 @@ impl PyShlesha {
     }
 
     /// Remove a runtime loaded schema
-    /// 
+    ///
     /// Args:
     ///     script_name (str): Name of the script to remove
-    /// 
+    ///
     /// Returns:
     ///     bool: True if schema was removed, False if not found
-    /// 
+    ///
     /// Example:
     ///     >>> success = transliterator.remove_schema("custom")
     ///     >>> print(success)  # True if removed
@@ -250,7 +283,7 @@ impl PyShlesha {
     }
 
     /// Clear all runtime loaded schemas
-    /// 
+    ///
     /// Example:
     ///     >>> transliterator.clear_runtime_schemas()
     fn clear_runtime_schemas(&mut self) {
@@ -258,12 +291,12 @@ impl PyShlesha {
     }
 
     /// Get script information as a dictionary
-    /// 
+    ///
     /// Returns:
     ///     Dict[str, str]: Mapping of script names to descriptions
     fn get_script_info(&self) -> HashMap<String, String> {
         let mut info = HashMap::new();
-        
+
         for script in self.inner.list_supported_scripts() {
             let description = match script.as_str() {
                 "iast" => "IAST (International Alphabet of Sanskrit Transliteration)",
@@ -285,7 +318,7 @@ impl PyShlesha {
             };
             info.insert(script.to_string(), description.to_string());
         }
-        
+
         info
     }
 
@@ -297,7 +330,10 @@ impl PyShlesha {
 
     /// Python string representation
     fn __str__(&self) -> String {
-        format!("Shlesha transliterator with {} supported scripts", self.inner.list_supported_scripts().len())
+        format!(
+            "Shlesha transliterator with {} supported scripts",
+            self.inner.list_supported_scripts().len()
+        )
     }
 }
 
@@ -306,8 +342,11 @@ impl PyTransliterationResult {
     /// Python representation
     fn __repr__(&self) -> String {
         match &self.metadata {
-            Some(metadata) => format!("TransliterationResult(output='{}', unknown_tokens={})", 
-                                    self.output, metadata.unknown_tokens.len()),
+            Some(metadata) => format!(
+                "TransliterationResult(output='{}', unknown_tokens={})",
+                self.output,
+                metadata.unknown_tokens.len()
+            ),
             None => format!("TransliterationResult(output='{}')", self.output),
         }
     }
@@ -317,8 +356,12 @@ impl PyTransliterationResult {
 impl PyTransliterationMetadata {
     /// Python representation
     fn __repr__(&self) -> String {
-        format!("TransliterationMetadata(source='{}', target='{}', unknown_tokens={})", 
-                self.source_script, self.target_script, self.unknown_tokens.len())
+        format!(
+            "TransliterationMetadata(source='{}', target='{}', unknown_tokens={})",
+            self.source_script,
+            self.target_script,
+            self.unknown_tokens.len()
+        )
     }
 }
 
@@ -326,16 +369,18 @@ impl PyTransliterationMetadata {
 impl PyUnknownToken {
     /// Python representation
     fn __repr__(&self) -> String {
-        format!("UnknownToken(script='{}', token='{}', position={})", 
-                self.script, self.token, self.position)
+        format!(
+            "UnknownToken(script='{}', token='{}', position={})",
+            self.script, self.token, self.position
+        )
     }
 }
 
 /// Convenience function to create a new Shlesha instance
-/// 
+///
 /// Returns:
 ///     PyShlesha: New transliterator instance
-/// 
+///
 /// Example:
 ///     >>> from shlesha import Shlesha
 ///     >>> transliterator = Shlesha()
@@ -345,15 +390,15 @@ fn create_transliterator() -> PyShlesha {
 }
 
 /// Convenience function for direct transliteration
-/// 
+///
 /// Args:
 ///     text (str): Text to transliterate
 ///     from_script (str): Source script name
 ///     to_script (str): Target script name
-/// 
+///
 /// Returns:
 ///     str: Transliterated text
-/// 
+///
 /// Example:
 ///     >>> from shlesha import transliterate
 ///     >>> result = transliterate("धर्म", "devanagari", "iast")
@@ -363,14 +408,19 @@ fn transliterate(text: &str, from_script: &str, to_script: &str) -> PyResult<Str
     let transliterator = Shlesha::new();
     transliterator
         .transliterate(text, from_script, to_script)
-        .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Transliteration failed: {}", e)))
+        .map_err(|e| {
+            PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
+                "Transliteration failed: {}",
+                e
+            ))
+        })
 }
 
 /// Get list of all supported scripts
-/// 
+///
 /// Returns:
 ///     List[str]: List of supported script names
-/// 
+///
 /// Example:
 ///     >>> from shlesha import get_supported_scripts
 ///     >>> scripts = get_supported_scripts()
@@ -378,7 +428,11 @@ fn transliterate(text: &str, from_script: &str, to_script: &str) -> PyResult<Str
 #[pyfunction]
 fn get_supported_scripts() -> Vec<String> {
     let transliterator = Shlesha::new();
-    transliterator.list_supported_scripts().into_iter().map(|s| s.to_string()).collect()
+    transliterator
+        .list_supported_scripts()
+        .into_iter()
+        .map(|s| s.to_string())
+        .collect()
 }
 
 /// Python module definition
@@ -389,17 +443,20 @@ fn _shlesha(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyTransliterationResult>()?;
     m.add_class::<PyTransliterationMetadata>()?;
     m.add_class::<PyUnknownToken>()?;
-    
+
     // Add convenience functions
     m.add_function(wrap_pyfunction!(create_transliterator, m)?)?;
     m.add_function(wrap_pyfunction!(transliterate, m)?)?;
     m.add_function(wrap_pyfunction!(get_supported_scripts, m)?)?;
-    
+
     // Add module metadata
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("__author__", "Shlesha Contributors")?;
-    m.add("__description__", "High-performance extensible transliteration library")?;
-    
+    m.add(
+        "__description__",
+        "High-performance extensible transliteration library",
+    )?;
+
     Ok(())
 }
 
@@ -408,45 +465,49 @@ fn _shlesha(_py: Python, m: &PyModule) -> PyResult<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_python_basic_transliteration() {
         let transliterator = PyShlesha::new();
-        let result = transliterator.transliterate("अ", "devanagari", "iast").unwrap();
+        let result = transliterator
+            .transliterate("अ", "devanagari", "iast")
+            .unwrap();
         assert_eq!(result, "a");
     }
-    
+
     #[test]
     fn test_python_metadata_collection() {
         let transliterator = PyShlesha::new();
-        let result = transliterator.transliterate_with_metadata("धर्मkr", "devanagari", "iast").unwrap();
+        let result = transliterator
+            .transliterate_with_metadata("धर्मkr", "devanagari", "iast")
+            .unwrap();
         assert!(result.output.contains("dharma"));
         assert!(result.metadata.is_some());
-        
+
         let metadata = result.metadata.unwrap();
         assert_eq!(metadata.source_script, "devanagari");
         assert_eq!(metadata.target_script, "iast");
         // Should have unknown tokens for 'k' and 'r'
         assert!(metadata.unknown_tokens.len() > 0);
     }
-    
+
     #[test]
     fn test_python_script_support() {
         let transliterator = PyShlesha::new();
         assert!(transliterator.supports_script("devanagari"));
         assert!(transliterator.supports_script("iast"));
         assert!(!transliterator.supports_script("nonexistent"));
-        
+
         let scripts = transliterator.list_supported_scripts();
         assert!(!scripts.is_empty());
         assert!(scripts.iter().any(|s| s == "devanagari"));
     }
-    
+
     #[test]
     fn test_convenience_functions() {
         let result = transliterate("अ", "devanagari", "iast").unwrap();
         assert_eq!(result, "a");
-        
+
         let scripts = get_supported_scripts();
         assert!(!scripts.is_empty());
         assert!(scripts.iter().any(|s| s == "devanagari"));

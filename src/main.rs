@@ -37,21 +37,28 @@ enum Commands {
 fn main() {
     let cli = Cli::parse();
     let transliterator = Shlesha::new();
-    
+
     match cli.command {
-        Commands::Transliterate { from, to, text, show_metadata, verbose } => {
+        Commands::Transliterate {
+            from,
+            to,
+            text,
+            show_metadata,
+            verbose,
+        } => {
             // Get input text
             let input = match text {
                 Some(t) => t,
                 None => {
                     use std::io::Read;
                     let mut buffer = String::new();
-                    std::io::stdin().read_to_string(&mut buffer)
+                    std::io::stdin()
+                        .read_to_string(&mut buffer)
                         .expect("Failed to read from stdin");
                     buffer.trim().to_string()
                 }
             };
-            
+
             // Perform transliteration with or without metadata
             if show_metadata || verbose {
                 match transliterator.transliterate_with_metadata(&input, &from, &to) {
@@ -61,13 +68,21 @@ fn main() {
                             println!("{}", result.output);
                             if let Some(metadata) = result.metadata {
                                 println!("\nMetadata:");
-                                println!("  Source: {} -> Target: {}", metadata.source_script, metadata.target_script);
+                                println!(
+                                    "  Source: {} -> Target: {}",
+                                    metadata.source_script, metadata.target_script
+                                );
                                 println!("  Extensions used: {}", metadata.used_extensions);
                                 if !metadata.unknown_tokens.is_empty() {
                                     println!("  Unknown tokens: {}", metadata.unknown_tokens.len());
                                     for (i, token) in metadata.unknown_tokens.iter().enumerate() {
-                                        println!("    {}. '{}' at position {} ({})", 
-                                                 i+1, token.token, token.position, token.unicode);
+                                        println!(
+                                            "    {}. '{}' at position {} ({})",
+                                            i + 1,
+                                            token.token,
+                                            token.position,
+                                            token.unicode
+                                        );
                                     }
                                 } else {
                                     println!("  Unknown tokens: 0");
@@ -81,9 +96,10 @@ fn main() {
                                     // Sort by position to insert annotations in correct order
                                     let mut tokens = metadata.unknown_tokens.clone();
                                     tokens.sort_by(|a, b| b.position.cmp(&a.position)); // Reverse order for correct insertion
-                                    
+
                                     for token in tokens {
-                                        let annotation = format!("[{}:{}]", token.script, token.token);
+                                        let annotation =
+                                            format!("[{}:{}]", token.script, token.token);
                                         // Insert annotation after the token position
                                         if token.position + 1 <= output.len() {
                                             output.insert_str(token.position + 1, &annotation);
@@ -112,10 +128,10 @@ fn main() {
                 }
             }
         }
-        
+
         Commands::Scripts => {
             println!("Currently supported scripts:");
-            
+
             let scripts = transliterator.list_supported_scripts();
             for script in scripts {
                 // Provide descriptions for known scripts

@@ -5,4 +5,4 @@ pub mod registry;
 pub mod script_converter;
 
 // Re-export module todo queue types for cross-module communication
-pub use self::core::{ModuleTodoQueue, TodoItem, TodoResponse, TodoPriority};
+pub use self::core::{ModuleTodoQueue, TodoItem, TodoPriority, TodoResponse};

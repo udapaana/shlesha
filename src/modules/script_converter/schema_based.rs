@@ -1,14 +1,16 @@
 //! Schema-based converter for runtime-loaded custom scripts
-//! 
+//!
 //! This converter uses schemas loaded from the SchemaRegistry to perform
 //! conversions for custom encoding schemes loaded at runtime.
 
-use std::sync::Arc;
-use std::collections::HashMap;
+use super::{ConverterError, ScriptConverter};
+use crate::modules::core::unknown_handler::{
+    TransliterationMetadata, TransliterationResult, UnknownToken,
+};
 use crate::modules::hub::HubInput;
-use crate::modules::core::unknown_handler::{TransliterationResult, TransliterationMetadata, UnknownToken};
-use crate::modules::registry::{SchemaRegistry, SchemaRegistryTrait, Schema};
-use super::{ScriptConverter, ConverterError};
+use crate::modules::registry::{Schema, SchemaRegistry, SchemaRegistryTrait};
+use std::collections::HashMap;
+use std::sync::Arc;
 
 /// A converter that uses runtime-loaded schemas for transliteration
 pub struct SchemaBasedConverter {
@@ -20,7 +22,7 @@ impl SchemaBasedConverter {
     pub fn new(registry: Arc<SchemaRegistry>) -> Self {
         Self { registry }
     }
-    
+
     /// Get the hub script type for a given schema
     fn get_hub_script_type(&self, schema: &Schema) -> &str {
         match schema.script_type.as_str() {
@@ -29,29 +31,35 @@ impl SchemaBasedConverter {
             _ => "iso15919", // Default to ISO for unknown types
         }
     }
-    
+
     /// Apply character mappings from schema
-    fn apply_mappings(&self, input: &str, mappings: &HashMap<String, String>, reverse: bool) -> (String, Vec<UnknownToken>) {
+    fn apply_mappings(
+        &self,
+        input: &str,
+        mappings: &HashMap<String, String>,
+        reverse: bool,
+    ) -> (String, Vec<UnknownToken>) {
         let mut result = String::new();
         let mut unknown_tokens = Vec::new();
         let mut chars = input.chars().peekable();
         let mut position = 0;
-        
+
         // Create reverse mappings if needed
         let reverse_mappings: HashMap<String, String>;
         let mapping_to_use = if reverse {
-            reverse_mappings = mappings.iter()
+            reverse_mappings = mappings
+                .iter()
                 .map(|(k, v)| (v.clone(), k.clone()))
                 .collect();
             &reverse_mappings
         } else {
             mappings
         };
-        
+
         while let Some(ch) = chars.next() {
             let ch_str = ch.to_string();
             let mut matched = false;
-            
+
             // Try multi-character matches first (for digraphs like "kh", "gh", etc.)
             if let Some(next_ch) = chars.peek() {
                 let two_char = format!("{}{}", ch, next_ch);
@@ -62,7 +70,7 @@ impl SchemaBasedConverter {
                     matched = true;
                 }
             }
-            
+
             // Single character match
             if !matched {
                 if let Some(mapped) = mapping_to_use.get(&ch_str) {
@@ -81,7 +89,7 @@ impl SchemaBasedConverter {
                 position += 1;
             }
         }
-        
+
         (result, unknown_tokens)
     }
 }
@@ -89,15 +97,17 @@ impl SchemaBasedConverter {
 impl ScriptConverter for SchemaBasedConverter {
     fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
         // Get the schema from registry
-        let schema = self.registry.get_schema(script)
-            .ok_or_else(|| ConverterError::InvalidInput {
-                script: script.to_string(),
-                message: format!("Schema not found for script: {}", script),
-            })?;
-        
+        let schema =
+            self.registry
+                .get_schema(script)
+                .ok_or_else(|| ConverterError::InvalidInput {
+                    script: script.to_string(),
+                    message: format!("Schema not found for script: {}", script),
+                })?;
+
         // Apply mappings
         let (converted, _) = self.apply_mappings(input, &schema.mappings, false);
-        
+
         // Return appropriate hub format based on script type
         match self.get_hub_script_type(schema) {
             "devanagari" => Ok(HubInput::Devanagari(converted)),
@@ -105,95 +115,111 @@ impl ScriptConverter for SchemaBasedConverter {
             _ => Err(ConverterError::ConversionFailed {
                 script: script.to_string(),
                 reason: "Unknown script type".to_string(),
-            })
+            }),
         }
     }
-    
+
     fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
         // Get the schema from registry
-        let schema = self.registry.get_schema(script)
-            .ok_or_else(|| ConverterError::InvalidInput {
-                script: script.to_string(),
-                message: format!("Schema not found for script: {}", script),
-            })?;
-        
+        let schema =
+            self.registry
+                .get_schema(script)
+                .ok_or_else(|| ConverterError::InvalidInput {
+                    script: script.to_string(),
+                    message: format!("Schema not found for script: {}", script),
+                })?;
+
         // Get the input string from hub
         let input = match hub_input {
             HubInput::Devanagari(text) => text,
             HubInput::Iso(text) => text,
         };
-        
+
         // Apply reverse mappings
         let (converted, _) = self.apply_mappings(input, &schema.mappings, true);
         Ok(converted)
     }
-    
-    fn to_hub_with_metadata(&self, script: &str, input: &str) -> Result<(HubInput, TransliterationMetadata), ConverterError> {
+
+    fn to_hub_with_metadata(
+        &self,
+        script: &str,
+        input: &str,
+    ) -> Result<(HubInput, TransliterationMetadata), ConverterError> {
         // Get the schema from registry
-        let schema = self.registry.get_schema(script)
-            .ok_or_else(|| ConverterError::InvalidInput {
-                script: script.to_string(),
-                message: format!("Schema not found for script: {}", script),
-            })?;
-        
+        let schema =
+            self.registry
+                .get_schema(script)
+                .ok_or_else(|| ConverterError::InvalidInput {
+                    script: script.to_string(),
+                    message: format!("Schema not found for script: {}", script),
+                })?;
+
         // Apply mappings and collect unknown tokens
         let (converted, unknown_tokens) = self.apply_mappings(input, &schema.mappings, false);
-        
+
         // Create metadata
         let mut metadata = TransliterationMetadata::new(script, "hub");
         metadata.unknown_tokens = unknown_tokens;
-        
+
         // Return appropriate hub format based on script type
         let hub_input = match self.get_hub_script_type(schema) {
             "devanagari" => HubInput::Devanagari(converted),
             "iso15919" => HubInput::Iso(converted),
-            _ => return Err(ConverterError::ConversionFailed {
-                script: script.to_string(),
-                reason: "Unknown script type".to_string(),
-            })
+            _ => {
+                return Err(ConverterError::ConversionFailed {
+                    script: script.to_string(),
+                    reason: "Unknown script type".to_string(),
+                })
+            }
         };
-        
+
         Ok((hub_input, metadata))
     }
-    
-    fn from_hub_with_metadata(&self, script: &str, hub_input: &HubInput) -> Result<TransliterationResult, ConverterError> {
+
+    fn from_hub_with_metadata(
+        &self,
+        script: &str,
+        hub_input: &HubInput,
+    ) -> Result<TransliterationResult, ConverterError> {
         // Get the schema from registry
-        let schema = self.registry.get_schema(script)
-            .ok_or_else(|| ConverterError::InvalidInput {
-                script: script.to_string(),
-                message: format!("Schema not found for script: {}", script),
-            })?;
-        
+        let schema =
+            self.registry
+                .get_schema(script)
+                .ok_or_else(|| ConverterError::InvalidInput {
+                    script: script.to_string(),
+                    message: format!("Schema not found for script: {}", script),
+                })?;
+
         // Get the input string from hub
         let input = match hub_input {
             HubInput::Devanagari(text) => text,
             HubInput::Iso(text) => text,
         };
-        
+
         // Apply reverse mappings
         let (converted, unknown_tokens) = self.apply_mappings(input, &schema.mappings, true);
-        
+
         // Create metadata
         let mut metadata = TransliterationMetadata::new("hub", script);
         metadata.unknown_tokens = unknown_tokens;
-        
+
         Ok(TransliterationResult {
             output: converted,
             metadata: Some(metadata),
         })
     }
-    
+
     fn supported_scripts(&self) -> Vec<&'static str> {
         // This converter supports all scripts in the registry dynamically
         // We can't return static strings for dynamic content, so return empty
         vec![]
     }
-    
+
     fn supports_script(&self, script: &str) -> bool {
         // Check if the schema exists in the registry
         self.registry.get_schema(script).is_some()
     }
-    
+
     fn script_has_implicit_a(&self, script: &str) -> bool {
         // Check the schema metadata
         if let Some(schema) = self.registry.get_schema(script) {
@@ -207,12 +233,12 @@ impl ScriptConverter for SchemaBasedConverter {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_schema_based_converter_creation() {
         let registry = Arc::new(SchemaRegistry::new());
         let converter = SchemaBasedConverter::new(registry);
-        
+
         // Should not support any scripts by default (only built-in placeholders)
         assert!(!converter.supports_script("my_custom_script"));
     }

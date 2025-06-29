@@ -1,12 +1,12 @@
 //! Module todo queue for cross-module communication
-//! 
+//!
 //! This provides a clean interface for modules to communicate with each other
 //! without tight coupling, following the single point of contact principle.
 
-use std::collections::VecDeque;
-use std::sync::{Arc, Mutex};
-use std::sync::mpsc::{channel, Sender, Receiver};
 use serde_json::Value;
+use std::collections::VecDeque;
+use std::sync::mpsc::{channel, Receiver, Sender};
+use std::sync::{Arc, Mutex};
 
 /// Priority levels for todo items
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -56,34 +56,44 @@ impl ModuleTodoQueue {
             queues: Arc::new(Mutex::new(std::collections::HashMap::new())),
         }
     }
-    
+
     /// Add a todo item to the queue
     pub fn add_todo(&self, todo: TodoItem) {
         let mut queues = self.queues.lock().unwrap();
-        let module_queue = queues.entry(todo.module.clone()).or_insert_with(VecDeque::new);
-        
+        let module_queue = queues
+            .entry(todo.module.clone())
+            .or_insert_with(VecDeque::new);
+
         // Insert based on priority
-        let position = module_queue.iter().position(|item| item.priority < todo.priority);
+        let position = module_queue
+            .iter()
+            .position(|item| item.priority < todo.priority);
         match position {
             Some(pos) => module_queue.insert(pos, todo),
             None => module_queue.push_back(todo),
         }
     }
-    
+
     /// Get the next todo for a specific module
     pub fn get_todo(&self, module: &str) -> Option<TodoItem> {
         let mut queues = self.queues.lock().unwrap();
         queues.get_mut(module).and_then(|queue| queue.pop_front())
     }
-    
+
     /// Check if a module has pending todos
     pub fn has_todos(&self, module: &str) -> bool {
         let queues = self.queues.lock().unwrap();
         queues.get(module).map_or(false, |queue| !queue.is_empty())
     }
-    
+
     /// Create a request/response pair for synchronous communication
-    pub fn create_request(&self, module: String, action: String, data: Value, priority: TodoPriority) -> (TodoItem, Receiver<TodoResponse>) {
+    pub fn create_request(
+        &self,
+        module: String,
+        action: String,
+        data: Value,
+        priority: TodoPriority,
+    ) -> (TodoItem, Receiver<TodoResponse>) {
         let (tx, rx) = channel();
         let todo = TodoItem {
             module,
@@ -106,11 +116,11 @@ impl Default for ModuleTodoQueue {
 mod tests {
     use super::*;
     use serde_json::json;
-    
+
     #[test]
     fn test_todo_queue_priority() {
         let queue = ModuleTodoQueue::new();
-        
+
         // Add items with different priorities
         queue.add_todo(TodoItem {
             module: "test".to_string(),
@@ -119,7 +129,7 @@ mod tests {
             priority: TodoPriority::Low,
             response_channel: None,
         });
-        
+
         queue.add_todo(TodoItem {
             module: "test".to_string(),
             action: "high".to_string(),
@@ -127,7 +137,7 @@ mod tests {
             priority: TodoPriority::High,
             response_channel: None,
         });
-        
+
         queue.add_todo(TodoItem {
             module: "test".to_string(),
             action: "normal".to_string(),
@@ -135,15 +145,15 @@ mod tests {
             priority: TodoPriority::Normal,
             response_channel: None,
         });
-        
+
         // Should get high priority first
         let first = queue.get_todo("test").unwrap();
         assert_eq!(first.action, "high");
-        
+
         // Then normal
         let second = queue.get_todo("test").unwrap();
         assert_eq!(second.action, "normal");
-        
+
         // Finally low
         let third = queue.get_todo("test").unwrap();
         assert_eq!(third.action, "low");

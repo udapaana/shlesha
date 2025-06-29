@@ -1,9 +1,9 @@
 //! TOML mapping file loader
 
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
-use serde::{Deserialize, Serialize};
 
 /// Structure matching the TOML file format
 #[derive(Debug, Deserialize, Serialize)]
@@ -57,7 +57,7 @@ pub fn load_mapping_file(path: &Path) -> Result<MappingFile, Box<dyn std::error:
 /// Flatten categorized mappings into a single HashMap
 pub fn flatten_mappings(categories: &MappingCategories) -> HashMap<String, String> {
     let mut result = HashMap::new();
-    
+
     if let Some(vowels) = &categories.vowels {
         result.extend(vowels.clone());
     }
@@ -73,25 +73,28 @@ pub fn flatten_mappings(categories: &MappingCategories) -> HashMap<String, Strin
     if let Some(numerals) = &categories.numerals {
         result.extend(numerals.clone());
     }
-    
+
     result
 }
 
 /// Load all mapping files from a directory
-pub fn load_all_mappings(dir: &Path) -> Result<HashMap<String, MappingFile>, Box<dyn std::error::Error>> {
+pub fn load_all_mappings(
+    dir: &Path,
+) -> Result<HashMap<String, MappingFile>, Box<dyn std::error::Error>> {
     let mut mappings = HashMap::new();
-    
+
     if dir.exists() && dir.is_dir() {
         for entry in fs::read_dir(dir)? {
             let entry = entry?;
             let path = entry.path();
-            
+
             if path.extension().and_then(|s| s.to_str()) == Some("toml") {
-                let file_name = path.file_stem()
+                let file_name = path
+                    .file_stem()
                     .and_then(|s| s.to_str())
                     .unwrap_or("")
                     .to_string();
-                
+
                 match load_mapping_file(&path) {
                     Ok(mapping) => {
                         mappings.insert(file_name, mapping);
@@ -103,14 +106,14 @@ pub fn load_all_mappings(dir: &Path) -> Result<HashMap<String, MappingFile>, Box
             }
         }
     }
-    
+
     Ok(mappings)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_flatten_mappings() {
         let mut categories = MappingCategories {
@@ -118,14 +121,12 @@ mod tests {
                 ("a".to_string(), "अ".to_string()),
                 ("ā".to_string(), "आ".to_string()),
             ])),
-            consonants: Some(HashMap::from([
-                ("ka".to_string(), "क".to_string()),
-            ])),
+            consonants: Some(HashMap::from([("ka".to_string(), "क".to_string())])),
             vowel_marks: None,
             special: None,
             numerals: None,
         };
-        
+
         let flat = flatten_mappings(&categories);
         assert_eq!(flat.len(), 3);
         assert_eq!(flat.get("a"), Some(&"अ".to_string()));

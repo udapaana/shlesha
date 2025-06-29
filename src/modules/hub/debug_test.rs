@@ -6,17 +6,17 @@ mod debug_test {
     #[test]
     fn debug_mappings() {
         let hub = Hub::new();
-        
+
         println!("Deva to ISO mappings: {}", hub.deva_to_iso_map.len());
         for (deva, iso) in &hub.deva_to_iso_map {
             println!("  {} → {}", deva, if iso.is_empty() { "∅" } else { iso });
         }
-        
+
         println!("\nISO to Deva mappings: {}", hub.iso_to_deva_map.len());
         for (iso, deva) in &hub.iso_to_deva_map {
             println!("  {} → {}", iso, deva);
         }
-        
+
         // Find unmapped entries
         println!("\nDeva→ISO without reverse:");
         for (&deva, &iso) in &hub.deva_to_iso_map {
@@ -24,7 +24,7 @@ mod debug_test {
                 println!("  {} → {} (no reverse)", deva, iso);
             }
         }
-        
+
         println!("\nISO→Deva without forward:");
         for (&iso, &deva) in &hub.iso_to_deva_map {
             if !hub.deva_to_iso_map.contains_key(&deva) {

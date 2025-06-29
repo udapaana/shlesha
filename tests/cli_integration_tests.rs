@@ -1,5 +1,5 @@
-use std::process::Command;
 use std::io::Write;
+use std::process::Command;
 
 /// Test CLI integration including new metadata flags
 #[cfg(test)]
@@ -12,12 +12,12 @@ mod cli_tests {
         if release_path.exists() {
             return release_path.to_string_lossy().to_string();
         }
-        
+
         let debug_path = std::path::Path::new("target/debug/shlesha");
         if debug_path.exists() {
             return debug_path.to_string_lossy().to_string();
         }
-        
+
         // Fallback to cargo-generated binary location
         let mut path = std::env::current_exe().unwrap();
         path.pop(); // Remove test binary name
@@ -140,7 +140,9 @@ mod cli_tests {
             .expect("Failed to spawn CLI");
 
         let stdin = child.stdin.as_mut().expect("Failed to get stdin");
-        stdin.write_all("अ".as_bytes()).expect("Failed to write to stdin");
+        stdin
+            .write_all("अ".as_bytes())
+            .expect("Failed to write to stdin");
         drop(stdin); // Close stdin to signal EOF
 
         let output = child.wait_with_output().expect("Failed to wait for CLI");

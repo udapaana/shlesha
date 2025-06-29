@@ -1,14 +1,14 @@
 //! WASM bindings for Shlesha transliteration library
-//! 
+//!
 //! This module provides JavaScript/WebAssembly access to all Shlesha functionality including:
 //! - Basic transliteration between scripts
 //! - Metadata collection for unknown tokens
 //! - Script discovery and validation
 //! - Runtime schema loading
 
-use wasm_bindgen::prelude::*;
-use js_sys::{Array, Object, Reflect};
 use crate::Shlesha;
+use js_sys::{Array, Object, Reflect};
+use wasm_bindgen::prelude::*;
 
 // Import console.log for debugging
 #[wasm_bindgen]
@@ -64,9 +64,9 @@ pub struct WasmTransliterationResult {
 #[wasm_bindgen]
 impl WasmShlesha {
     /// Create a new Shlesha transliterator instance
-    /// 
+    ///
     /// @returns {WasmShlesha} New transliterator instance
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const transliterator = new WasmShlesha();
@@ -79,13 +79,13 @@ impl WasmShlesha {
     }
 
     /// Transliterate text from one script to another
-    /// 
+    ///
     /// @param {string} text - Text to transliterate
     /// @param {string} fromScript - Source script name
     /// @param {string} toScript - Target script name
     /// @returns {string} Transliterated text
     /// @throws {Error} If transliteration fails
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const transliterator = new WasmShlesha();
@@ -93,20 +93,25 @@ impl WasmShlesha {
     /// console.log(result); // "dharma"
     /// ```
     #[wasm_bindgen]
-    pub fn transliterate(&self, text: &str, from_script: &str, to_script: &str) -> Result<String, JsValue> {
+    pub fn transliterate(
+        &self,
+        text: &str,
+        from_script: &str,
+        to_script: &str,
+    ) -> Result<String, JsValue> {
         self.inner
             .transliterate(text, from_script, to_script)
             .map_err(|e| JsValue::from_str(&format!("Transliteration failed: {}", e)))
     }
 
     /// Transliterate text with metadata collection for unknown tokens
-    /// 
+    ///
     /// @param {string} text - Text to transliterate
     /// @param {string} fromScript - Source script name
     /// @param {string} toScript - Target script name
     /// @returns {WasmTransliterationResult} Result with output and metadata
     /// @throws {Error} If transliteration fails
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const transliterator = new WasmShlesha();
@@ -115,13 +120,21 @@ impl WasmShlesha {
     /// console.log(result.getUnknownTokenCount()); // 2 (for 'k' and 'r')
     /// ```
     #[wasm_bindgen(js_name = transliterateWithMetadata)]
-    pub fn transliterate_with_metadata(&self, text: &str, from_script: &str, to_script: &str) -> Result<WasmTransliterationResult, JsValue> {
-        let result = self.inner
+    pub fn transliterate_with_metadata(
+        &self,
+        text: &str,
+        from_script: &str,
+        to_script: &str,
+    ) -> Result<WasmTransliterationResult, JsValue> {
+        let result = self
+            .inner
             .transliterate_with_metadata(text, from_script, to_script)
             .map_err(|e| JsValue::from_str(&format!("Transliteration failed: {}", e)))?;
-        
+
         let wasm_metadata = result.metadata.map(|metadata| {
-            let unknown_tokens = metadata.unknown_tokens.into_iter()
+            let unknown_tokens = metadata
+                .unknown_tokens
+                .into_iter()
                 .map(|token| WasmUnknownToken {
                     script: token.script,
                     token: token.token.to_string(),
@@ -130,7 +143,7 @@ impl WasmShlesha {
                     is_extension: token.is_extension,
                 })
                 .collect();
-            
+
             WasmTransliterationMetadata {
                 source_script: metadata.source_script,
                 target_script: metadata.target_script,
@@ -138,7 +151,7 @@ impl WasmShlesha {
                 unknown_tokens,
             }
         });
-        
+
         Ok(WasmTransliterationResult {
             output: result.output,
             metadata: wasm_metadata,
@@ -146,9 +159,9 @@ impl WasmShlesha {
     }
 
     /// Get list of supported scripts as JavaScript Array
-    /// 
+    ///
     /// @returns {Array<string>} Array of supported script names
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const transliterator = new WasmShlesha();
@@ -166,10 +179,10 @@ impl WasmShlesha {
     }
 
     /// Check if a script is supported
-    /// 
+    ///
     /// @param {string} script - Script name to check
     /// @returns {boolean} True if script is supported
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const transliterator = new WasmShlesha();
@@ -182,10 +195,10 @@ impl WasmShlesha {
     }
 
     /// Load a new script schema at runtime
-    /// 
+    ///
     /// @param {string} schemaPath - Path to YAML schema file
     /// @throws {Error} If schema loading fails
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const transliterator = new WasmShlesha();
@@ -199,9 +212,9 @@ impl WasmShlesha {
     }
 
     /// Get script information as JavaScript Object
-    /// 
+    ///
     /// @returns {Object} Object mapping script names to descriptions
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const transliterator = new WasmShlesha();
@@ -211,7 +224,7 @@ impl WasmShlesha {
     #[wasm_bindgen(js_name = getScriptInfo)]
     pub fn get_script_info(&self) -> Result<JsValue, JsValue> {
         let obj = Object::new();
-        
+
         for script in self.inner.list_supported_scripts() {
             let description = match script.as_str() {
                 "iast" => "IAST (International Alphabet of Sanskrit Transliteration)",
@@ -231,16 +244,20 @@ impl WasmShlesha {
                 "iso15919" | "iso" | "iso_15919" => "ISO-15919 (International standard)",
                 _ => "Unknown script type",
             };
-            
-            Reflect::set(&obj, &JsValue::from_str(&script), &JsValue::from_str(description))
-                .map_err(|_| JsValue::from_str("Failed to set property"))?;
+
+            Reflect::set(
+                &obj,
+                &JsValue::from_str(&script),
+                &JsValue::from_str(description),
+            )
+            .map_err(|_| JsValue::from_str("Failed to set property"))?;
         }
-        
+
         Ok(obj.into())
     }
 
     /// Get the number of supported scripts
-    /// 
+    ///
     /// @returns {number} Number of supported scripts
     #[wasm_bindgen(js_name = getSupportedScriptCount)]
     pub fn get_supported_script_count(&self) -> usize {
@@ -249,10 +266,10 @@ impl WasmShlesha {
 
     /// Load a schema from a file path for runtime script support
     /// Note: In WASM context, this would typically load from a URL or local storage
-    /// 
+    ///
     /// @param {string} filePath - Path to YAML schema file
     /// @throws {Error} If schema loading fails
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const transliterator = new WasmShlesha();
@@ -266,11 +283,11 @@ impl WasmShlesha {
     }
 
     /// Load a schema from YAML content string
-    /// 
+    ///
     /// @param {string} yamlContent - YAML schema content
     /// @param {string} schemaName - Name for the schema
     /// @throws {Error} If schema loading fails
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const yamlContent = `
@@ -285,17 +302,21 @@ impl WasmShlesha {
     /// transliterator.loadSchemaFromString(yamlContent, "custom");
     /// ```
     #[wasm_bindgen(js_name = loadSchemaFromString)]
-    pub fn load_schema_from_string(&mut self, yaml_content: &str, schema_name: &str) -> Result<(), JsValue> {
+    pub fn load_schema_from_string(
+        &mut self,
+        yaml_content: &str,
+        schema_name: &str,
+    ) -> Result<(), JsValue> {
         self.inner
             .load_schema_from_string(yaml_content, schema_name)
             .map_err(|e| JsValue::from_str(&format!("Schema loading failed: {}", e)))
     }
 
     /// Get information about a loaded runtime schema
-    /// 
+    ///
     /// @param {string} scriptName - Name of the script
     /// @returns {Object|undefined} Schema information object or undefined if not found
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const info = transliterator.getSchemaInfo("custom");
@@ -308,23 +329,39 @@ impl WasmShlesha {
     pub fn get_schema_info(&self, script_name: &str) -> Option<Object> {
         self.inner.get_schema_info(script_name).map(|info| {
             let obj = Object::new();
-            
+
             // Use Reflect to set properties
             let _ = Reflect::set(&obj, &"name".into(), &JsValue::from_str(&info.name));
-            let _ = Reflect::set(&obj, &"description".into(), &JsValue::from_str(&info.description));
-            let _ = Reflect::set(&obj, &"script_type".into(), &JsValue::from_str(&info.script_type));
-            let _ = Reflect::set(&obj, &"is_runtime_loaded".into(), &JsValue::from_bool(info.is_runtime_loaded));
-            let _ = Reflect::set(&obj, &"mapping_count".into(), &JsValue::from_f64(info.mapping_count as f64));
-            
+            let _ = Reflect::set(
+                &obj,
+                &"description".into(),
+                &JsValue::from_str(&info.description),
+            );
+            let _ = Reflect::set(
+                &obj,
+                &"script_type".into(),
+                &JsValue::from_str(&info.script_type),
+            );
+            let _ = Reflect::set(
+                &obj,
+                &"is_runtime_loaded".into(),
+                &JsValue::from_bool(info.is_runtime_loaded),
+            );
+            let _ = Reflect::set(
+                &obj,
+                &"mapping_count".into(),
+                &JsValue::from_f64(info.mapping_count as f64),
+            );
+
             obj
         })
     }
 
     /// Remove a runtime loaded schema
-    /// 
+    ///
     /// @param {string} scriptName - Name of the script to remove
     /// @returns {boolean} True if schema was removed, false if not found
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// const success = transliterator.removeSchema("custom");
@@ -336,7 +373,7 @@ impl WasmShlesha {
     }
 
     /// Clear all runtime loaded schemas
-    /// 
+    ///
     /// @example
     /// ```javascript
     /// transliterator.clearRuntimeSchemas();
@@ -350,7 +387,7 @@ impl WasmShlesha {
 #[wasm_bindgen]
 impl WasmTransliterationResult {
     /// Get the transliterated output text
-    /// 
+    ///
     /// @returns {string} Transliterated text
     #[wasm_bindgen(js_name = getOutput)]
     pub fn get_output(&self) -> String {
@@ -358,7 +395,7 @@ impl WasmTransliterationResult {
     }
 
     /// Check if metadata is available
-    /// 
+    ///
     /// @returns {boolean} True if metadata is present
     #[wasm_bindgen(js_name = hasMetadata)]
     pub fn has_metadata(&self) -> bool {
@@ -366,7 +403,7 @@ impl WasmTransliterationResult {
     }
 
     /// Get the source script name from metadata
-    /// 
+    ///
     /// @returns {string|null} Source script name or null if no metadata
     #[wasm_bindgen(js_name = getSourceScript)]
     pub fn get_source_script(&self) -> Option<String> {
@@ -374,7 +411,7 @@ impl WasmTransliterationResult {
     }
 
     /// Get the target script name from metadata
-    /// 
+    ///
     /// @returns {string|null} Target script name or null if no metadata
     #[wasm_bindgen(js_name = getTargetScript)]
     pub fn get_target_script(&self) -> Option<String> {
@@ -382,40 +419,63 @@ impl WasmTransliterationResult {
     }
 
     /// Get the number of unknown tokens
-    /// 
+    ///
     /// @returns {number} Number of unknown tokens (0 if no metadata)
     #[wasm_bindgen(js_name = getUnknownTokenCount)]
     pub fn get_unknown_token_count(&self) -> usize {
-        self.metadata.as_ref().map(|m| m.unknown_tokens.len()).unwrap_or(0)
+        self.metadata
+            .as_ref()
+            .map(|m| m.unknown_tokens.len())
+            .unwrap_or(0)
     }
 
     /// Get unknown tokens as JavaScript Array
-    /// 
+    ///
     /// @returns {Array<Object>} Array of unknown token objects
     #[wasm_bindgen(js_name = getUnknownTokens)]
     pub fn get_unknown_tokens(&self) -> Result<Array, JsValue> {
         let array = Array::new();
-        
+
         if let Some(metadata) = &self.metadata {
             for token in &metadata.unknown_tokens {
                 let obj = Object::new();
-                Reflect::set(&obj, &JsValue::from_str("script"), &JsValue::from_str(&token.script))?;
-                Reflect::set(&obj, &JsValue::from_str("token"), &JsValue::from_str(&token.token))?;
-                Reflect::set(&obj, &JsValue::from_str("position"), &JsValue::from_f64(token.position as f64))?;
-                Reflect::set(&obj, &JsValue::from_str("unicode"), &JsValue::from_str(&token.unicode))?;
-                Reflect::set(&obj, &JsValue::from_str("isExtension"), &JsValue::from_bool(token.is_extension))?;
+                Reflect::set(
+                    &obj,
+                    &JsValue::from_str("script"),
+                    &JsValue::from_str(&token.script),
+                )?;
+                Reflect::set(
+                    &obj,
+                    &JsValue::from_str("token"),
+                    &JsValue::from_str(&token.token),
+                )?;
+                Reflect::set(
+                    &obj,
+                    &JsValue::from_str("position"),
+                    &JsValue::from_f64(token.position as f64),
+                )?;
+                Reflect::set(
+                    &obj,
+                    &JsValue::from_str("unicode"),
+                    &JsValue::from_str(&token.unicode),
+                )?;
+                Reflect::set(
+                    &obj,
+                    &JsValue::from_str("isExtension"),
+                    &JsValue::from_bool(token.is_extension),
+                )?;
                 array.push(&obj);
             }
         }
-        
+
         Ok(array)
     }
 }
 
 /// Convenience function to create a new Shlesha instance
-/// 
+///
 /// @returns {WasmShlesha} New transliterator instance
-/// 
+///
 /// @example
 /// ```javascript
 /// import { createTransliterator } from 'shlesha';
@@ -427,13 +487,13 @@ pub fn create_transliterator() -> WasmShlesha {
 }
 
 /// Convenience function for direct transliteration
-/// 
+///
 /// @param {string} text - Text to transliterate
 /// @param {string} fromScript - Source script name
 /// @param {string} toScript - Target script name
 /// @returns {string} Transliterated text
 /// @throws {Error} If transliteration fails
-/// 
+///
 /// @example
 /// ```javascript
 /// import { transliterate } from 'shlesha';
@@ -449,9 +509,9 @@ pub fn transliterate(text: &str, from_script: &str, to_script: &str) -> Result<S
 }
 
 /// Get list of all supported scripts as JavaScript Array
-/// 
+///
 /// @returns {Array<string>} Array of supported script names
-/// 
+///
 /// @example
 /// ```javascript
 /// import { getSupportedScripts } from 'shlesha';
@@ -470,7 +530,7 @@ pub fn get_supported_scripts() -> Array {
 }
 
 /// Get the library version
-/// 
+///
 /// @returns {string} Version string
 #[wasm_bindgen(js_name = getVersion)]
 pub fn get_version() -> String {
@@ -481,58 +541,64 @@ pub fn get_version() -> String {
 mod tests {
     use super::*;
     use wasm_bindgen_test::*;
-    
+
     wasm_bindgen_test_configure!(run_in_browser);
-    
+
     #[wasm_bindgen_test]
     fn test_wasm_basic_transliteration() {
         let transliterator = WasmShlesha::new();
-        let result = transliterator.transliterate("अ", "devanagari", "iast").unwrap();
+        let result = transliterator
+            .transliterate("अ", "devanagari", "iast")
+            .unwrap();
         assert_eq!(result, "a");
     }
-    
+
     #[wasm_bindgen_test]
     fn test_wasm_metadata_collection() {
         let transliterator = WasmShlesha::new();
-        let result = transliterator.transliterate_with_metadata("धर्मkr", "devanagari", "iast").unwrap();
+        let result = transliterator
+            .transliterate_with_metadata("धर्मkr", "devanagari", "iast")
+            .unwrap();
         assert!(result.get_output().contains("dharma"));
         assert!(result.has_metadata());
         // With graceful handling, unknown tokens may or may not be tracked depending on implementation
         assert!(result.get_unknown_token_count() >= 0);
     }
-    
+
     #[wasm_bindgen_test]
     fn test_wasm_script_support() {
         let transliterator = WasmShlesha::new();
         assert!(transliterator.supports_script("devanagari"));
         assert!(transliterator.supports_script("iast"));
         assert!(!transliterator.supports_script("nonexistent"));
-        
+
         let scripts = transliterator.list_supported_scripts();
         assert!(scripts.length() > 0);
     }
-    
+
     #[wasm_bindgen_test]
     fn test_wasm_convenience_functions() {
         let result = transliterate("अ", "devanagari", "iast").unwrap();
         assert_eq!(result, "a");
-        
+
         let scripts = get_supported_scripts();
         assert!(scripts.length() > 0);
-        
+
         let version = get_version();
         assert!(!version.is_empty());
     }
-    
+
     #[wasm_bindgen_test]
     fn test_wasm_cross_script_conversion() {
         let transliterator = WasmShlesha::new();
-        let result = transliterator.transliterate("धर्म", "devanagari", "gujarati").unwrap();
+        let result = transliterator
+            .transliterate("धर्म", "devanagari", "gujarati")
+            .unwrap();
         assert!(!result.is_empty());
         // Should contain Gujarati representation
         assert!(result.contains("ધ") || result.contains("गुज")); // Either Gujarati or fallback
     }
-    
+
     #[wasm_bindgen_test]
     fn test_wasm_script_info() {
         let transliterator = WasmShlesha::new();
@@ -540,25 +606,29 @@ mod tests {
         let obj: &js_sys::Object = info.unchecked_ref();
         assert!(js_sys::Object::keys(obj).length() > 0);
     }
-    
+
     #[wasm_bindgen_test]
     fn test_wasm_error_handling() {
         let transliterator = WasmShlesha::new();
         let result = transliterator.transliterate("test", "invalid_script", "iast");
         assert!(result.is_err());
     }
-    
+
     #[wasm_bindgen_test]
     fn test_wasm_empty_input() {
         let transliterator = WasmShlesha::new();
-        let result = transliterator.transliterate("", "devanagari", "iast").unwrap();
+        let result = transliterator
+            .transliterate("", "devanagari", "iast")
+            .unwrap();
         assert_eq!(result, "");
     }
-    
+
     #[wasm_bindgen_test]
     fn test_wasm_whitespace_preservation() {
         let transliterator = WasmShlesha::new();
-        let result = transliterator.transliterate("अ आ", "devanagari", "iast").unwrap();
+        let result = transliterator
+            .transliterate("अ आ", "devanagari", "iast")
+            .unwrap();
         assert!(result.contains(" "));
     }
 }

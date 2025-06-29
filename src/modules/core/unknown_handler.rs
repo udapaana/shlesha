@@ -26,7 +26,7 @@ impl UnknownToken {
             is_extension,
         }
     }
-    
+
     /// Format as annotation string if needed
     pub fn format(&self) -> String {
         if self.is_extension {
@@ -59,7 +59,7 @@ impl TransliterationMetadata {
             used_extensions: false,
         }
     }
-    
+
     /// Add an unknown token to the metadata
     pub fn add_unknown(&mut self, token: UnknownToken) {
         if token.is_extension {
@@ -67,7 +67,7 @@ impl TransliterationMetadata {
         }
         self.unknown_tokens.push(token);
     }
-    
+
     /// Get unique unknown characters (for creating custom mappings)
     pub fn unique_unknowns(&self) -> Vec<char> {
         let mut unique: HashSet<char> = HashSet::new();
@@ -78,35 +78,42 @@ impl TransliterationMetadata {
         result.sort();
         result
     }
-    
+
     /// Generate a report of unknown tokens
     pub fn report(&self) -> String {
         if self.unknown_tokens.is_empty() {
-            return format!("No unknown tokens found in {} → {} conversion", 
-                         self.source_script, self.target_script);
+            return format!(
+                "No unknown tokens found in {} → {} conversion",
+                self.source_script, self.target_script
+            );
         }
-        
-        let mut report = format!("Unknown tokens in {} → {} conversion:\n", 
-                               self.source_script, self.target_script);
-        
+
+        let mut report = format!(
+            "Unknown tokens in {} → {} conversion:\n",
+            self.source_script, self.target_script
+        );
+
         // Group by unique character
         let unique = self.unique_unknowns();
         for ch in unique {
-            let occurrences: Vec<&UnknownToken> = self.unknown_tokens
+            let occurrences: Vec<&UnknownToken> = self
+                .unknown_tokens
                 .iter()
                 .filter(|t| t.token == ch)
                 .collect();
-            
-            report.push_str(&format!("  '{}' ({}) - {} occurrence(s)\n", 
-                                   ch, 
-                                   occurrences[0].unicode,
-                                   occurrences.len()));
+
+            report.push_str(&format!(
+                "  '{}' ({}) - {} occurrence(s)\n",
+                ch,
+                occurrences[0].unicode,
+                occurrences.len()
+            ));
         }
-        
+
         if self.used_extensions {
             report.push_str("\nNote: Some unknown tokens came from runtime extensions\n");
         }
-        
+
         report
     }
 }
@@ -128,7 +135,7 @@ impl TransliterationResult {
             metadata: None,
         }
     }
-    
+
     /// Create a result with metadata
     pub fn with_metadata(output: String, metadata: TransliterationMetadata) -> Self {
         Self {
@@ -136,7 +143,7 @@ impl TransliterationResult {
             metadata: Some(metadata),
         }
     }
-    
+
     /// Get the output with unknown tokens annotated
     pub fn annotated_output(&self) -> String {
         match &self.metadata {
@@ -145,26 +152,31 @@ impl TransliterationResult {
                 if metadata.unknown_tokens.is_empty() {
                     return self.output.clone();
                 }
-                
+
                 // Sort tokens by position (reverse order to not affect positions)
                 let mut tokens = metadata.unknown_tokens.clone();
                 tokens.sort_by(|a, b| b.position.cmp(&a.position));
-                
+
                 let mut result = self.output.clone();
                 for token in tokens {
                     // This is simplified - in practice we'd need char boundary handling
                     let annotation = token.format();
                     // Insert annotation after the unknown character
-                    if let Some(char_boundary) = result.char_indices()
+                    if let Some(char_boundary) = result
+                        .char_indices()
                         .find(|(i, _)| *i == token.position)
-                        .and_then(|(i, _ch)| result.char_indices()
-                            .find(|(j, _)| *j > i)
-                            .map(|(j, _)| j)
-                            .or(Some(result.len()))) {
+                        .and_then(|(i, _ch)| {
+                            result
+                                .char_indices()
+                                .find(|(j, _)| *j > i)
+                                .map(|(j, _)| j)
+                                .or(Some(result.len()))
+                        })
+                    {
                         result.insert_str(char_boundary, &annotation);
                     }
                 }
-                
+
                 result
             }
         }
@@ -175,15 +187,17 @@ impl TransliterationResult {
 pub trait UnknownHandler {
     /// Check if a character is known for a given script
     fn is_known_char(&self, script: &str, ch: char) -> bool;
-    
+
     /// Process a string and track unknown characters
-    fn process_with_unknowns(&self, 
-                           script: &str, 
-                           input: &str, 
-                           is_extension: bool) -> (String, Vec<UnknownToken>) {
+    fn process_with_unknowns(
+        &self,
+        script: &str,
+        input: &str,
+        is_extension: bool,
+    ) -> (String, Vec<UnknownToken>) {
         let mut output = String::new();
         let mut unknowns = Vec::new();
-        
+
         for (pos, ch) in input.char_indices() {
             if self.is_known_char(script, ch) {
                 output.push(ch);
@@ -192,7 +206,7 @@ pub trait UnknownHandler {
                 unknowns.push(UnknownToken::new(script, ch, pos, is_extension));
             }
         }
-        
+
         (output, unknowns)
     }
 }
@@ -200,7 +214,7 @@ pub trait UnknownHandler {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_unknown_token_creation() {
         let token = UnknownToken::new("devanagari", '☺', 5, false);
@@ -209,24 +223,24 @@ mod tests {
         assert_eq!(token.unicode, "U+263A");
         assert_eq!(token.format(), "[devanagari:☺:U+263A]");
     }
-    
+
     #[test]
     fn test_extension_token_format() {
         let token = UnknownToken::new("vedavms", '†', 10, true);
         assert_eq!(token.format(), "[ext:vedavms:†:U+2020]");
     }
-    
+
     #[test]
     fn test_metadata_unique_unknowns() {
         let mut metadata = TransliterationMetadata::new("source", "target");
         metadata.add_unknown(UnknownToken::new("source", 'a', 0, false));
         metadata.add_unknown(UnknownToken::new("source", 'b', 1, false));
         metadata.add_unknown(UnknownToken::new("source", 'a', 2, false));
-        
+
         let unique = metadata.unique_unknowns();
         assert_eq!(unique, vec!['a', 'b']);
     }
-    
+
     #[test]
     fn test_transliteration_result() {
         let result = TransliterationResult::simple("dharma".to_string());
