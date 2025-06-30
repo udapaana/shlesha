@@ -406,9 +406,16 @@ mod tests {
 
         // Level 3: Roman script with unknown characters (IAST → Devanagari)
         let result = transliterator
-            .transliterate("dharmakr", "iast", "devanagari")
+            .transliterate("dharmaqx", "iast", "devanagari")
             .unwrap();
-        assert_eq!(result, "dharmakr"); // Unknown combinations should pass through unchanged
+        // q converts to क़् (composed form), x passes through unchanged
+        let expected = format!("{}{}{}{}{}{}",
+            "ध", "र्", "म", 
+            "\u{0958}", // क़ (composed qa)
+            "्", // virama 
+            "x"
+        );
+        assert_eq!(result, expected);
 
         // Test metadata collection with unknown characters
         let result = transliterator
