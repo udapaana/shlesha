@@ -236,11 +236,11 @@ impl SchemaRegistry {
     fn load_schema_from_file(&mut self, path: &Path) -> Result<Schema, RegistryError> {
         // Read the file
         let contents = fs::read_to_string(path)
-            .map_err(|e| RegistryError::IoError(format!("Failed to read file: {}", e)))?;
+            .map_err(|e| RegistryError::IoError(format!("Failed to read file: {e}")))?;
 
         // Parse YAML
         let schema_file: SchemaFile = serde_yaml::from_str(&contents)
-            .map_err(|e| RegistryError::ParseError(format!("Failed to parse YAML: {}", e)))?;
+            .map_err(|e| RegistryError::ParseError(format!("Failed to parse YAML: {e}")))?;
 
         // Cache the schema file
         self.schema_cache
@@ -420,7 +420,7 @@ impl SchemaRegistryTrait for SchemaRegistry {
     ) -> Result<(), RegistryError> {
         // Parse YAML content
         let schema_file: SchemaFile = serde_yaml::from_str(yaml_content)
-            .map_err(|e| RegistryError::ParseError(format!("Failed to parse YAML: {}", e)))?;
+            .map_err(|e| RegistryError::ParseError(format!("Failed to parse YAML: {e}")))?;
 
         // Create schema from parsed content
         let mut schema = Schema::from_schema_file(schema_file)?;

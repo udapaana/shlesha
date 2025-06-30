@@ -103,7 +103,7 @@ impl WasmShlesha {
     ) -> Result<String, JsValue> {
         self.inner
             .transliterate(text, from_script, to_script)
-            .map_err(|e| JsValue::from_str(&format!("Transliteration failed: {}", e)))
+            .map_err(|e| JsValue::from_str(&format!("Transliteration failed: {e}")))
     }
 
     /// Transliterate text with metadata collection for unknown tokens
@@ -131,7 +131,7 @@ impl WasmShlesha {
         let result = self
             .inner
             .transliterate_with_metadata(text, from_script, to_script)
-            .map_err(|e| JsValue::from_str(&format!("Transliteration failed: {}", e)))?;
+            .map_err(|e| JsValue::from_str(&format!("Transliteration failed: {e}")))?;
 
         let wasm_metadata = result.metadata.map(|metadata| {
             let unknown_tokens = metadata
@@ -210,7 +210,7 @@ impl WasmShlesha {
     pub fn load_schema(&mut self, schema_path: &str) -> Result<(), JsValue> {
         self.inner
             .load_schema_from_file(schema_path)
-            .map_err(|e| JsValue::from_str(&format!("Schema loading failed: {}", e)))
+            .map_err(|e| JsValue::from_str(&format!("Schema loading failed: {e}")))
     }
 
     /// Get script information as JavaScript Object
@@ -281,7 +281,7 @@ impl WasmShlesha {
     pub fn load_schema_from_file(&mut self, file_path: &str) -> Result<(), JsValue> {
         self.inner
             .load_schema_from_file(file_path)
-            .map_err(|e| JsValue::from_str(&format!("Schema loading failed: {}", e)))
+            .map_err(|e| JsValue::from_str(&format!("Schema loading failed: {e}")))
     }
 
     /// Load a schema from YAML content string
@@ -311,7 +311,7 @@ impl WasmShlesha {
     ) -> Result<(), JsValue> {
         self.inner
             .load_schema_from_string(yaml_content, schema_name)
-            .map_err(|e| JsValue::from_str(&format!("Schema loading failed: {}", e)))
+            .map_err(|e| JsValue::from_str(&format!("Schema loading failed: {e}")))
     }
 
     /// Get information about a loaded runtime schema
@@ -507,7 +507,7 @@ pub fn transliterate(text: &str, from_script: &str, to_script: &str) -> Result<S
     let transliterator = Shlesha::new();
     transliterator
         .transliterate(text, from_script, to_script)
-        .map_err(|e| JsValue::from_str(&format!("Transliteration failed: {}", e)))
+        .map_err(|e| JsValue::from_str(&format!("Transliteration failed: {e}")))
 }
 
 /// Get list of all supported scripts as JavaScript Array
