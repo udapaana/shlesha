@@ -3,6 +3,7 @@ metadata:
   script_type: "brahmic"
   has_implicit_a: true
   description: "Devanagari (देवनागरी) script - hub script for Indic processing"
+  aliases: ["deva"]
 
 mappings:
   # Devanagari to Devanagari (identity mapping for consistency)

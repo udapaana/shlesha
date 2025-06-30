@@ -1,6 +1,7 @@
 {{!-- Template for Optimized Indic script converters using FxHashMap<char, char> for performance --}}
 
 /// Optimized {{script_name}} converter with pre-computed character mappings using FxHashMap
+#[allow(dead_code)]
 pub struct {{struct_name}} {
     {{lowercase script_name}}_to_deva_map: FxHashMap<char, char>,
     deva_to_{{lowercase script_name}}_map: FxHashMap<char, char>,

@@ -101,7 +101,7 @@ fn main() {
                                         let annotation =
                                             format!("[{}:{}]", token.script, token.token);
                                         // Insert annotation after the token position
-                                        if token.position + 1 <= output.len() {
+                                        if token.position < output.len() {
                                             output.insert_str(token.position + 1, &annotation);
                                         } else {
                                             output.push_str(&annotation);
@@ -109,20 +109,20 @@ fn main() {
                                     }
                                 }
                             }
-                            println!("{}", output);
+                            println!("{output}");
                         }
                     }
                     Err(e) => {
-                        eprintln!("Error: {}", e);
+                        eprintln!("Error: {e}");
                         std::process::exit(1);
                     }
                 }
             } else {
                 // Regular transliteration without metadata
                 match transliterator.transliterate(&input, &from, &to) {
-                    Ok(result) => println!("{}", result),
+                    Ok(result) => println!("{result}"),
                     Err(e) => {
-                        eprintln!("Error: {}", e);
+                        eprintln!("Error: {e}");
                         std::process::exit(1);
                     }
                 }
@@ -155,7 +155,7 @@ fn main() {
                     "wx_notation" => "WX (Computational notation)",
                     _ => "Unknown script type",
                 };
-                println!("  {} - {}", script, description);
+                println!("  {script} - {description}");
             }
         }
     }
