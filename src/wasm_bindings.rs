@@ -5,6 +5,17 @@
 //! - Metadata collection for unknown tokens
 //! - Script discovery and validation
 //! - Runtime schema loading
+//!
+//! ## Performance and Benchmarking
+//!
+//! WASM builds disable criterion's default features (specifically rayon) for benchmarking because:
+//! - Rayon requires threading support that is not available in WASM environments
+//! - WASM runs in a single-threaded context in most browser and Node.js deployments
+//! - Criterion's parallel benchmark execution would fail to compile for the wasm32-unknown-unknown target
+//!
+//! This means WASM benchmarks run in single-threaded mode, while native benchmarks can use
+//! full parallelization. Both approaches provide valid performance measurements for their
+//! respective deployment environments.
 
 use crate::Shlesha;
 use js_sys::{Array, Object, Reflect};
