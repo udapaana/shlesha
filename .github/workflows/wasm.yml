@@ -65,9 +65,7 @@ jobs:
       - name: Build WASM package
         run: |
           wasm-pack build --target web --out-dir pkg --features wasm
-          # Update package.json version to match tag
-          cd pkg
-          npm version ${GITHUB_REF#refs/tags/v} --no-git-tag-version
+          # Version is automatically set from Cargo.toml by wasm-pack
       
       - name: Publish to npm (dry run)
         run: |
