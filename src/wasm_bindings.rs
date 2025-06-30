@@ -575,7 +575,8 @@ mod tests {
         assert!(result.get_output().contains("dharma"));
         assert!(result.has_metadata());
         // With graceful handling, unknown tokens may or may not be tracked depending on implementation
-        assert!(result.get_unknown_token_count() >= 0);
+        // get_unknown_token_count() returns usize which is always >= 0, so we just check it's callable
+        let _count = result.get_unknown_token_count();
     }
 
     #[wasm_bindgen_test]

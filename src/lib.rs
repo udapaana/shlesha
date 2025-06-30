@@ -409,10 +409,13 @@ mod tests {
             .transliterate("dharmaqx", "iast", "devanagari")
             .unwrap();
         // q converts to क़् (composed form), x passes through unchanged
-        let expected = format!("{}{}{}{}{}{}",
-            "ध", "र्", "म", 
+        let expected = format!(
+            "{}{}{}{}{}{}",
+            "ध",
+            "र्",
+            "म",
             "\u{0958}", // क़ (composed qa)
-            "्", // virama 
+            "्",         // virama
             "x"
         );
         assert_eq!(result, expected);
