@@ -9,12 +9,14 @@ use crate::modules::hub::HubInput;
 pub struct ISO15919Converter;
 
 impl ISO15919Converter {
+    #[inline]
     pub fn new() -> Self {
         Self
     }
 }
 
 impl ScriptConverter for ISO15919Converter {
+    #[inline]
     fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
         if script != "iso15919" && script != "iso_15919" && script != "iso" {
             return Err(ConverterError::InvalidInput {
@@ -29,6 +31,7 @@ impl ScriptConverter for ISO15919Converter {
         Ok(HubInput::Iso(input.to_string()))
     }
 
+    #[inline]
     fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
         if script != "iso15919" && script != "iso_15919" && script != "iso" {
             return Err(ConverterError::InvalidInput {
@@ -52,6 +55,7 @@ impl ScriptConverter for ISO15919Converter {
         vec!["iso15919", "iso_15919", "iso"]
     }
 
+    #[inline]
     fn script_has_implicit_a(&self, _script: &str) -> bool {
         // ISO-15919 is a romanization scheme - consonants do NOT have implicit 'a'
         // ISO-15919 explicitly represents consonants without vowels
