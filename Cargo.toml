@@ -6,6 +6,12 @@ authors = ["Shlesha Contributors"]
 description = "High-performance extensible transliteration library with hub-and-spoke architecture"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/udapaana/shlesha"
+exclude = [
+    "test_py311_env/",
+    "wheels-*/",
+    ".github/",
+    "scripts/",
+]
 
 [dependencies]
 # Core dependencies - keeping minimal for now
