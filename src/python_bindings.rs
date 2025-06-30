@@ -8,8 +8,12 @@
 
 use pyo3::prelude::*;
 use std::collections::HashMap;
+use once_cell::sync::Lazy;
 
 use crate::Shlesha;
+
+// Global transliterator instance for convenience function
+static GLOBAL_TRANSLITERATOR: Lazy<Shlesha> = Lazy::new(|| Shlesha::new());
 
 /// Python wrapper for the Shlesha transliterator
 #[pyclass(unsendable)]
@@ -395,8 +399,7 @@ fn create_transliterator() -> PyShlesha {
 ///     >>> print(result)  # "dharma"
 #[pyfunction]
 fn transliterate(text: &str, from_script: &str, to_script: &str) -> PyResult<String> {
-    let transliterator = Shlesha::new();
-    transliterator
+    GLOBAL_TRANSLITERATOR
         .transliterate(text, from_script, to_script)
         .map_err(|e| {
             PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(

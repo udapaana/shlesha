@@ -1,5 +1,5 @@
 use crate::modules::core::unknown_handler::{TransliterationMetadata, UnknownToken};
-use std::collections::HashMap;
+use rustc_hash::FxHashMap;
 use thiserror::Error;
 use unicode_normalization::UnicodeNormalization;
 
@@ -81,14 +81,14 @@ pub trait HubTrait {
 
 /// Central hub implementing Devanagari ↔ ISO-15919 conversion
 pub struct Hub {
-    deva_to_iso_map: HashMap<char, &'static str>,
-    iso_to_deva_map: HashMap<&'static str, char>,
+    deva_to_iso_map: FxHashMap<char, &'static str>,
+    iso_to_deva_map: FxHashMap<&'static str, char>,
 }
 
 impl Hub {
     pub fn new() -> Self {
-        let mut deva_to_iso = HashMap::new();
-        let mut iso_to_deva = HashMap::new();
+        let mut deva_to_iso = FxHashMap::default();
+        let mut iso_to_deva = FxHashMap::default();
 
         // Core vowels
         deva_to_iso.insert('अ', "a");

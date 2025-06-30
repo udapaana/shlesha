@@ -1,6 +1,6 @@
 use crate::modules::core::unknown_handler::{TransliterationMetadata, TransliterationResult};
 use crate::modules::hub::{HubError, HubInput};
-use std::collections::HashMap;
+use rustc_hash::FxHashMap;
 use thiserror::Error;
 
 // Script Converter Module
@@ -136,14 +136,14 @@ pub trait ScriptConverter {
 pub struct ScriptConverterRegistry {
     converters: Vec<Box<dyn ScriptConverter>>,
     /// Cache mapping script names to converter indices for O(1) lookup
-    script_to_converter: HashMap<String, usize>,
+    script_to_converter: FxHashMap<String, usize>,
 }
 
 impl ScriptConverterRegistry {
     pub fn new() -> Self {
         Self {
             converters: Vec::new(),
-            script_to_converter: HashMap::new(),
+            script_to_converter: FxHashMap::default(),
         }
     }
 

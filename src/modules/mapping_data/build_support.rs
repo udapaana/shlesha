@@ -90,7 +90,7 @@ fn generate_hub_optimized_code(
     
     let mut code = String::new();
     code.push_str("use once_cell::sync::Lazy;\n");
-    code.push_str("use std::collections::HashMap;\n\n");
+    code.push_str("use rustc_hash::FxHashMap;\n\n");
     
     // Generate static arrays for maximum performance
     code.push_str("/// ISO to Devanagari mappings (static slices for zero allocation)\n");
@@ -112,7 +112,7 @@ fn generate_hub_optimized_code(
     
     // Generate lazy static HashMap for convenience
     code.push_str("/// Lazy-initialized HashMap for ISO to Devanagari\n");
-    code.push_str("pub static ISO_TO_DEVA: Lazy<HashMap<&'static str, char>> = Lazy::new(|| {\n");
+    code.push_str("pub static ISO_TO_DEVA: Lazy<FxHashMap<&'static str, char>> = Lazy::new(|| {\n");
     code.push_str("    ISO_TO_DEVA_PAIRS.iter().copied().collect()\n");
     code.push_str("});\n\n");
     
@@ -134,7 +134,7 @@ fn generate_hub_optimized_code(
     }
     code.push_str("];\n\n");
     
-    code.push_str("pub static DEVA_TO_ISO: Lazy<HashMap<char, &'static str>> = Lazy::new(|| {\n");
+    code.push_str("pub static DEVA_TO_ISO: Lazy<FxHashMap<char, &'static str>> = Lazy::new(|| {\n");
     code.push_str("    DEVA_TO_ISO_PAIRS.iter().copied().collect()\n");
     code.push_str("});\n");
     
@@ -149,7 +149,7 @@ fn generate_standard_mappings(
     
     let mut code = String::new();
     code.push_str("use once_cell::sync::Lazy;\n");
-    code.push_str("use std::collections::HashMap;\n\n");
+    code.push_str("use rustc_hash::FxHashMap;\n\n");
     
     // Generate mappings based on what's in the file
     if let Some(to_iso) = &mapping_file.to_iso {
@@ -188,7 +188,7 @@ fn generate_static_array(name: &str, mappings: &HashMap<String, String>) -> Stri
 
 fn generate_lazy_hashmap(name: &str, array_name: &str) -> String {
     format!(
-        "pub static {}: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(|| {{\n\
+        "pub static {}: Lazy<FxHashMap<&'static str, &'static str>> = Lazy::new(|| {{\n\
          \    {}.iter().copied().collect()\n\
          }});\n\n",
         name, array_name

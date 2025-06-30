@@ -9,7 +9,7 @@ use crate::modules::core::unknown_handler::{
 };
 use crate::modules::hub::HubInput;
 use crate::modules::registry::{Schema, SchemaRegistry, SchemaRegistryTrait};
-use std::collections::HashMap;
+use rustc_hash::FxHashMap;
 use std::sync::Arc;
 
 /// A converter that uses runtime-loaded schemas for transliteration
@@ -36,7 +36,7 @@ impl SchemaBasedConverter {
     fn apply_mappings(
         &self,
         input: &str,
-        mappings: &HashMap<String, String>,
+        mappings: &FxHashMap<String, String>,
         reverse: bool,
     ) -> (String, Vec<UnknownToken>) {
         let mut result = String::new();
@@ -45,7 +45,7 @@ impl SchemaBasedConverter {
         let mut position = 0;
 
         // Create reverse mappings if needed
-        let reverse_mappings: HashMap<String, String>;
+        let reverse_mappings: FxHashMap<String, String>;
         let mapping_to_use = if reverse {
             reverse_mappings = mappings
                 .iter()

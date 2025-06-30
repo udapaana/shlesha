@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use rustc_hash::FxHashMap;
 use std::fs;
 use std::path::Path;
 use thiserror::Error;
@@ -62,13 +62,13 @@ impl Default for SchemaMetadata {
 /// Script mappings structure (matches build system)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SchemaMapping {
-    pub vowels: Option<HashMap<String, String>>,
-    pub consonants: Option<HashMap<String, String>>,
-    pub vowel_signs: Option<HashMap<String, String>>,
-    pub marks: Option<HashMap<String, String>>,
-    pub digits: Option<HashMap<String, String>>,
-    pub sanskrit_extensions: Option<HashMap<String, String>>,
-    pub special: Option<HashMap<String, String>>,
+    pub vowels: Option<FxHashMap<String, String>>,
+    pub consonants: Option<FxHashMap<String, String>>,
+    pub vowel_signs: Option<FxHashMap<String, String>>,
+    pub marks: Option<FxHashMap<String, String>>,
+    pub digits: Option<FxHashMap<String, String>>,
+    pub sanskrit_extensions: Option<FxHashMap<String, String>>,
+    pub special: Option<FxHashMap<String, String>>,
 }
 
 /// Code generation configuration (optional)
@@ -93,7 +93,7 @@ pub struct Schema {
     pub name: String,
     pub script_type: String,
     pub target: String,
-    pub mappings: HashMap<String, String>,
+    pub mappings: FxHashMap<String, String>,
     pub metadata: SchemaMetadata,
 }
 
@@ -107,7 +107,7 @@ impl Schema {
             } else {
                 "devanagari".to_string()
             },
-            mappings: HashMap::new(),
+            mappings: FxHashMap::default(),
             metadata: SchemaMetadata {
                 name,
                 script_type,
@@ -121,7 +121,7 @@ impl Schema {
     /// Create a Schema from a loaded SchemaFile
     pub fn from_schema_file(schema_file: SchemaFile) -> Result<Self, RegistryError> {
         // Flatten the nested mappings structure
-        let mut flattened_mappings = HashMap::new();
+        let mut flattened_mappings = FxHashMap::default();
 
         // Flatten vowels
         if let Some(vowels) = &schema_file.mappings.vowels {
@@ -206,15 +206,15 @@ pub trait SchemaRegistryTrait {
 
 #[derive(Clone)]
 pub struct SchemaRegistry {
-    schemas: HashMap<String, Schema>,
-    schema_cache: HashMap<String, SchemaFile>,
+    schemas: FxHashMap<String, Schema>,
+    schema_cache: FxHashMap<String, SchemaFile>,
 }
 
 impl SchemaRegistry {
     pub fn new() -> Self {
         let mut registry = Self {
-            schemas: HashMap::new(),
-            schema_cache: HashMap::new(),
+            schemas: FxHashMap::default(),
+            schema_cache: FxHashMap::default(),
         };
 
         // Register built-in schemas
@@ -528,7 +528,7 @@ mod tests {
             name: "test".to_string(),
             script_type: "roman".to_string(),
             target: "iso15919".to_string(),
-            mappings: HashMap::new(),
+            mappings: FxHashMap::default(),
             metadata: SchemaMetadata {
                 name: "test".to_string(),
                 script_type: "roman".to_string(),
@@ -553,7 +553,7 @@ mod tests {
             name: "".to_string(),
             script_type: "roman".to_string(),
             target: "iso15919".to_string(),
-            mappings: HashMap::new(),
+            mappings: FxHashMap::default(),
             metadata: SchemaMetadata::default(),
         };
 
@@ -564,7 +564,7 @@ mod tests {
             name: "test".to_string(),
             script_type: "invalid".to_string(),
             target: "iso15919".to_string(),
-            mappings: HashMap::new(),
+            mappings: FxHashMap::default(),
             metadata: SchemaMetadata::default(),
         };
 

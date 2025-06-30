@@ -2,7 +2,7 @@
 //! 
 //! This module generates static Rust code from TOML mappings for zero-overhead runtime performance.
 
-use std::collections::HashMap;
+use rustc_hash::FxHashMap;
 use std::fs;
 use std::path::Path;
 use crate::modules::mapping_data::loader::{load_mapping_file, flatten_mappings};
@@ -21,7 +21,7 @@ pub fn generate_static_mappings(
         toml_path.display()
     ));
     
-    code.push_str("use std::collections::HashMap;\n\n");
+    code.push_str("use rustc_hash::FxHashMap;\n\n");
     
     // Generate the mapping function
     if let Some(mappings) = &mapping_file.mappings {
@@ -43,11 +43,11 @@ pub fn generate_static_mappings(
 }
 
 /// Generate a static mapping function with &'static str
-fn generate_mapping_function(fn_name: &str, mappings: &HashMap<String, String>) -> String {
+fn generate_mapping_function(fn_name: &str, mappings: &FxHashMap<String, String>) -> String {
     let mut code = format!(
         "/// Get {} as a static HashMap\n\
-         pub fn {}() -> HashMap<&'static str, &'static str> {{\n\
-         \tlet mut map = HashMap::with_capacity({});\n",
+         pub fn {}() -> FxHashMap<&'static str, &'static str> {{\n\
+         \tlet mut map = FxHashMap::default();\n",
         fn_name, fn_name, mappings.len()
     );
     
@@ -64,11 +64,11 @@ fn generate_mapping_function(fn_name: &str, mappings: &HashMap<String, String>) 
 }
 
 /// Generate a simple mapping function
-fn generate_simple_mapping_function(fn_name: &str, mappings: &HashMap<String, String>) -> String {
+fn generate_simple_mapping_function(fn_name: &str, mappings: &FxHashMap<String, String>) -> String {
     let mut code = format!(
         "/// Get {} as a static HashMap\n\
-         pub fn {}() -> HashMap<&'static str, &'static str> {{\n\
-         \tlet mut map = HashMap::with_capacity({});\n",
+         pub fn {}() -> FxHashMap<&'static str, &'static str> {{\n\
+         \tlet mut map = FxHashMap::default();\n",
         fn_name, fn_name, mappings.len()
     );
     
@@ -96,14 +96,14 @@ pub fn generate_char_mappings(
         toml_path.display()
     ));
     
-    code.push_str("use std::collections::HashMap;\n\n");
+    code.push_str("use rustc_hash::FxHashMap;\n\n");
     
     // For ISO -> Devanagari, we can optimize to char mappings
     if toml_path.file_name().unwrap() == "iso_devanagari.toml" {
         code.push_str(
             "/// Get ISO to Devanagari mappings optimized for single chars\n\
-             pub fn get_iso_to_deva_char_mappings() -> HashMap<&'static str, char> {\n\
-             \tlet mut map = HashMap::new();\n"
+             pub fn get_iso_to_deva_char_mappings() -> FxHashMap<&'static str, char> {\n\
+             \tlet mut map = FxHashMap::default();\n"
         );
         
         if let Some(mappings) = &mapping_file.mappings {
@@ -124,8 +124,8 @@ pub fn generate_char_mappings(
         // Also generate reverse mapping
         code.push_str(
             "/// Get Devanagari to ISO mappings\n\
-             pub fn get_deva_to_iso_mappings() -> HashMap<char, &'static str> {\n\
-             \tlet mut map = HashMap::new();\n"
+             pub fn get_deva_to_iso_mappings() -> FxHashMap<char, &'static str> {\n\
+             \tlet mut map = FxHashMap::default();\n"
         );
         
         if let Some(mappings) = &mapping_file.mappings {
