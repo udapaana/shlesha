@@ -261,6 +261,10 @@ fn test_error_path_performance() {
         measure_time(|| transliterator.transliterate("test", "nonexistent_script", "devanagari"));
 
     assert!(result.is_err(), "Should error for nonexistent script");
+    
+    // Only check performance in non-coverage builds
+    // Coverage instrumentation makes timing tests unreliable
+    #[cfg(not(tarpaulin))]
     assert!(
         duration.as_micros() < 250, // Errors should be very fast, allowing for system variance
         "Error path took {}µs, expected < 250µs",
