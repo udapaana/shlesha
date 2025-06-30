@@ -1,6 +1,6 @@
 {
   "name": "shlesha-wasm",
-  "version": "0.1.0",
+  "version": "0.1.6",
   "description": "High-performance extensible transliteration library for Sanskrit and Indic scripts (WebAssembly bindings)",
   "main": "pkg/shlesha.js",
   "types": "pkg/shlesha.d.ts",
