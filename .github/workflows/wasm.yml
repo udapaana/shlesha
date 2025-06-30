@@ -66,6 +66,10 @@ jobs:
         run: |
           wasm-pack build --target web --out-dir pkg --features wasm
           # Version is automatically set from Cargo.toml by wasm-pack
+          # Update package name to avoid npm conflicts
+          cd pkg
+          # Use shlesha as the package name (not shlesha-wasm)
+          sed -i 's/"name": "shlesha"/"name": "shlesha"/' package.json
       
       - name: Publish to npm (dry run)
         run: |

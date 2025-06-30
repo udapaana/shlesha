@@ -31,7 +31,7 @@ if [[ -n $(git status --porcelain) ]]; then
     print_warning "Working directory has uncommitted changes:"
     git status --short
     echo ""
-    read -p "Continue anyway? (y/N): " -n 1 -r
+    read -p "Continue anyway? (y/N): " -r
     echo ""
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         print_info "Aborting. Please commit or stash your changes first."
@@ -130,7 +130,7 @@ if [[ $rc -gt 0 ]]; then
     echo "1) Create a new RC (increment RC number)"
     echo "2) Promote to stable release"
     echo ""
-    read -p "Select option (1-2): " -n 1 -r
+    read -p "Select option (1-2): " -r
     echo ""
     
     if [[ $REPLY == "1" ]]; then
@@ -148,7 +148,7 @@ else
     echo "1) Release candidate (RC) - for testing on TestPyPI"
     echo "2) Stable release - for production PyPI"
     echo ""
-    read -p "Select option (1-2): " -n 1 -r
+    read -p "Select option (1-2): " -r
     echo ""
     
     if [[ $REPLY == "1" ]]; then
@@ -190,7 +190,7 @@ else
     echo "  • Major: Breaking changes, may remove/change existing APIs"
     echo ""
     
-    read -p "Select option (1-3): " -n 1 -r
+    read -p "Select option (1-3): " -r
     echo ""
     
     case $REPLY in
@@ -253,7 +253,7 @@ if git tag -l | grep -q "^${new_version}$"; then
     print_info "This usually happens when a previous GitHub Actions run failed."
     print_info "You can delete the existing tag and recreate it."
     echo ""
-    read -p "Delete existing tag $new_version and continue? (y/N): " -n 1 -r
+    read -p "Delete existing tag $new_version and continue? (y/N): " -r
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         print_info "Deleting local tag..."
@@ -271,7 +271,7 @@ if git tag -l | grep -q "^${new_version}$"; then
 fi
 
 # Confirm with user
-read -p "Create tag $new_version? (y/N): " -n 1 -r
+read -p "Create tag $new_version? (y/N): " -r
 echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     print_info "Aborted by user"
@@ -365,7 +365,7 @@ else
 fi
 
 echo ""
-read -p "Push the tag now? (y/N): " -n 1 -r
+read -p "Push the tag now? (y/N): " -r
 echo ""
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     print_info "Pushing tag to remote..."
