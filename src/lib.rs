@@ -10,6 +10,13 @@
 //! - **Modular Design**: Clean separation of concerns with interface-based communication
 //! - **High Performance**: Optimized string processing with caching
 //!
+//! ## Design Philosophy
+//!
+//! - **Factual documentation**: Technical decisions are explained with their reasons and trade-offs,
+//!   without promotional language or unsupported claims
+//! - **Transparency**: Design constraints and limitations are documented alongside capabilities
+//! - **Evidence-based**: Performance claims and comparisons are backed by measurable benchmarks
+//!
 //! ## Quick Start
 //!
 //! ```rust
