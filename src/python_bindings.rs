@@ -228,8 +228,7 @@ impl PyShlesha {
             .load_schema_from_string(yaml_content, schema_name)
             .map_err(|e| {
                 PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                    "Schema loading failed: {}",
-                    e
+                    "Schema loading failed: {e}"
                 ))
             })
     }
@@ -401,8 +400,7 @@ fn transliterate(text: &str, from_script: &str, to_script: &str) -> PyResult<Str
         .transliterate(text, from_script, to_script)
         .map_err(|e| {
             PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                "Transliteration failed: {}",
-                e
+                "Transliteration failed: {e}"
             ))
         })
 }

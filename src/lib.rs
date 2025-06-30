@@ -68,7 +68,7 @@ impl Shlesha {
 
         // Try to load the devanagari schema from the schemas directory
         // This enables proper schema-based processing for devanagari
-        if let Err(_) = registry.load_schema("schemas/devanagari.yaml") {
+        if registry.load_schema("schemas/devanagari.yaml").is_err() {
             // If loading fails (e.g., in tests or different working directory), continue with placeholder
         }
 

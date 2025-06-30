@@ -42,7 +42,7 @@ impl {{struct_name}} {
             // Check for superscript combinations (base + superscript)
             if let Some(&next_ch) = chars.peek() {
                 if is_superscript(next_ch) {
-                    let combined = format!("{}{}", ch, next_ch);
+                    let combined = format!("{ch}{next_ch}");
                     if let Some(mapped) = self.{{lowercase script_name}}_to_deva_map.get(&combined) {
                         result.push_str(mapped);
                         chars.next(); // consume the superscript
