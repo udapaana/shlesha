@@ -428,23 +428,30 @@ fn generate_roman_to_devanagari_converter(
     for mapping_category in all_roman_mappings.iter() {
         if let Some(mappings) = mapping_category {
             for (roman_key, iso_value) in mappings.iter() {
-                // Compose at compile time: Roman → ISO → Devanagari becomes Roman → Devanagari
-                if let Some(deva_value) = iso_to_deva_mappings.get(iso_value.as_str()) {
-                    roman_to_deva_mappings.insert(roman_key.clone(), deva_value.to_string());
+                // Direct mapping for all keys
+                if let Some(deva_value) = iso_to_deva_mappings.get(iso_value) {
+                    roman_to_deva_mappings.insert(roman_key.clone(), deva_value.clone());
+                }
+                
+                // For consonants, also try with 'a' suffix (for inherent vowel)
+                let iso_with_a = format!("{}a", iso_value);
+                if let Some(deva_value) = iso_to_deva_mappings.get(&iso_with_a) {
+                    let roman_with_a = format!("{}a", roman_key);
+                    roman_to_deva_mappings.insert(roman_with_a, deva_value.clone());
                 }
             }
         }
     }
+    
+    // Add vowel sign mappings by deriving them from hub data
+    add_vowel_sign_mappings(&mut roman_to_deva_mappings, &iso_to_deva_mappings, &schema.mappings.vowels);
 
     // Sort by length (longest first) for proper matching
     let mut sorted_mappings: Vec<_> = roman_to_deva_mappings.iter().collect();
     sorted_mappings.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
 
-    // Convert to template format
-    let mappings_for_template: FxHashMap<&str, &str> = sorted_mappings
-        .iter()
-        .map(|(k, v)| (k.as_str(), v.as_str()))
-        .collect();
+    // Convert to template format - use the original String keys
+    let mappings_for_template = &roman_to_deva_mappings;
 
     let template_data = json!({
         "struct_name": struct_name,
@@ -458,84 +465,128 @@ fn generate_roman_to_devanagari_converter(
     Ok(code)
 }
 
-fn get_iso_to_devanagari_mappings() -> FxHashMap<&'static str, &'static str> {
-    let mut iso_to_deva = FxHashMap::default();
-
+fn get_iso_to_devanagari_mappings() -> FxHashMap<String, String> {
+    // Hardcode the hub mappings since we can't access the crate from build.rs
+    // This is still better than before since we're deriving vowel signs dynamically
+    let mut iso_to_deva_mappings = FxHashMap::default();
+    
     // Core vowels
-    iso_to_deva.insert("a", "अ");
-    iso_to_deva.insert("ā", "आ");
-    iso_to_deva.insert("i", "इ");
-    iso_to_deva.insert("ī", "ई");
-    iso_to_deva.insert("u", "उ");
-    iso_to_deva.insert("ū", "ऊ");
-    iso_to_deva.insert("r̥", "ऋ");
-    iso_to_deva.insert("r̥̄", "ॠ");
-    iso_to_deva.insert("l̥", "ऌ");
-    iso_to_deva.insert("l̥̄", "ॡ");
-    iso_to_deva.insert("e", "ए");
-    iso_to_deva.insert("ai", "ऐ");
-    iso_to_deva.insert("o", "ओ");
-    iso_to_deva.insert("au", "औ");
+    iso_to_deva_mappings.insert("a".to_string(), "अ".to_string());
+    iso_to_deva_mappings.insert("ā".to_string(), "आ".to_string());
+    iso_to_deva_mappings.insert("i".to_string(), "इ".to_string());
+    iso_to_deva_mappings.insert("ī".to_string(), "ई".to_string());
+    iso_to_deva_mappings.insert("u".to_string(), "उ".to_string());
+    iso_to_deva_mappings.insert("ū".to_string(), "ऊ".to_string());
+    iso_to_deva_mappings.insert("r̥".to_string(), "ऋ".to_string());
+    iso_to_deva_mappings.insert("r̥̄".to_string(), "ॠ".to_string());
+    iso_to_deva_mappings.insert("l̥".to_string(), "ऌ".to_string());
+    iso_to_deva_mappings.insert("l̥̄".to_string(), "ॡ".to_string());
+    iso_to_deva_mappings.insert("e".to_string(), "ए".to_string());
+    iso_to_deva_mappings.insert("ai".to_string(), "ऐ".to_string());
+    iso_to_deva_mappings.insert("o".to_string(), "ओ".to_string());
+    iso_to_deva_mappings.insert("au".to_string(), "औ".to_string());
 
-    // Consonants (with inherent 'a' - add halanta for consonant-only forms)
-    iso_to_deva.insert("k", "क्");
-    iso_to_deva.insert("kh", "ख्");
-    iso_to_deva.insert("g", "ग्");
-    iso_to_deva.insert("gh", "घ्");
-    iso_to_deva.insert("ṅ", "ङ्");
-    iso_to_deva.insert("c", "च्");
-    iso_to_deva.insert("ch", "छ्");
-    iso_to_deva.insert("j", "ज्");
-    iso_to_deva.insert("jh", "झ्");
-    iso_to_deva.insert("ñ", "ञ्");
-    iso_to_deva.insert("ṭ", "ट्");
-    iso_to_deva.insert("ṭh", "ठ्");
-    iso_to_deva.insert("ḍ", "ड्");
-    iso_to_deva.insert("ḍh", "ढ्");
-    iso_to_deva.insert("ṇ", "ण्");
-    iso_to_deva.insert("t", "त्");
-    iso_to_deva.insert("th", "थ्");
-    iso_to_deva.insert("d", "द्");
-    iso_to_deva.insert("dh", "ध्");
-    iso_to_deva.insert("n", "न्");
-    iso_to_deva.insert("p", "प्");
-    iso_to_deva.insert("ph", "फ्");
-    iso_to_deva.insert("b", "ब्");
-    iso_to_deva.insert("bh", "भ्");
-    iso_to_deva.insert("m", "म्");
-    iso_to_deva.insert("y", "य्");
-    iso_to_deva.insert("r", "र्");
-    iso_to_deva.insert("l", "ल्");
-    iso_to_deva.insert("v", "व्");
-    iso_to_deva.insert("ś", "श्");
-    iso_to_deva.insert("ṣ", "ष्");
-    iso_to_deva.insert("s", "स्");
-    iso_to_deva.insert("h", "ह्");
+    // Consonants with inherent 'a' vowel
+    iso_to_deva_mappings.insert("ka".to_string(), "क".to_string());
+    iso_to_deva_mappings.insert("kha".to_string(), "ख".to_string());
+    iso_to_deva_mappings.insert("ga".to_string(), "ग".to_string());
+    iso_to_deva_mappings.insert("gha".to_string(), "घ".to_string());
+    iso_to_deva_mappings.insert("ṅa".to_string(), "ङ".to_string());
+    iso_to_deva_mappings.insert("ca".to_string(), "च".to_string());
+    iso_to_deva_mappings.insert("cha".to_string(), "छ".to_string());
+    iso_to_deva_mappings.insert("ja".to_string(), "ज".to_string());
+    iso_to_deva_mappings.insert("jha".to_string(), "झ".to_string());
+    iso_to_deva_mappings.insert("ña".to_string(), "ञ".to_string());
+    iso_to_deva_mappings.insert("ṭa".to_string(), "ट".to_string());
+    iso_to_deva_mappings.insert("ṭha".to_string(), "ठ".to_string());
+    iso_to_deva_mappings.insert("ḍa".to_string(), "ड".to_string());
+    iso_to_deva_mappings.insert("ḍha".to_string(), "ढ".to_string());
+    iso_to_deva_mappings.insert("ṇa".to_string(), "ण".to_string());
+    iso_to_deva_mappings.insert("ta".to_string(), "त".to_string());
+    iso_to_deva_mappings.insert("tha".to_string(), "थ".to_string());
+    iso_to_deva_mappings.insert("da".to_string(), "द".to_string());
+    iso_to_deva_mappings.insert("dha".to_string(), "ध".to_string());
+    iso_to_deva_mappings.insert("na".to_string(), "न".to_string());
+    iso_to_deva_mappings.insert("pa".to_string(), "प".to_string());
+    iso_to_deva_mappings.insert("pha".to_string(), "फ".to_string());
+    iso_to_deva_mappings.insert("ba".to_string(), "ब".to_string());
+    iso_to_deva_mappings.insert("bha".to_string(), "भ".to_string());
+    iso_to_deva_mappings.insert("ma".to_string(), "म".to_string());
+    iso_to_deva_mappings.insert("ya".to_string(), "य".to_string());
+    iso_to_deva_mappings.insert("ra".to_string(), "र".to_string());
+    iso_to_deva_mappings.insert("la".to_string(), "ल".to_string());
+    iso_to_deva_mappings.insert("va".to_string(), "व".to_string());
+    iso_to_deva_mappings.insert("śa".to_string(), "श".to_string());
+    iso_to_deva_mappings.insert("ṣa".to_string(), "ष".to_string());
+    iso_to_deva_mappings.insert("sa".to_string(), "स".to_string());
+    iso_to_deva_mappings.insert("ha".to_string(), "ह".to_string());
+
+    // Consonants with other vowels for vowel sign extraction
+    iso_to_deva_mappings.insert("kā".to_string(), "का".to_string());
+    iso_to_deva_mappings.insert("ki".to_string(), "कि".to_string());
+    iso_to_deva_mappings.insert("kī".to_string(), "की".to_string());
+    iso_to_deva_mappings.insert("ku".to_string(), "कु".to_string());
+    iso_to_deva_mappings.insert("kū".to_string(), "कू".to_string());
+    iso_to_deva_mappings.insert("kr̥".to_string(), "कृ".to_string());
+    iso_to_deva_mappings.insert("kr̥̄".to_string(), "कॄ".to_string());
+    iso_to_deva_mappings.insert("kl̥".to_string(), "कॢ".to_string());
+    iso_to_deva_mappings.insert("kl̥̄".to_string(), "कॣ".to_string());
+    iso_to_deva_mappings.insert("ke".to_string(), "के".to_string());
+    iso_to_deva_mappings.insert("kai".to_string(), "कै".to_string());
+    iso_to_deva_mappings.insert("ko".to_string(), "को".to_string());
+    iso_to_deva_mappings.insert("kau".to_string(), "कौ".to_string());
 
     // Marks
-    iso_to_deva.insert("ṁ", "ं");
-    iso_to_deva.insert("ḥ", "ः");
-    iso_to_deva.insert("m̐", "ँ");
-    iso_to_deva.insert("'", "ऽ");
+    iso_to_deva_mappings.insert("ṁ".to_string(), "ं".to_string());
+    iso_to_deva_mappings.insert("ḥ".to_string(), "ः".to_string());
+    iso_to_deva_mappings.insert("m̐".to_string(), "ँ".to_string());
+    iso_to_deva_mappings.insert("'".to_string(), "ऽ".to_string());
 
     // Digits
-    iso_to_deva.insert("0", "०");
-    iso_to_deva.insert("1", "१");
-    iso_to_deva.insert("2", "२");
-    iso_to_deva.insert("3", "३");
-    iso_to_deva.insert("4", "४");
-    iso_to_deva.insert("5", "५");
-    iso_to_deva.insert("6", "६");
-    iso_to_deva.insert("7", "७");
-    iso_to_deva.insert("8", "८");
-    iso_to_deva.insert("9", "९");
+    iso_to_deva_mappings.insert("0".to_string(), "०".to_string());
+    iso_to_deva_mappings.insert("1".to_string(), "१".to_string());
+    iso_to_deva_mappings.insert("2".to_string(), "२".to_string());
+    iso_to_deva_mappings.insert("3".to_string(), "३".to_string());
+    iso_to_deva_mappings.insert("4".to_string(), "४".to_string());
+    iso_to_deva_mappings.insert("5".to_string(), "५".to_string());
+    iso_to_deva_mappings.insert("6".to_string(), "६".to_string());
+    iso_to_deva_mappings.insert("7".to_string(), "७".to_string());
+    iso_to_deva_mappings.insert("8".to_string(), "८".to_string());
+    iso_to_deva_mappings.insert("9".to_string(), "९".to_string());
 
     // Special
-    iso_to_deva.insert("ḷ", "ळ्");
-    iso_to_deva.insert("।", "।");
-    iso_to_deva.insert("॥", "॥");
-    iso_to_deva.insert("kṣ", "क्ष्");
-    iso_to_deva.insert("jñ", "ज्ञ्");
+    iso_to_deva_mappings.insert("ḷa".to_string(), "ळ".to_string());
+    iso_to_deva_mappings.insert("।".to_string(), "।".to_string());
+    iso_to_deva_mappings.insert("॥".to_string(), "॥".to_string());
+    iso_to_deva_mappings.insert("kṣa".to_string(), "क्ष".to_string());
+    iso_to_deva_mappings.insert("jña".to_string(), "ज्ञ".to_string());
 
-    iso_to_deva
+    iso_to_deva_mappings
+}
+
+fn add_vowel_sign_mappings(
+    roman_to_deva_mappings: &mut FxHashMap<String, String>,
+    iso_to_deva_mappings: &FxHashMap<String, String>, 
+    vowel_mappings: &Option<FxHashMap<String, String>>
+) {
+    if let Some(vowels) = vowel_mappings {
+        for (roman_vowel, iso_vowel) in vowels.iter() {
+            // Get the vowel sign by testing with a sample consonant
+            if let (Some(ka_vowel), Some(ka_base)) = (
+                iso_to_deva_mappings.get(&format!("k{}", iso_vowel)),
+                iso_to_deva_mappings.get("ka")
+            ) {
+                // Extract vowel sign by comparing ka + vowel vs ka
+                if ka_vowel != ka_base && ka_vowel.starts_with(ka_base) {
+                    let vowel_sign = &ka_vowel[ka_base.len()..];
+                    if !vowel_sign.is_empty() {
+                        roman_to_deva_mappings.insert(
+                            format!("__vowel_sign_{}", roman_vowel),
+                            vowel_sign.to_string()
+                        );
+                    }
+                }
+            }
+        }
+    }
 }
