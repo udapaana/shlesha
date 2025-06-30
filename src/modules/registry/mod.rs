@@ -236,11 +236,11 @@ impl SchemaRegistry {
     fn load_schema_from_file(&mut self, path: &Path) -> Result<Schema, RegistryError> {
         // Read the file
         let contents = fs::read_to_string(path)
-            .map_err(|e| RegistryError::IoError(format!("Failed to read file: {}", e)))?;
+            .map_err(|e| RegistryError::IoError(format!("Failed to read file: {e}")))?;
 
         // Parse YAML
         let schema_file: SchemaFile = serde_yaml::from_str(&contents)
-            .map_err(|e| RegistryError::ParseError(format!("Failed to parse YAML: {}", e)))?;
+            .map_err(|e| RegistryError::ParseError(format!("Failed to parse YAML: {e}")))?;
 
         // Cache the schema file
         self.schema_cache
@@ -256,8 +256,7 @@ impl SchemaRegistry {
 
         if !dir.is_dir() {
             return Err(RegistryError::LoadFailed(format!(
-                "Not a directory: {}",
-                dir_path
+                "Not a directory: {dir_path}"
             )));
         }
 
@@ -265,10 +264,10 @@ impl SchemaRegistry {
 
         // Walk through directory recursively
         for entry in fs::read_dir(dir)
-            .map_err(|e| RegistryError::IoError(format!("Failed to read directory: {}", e)))?
+            .map_err(|e| RegistryError::IoError(format!("Failed to read directory: {e}")))?
         {
             let entry = entry.map_err(|e| {
-                RegistryError::IoError(format!("Failed to read directory entry: {}", e))
+                RegistryError::IoError(format!("Failed to read directory entry: {e}"))
             })?;
             let path = entry.path();
 
@@ -281,7 +280,7 @@ impl SchemaRegistry {
                             Ok(_) => loaded_count += 1,
                             Err(e) => {
                                 // Log error but continue loading other schemas
-                                eprintln!("Warning: Failed to load schema from {:?}: {}", path, e);
+                                eprintln!("Warning: Failed to load schema from {path:?}: {e}");
                             }
                         }
                     }
@@ -372,8 +371,7 @@ impl SchemaRegistryTrait for SchemaRegistry {
 
         if !path.exists() {
             return Err(RegistryError::LoadFailed(format!(
-                "Schema file not found: {}",
-                schema_path
+                "Schema file not found: {schema_path}"
             )));
         }
 
@@ -420,7 +418,7 @@ impl SchemaRegistryTrait for SchemaRegistry {
     ) -> Result<(), RegistryError> {
         // Parse YAML content
         let schema_file: SchemaFile = serde_yaml::from_str(yaml_content)
-            .map_err(|e| RegistryError::ParseError(format!("Failed to parse YAML: {}", e)))?;
+            .map_err(|e| RegistryError::ParseError(format!("Failed to parse YAML: {e}")))?;
 
         // Create schema from parsed content
         let mut schema = Schema::from_schema_file(schema_file)?;

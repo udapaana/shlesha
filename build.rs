@@ -40,10 +40,7 @@ fn main() {
     println!("cargo:rerun-if-changed=schemas/");
 
     if let Err(e) = generate_schema_based_converters() {
-        println!(
-            "cargo:warning=Failed to generate schema-based converters: {}",
-            e
-        );
+        println!("cargo:warning=Failed to generate schema-based converters: {e}");
     }
 }
 
@@ -128,7 +125,7 @@ pub fn register_schema_generated_converters(registry: &mut crate::modules::scrip
 }}
 "#, 
         converter_registrations.iter()
-            .map(|name| format!("    registry.register_converter(Box::new({}::new()));", name))
+            .map(|name| format!("    registry.register_converter(Box::new({name}::new()));"))
             .collect::<Vec<_>>()
             .join("\n")
     ));
@@ -214,7 +211,7 @@ fn generate_converter_from_schema(
             &all_mappings,
             &schema.metadata,
         ),
-        _ => Err(format!("Unknown processor type: {}", processor_type).into()),
+        _ => Err(format!("Unknown processor type: {processor_type}").into()),
     }
 }
 

@@ -432,7 +432,7 @@ impl HubTrait for Hub {
                         } // Maximum vowel length
 
                         let cons_seq: String = chars[i..i + cons_len].iter().collect();
-                        let cons_with_a = format!("{}a", cons_seq);
+                        let cons_with_a = format!("{cons_seq}a");
 
                         if let Some(&cons_char) = self.iso_to_deva_map.get(cons_with_a.as_str()) {
                             // Found a consonant, check the vowel part
@@ -491,7 +491,7 @@ impl HubTrait for Hub {
                         }
 
                         let cons_seq: String = chars[i..i + cons_len].iter().collect();
-                        let cons_with_a = format!("{}a", cons_seq);
+                        let cons_with_a = format!("{cons_seq}a");
 
                         if let Some(&cons_char) = self.iso_to_deva_map.get(cons_with_a.as_str()) {
                             // No vowel found, treat as bare consonant

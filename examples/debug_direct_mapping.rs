@@ -25,17 +25,14 @@ fn main() {
         }
 
         // Test the reverse to see if it works
-        match shlesha.transliterate(input, "iso15919", "devanagari") {
-            Ok(deva_result) => {
-                match shlesha.transliterate(&deva_result, "devanagari", "iso15919") {
-                    Ok(back_to_iso) => println!(
-                        "  ✅ Round-trip: {} → {} → {}",
-                        input, deva_result, back_to_iso
-                    ),
-                    Err(e) => println!("  ❌ Round-trip failed: {}", e),
-                }
+        if let Ok(deva_result) = shlesha.transliterate(input, "iso15919", "devanagari") {
+            match shlesha.transliterate(&deva_result, "devanagari", "iso15919") {
+                Ok(back_to_iso) => println!(
+                    "  ✅ Round-trip: {} → {} → {}",
+                    input, deva_result, back_to_iso
+                ),
+                Err(e) => println!("  ❌ Round-trip failed: {}", e),
             }
-            Err(_) => {}
         }
 
         // Compare with hub-based conversion (IAST)

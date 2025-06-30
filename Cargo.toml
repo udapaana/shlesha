@@ -31,7 +31,9 @@ wasm-bindgen = { version = "0.2", optional = true }
 js-sys = { version = "0.3", optional = true }
 web-sys = { version = "0.3", optional = true }
 console_error_panic_hook = { version = "0.1", optional = true }
-wasm = "0.0.0"
+# Required for WASM builds - getrandom v0.2 uses "js" feature, v0.3+ uses "wasm_js"
+getrandom = { version = "0.2", features = ["js"], optional = true }
+
 
 [build-dependencies]
 serde = { version = "1.0", features = ["derive"] }
@@ -42,18 +44,22 @@ handlebars = "6.0"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3"
-criterion = { version = "0.6", features = ["html_reports"] }
-proptest = "1.2"
-quickcheck = "1.0"
-quickcheck_macros = "1.0"
-vidyut-lipi = "0.2.0"
 tempfile = "3.8"
+
+# Target-specific dependencies for non-WASM builds
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
+criterion = { version = "0.6", features = ["html_reports"] }
+vidyut-lipi = "0.2.0"
+
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+criterion = { version = "0.6", default-features = false, features = ["html_reports"] }
 
 [features]
 default = ["cli"]
 cli = ["dep:clap"]
 python = ["dep:pyo3"]
-wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys", "dep:console_error_panic_hook"]
+wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys", "dep:console_error_panic_hook", "dep:getrandom"]
+native-examples = []
 
 [[bin]]
 name = "shlesha"
@@ -76,3 +82,12 @@ module-name = "shlesha._shlesha"
 [[bench]]
 name = "comprehensive_benchmark"
 harness = false
+
+# Examples that require vidyut-lipi (not available for WASM)
+[[example]]
+name = "hub_vs_direct_benchmark"
+required-features = ["native-examples"]
+
+[[example]]
+name = "shlesha_vs_vidyut_benchmark"
+required-features = ["native-examples"]

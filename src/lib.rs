@@ -10,6 +10,13 @@
 //! - **Modular Design**: Clean separation of concerns with interface-based communication
 //! - **High Performance**: Optimized string processing with caching
 //!
+//! ## Design Philosophy
+//!
+//! - **Factual documentation**: Technical decisions are explained with their reasons and trade-offs,
+//!   without promotional language or unsupported claims
+//! - **Transparency**: Design constraints and limitations are documented alongside capabilities
+//! - **Evidence-based**: Performance claims and comparisons are backed by measurable benchmarks
+//!
 //! ## Quick Start
 //!
 //! ```rust
@@ -63,10 +70,19 @@ impl Shlesha {
         // Use the complete registry with all available converters
         let script_converter_registry = ScriptConverterRegistry::default();
 
+        // Create schema registry and try to load built-in schemas
+        let mut registry = SchemaRegistry::new();
+
+        // Try to load the devanagari schema from the schemas directory
+        // This enables proper schema-based processing for devanagari
+        if registry.load_schema("schemas/devanagari.yaml").is_err() {
+            // If loading fails (e.g., in tests or different working directory), continue with placeholder
+        }
+
         Self {
             hub: Hub::new(),
             script_converter_registry,
-            registry: SchemaRegistry::new(),
+            registry,
         }
     }
 
@@ -101,7 +117,7 @@ impl Shlesha {
                     Ok(result) => result,
                     Err(_) => {
                         // If direct conversion fails, convert through ISO: Devanagari → ISO → target
-                        let hub_output = self.hub.deva_to_iso(&deva)?;
+                        let hub_output = self.hub.deva_to_iso(deva)?;
                         if let HubOutput::Iso(ref iso_result) = hub_output {
                             let iso_hub_input = HubInput::Iso(iso_result.clone());
                             self.script_converter_registry
@@ -126,7 +142,7 @@ impl Shlesha {
                     Ok(result) => result,
                     Err(_) => {
                         // If direct conversion fails, convert through Devanagari: ISO → Devanagari → target
-                        let hub_output = self.hub.iso_to_deva(&iso)?;
+                        let hub_output = self.hub.iso_to_deva(iso)?;
                         if let HubOutput::Devanagari(ref deva_result) = hub_output {
                             let deva_hub_input = HubInput::Devanagari(deva_result.clone());
                             self.script_converter_registry
@@ -187,7 +203,7 @@ impl Shlesha {
                     Ok(result) => (result, None),
                     Err(_) => {
                         // If direct conversion fails, convert through ISO: Devanagari → ISO → target
-                        let hub_result = self.hub.deva_to_iso_with_metadata(&deva)?;
+                        let hub_result = self.hub.deva_to_iso_with_metadata(deva)?;
                         let iso_hub_input = match &hub_result.output {
                             modules::hub::HubOutput::Iso(iso_result) => {
                                 modules::hub::HubInput::Iso(iso_result.clone())
@@ -210,7 +226,7 @@ impl Shlesha {
                     Ok(result) => (result, None),
                     Err(_) => {
                         // If direct conversion fails, convert through Devanagari: ISO → Devanagari → target
-                        let hub_result = self.hub.iso_to_deva_with_metadata(&iso)?;
+                        let hub_result = self.hub.iso_to_deva_with_metadata(iso)?;
                         let deva_hub_input = match &hub_result.output {
                             modules::hub::HubOutput::Devanagari(deva_result) => {
                                 modules::hub::HubInput::Devanagari(deva_result.clone())
@@ -390,9 +406,19 @@ mod tests {
 
         // Level 3: Roman script with unknown characters (IAST → Devanagari)
         let result = transliterator
-            .transliterate("dharmakr", "iast", "devanagari")
+            .transliterate("dharmaqx", "iast", "devanagari")
             .unwrap();
-        assert_eq!(result, "dharmakr"); // Unknown combinations should pass through unchanged
+        // q converts to क़् (composed form), x passes through unchanged
+        let expected = format!(
+            "{}{}{}{}{}{}",
+            "ध",
+            "र्",
+            "म",
+            "\u{0958}", // क़ (composed qa)
+            "्",         // virama
+            "x"
+        );
+        assert_eq!(result, expected);
 
         // Test metadata collection with unknown characters
         let result = transliterator

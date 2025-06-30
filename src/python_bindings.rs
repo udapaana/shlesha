@@ -88,8 +88,7 @@ impl PyShlesha {
             .transliterate(text, from_script, to_script)
             .map_err(|e| {
                 PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                    "Transliteration failed: {}",
-                    e
+                    "Transliteration failed: {e}"
                 ))
             })
     }
@@ -123,8 +122,7 @@ impl PyShlesha {
             .transliterate_with_metadata(text, from_script, to_script)
             .map_err(|e| {
                 PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                    "Transliteration failed: {}",
-                    e
+                    "Transliteration failed: {e}"
                 ))
             })?;
 
@@ -201,10 +199,7 @@ impl PyShlesha {
     ///     >>> transliterator.load_schema_from_file("custom_script.yaml")
     fn load_schema_from_file(&mut self, file_path: &str) -> PyResult<()> {
         self.inner.load_schema_from_file(file_path).map_err(|e| {
-            PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                "Schema loading failed: {}",
-                e
-            ))
+            PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Schema loading failed: {e}"))
         })
     }
 
@@ -233,8 +228,7 @@ impl PyShlesha {
             .load_schema_from_string(yaml_content, schema_name)
             .map_err(|e| {
                 PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                    "Schema loading failed: {}",
-                    e
+                    "Schema loading failed: {e}"
                 ))
             })
     }
@@ -250,21 +244,17 @@ impl PyShlesha {
     /// Example:
     ///     >>> info = transliterator.get_schema_info("custom")
     ///     >>> print(info["description"])
-    fn get_schema_info(&self, script_name: &str) -> Option<HashMap<String, PyObject>> {
-        self.inner.get_schema_info(script_name).map(|info| {
-            Python::with_gil(|py| {
-                let mut dict = HashMap::new();
-                dict.insert("name".to_string(), info.name.into_py(py));
-                dict.insert("description".to_string(), info.description.into_py(py));
-                dict.insert("script_type".to_string(), info.script_type.into_py(py));
-                dict.insert(
-                    "is_runtime_loaded".to_string(),
-                    info.is_runtime_loaded.into_py(py),
-                );
-                dict.insert("mapping_count".to_string(), info.mapping_count.into_py(py));
-                dict
-            })
-        })
+    fn get_schema_info(&self, py: Python<'_>, script_name: &str) -> PyResult<Option<PyObject>> {
+        Ok(self.inner.get_schema_info(script_name).map(|info| {
+            let dict = pyo3::types::PyDict::new(py);
+            dict.set_item("name", info.name).unwrap();
+            dict.set_item("description", info.description).unwrap();
+            dict.set_item("script_type", info.script_type).unwrap();
+            dict.set_item("is_runtime_loaded", info.is_runtime_loaded)
+                .unwrap();
+            dict.set_item("mapping_count", info.mapping_count).unwrap();
+            dict.into()
+        }))
     }
 
     /// Remove a runtime loaded schema
@@ -410,8 +400,7 @@ fn transliterate(text: &str, from_script: &str, to_script: &str) -> PyResult<Str
         .transliterate(text, from_script, to_script)
         .map_err(|e| {
             PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                "Transliteration failed: {}",
-                e
+                "Transliteration failed: {e}"
             ))
         })
 }
@@ -437,7 +426,7 @@ fn get_supported_scripts() -> Vec<String> {
 
 /// Python module definition
 #[pymodule]
-fn _shlesha(_py: Python, m: &PyModule) -> PyResult<()> {
+fn _shlesha(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Add classes
     m.add_class::<PyShlesha>()?;
     m.add_class::<PyTransliterationResult>()?;

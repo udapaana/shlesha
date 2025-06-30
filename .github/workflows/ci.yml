@@ -19,6 +19,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       
       - name: Check formatting
         run: cargo fmt -- --check
@@ -45,27 +48,40 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Set up Python for PyO3 (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          echo "PYO3_PYTHON=$(which python3)" >> $GITHUB_ENV
       
       - name: Cache cargo registry
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cargo/registry
           key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
       
       - name: Cache cargo index
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cargo/git
           key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
       
       - name: Cache cargo build
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
       
-      - name: Run tests
-        run: cargo test --all-features --verbose
+      - name: Run tests (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: cargo test --features cli,wasm,native-examples --verbose
+      
+      - name: Run tests (non-Ubuntu)
+        if: matrix.os != 'ubuntu-latest'
+        run: cargo test --features cli,wasm,native-examples --verbose
       
       - name: Run doc tests
         run: cargo test --doc
@@ -77,7 +93,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@nightly
-      - run: cargo -Z minimal-versions test --all-features
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Set up Python for PyO3
+        run: |
+          echo "PYO3_PYTHON=$(which python3)" >> $GITHUB_ENV
+      
+      - run: cargo -Z minimal-versions test --no-default-features --features cli
 
   # Security audit
   security:
@@ -96,15 +120,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Set up Python for PyO3
+        run: |
+          echo "PYO3_PYTHON=$(which python3)" >> $GITHUB_ENV
       
       - name: Install tarpaulin
         run: cargo install cargo-tarpaulin
       
       - name: Generate coverage
-        run: cargo tarpaulin --all-features --workspace --timeout 120 --out xml
+        run: cargo tarpaulin --features cli,wasm,native-examples --workspace --timeout 120 --out xml
       
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false

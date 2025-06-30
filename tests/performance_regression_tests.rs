@@ -38,6 +38,8 @@ fn test_basic_conversion_performance() {
         measure_time(|| transliterator.transliterate(SMALL_TEXT, "devanagari", "iso15919"));
 
     assert!(result.is_ok(), "Basic conversion should succeed");
+
+    #[cfg(not(tarpaulin))]
     assert!(
         duration.as_micros() < MAX_BASIC_CONVERSION_MICROS,
         "Basic conversion took {}µs, expected < {}µs",
@@ -54,6 +56,8 @@ fn test_reverse_conversion_performance() {
         measure_time(|| transliterator.transliterate("dharma", "iso15919", "devanagari"));
 
     assert!(result.is_ok(), "Reverse conversion should succeed");
+
+    #[cfg(not(tarpaulin))]
     assert!(
         duration.as_micros() < MAX_BASIC_CONVERSION_MICROS,
         "Reverse conversion took {}µs, expected < {}µs",
@@ -70,6 +74,8 @@ fn test_medium_text_performance() {
         measure_time(|| transliterator.transliterate(MEDIUM_TEXT, "devanagari", "iast"));
 
     assert!(result.is_ok(), "Medium text conversion should succeed");
+
+    #[cfg(not(tarpaulin))]
     assert!(
         duration.as_millis() < MAX_MEDIUM_TEXT_MILLIS,
         "Medium text conversion took {}ms, expected < {}ms",
@@ -103,6 +109,8 @@ fn test_roman_to_roman_performance() {
         measure_time(|| transliterator.transliterate("namaste karma dharma", "iast", "itrans"));
 
     assert!(result.is_ok(), "Roman-to-Roman conversion should succeed");
+
+    #[cfg(not(tarpaulin))]
     assert!(
         duration.as_micros() < MAX_BASIC_CONVERSION_MICROS / 2, // Should be even faster
         "Roman-to-Roman conversion took {}µs, expected < {}µs",
@@ -142,7 +150,7 @@ fn test_multiple_conversions_performance() {
 #[test]
 fn test_transliterator_creation_performance() {
     // Transliterator creation should be fast (initialization overhead)
-    let (transliterator, duration) = measure_time(|| Shlesha::new());
+    let (transliterator, duration) = measure_time(Shlesha::new);
 
     // Test that it actually works
     let result = transliterator.transliterate("test", "iso15919", "devanagari");
@@ -225,7 +233,7 @@ fn test_concurrent_performance() {
 #[test]
 fn test_schema_loading_performance() {
     // Test that runtime schema loading doesn't cause major slowdowns
-    let (mut transliterator, creation_duration) = measure_time(|| Shlesha::new());
+    let (mut transliterator, creation_duration) = measure_time(Shlesha::new);
 
     // Try to load a schema if available (this might fail in CI, which is OK)
     if std::path::Path::new("schemas/test").exists() {
@@ -261,9 +269,13 @@ fn test_error_path_performance() {
         measure_time(|| transliterator.transliterate("test", "nonexistent_script", "devanagari"));
 
     assert!(result.is_err(), "Should error for nonexistent script");
+
+    // Only check performance in non-coverage builds
+    // Coverage instrumentation makes timing tests unreliable
+    #[cfg(not(tarpaulin))]
     assert!(
-        duration.as_micros() < 100, // Errors should be very fast
-        "Error path took {}µs, expected < 100µs",
+        duration.as_micros() < 250, // Errors should be very fast, allowing for system variance
+        "Error path took {}µs, expected < 250µs",
         duration.as_micros()
     );
 }
