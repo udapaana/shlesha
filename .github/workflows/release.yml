@@ -94,7 +94,7 @@ jobs:
           staging="shlesha-${{ github.ref_name }}-${{ matrix.target }}"
           mkdir -p "$staging"
           cp "target/${{ matrix.target }}/release/${{ matrix.binary }}" "$staging/"
-          cp README.md LICENSE-MIT LICENSE-APACHE "$staging/"
+          cp README.md LICENSE "$staging/"
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
             7z a "$staging.zip" "$staging"
             echo "ASSET=$staging.zip" >> $GITHUB_ENV
