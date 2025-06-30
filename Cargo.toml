@@ -44,12 +44,12 @@ handlebars = "6.0"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3"
-vidyut-lipi = "0.2.0"
 tempfile = "3.8"
 
-# Criterion with different features for WASM vs native
+# Target-specific dependencies for non-WASM builds
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 criterion = { version = "0.6", features = ["html_reports"] }
+vidyut-lipi = "0.2.0"
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 criterion = { version = "0.6", default-features = false, features = ["html_reports"] }
@@ -59,6 +59,7 @@ default = ["cli"]
 cli = ["dep:clap"]
 python = ["dep:pyo3"]
 wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys", "dep:console_error_panic_hook", "dep:getrandom"]
+native-examples = []
 
 [[bin]]
 name = "shlesha"
@@ -81,3 +82,12 @@ module-name = "shlesha._shlesha"
 [[bench]]
 name = "comprehensive_benchmark"
 harness = false
+
+# Examples that require vidyut-lipi (not available for WASM)
+[[example]]
+name = "hub_vs_direct_benchmark"
+required-features = ["native-examples"]
+
+[[example]]
+name = "shlesha_vs_vidyut_benchmark"
+required-features = ["native-examples"]
