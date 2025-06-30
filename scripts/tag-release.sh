@@ -278,6 +278,47 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 0
 fi
 
+# Update version files to match the new tag
+print_info "Updating package version files..."
+
+# Extract version without 'v' prefix for package files
+package_version=${new_version#v}
+
+# Update Cargo.toml
+if [[ -f "Cargo.toml" ]]; then
+    print_info "Updating Cargo.toml..."
+    sed -i.bak "s/^version = \".*\"/version = \"$package_version\"/" Cargo.toml
+    rm -f Cargo.toml.bak
+fi
+
+# Update pyproject.toml if it exists
+if [[ -f "pyproject.toml" ]]; then
+    print_info "Updating pyproject.toml..."
+    # pyproject.toml uses dynamic version, but we can update it in [project] section if present
+    if grep -q "^version = " pyproject.toml; then
+        sed -i.bak "s/^version = \".*\"/version = \"$package_version\"/" pyproject.toml
+        rm -f pyproject.toml.bak
+    fi
+fi
+
+# Update package.json if it exists (for WASM)
+if [[ -f "package.json" ]]; then
+    print_info "Updating package.json..."
+    sed -i.bak "s/\"version\": \".*\"/\"version\": \"$package_version\"/" package.json
+    rm -f package.json.bak
+fi
+
+# Commit version changes
+print_info "Committing version changes..."
+git add Cargo.toml pyproject.toml package.json 2>/dev/null || true
+git commit -m "bump: version to $package_version
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>" 2>/dev/null || {
+    print_warning "No version files to commit (this is normal if versions were already correct)"
+}
+
 # Create the tag
 commit_message="$release_type: $new_version"
 if [[ "$target_pypi" == "TestPyPI" ]]; then
