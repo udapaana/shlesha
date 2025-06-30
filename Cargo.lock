@@ -433,8 +433,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "335ff9f135e4384c8150d6f27c6daed433577f86b4750418338c01a1a2528592"
 dependencies = [
  "cfg-if",
+ "js-sys",
  "libc",
  "wasi 0.11.1+wasi-snapshot-preview1",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -444,11 +446,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "26145e563e54f2cadc477553f1ec5ee650b00862f0a58bcd12cbdc5f0ea2d2f4"
 dependencies = [
  "cfg-if",
- "js-sys",
  "libc",
  "r-efi",
  "wasi 0.14.2+wasi-0.2.4",
- "wasm-bindgen",
 ]
 
 [[package]]
@@ -1103,7 +1103,7 @@ dependencies = [
  "clap",
  "console_error_panic_hook",
  "criterion",
- "getrandom 0.3.3",
+ "getrandom 0.2.16",
  "handlebars",
  "js-sys",
  "once_cell",
@@ -1120,7 +1120,6 @@ dependencies = [
  "toml",
  "unicode-normalization",
  "vidyut-lipi",
- "wasm",
  "wasm-bindgen",
  "wasm-bindgen-test",
  "web-sys",
@@ -1358,12 +1357,6 @@ checksum = "9683f9a5a998d873c0d21fcbe3c083009670149a8fab228644b8bd36b2c48cb3"
 dependencies = [
  "wit-bindgen-rt",
 ]
-
-[[package]]
-name = "wasm"
-version = "0.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa0b1279ed8bd53f86f473a6e23e6edc8372c51d12ec9af2b7848ee81f28cd8c"
 
 [[package]]
 name = "wasm-bindgen"

@@ -199,9 +199,7 @@ impl PyShlesha {
     ///     >>> transliterator.load_schema_from_file("custom_script.yaml")
     fn load_schema_from_file(&mut self, file_path: &str) -> PyResult<()> {
         self.inner.load_schema_from_file(file_path).map_err(|e| {
-            PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                "Schema loading failed: {e}"
-            ))
+            PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Schema loading failed: {e}"))
         })
     }
 
