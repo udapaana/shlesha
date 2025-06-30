@@ -256,8 +256,7 @@ impl SchemaRegistry {
 
         if !dir.is_dir() {
             return Err(RegistryError::LoadFailed(format!(
-                "Not a directory: {}",
-                dir_path
+                "Not a directory: {dir_path}"
             )));
         }
 
@@ -265,10 +264,10 @@ impl SchemaRegistry {
 
         // Walk through directory recursively
         for entry in fs::read_dir(dir)
-            .map_err(|e| RegistryError::IoError(format!("Failed to read directory: {}", e)))?
+            .map_err(|e| RegistryError::IoError(format!("Failed to read directory: {e}")))?
         {
             let entry = entry.map_err(|e| {
-                RegistryError::IoError(format!("Failed to read directory entry: {}", e))
+                RegistryError::IoError(format!("Failed to read directory entry: {e}"))
             })?;
             let path = entry.path();
 
@@ -281,7 +280,7 @@ impl SchemaRegistry {
                             Ok(_) => loaded_count += 1,
                             Err(e) => {
                                 // Log error but continue loading other schemas
-                                eprintln!("Warning: Failed to load schema from {:?}: {}", path, e);
+                                eprintln!("Warning: Failed to load schema from {path:?}: {e}");
                             }
                         }
                     }

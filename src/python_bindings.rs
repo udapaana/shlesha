@@ -88,8 +88,7 @@ impl PyShlesha {
             .transliterate(text, from_script, to_script)
             .map_err(|e| {
                 PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                    "Transliteration failed: {}",
-                    e
+                    "Transliteration failed: {e}"
                 ))
             })
     }
@@ -123,8 +122,7 @@ impl PyShlesha {
             .transliterate_with_metadata(text, from_script, to_script)
             .map_err(|e| {
                 PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                    "Transliteration failed: {}",
-                    e
+                    "Transliteration failed: {e}"
                 ))
             })?;
 
@@ -202,8 +200,7 @@ impl PyShlesha {
     fn load_schema_from_file(&mut self, file_path: &str) -> PyResult<()> {
         self.inner.load_schema_from_file(file_path).map_err(|e| {
             PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-                "Schema loading failed: {}",
-                e
+                "Schema loading failed: {e}"
             ))
         })
     }
