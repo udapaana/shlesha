@@ -42,7 +42,7 @@ fi
 # Function to parse semantic version
 parse_version() {
     local version=$1
-    local regex="^v?([0-9]+)\.([0-9]+)\.([0-9]+)(-rc([0-9]+))?$"
+    local regex="^v?([0-9]+)\.([0-9]+)\.([0-9]+)(-rc-([0-9]+))?$"
     
     if [[ $version =~ $regex ]]; then
         echo "${BASH_REMATCH[1]} ${BASH_REMATCH[2]} ${BASH_REMATCH[3]} ${BASH_REMATCH[5]:-0}"
@@ -80,7 +80,7 @@ version_gt() {
 
 # Get all tags and find the latest version
 print_info "Analyzing existing tags..."
-all_tags=$(git tag -l | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$' | sort -V)
+all_tags=$(git tag -l | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+(-rc-[0-9]+)?$' | sort -V)
 
 if [[ -z "$all_tags" ]]; then
     latest_version="v0.0.0"
@@ -123,91 +123,122 @@ else
 fi
 
 echo ""
-echo "What type of release do you want to create?"
-echo ""
-echo "1) Release candidate (RC) - for TestPyPI + crates.io"
-echo "2) Stable release - for production PyPI + crates.io"
-echo "3) Patch release (bug fixes)"
-echo "4) Minor release (new features)"
-echo "5) Major release (breaking changes)"
-echo "6) Minor RC release (new features, testing)"
-echo "7) Major RC release (breaking changes, testing)"
-echo ""
 
-read -p "Select option (1-7): " -n 1 -r
-echo ""
-
-case $REPLY in
-    1)
-        # Release candidate
-        if [[ $rc -gt 0 ]]; then
-            # Increment RC number
-            new_rc=$((rc + 1))
-            new_version="v${major}.${minor}.${patch}-rc.${new_rc}"
-            release_type="Release Candidate"
-            target_pypi="TestPyPI"
-        else
-            # First RC for this version
-            new_version="v${major}.${minor}.${patch}-rc.1"
-            release_type="Release Candidate"
-            target_pypi="TestPyPI"
-        fi
-        ;;
-    2)
-        # Stable release
-        if [[ $rc -gt 0 ]]; then
-            # Promote RC to stable
-            new_version="v${major}.${minor}.${patch}"
-            release_type="Stable Release (promoted from RC)"
-            target_pypi="Production PyPI"
-        else
-            # New patch version
-            new_patch=$((patch + 1))
-            new_version="v${major}.${minor}.${new_patch}"
-            release_type="Stable Release"
-            target_pypi="Production PyPI"
-        fi
-        ;;
-    3)
-        # Patch release
-        new_patch=$((patch + 1))
-        new_version="v${major}.${minor}.${new_patch}"
-        release_type="Patch Release"
-        target_pypi="Production PyPI"
-        ;;
-    4)
-        # Minor release
-        new_minor=$((minor + 1))
-        new_version="v${major}.${new_minor}.0"
-        release_type="Minor Release"
-        target_pypi="Production PyPI"
-        ;;
-    5)
-        # Major release
-        new_major=$((major + 1))
-        new_version="v${new_major}.0.0"
-        release_type="Major Release"
-        target_pypi="Production PyPI"
-        ;;
-    6)
-        # Minor RC release
-        new_minor=$((minor + 1))
-        new_version="v${major}.${new_minor}.0-rc.1"
-        release_type="Minor Release Candidate"
-        target_pypi="TestPyPI"
-        ;;
-    7)
-        # Major RC release
-        new_major=$((major + 1))
-        new_version="v${new_major}.0.0-rc.1"
-        release_type="Major Release Candidate"
-        target_pypi="TestPyPI"
-        ;;
-    *)
+# Step 1: Release candidate or stable?
+if [[ $rc -gt 0 ]]; then
+    echo "Current version is a release candidate. You can:"
+    echo "1) Create a new RC (increment RC number)"
+    echo "2) Promote to stable release"
+    echo ""
+    read -p "Select option (1-2): " -n 1 -r
+    echo ""
+    
+    if [[ $REPLY == "1" ]]; then
+        is_rc=true
+        promote_rc=false
+    elif [[ $REPLY == "2" ]]; then
+        is_rc=false
+        promote_rc=true
+    else
         print_error "Invalid option selected"
         exit 1
-        ;;
-esac
+    fi
+else
+    echo "What type of release do you want to create?"
+    echo "1) Release candidate (RC) - for testing on TestPyPI"
+    echo "2) Stable release - for production PyPI"
+    echo ""
+    read -p "Select option (1-2): " -n 1 -r
+    echo ""
+    
+    if [[ $REPLY == "1" ]]; then
+        is_rc=true
+        promote_rc=false
+    elif [[ $REPLY == "2" ]]; then
+        is_rc=false
+        promote_rc=false
+    else
+        print_error "Invalid option selected"
+        exit 1
+    fi
+fi
+
+# Step 2: What type of changes? (unless promoting RC)
+if [[ $promote_rc == true ]]; then
+    # Promoting RC to stable - use same version number
+    new_version="v${major}.${minor}.${patch}"
+    release_type="Stable Release (promoted from RC)"
+    target_pypi="Production PyPI"
+elif [[ $is_rc == true && $rc -gt 0 ]]; then
+    # Incrementing RC number
+    new_rc=$((rc + 1))
+    new_version="v${major}.${minor}.${patch}-rc-${new_rc}"
+    release_type="Release Candidate ${new_rc}"
+    target_pypi="TestPyPI"
+else
+    # New version - ask about change type
+    echo ""
+    echo "What type of changes does this release contain?"
+    echo ""
+    echo "1) 🐛 Bug fixes only (patch: ${major}.${minor}.X)"
+    echo "2) ✨ New features, backwards compatible (minor: ${major}.X.0)"
+    echo "3) 💥 Breaking changes (major: X.0.0)"
+    echo ""
+    echo "Semantic versioning guide:"
+    echo "  • Patch: Bug fixes, no new features, no breaking changes"
+    echo "  • Minor: New features, backwards compatible, no breaking changes"
+    echo "  • Major: Breaking changes, may remove/change existing APIs"
+    echo ""
+    
+    read -p "Select option (1-3): " -n 1 -r
+    echo ""
+    
+    case $REPLY in
+        1)
+            # Patch
+            new_patch=$((patch + 1))
+            if [[ $is_rc == true ]]; then
+                new_version="v${major}.${minor}.${new_patch}-rc-1"
+                release_type="Patch Release Candidate"
+                target_pypi="TestPyPI"
+            else
+                new_version="v${major}.${minor}.${new_patch}"
+                release_type="Patch Release"
+                target_pypi="Production PyPI"
+            fi
+            ;;
+        2)
+            # Minor
+            new_minor=$((minor + 1))
+            if [[ $is_rc == true ]]; then
+                new_version="v${major}.${new_minor}.0-rc-1"
+                release_type="Minor Release Candidate"
+                target_pypi="TestPyPI"
+            else
+                new_version="v${major}.${new_minor}.0"
+                release_type="Minor Release"
+                target_pypi="Production PyPI"
+            fi
+            ;;
+        3)
+            # Major
+            new_major=$((major + 1))
+            if [[ $is_rc == true ]]; then
+                new_version="v${new_major}.0.0-rc-1"
+                release_type="Major Release Candidate"
+                target_pypi="TestPyPI"
+            else
+                new_version="v${new_major}.0.0"
+                release_type="Major Release"
+                target_pypi="Production PyPI"
+            fi
+            ;;
+        *)
+            print_error "Invalid option selected"
+            exit 1
+            ;;
+    esac
+fi
 
 echo ""
 print_info "New version will be: $new_version"
@@ -217,8 +248,26 @@ echo ""
 
 # Check if tag already exists
 if git tag -l | grep -q "^${new_version}$"; then
-    print_error "Tag $new_version already exists!"
-    exit 1
+    print_warning "Tag $new_version already exists!"
+    echo ""
+    print_info "This usually happens when a previous GitHub Actions run failed."
+    print_info "You can delete the existing tag and recreate it."
+    echo ""
+    read -p "Delete existing tag $new_version and continue? (y/N): " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        print_info "Deleting local tag..."
+        git tag -d "$new_version" 2>/dev/null || true
+        
+        print_info "Deleting remote tag..."
+        git push origin --delete "$new_version" 2>/dev/null || true
+        
+        print_success "Existing tag deleted. Continuing with new tag creation..."
+        echo ""
+    else
+        print_info "Aborted by user"
+        exit 1
+    fi
 fi
 
 # Confirm with user
