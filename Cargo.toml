@@ -32,7 +32,7 @@ js-sys = { version = "0.3", optional = true }
 web-sys = { version = "0.3", optional = true }
 console_error_panic_hook = { version = "0.1", optional = true }
 # Required for WASM builds
-getrandom = { version = "0.2", features = ["js"], optional = true }
+getrandom = { version = "0.3", features = ["wasm_js"], optional = true }
 
 
 [build-dependencies]
