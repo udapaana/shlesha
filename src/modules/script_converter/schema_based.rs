@@ -62,7 +62,7 @@ impl SchemaBasedConverter {
 
             // Try multi-character matches first (for digraphs like "kh", "gh", etc.)
             if let Some(next_ch) = chars.peek() {
-                let two_char = format!("{}{}", ch, next_ch);
+                let two_char = format!("{ch}{next_ch}");
                 if let Some(mapped) = mapping_to_use.get(&two_char) {
                     result.push_str(mapped);
                     chars.next(); // Consume the second character
@@ -102,7 +102,7 @@ impl ScriptConverter for SchemaBasedConverter {
                 .get_schema(script)
                 .ok_or_else(|| ConverterError::InvalidInput {
                     script: script.to_string(),
-                    message: format!("Schema not found for script: {}", script),
+                    message: format!("Schema not found for script: {script}"),
                 })?;
 
         // Apply mappings
@@ -126,7 +126,7 @@ impl ScriptConverter for SchemaBasedConverter {
                 .get_schema(script)
                 .ok_or_else(|| ConverterError::InvalidInput {
                     script: script.to_string(),
-                    message: format!("Schema not found for script: {}", script),
+                    message: format!("Schema not found for script: {script}"),
                 })?;
 
         // Validate that the input format matches what the schema expects
@@ -138,8 +138,7 @@ impl ScriptConverter for SchemaBasedConverter {
                 return Err(ConverterError::ConversionFailed {
                     script: script.to_string(),
                     reason: format!(
-                        "Input format mismatch: schema expects {} but got {}",
-                        expected_hub_type,
+                        "Input format mismatch: schema expects {expected_hub_type} but got {}",
                         match hub_input {
                             HubInput::Devanagari(_) => "devanagari",
                             HubInput::Iso(_) => "iso15919",
@@ -165,7 +164,7 @@ impl ScriptConverter for SchemaBasedConverter {
                 .get_schema(script)
                 .ok_or_else(|| ConverterError::InvalidInput {
                     script: script.to_string(),
-                    message: format!("Schema not found for script: {}", script),
+                    message: format!("Schema not found for script: {script}"),
                 })?;
 
         // Apply mappings and collect unknown tokens
@@ -201,7 +200,7 @@ impl ScriptConverter for SchemaBasedConverter {
                 .get_schema(script)
                 .ok_or_else(|| ConverterError::InvalidInput {
                     script: script.to_string(),
-                    message: format!("Schema not found for script: {}", script),
+                    message: format!("Schema not found for script: {script}"),
                 })?;
 
         // Validate that the input format matches what the schema expects
@@ -213,8 +212,7 @@ impl ScriptConverter for SchemaBasedConverter {
                 return Err(ConverterError::ConversionFailed {
                     script: script.to_string(),
                     reason: format!(
-                        "Input format mismatch: schema expects {} but got {}",
-                        expected_hub_type,
+                        "Input format mismatch: schema expects {expected_hub_type} but got {}",
                         match hub_input {
                             HubInput::Devanagari(_) => "devanagari",
                             HubInput::Iso(_) => "iso15919",

@@ -371,8 +371,7 @@ impl SchemaRegistryTrait for SchemaRegistry {
 
         if !path.exists() {
             return Err(RegistryError::LoadFailed(format!(
-                "Schema file not found: {}",
-                schema_path
+                "Schema file not found: {schema_path}"
             )));
         }
 
