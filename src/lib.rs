@@ -65,7 +65,7 @@ impl Shlesha {
 
         // Create schema registry and try to load built-in schemas
         let mut registry = SchemaRegistry::new();
-        
+
         // Try to load the devanagari schema from the schemas directory
         // This enables proper schema-based processing for devanagari
         if let Err(_) = registry.load_schema("schemas/devanagari.yaml") {

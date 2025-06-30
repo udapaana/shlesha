@@ -279,7 +279,8 @@ impl ScriptConverterRegistry {
 
         // Fast lookup using HashMap cache instead of linear search
         if let Some(&converter_index) = self.script_to_converter.get(canonical_script) {
-            return self.converters[converter_index].from_hub_with_metadata(canonical_script, hub_input);
+            return self.converters[converter_index]
+                .from_hub_with_metadata(canonical_script, hub_input);
         }
 
         // The metadata methods would also need schema registry support
