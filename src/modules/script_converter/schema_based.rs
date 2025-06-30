@@ -129,10 +129,24 @@ impl ScriptConverter for SchemaBasedConverter {
                     message: format!("Schema not found for script: {}", script),
                 })?;
 
-        // Get the input string from hub
-        let input = match hub_input {
-            HubInput::Devanagari(text) => text,
-            HubInput::Iso(text) => text,
+        // Validate that the input format matches what the schema expects
+        let expected_hub_type = self.get_hub_script_type(schema);
+        let input = match (hub_input, expected_hub_type) {
+            (HubInput::Devanagari(text), "devanagari") => text,
+            (HubInput::Iso(text), "iso15919") => text,
+            _ => {
+                return Err(ConverterError::ConversionFailed {
+                    script: script.to_string(),
+                    reason: format!(
+                        "Input format mismatch: schema expects {} but got {}",
+                        expected_hub_type,
+                        match hub_input {
+                            HubInput::Devanagari(_) => "devanagari",
+                            HubInput::Iso(_) => "iso15919",
+                        }
+                    ),
+                });
+            }
         };
 
         // Apply reverse mappings
@@ -190,10 +204,24 @@ impl ScriptConverter for SchemaBasedConverter {
                     message: format!("Schema not found for script: {}", script),
                 })?;
 
-        // Get the input string from hub
-        let input = match hub_input {
-            HubInput::Devanagari(text) => text,
-            HubInput::Iso(text) => text,
+        // Validate that the input format matches what the schema expects
+        let expected_hub_type = self.get_hub_script_type(schema);
+        let input = match (hub_input, expected_hub_type) {
+            (HubInput::Devanagari(text), "devanagari") => text,
+            (HubInput::Iso(text), "iso15919") => text,
+            _ => {
+                return Err(ConverterError::ConversionFailed {
+                    script: script.to_string(),
+                    reason: format!(
+                        "Input format mismatch: schema expects {} but got {}",
+                        expected_hub_type,
+                        match hub_input {
+                            HubInput::Devanagari(_) => "devanagari",
+                            HubInput::Iso(_) => "iso15919",
+                        }
+                    ),
+                });
+            }
         };
 
         // Apply reverse mappings

@@ -212,20 +212,19 @@ impl ScriptConverterRegistry {
         hub_input: &HubInput,
         schema_registry: Option<&crate::modules::registry::SchemaRegistry>,
     ) -> Result<String, ConverterError> {
-        // Special case: if target is Devanagari (hub format), return directly
+        // Special case: if target is Devanagari (hub format) and input is already Devanagari, return directly
         if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
-            match hub_input {
-                HubInput::Devanagari(deva_text) => return Ok(deva_text.clone()),
-                HubInput::Iso(_) => {
-                    // Need to convert ISO to Devanagari via hub
-                    // This will be handled by the calling code
-                }
+            if let HubInput::Devanagari(deva_text) = hub_input {
+                return Ok(deva_text.clone());
             }
         }
 
+        // Resolve aliases first
+        let canonical_script = self.resolve_script_alias(script);
+
         // Fast lookup using HashMap cache instead of linear search
-        if let Some(&converter_index) = self.script_to_converter.get(script) {
-            return self.converters[converter_index].from_hub(script, hub_input);
+        if let Some(&converter_index) = self.script_to_converter.get(canonical_script) {
+            return self.converters[converter_index].from_hub(canonical_script, hub_input);
         }
 
         // Fallback to schema-based converter for runtime-loaded scripts
@@ -275,21 +274,12 @@ impl ScriptConverterRegistry {
         script: &str,
         hub_input: &HubInput,
     ) -> Result<TransliterationResult, ConverterError> {
-        // Special case: if target is Devanagari (hub format), return directly
-        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
-            match hub_input {
-                HubInput::Devanagari(deva_text) => {
-                    return Ok(TransliterationResult::simple(deva_text.clone()));
-                }
-                HubInput::Iso(_) => {
-                    // Need to convert ISO to Devanagari via hub - this will be handled by calling code
-                }
-            }
-        }
+        // Resolve aliases first
+        let canonical_script = self.resolve_script_alias(script);
 
         // Fast lookup using HashMap cache instead of linear search
-        if let Some(&converter_index) = self.script_to_converter.get(script) {
-            return self.converters[converter_index].from_hub_with_metadata(script, hub_input);
+        if let Some(&converter_index) = self.script_to_converter.get(canonical_script) {
+            return self.converters[converter_index].from_hub_with_metadata(canonical_script, hub_input);
         }
 
         // The metadata methods would also need schema registry support
