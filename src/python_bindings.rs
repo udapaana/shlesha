@@ -426,7 +426,7 @@ fn get_supported_scripts() -> Vec<String> {
 
 /// Python module definition
 #[pymodule]
-fn _shlesha(m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn shlesha(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Add classes
     m.add_class::<PyShlesha>()?;
     m.add_class::<PyTransliterationResult>()?;

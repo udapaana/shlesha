@@ -33,7 +33,7 @@ Example:
     >>> print(len(result.metadata.unknown_tokens))  # 2 (for 'k' and 'r')
 """
 
-from ._shlesha import (
+from .shlesha import (
     PyShlesha as Shlesha,
     PyTransliterationResult as TransliterationResult,
     PyTransliterationMetadata as TransliterationMetadata,
