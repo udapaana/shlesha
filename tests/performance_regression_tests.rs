@@ -38,6 +38,8 @@ fn test_basic_conversion_performance() {
         measure_time(|| transliterator.transliterate(SMALL_TEXT, "devanagari", "iso15919"));
 
     assert!(result.is_ok(), "Basic conversion should succeed");
+
+    #[cfg(not(tarpaulin))]
     assert!(
         duration.as_micros() < MAX_BASIC_CONVERSION_MICROS,
         "Basic conversion took {}µs, expected < {}µs",
@@ -54,6 +56,8 @@ fn test_reverse_conversion_performance() {
         measure_time(|| transliterator.transliterate("dharma", "iso15919", "devanagari"));
 
     assert!(result.is_ok(), "Reverse conversion should succeed");
+
+    #[cfg(not(tarpaulin))]
     assert!(
         duration.as_micros() < MAX_BASIC_CONVERSION_MICROS,
         "Reverse conversion took {}µs, expected < {}µs",
@@ -70,6 +74,8 @@ fn test_medium_text_performance() {
         measure_time(|| transliterator.transliterate(MEDIUM_TEXT, "devanagari", "iast"));
 
     assert!(result.is_ok(), "Medium text conversion should succeed");
+
+    #[cfg(not(tarpaulin))]
     assert!(
         duration.as_millis() < MAX_MEDIUM_TEXT_MILLIS,
         "Medium text conversion took {}ms, expected < {}ms",
@@ -103,6 +109,8 @@ fn test_roman_to_roman_performance() {
         measure_time(|| transliterator.transliterate("namaste karma dharma", "iast", "itrans"));
 
     assert!(result.is_ok(), "Roman-to-Roman conversion should succeed");
+
+    #[cfg(not(tarpaulin))]
     assert!(
         duration.as_micros() < MAX_BASIC_CONVERSION_MICROS / 2, // Should be even faster
         "Roman-to-Roman conversion took {}µs, expected < {}µs",
@@ -261,7 +269,7 @@ fn test_error_path_performance() {
         measure_time(|| transliterator.transliterate("test", "nonexistent_script", "devanagari"));
 
     assert!(result.is_err(), "Should error for nonexistent script");
-    
+
     // Only check performance in non-coverage builds
     // Coverage instrumentation makes timing tests unreliable
     #[cfg(not(tarpaulin))]

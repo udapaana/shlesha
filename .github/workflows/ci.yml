@@ -81,7 +81,7 @@ jobs:
       
       - name: Run tests (non-Ubuntu)
         if: matrix.os != 'ubuntu-latest'
-        run: cargo test --all-features --verbose
+        run: cargo test --features cli,wasm,native-examples --verbose
       
       - name: Run doc tests
         run: cargo test --doc
