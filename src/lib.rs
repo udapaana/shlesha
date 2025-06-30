@@ -35,6 +35,7 @@ pub mod modules;
 #[cfg(feature = "python")]
 pub mod python_bindings;
 
+
 #[cfg(feature = "wasm")]
 pub mod wasm_bindings;
 
