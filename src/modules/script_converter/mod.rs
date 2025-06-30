@@ -68,7 +68,7 @@ pub struct ConverterStats {
 }
 
 /// Core trait for converting from various scripts to hub format
-pub trait ScriptConverter {
+pub trait ScriptConverter: Send + Sync {
     /// Convert text from a specific script to hub input format
     fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError>;
 
@@ -499,3 +499,74 @@ pub use iso15919::ISO15919Converter; // Special passthrough converter
 // - [ ] Implement contextual conversion rules for better accuracy
 // - [ ] Add script-specific validation rules
 // - [ ] Implement script detection for automatic source script identification
+
+#[cfg(test)]
+mod send_sync_tests {
+    use super::*;
+    use std::sync::Arc;
+    use std::thread;
+
+    #[test]
+    fn test_script_converter_send_sync() {
+        // Test that ScriptConverter trait objects are Send + Sync
+        fn assert_send<T: Send>() {}
+        fn assert_sync<T: Sync>() {}
+        fn assert_send_sync<T: Send + Sync>() {}
+        
+        // Test Box<dyn ScriptConverter>
+        assert_send::<Box<dyn ScriptConverter>>();
+        assert_sync::<Box<dyn ScriptConverter>>();
+        assert_send_sync::<Box<dyn ScriptConverter>>();
+        
+        // Test Arc<dyn ScriptConverter>
+        assert_send::<Arc<dyn ScriptConverter>>();
+        assert_sync::<Arc<dyn ScriptConverter>>();
+        assert_send_sync::<Arc<dyn ScriptConverter>>();
+    }
+
+    #[test]
+    fn test_script_converter_thread_safety() {
+        // Test that we can actually use ScriptConverter in threads
+        let converter: Arc<dyn ScriptConverter> = Arc::new(ISO15919Converter::new());
+        
+        // Clone for thread
+        let converter_clone = Arc::clone(&converter);
+        let handle = thread::spawn(move || {
+            let scripts = converter_clone.supported_scripts();
+            assert!(scripts.contains(&"iso15919"));
+        });
+        
+        handle.join().unwrap();
+    }
+
+    #[test]
+    fn test_script_converter_registry_send_sync() {
+        // Test that ScriptConverterRegistry is Send + Sync
+        fn assert_send<T: Send>() {}
+        fn assert_sync<T: Sync>() {}
+        fn assert_send_sync<T: Send + Sync>() {}
+        
+        assert_send::<ScriptConverterRegistry>();
+        assert_sync::<ScriptConverterRegistry>();
+        assert_send_sync::<ScriptConverterRegistry>();
+        
+        // Test Arc<ScriptConverterRegistry>
+        assert_send::<Arc<ScriptConverterRegistry>>();
+        assert_sync::<Arc<ScriptConverterRegistry>>();
+        assert_send_sync::<Arc<ScriptConverterRegistry>>();
+    }
+
+    #[test]
+    fn test_registry_thread_safety() {
+        // Test that we can actually use ScriptConverterRegistry in threads
+        let registry = Arc::new(ScriptConverterRegistry::new());
+        
+        let registry_clone = Arc::clone(&registry);
+        let handle = thread::spawn(move || {
+            let scripts = registry_clone.list_supported_scripts();
+            assert!(scripts.contains(&"devanagari"));
+        });
+        
+        handle.join().unwrap();
+    }
+}
