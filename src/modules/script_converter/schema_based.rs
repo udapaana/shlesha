@@ -24,6 +24,7 @@ impl SchemaBasedConverter {
     }
 
     /// Get the hub script type for a given schema
+    #[inline]
     fn get_hub_script_type(&self, schema: &Schema) -> &str {
         match schema.script_type.as_str() {
             "brahmic" | "indic" => "devanagari",
@@ -33,13 +34,14 @@ impl SchemaBasedConverter {
     }
 
     /// Apply character mappings from schema
+    #[inline]
     fn apply_mappings(
         &self,
         input: &str,
         mappings: &FxHashMap<String, String>,
         reverse: bool,
     ) -> (String, Vec<UnknownToken>) {
-        let mut result = String::new();
+        let mut result = String::with_capacity(input.len() * 2); // Pre-allocate for worst case scenario
         let mut unknown_tokens = Vec::new();
         let mut chars = input.chars().peekable();
         let mut position = 0;
@@ -57,13 +59,22 @@ impl SchemaBasedConverter {
         };
 
         while let Some(ch) = chars.next() {
-            let ch_str = ch.to_string();
             let mut matched = false;
 
             // Try multi-character matches first (for digraphs like "kh", "gh", etc.)
             if let Some(next_ch) = chars.peek() {
-                let two_char = format!("{ch}{next_ch}");
-                if let Some(mapped) = mapping_to_use.get(&two_char) {
+                // Use separate buffers to avoid borrow checker issues
+                let mut ch_buf = [0u8; 4];
+                let mut next_ch_buf = [0u8; 4];
+                let ch_str = ch.encode_utf8(&mut ch_buf);
+                let next_ch_str = next_ch.encode_utf8(&mut next_ch_buf);
+                
+                // Create a small string with pre-allocated capacity for the two-character key
+                let mut two_char_key = String::with_capacity(8);
+                two_char_key.push_str(ch_str);
+                two_char_key.push_str(next_ch_str);
+                
+                if let Some(mapped) = mapping_to_use.get(&two_char_key) {
                     result.push_str(mapped);
                     chars.next(); // Consume the second character
                     position += 2;
@@ -73,7 +84,11 @@ impl SchemaBasedConverter {
 
             // Single character match
             if !matched {
-                if let Some(mapped) = mapping_to_use.get(&ch_str) {
+                // Use a small buffer to avoid String allocation for single chars
+                let mut ch_buf = [0u8; 4]; // Max UTF-8 char is 4 bytes
+                let ch_str = ch.encode_utf8(&mut ch_buf);
+                
+                if let Some(mapped) = mapping_to_use.get(ch_str) {
                     result.push_str(mapped);
                 } else {
                     // Unknown character - pass through

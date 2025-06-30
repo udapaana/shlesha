@@ -52,6 +52,10 @@ fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> 
     let mut handlebars = Handlebars::new();
     handlebars.register_template_file("roman_converter", "templates/roman_converter.hbs")?;
     handlebars.register_template_file(
+        "roman_to_devanagari_direct",
+        "templates/roman_to_devanagari_direct.hbs",
+    )?;
+    handlebars.register_template_file(
         "indic_standard_converter",
         "templates/indic_standard_converter.hbs",
     )?;
@@ -63,6 +67,7 @@ fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> 
     // Register helper functions for templates
     handlebars.register_helper("uppercase", Box::new(uppercase_helper));
     handlebars.register_helper("lowercase", Box::new(lowercase_helper));
+    handlebars.register_helper("capitalize", Box::new(capitalize_helper));
     handlebars.register_helper("escape", Box::new(escape_helper));
 
     let mut generated_code = String::new();
@@ -76,6 +81,7 @@ fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> 
 
 use once_cell::sync::Lazy;
 use crate::modules::script_converter::processors::RomanScriptProcessor;
+use crate::modules::hub::{HubFormat, HubTrait};
 
 "#,
     );
@@ -112,6 +118,25 @@ use crate::modules::script_converter::processors::RomanScriptProcessor;
                     "{}Converter",
                     capitalize_first(&schema.metadata.name)
                 ));
+
+                // For Roman scripts targeting ISO-15919, also generate direct Roman → Devanagari converter
+                if schema.metadata.script_type == "roman" && schema.target.as_deref() == Some("iso15919") {
+                    let devanagari_converter_code = generate_roman_to_devanagari_converter(
+                        &handlebars, 
+                        &schema
+                    ).map_err(|e| {
+                        format!(
+                            "Failed to generate Roman→Devanagari converter for {}: {}",
+                            schema.metadata.name, e
+                        )
+                    })?;
+                    generated_code.push_str(&devanagari_converter_code);
+
+                    converter_registrations.push(format!(
+                        "{}DevanagariConverter",
+                        capitalize_first(&schema.metadata.name)
+                    ));
+                }
             }
         }
     }
@@ -304,6 +329,18 @@ fn lowercase_helper(
     Ok(())
 }
 
+fn capitalize_helper(
+    h: &handlebars::Helper,
+    _: &handlebars::Handlebars,
+    _: &handlebars::Context,
+    _rc: &mut handlebars::RenderContext,
+    out: &mut dyn handlebars::Output,
+) -> handlebars::HelperResult {
+    let param = h.param(0).unwrap().value().as_str().unwrap();
+    out.write(&capitalize_first(param))?;
+    Ok(())
+}
+
 fn escape_helper(
     h: &handlebars::Helper,
     _: &handlebars::Handlebars,
@@ -363,4 +400,142 @@ fn generate_extended_indic_converter_with_template(
 
     let code = handlebars.render("indic_extended_converter", &template_data)?;
     Ok(code)
+}
+
+fn generate_roman_to_devanagari_converter(
+    handlebars: &Handlebars,
+    schema: &ScriptSchema,
+) -> Result<String, Box<dyn std::error::Error>> {
+    let script_name = &schema.metadata.name;
+    let struct_name = format!("{}DevanagariConverter", capitalize_first(script_name));
+
+    // Get ISO-15919 to Devanagari mappings from hub (at compile time)
+    let iso_to_deva_mappings = get_iso_to_devanagari_mappings();
+
+    // Compose Roman → ISO-15919 → Devanagari mappings at COMPILE TIME
+    let mut roman_to_deva_mappings = FxHashMap::default();
+    
+    // Process all mapping categories from the schema
+    let all_roman_mappings = [
+        &schema.mappings.vowels,
+        &schema.mappings.consonants,
+        &schema.mappings.marks,
+        &schema.mappings.digits,
+        &schema.mappings.sanskrit_extensions,
+        &schema.mappings.special,
+    ];
+
+    for mapping_category in all_roman_mappings.iter() {
+        if let Some(mappings) = mapping_category {
+            for (roman_key, iso_value) in mappings.iter() {
+                // Compose at compile time: Roman → ISO → Devanagari becomes Roman → Devanagari
+                if let Some(deva_value) = iso_to_deva_mappings.get(iso_value.as_str()) {
+                    roman_to_deva_mappings.insert(roman_key.clone(), deva_value.to_string());
+                }
+            }
+        }
+    }
+
+    // Sort by length (longest first) for proper matching
+    let mut sorted_mappings: Vec<_> = roman_to_deva_mappings.iter().collect();
+    sorted_mappings.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
+
+    // Convert to template format
+    let mappings_for_template: FxHashMap<&str, &str> = sorted_mappings
+        .iter()
+        .map(|(k, v)| (k.as_str(), v.as_str()))
+        .collect();
+
+    let template_data = json!({
+        "struct_name": struct_name,
+        "script_name": format!("{}_devanagari", script_name),
+        "original_script": script_name,
+        "has_implicit_a": schema.metadata.has_implicit_a,
+        "mappings": mappings_for_template,
+    });
+
+    let code = handlebars.render("roman_to_devanagari_direct", &template_data)?;
+    Ok(code)
+}
+
+fn get_iso_to_devanagari_mappings() -> FxHashMap<&'static str, &'static str> {
+    let mut iso_to_deva = FxHashMap::default();
+
+    // Core vowels
+    iso_to_deva.insert("a", "अ");
+    iso_to_deva.insert("ā", "आ");
+    iso_to_deva.insert("i", "इ");
+    iso_to_deva.insert("ī", "ई");
+    iso_to_deva.insert("u", "उ");
+    iso_to_deva.insert("ū", "ऊ");
+    iso_to_deva.insert("r̥", "ऋ");
+    iso_to_deva.insert("r̥̄", "ॠ");
+    iso_to_deva.insert("l̥", "ऌ");
+    iso_to_deva.insert("l̥̄", "ॡ");
+    iso_to_deva.insert("e", "ए");
+    iso_to_deva.insert("ai", "ऐ");
+    iso_to_deva.insert("o", "ओ");
+    iso_to_deva.insert("au", "औ");
+
+    // Consonants (with inherent 'a' - add halanta for consonant-only forms)
+    iso_to_deva.insert("k", "क्");
+    iso_to_deva.insert("kh", "ख्");
+    iso_to_deva.insert("g", "ग्");
+    iso_to_deva.insert("gh", "घ्");
+    iso_to_deva.insert("ṅ", "ङ्");
+    iso_to_deva.insert("c", "च्");
+    iso_to_deva.insert("ch", "छ्");
+    iso_to_deva.insert("j", "ज्");
+    iso_to_deva.insert("jh", "झ्");
+    iso_to_deva.insert("ñ", "ञ्");
+    iso_to_deva.insert("ṭ", "ट्");
+    iso_to_deva.insert("ṭh", "ठ्");
+    iso_to_deva.insert("ḍ", "ड्");
+    iso_to_deva.insert("ḍh", "ढ्");
+    iso_to_deva.insert("ṇ", "ण्");
+    iso_to_deva.insert("t", "त्");
+    iso_to_deva.insert("th", "थ्");
+    iso_to_deva.insert("d", "द्");
+    iso_to_deva.insert("dh", "ध्");
+    iso_to_deva.insert("n", "न्");
+    iso_to_deva.insert("p", "प्");
+    iso_to_deva.insert("ph", "फ्");
+    iso_to_deva.insert("b", "ब्");
+    iso_to_deva.insert("bh", "भ्");
+    iso_to_deva.insert("m", "म्");
+    iso_to_deva.insert("y", "य्");
+    iso_to_deva.insert("r", "र्");
+    iso_to_deva.insert("l", "ल्");
+    iso_to_deva.insert("v", "व्");
+    iso_to_deva.insert("ś", "श्");
+    iso_to_deva.insert("ṣ", "ष्");
+    iso_to_deva.insert("s", "स्");
+    iso_to_deva.insert("h", "ह्");
+
+    // Marks
+    iso_to_deva.insert("ṁ", "ं");
+    iso_to_deva.insert("ḥ", "ः");
+    iso_to_deva.insert("m̐", "ँ");
+    iso_to_deva.insert("'", "ऽ");
+
+    // Digits
+    iso_to_deva.insert("0", "०");
+    iso_to_deva.insert("1", "१");
+    iso_to_deva.insert("2", "२");
+    iso_to_deva.insert("3", "३");
+    iso_to_deva.insert("4", "४");
+    iso_to_deva.insert("5", "५");
+    iso_to_deva.insert("6", "६");
+    iso_to_deva.insert("7", "७");
+    iso_to_deva.insert("8", "८");
+    iso_to_deva.insert("9", "९");
+
+    // Special
+    iso_to_deva.insert("ḷ", "ळ्");
+    iso_to_deva.insert("।", "।");
+    iso_to_deva.insert("॥", "॥");
+    iso_to_deva.insert("kṣ", "क्ष्");
+    iso_to_deva.insert("jñ", "ज्ञ्");
+
+    iso_to_deva
 }

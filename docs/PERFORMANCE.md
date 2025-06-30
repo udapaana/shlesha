@@ -6,22 +6,29 @@ This document explains Shlesha's performance characteristics, benchmarking metho
 
 Shlesha is designed for **high-performance transliteration** with the following characteristics:
 
-### Key Performance Metrics
+### Performance Metrics (v0.1.7)
 
-- **10.52 MB/s** for Indic script conversions
-- **Only 1.07x - 2.96x slower** than Vidyut (industry-leading performance)
-- **O(1) character lookups** via optimized hash maps
-- **Zero-allocation conversions** for most common cases
-- **Compile-time optimization** through code generation
+Measured on the reference benchmark system:
 
-### Performance vs. Other Libraries
+- Telugu → Devanagari: 209.69 MB/s
+- IAST → ISO-15919: 1.96x Vidyut speed (short text), 1.01x Vidyut speed (long text)
+- ITRANS → ISO-15919: 1.51x Vidyut speed (short text), 0.93x Vidyut speed (long text)  
+- SLP1 → ISO-15919: 1.18x Vidyut speed (short text), 0.65x Vidyut speed (long text)
 
-| Library | Relative Speed | Notes |
-|---------|---------------|-------|
-| Vidyut | 1.00x (baseline) | Industry-leading performance |
-| **Shlesha** | **1.07x - 2.96x** | **Competitive performance** |
-| Aksharamukha | ~10-20x slower | Feature-rich but slower |
-| Dharmamitra | ~15-30x slower | Academic implementation |
+Technical implementation:
+- Hash map lookups with function inlining
+- Pre-allocated string capacity
+- Compile-time code generation
+
+### Comparative Performance
+
+Relative to Vidyut (measured on identical hardware/text):
+
+| Script Conversion | Short Text | Long Text |
+|------------------|------------|-----------|
+| IAST → ISO-15919 | 1.96x | 1.01x |
+| ITRANS → ISO-15919 | 1.51x | 0.93x |
+| SLP1 → ISO-15919 | 1.18x | 0.65x |
 
 ## Architecture for Performance
 
@@ -388,6 +395,22 @@ cargo run --example profile_simple --release 2>&1 | grep "heap\|malloc"
 perf record -g cargo run --example benchmark
 perf report -g
 ```
+
+## Performance Optimizations History
+
+### v0.1.7 Optimizations
+
+Three optimizations implemented:
+
+1. **Schema-based String Allocation**: Replaced `String::new()` with `String::with_capacity(input.len() * 2)` in schema-based converter hot paths
+2. **Function Inlining**: Added `#[inline]` attributes to frequently called functions:
+   - `RomanScriptProcessor::process*` methods
+   - `IndicScriptProcessor::to_hub/from_hub`
+   - `FastMappingBuilder` helper functions
+   - `SchemaBasedConverter::apply_mappings`
+3. **String Capacity Pre-allocation**: Added capacity pre-allocation to hub conversion functions
+
+Measured impact: IAST conversions improved from competitive to faster than Vidyut baseline.
 
 ## Future Performance Work
 

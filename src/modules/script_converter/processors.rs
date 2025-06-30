@@ -7,6 +7,7 @@ pub struct FastMappingBuilder;
 
 impl FastMappingBuilder {
     /// Build optimized FxHashMap with first-character indexing for schema-generated converters
+    #[inline]
     pub fn build_optimized_mapping<'a>(
         mappings: &'a [(&'a str, &'a str)],
     ) -> (FxHashMap<&'a str, &'a str>, FxHashMap<char, Vec<&'a str>>) {
@@ -32,6 +33,7 @@ impl FastMappingBuilder {
     }
 
     /// Convert std::HashMap to FxHashMap for improved performance
+    #[inline]
     pub fn to_fx_hashmap<'a>(
         std_map: &'a HashMap<&'a str, &'a str>,
     ) -> FxHashMap<&'a str, &'a str> {
@@ -50,6 +52,7 @@ pub struct RomanScriptProcessor;
 impl RomanScriptProcessor {
     /// Process Roman script text using the provided mapping table
     /// Uses optimized algorithm with FxHashMap internally for better performance
+    #[inline]
     pub fn process(input: &str, mapping: &HashMap<&str, &str>) -> Result<String, ConverterError> {
         // Convert to FxHashMap for better performance, then use optimized algorithm
         let fx_mapping = FastMappingBuilder::to_fx_hashmap(mapping);
@@ -58,6 +61,7 @@ impl RomanScriptProcessor {
 
     /// Optimized version using FxHashMap for better performance
     /// This is used internally by schema-generated converters
+    #[inline]
     pub fn process_with_fx_hashmap(
         input: &str,
         mapping: &FxHashMap<&str, &str>,
@@ -119,6 +123,7 @@ impl RomanScriptProcessor {
     }
 
     /// High-performance version with first-character indexing for maximum speed
+    #[inline]
     pub fn process_with_fast_lookup(
         input: &str,
         mapping: &FxHashMap<&str, &str>,
@@ -187,6 +192,7 @@ pub struct IndicScriptProcessor;
 impl IndicScriptProcessor {
     /// Process Indic script text to hub format (ISO or Devanagari)
     /// Handles implicit 'a' vowel and virama logic
+    #[inline]
     pub fn to_hub(
         input: &str,
         consonant_map: &HashMap<&str, &str>,
@@ -248,6 +254,7 @@ impl IndicScriptProcessor {
 
     /// Process hub format (ISO or Devanagari) to Indic script
     /// Handles vowel mark generation and consonant cluster formation
+    #[inline]
     pub fn from_hub(
         input: &str,
         mapping: &HashMap<&str, &str>,

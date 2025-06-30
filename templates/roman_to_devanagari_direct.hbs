@@ -1,0 +1,138 @@
+{{!-- Template for Direct Roman → Devanagari converters with precomputed mappings --}}
+
+/// Optimized {{original_script}} to Devanagari converter with precomputed direct mappings
+/// This converter uses compile-time composition of {{original_script}} → ISO-15919 → Devanagari
+/// to eliminate runtime hub conversion overhead
+#[allow(dead_code)]
+pub struct {{struct_name}} {
+    {{lowercase original_script}}_to_deva_map: FxHashMap<&'static str, &'static str>,
+}
+
+impl {{struct_name}} {
+    pub fn new() -> Self {
+        let mut {{lowercase original_script}}_to_deva = FxHashMap::default();
+        
+        // Direct {{original_script}} → Devanagari mappings (precomputed at compile time)
+{{#each mappings}}
+        {{lowercase ../original_script}}_to_deva.insert("{{@key}}", "{{this}}");
+{{/each}}
+        
+        Self {
+            {{lowercase original_script}}_to_deva_map: {{lowercase original_script}}_to_deva,
+        }
+    }
+    
+    /// Convert {{original_script}} directly to Devanagari using precomputed mappings
+    pub fn {{lowercase original_script}}_to_devanagari(&self, input: &str) -> Result<String, ConverterError> {
+        let mut result = String::with_capacity(input.len() * 2);
+        let mut chars = input.char_indices().peekable();
+        
+        while let Some((_, ch)) = chars.next() {
+            if ch.is_whitespace() {
+                result.push(ch);
+                continue;
+            }
+            
+            // Try multi-character sequences first (longest match)
+            let mut matched = false;
+            
+            // Collect remaining characters for substring matching
+            let remaining_chars: Vec<char> = std::iter::once(ch)
+                .chain(chars.clone().map(|(_, c)| c))
+                .collect();
+            
+            // Check progressively longer substrings
+            for len in (1..=remaining_chars.len().min(4)).rev() {
+                let substring: String = remaining_chars[..len].iter().collect();
+                if let Some(&deva_str) = self.{{lowercase original_script}}_to_deva_map.get(substring.as_str()) {
+                    result.push_str(deva_str);
+                    // Skip the matched characters
+                    for _ in 1..len {
+                        chars.next();
+                    }
+                    matched = true;
+                    break;
+                }
+            }
+            
+            if !matched {
+                // No mapping found, pass through as-is
+                result.push(ch);
+            }
+        }
+        
+        Ok(result)
+    }
+    
+    /// Convert Devanagari to {{original_script}} (reverse conversion via standard path)
+    pub fn devanagari_to_{{lowercase original_script}}(&self, input: &str) -> Result<String, ConverterError> {
+        // For reverse conversion, use the existing hub-based path
+        // This is acceptable since Roman → Indic is the performance bottleneck, not Indic → Roman
+        let {{lowercase original_script}}_converter = {{capitalize original_script}}Converter::new();
+        let hub = crate::modules::hub::Hub::new();
+        
+        // Devanagari → ISO-15919 → {{original_script}}
+        use crate::modules::hub::HubTrait;
+        let iso_result = hub.deva_to_iso(input)
+            .map_err(|e| ConverterError::ConversionFailed {
+                script: "{{original_script}}".to_string(),
+                reason: format!("Hub conversion failed: {}", e),
+            })?;
+        
+        match iso_result {
+            HubFormat::Iso(iso_text) => {
+                let result = {{lowercase original_script}}_converter.from_hub("{{original_script}}", &HubInput::Iso(iso_text))?;
+                Ok(result)
+            },
+            _ => Err(ConverterError::ConversionFailed {
+                script: "{{original_script}}".to_string(),
+                reason: "Expected ISO output from hub".to_string(),
+            }),
+        }
+    }
+}
+
+impl ScriptConverter for {{struct_name}} {
+    fn to_hub(&self, script: &str, input: &str) -> Result<HubInput, ConverterError> {
+        if script != "{{script_name}}" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "{{struct_name}} converter only supports '{{script_name}}' script".to_string(),
+            });
+        }
+        
+        let deva_text = self.{{lowercase original_script}}_to_devanagari(input)?;
+        Ok(HubInput::Devanagari(deva_text))
+    }
+    
+    fn from_hub(&self, script: &str, hub_input: &HubInput) -> Result<String, ConverterError> {
+        if script != "{{script_name}}" {
+            return Err(ConverterError::InvalidInput {
+                script: script.to_string(),
+                message: "{{struct_name}} converter only supports '{{script_name}}' script".to_string(),
+            });
+        }
+        
+        match hub_input {
+            HubInput::Devanagari(deva_text) => self.devanagari_to_{{lowercase original_script}}(deva_text),
+            HubInput::Iso(_) => Err(ConverterError::ConversionFailed {
+                script: script.to_string(),
+                reason: "{{struct_name}} converter expects Devanagari input, got ISO".to_string(),
+            }),
+        }
+    }
+    
+    fn supported_scripts(&self) -> Vec<&'static str> {
+        vec!["{{script_name}}"]
+    }
+    
+    fn script_has_implicit_a(&self, _script: &str) -> bool {
+        {{has_implicit_a}}
+    }
+}
+
+impl Default for {{struct_name}} {
+    fn default() -> Self {
+        Self::new()
+    }
+}

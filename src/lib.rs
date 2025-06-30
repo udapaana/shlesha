@@ -94,6 +94,32 @@ impl Shlesha {
         from: &str,
         to: &str,
     ) -> Result<String, Box<dyn std::error::Error>> {
+        // Check for Roman → Indic optimization first
+        if self.is_roman_script(from) && self.is_indic_script(to) {
+            // Try using the optimized Roman → Devanagari → Indic path
+            let roman_deva_script = format!("{}_devanagari", from);
+            
+            
+            if let Ok(deva_result) = self.script_converter_registry.to_hub_with_schema_registry(
+                &roman_deva_script,
+                text,
+                Some(&self.registry),
+            ) {
+                if let HubInput::Devanagari(deva_text) = deva_result {
+                    // Now convert Devanagari → target Indic script
+                    let deva_hub_input = HubInput::Devanagari(deva_text);
+                    if let Ok(result) = self.script_converter_registry.from_hub_with_schema_registry(
+                        to,
+                        &deva_hub_input,
+                        Some(&self.registry),
+                    ) {
+                        return Ok(result);
+                    }
+                }
+            }
+            // If optimized path fails, fall through to standard routing
+        }
+
         // Convert source script to hub format (Devanagari or ISO)
         let hub_input = self.script_converter_registry.to_hub_with_schema_registry(
             from,
@@ -161,6 +187,23 @@ impl Shlesha {
         };
 
         Ok(result)
+    }
+
+    /// Check if a script is a Roman transliteration scheme
+    fn is_roman_script(&self, script: &str) -> bool {
+        matches!(
+            script.to_lowercase().as_str(),
+            "slp1" | "iast" | "itrans" | "harvard_kyoto" | "hk" | "velthuis" | "wx" | "iso15919" | "iso"
+        )
+    }
+
+    /// Check if a script is an Indic script
+    fn is_indic_script(&self, script: &str) -> bool {
+        matches!(
+            script.to_lowercase().as_str(),
+            "devanagari" | "deva" | "bengali" | "telugu" | "tamil" | "kannada" | "malayalam" | 
+            "gujarati" | "gurmukhi" | "odia" | "sinhala" | "grantha"
+        )
     }
 
     /// Transliterate text with metadata collection for unknown tokens

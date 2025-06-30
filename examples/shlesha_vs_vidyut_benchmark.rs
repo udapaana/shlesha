@@ -1,92 +1,130 @@
-use shlesha::modules::script_converter::{
-    IastConverter, ItransConverter, ScriptConverter, Slp1Converter, TeluguConverter,
-};
+use shlesha::Shlesha;
 use std::time::Instant;
 use vidyut_lipi::{Lipika, Scheme};
 
 fn main() {
-    println!("🏆 Shlesha vs Vidyut Comprehensive Performance Comparison");
-    println!("=======================================================");
+    println!("🏆 Shlesha vs Vidyut Cross-Hub Performance Benchmark");
+    println!("===================================================");
+    println!();
+    println!("This benchmark tests the most challenging conversions in Shlesha's");
+    println!("hub-and-spoke architecture: those requiring BOTH hub formats.");
+    println!();
+    println!("Cross-hub conversions require 3 steps:");
+    println!("  • Indic → Roman: Source → Devanagari → ISO-15919 → Target");
+    println!("  • Roman → Indic: Source → ISO-15919 → Devanagari → Target");
+    println!();
+    println!("These conversions cross the Devanagari ↔ ISO-15919 bridge,");
+    println!("which is the runtime hub mapping connecting Indic and Roman scripts.");
     println!();
 
-    // Initialize converters
-    let shlesha_slp1 = Slp1Converter::new();
-    let shlesha_itrans = ItransConverter::new();
-    let shlesha_iast = IastConverter::new();
-    let shlesha_telugu = TeluguConverter::new();
-
-    // Initialize Vidyut
+    // Initialize transliterators
+    let shlesha = Shlesha::new();
     let mut vidyut = Lipika::new();
 
     println!("Testing libraries:");
-    println!("  📚 Shlesha: Optimized transliterator (our implementation)");
-    println!("  🚀 Vidyut: High-performance Sanskrit toolkit");
+    println!("  📚 Shlesha: 3-step conversion through both hubs");
+    println!("  🚀 Vidyut: Direct single-step conversion");
     println!();
 
-    // Test data sets of different sizes and complexity
+    // Test data sets
     let test_cases = vec![
-        ("Short Text (Simple)", "dharma", 1),
-        (
-            "Medium Text (Complex)",
-            "dharmakSetrekukSAstramulamasUktamukhAdharmakSetrajYAnamukhAnamastubhyam",
-            1,
-        ),
-        (
-            "Long Text (Realistic)",
-            "dharmakSetrekukSAstramulamasUktamukhAdharmakSetrajYAnamukhAnamastubhyam",
-            100, // 7,000+ characters
-        ),
-        (
-            "Very Long Text (Stress Test)",
-            "dharmakSetrekukSAstramulamasUktamukhAdharmakSetrajYAnamukhAnamastubhyam",
-            1000, // 70,000+ characters
-        ),
+        ("Short Text", "dharma", 1),
+        ("Medium Text", "dharmakSetrekuruSetrasamavetAyuyutsavaHmAmakAHpANDavAzcaivakimakurvatasaMjaya", 1),
+        ("Long Text", "dharmakSetrekuruSetrasamavetAyuyutsavaHmAmakAHpANDavAzcaivakimakurvatasaMjaya", 100),
+        ("Very Long Text", "dharmakSetrekuruSetrasamavetAyuyutsavaHmAmakAHpANDavAzcaivakimakurvatasaMjaya", 1000),
     ];
 
+    let mut all_results = Vec::new();
+
     for (test_name, base_text, repeat_count) in test_cases {
-        println!("=== {} ===", test_name);
-        let test_text = base_text.repeat(repeat_count);
-        println!("Text length: {} characters", test_text.len());
+        println!("\n=== {} ===", test_name);
+        println!("Text length: {} characters", base_text.len() * repeat_count);
 
-        // Test SLP1 conversion
-        println!("\n📖 SLP1 → ISO-15919 Conversion:");
-        benchmark_slp1(&shlesha_slp1, &mut vidyut, &test_text);
+        // Test Indic → Roman (cross-hub) conversions
+        println!("\n📖 Indic → Roman (Cross-Hub: 3 steps):");
+        
+        // Bengali text
+        let bengali_text = "ধর্মক্ষেত্রে কুরুক্ষেত্রে সমবেতা যুযুৎসবঃ মামকাঃ পাণ্ডবাশ্চৈব".repeat(repeat_count);
+        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &bengali_text, "bengali", "iast", Scheme::Bengali, Scheme::Iast));
+        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &bengali_text, "bengali", "slp1", Scheme::Bengali, Scheme::Slp1));
+        
+        // Telugu text
+        let telugu_text = "ధర్మక్షేత్రే కురుక్షేత్రే సమవేతా యుయుత్సవః మామకాః పాండవాశ్చైవ".repeat(repeat_count);
+        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &telugu_text, "telugu", "itrans", Scheme::Telugu, Scheme::Itrans));
+        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &telugu_text, "telugu", "iast", Scheme::Telugu, Scheme::Iast));
 
-        // Test ITRANS conversion
-        println!("\n📖 ITRANS → ISO-15919 Conversion:");
-        benchmark_itrans(&shlesha_itrans, &mut vidyut, &test_text);
+        // Test Roman → Indic (cross-hub) conversions
+        println!("\n📖 Roman → Indic (Cross-Hub: 3 steps):");
+        
+        // Roman text samples
+        let slp1_text = base_text.repeat(repeat_count);
+        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &slp1_text, "slp1", "bengali", Scheme::Slp1, Scheme::Bengali));
+        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &slp1_text, "slp1", "telugu", Scheme::Slp1, Scheme::Telugu));
+        
+        let iast_text = "dharmakṣetre kurukṣetre samavetā yuyutsavaḥ".repeat(repeat_count);
+        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &iast_text, "iast", "bengali", Scheme::Iast, Scheme::Bengali));
+        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &iast_text, "iast", "telugu", Scheme::Iast, Scheme::Telugu));
 
-        // Test IAST conversion
-        println!("\n📖 IAST → ISO-15919 Conversion:");
-        benchmark_iast(&shlesha_iast, &mut vidyut, &test_text);
-
-        // Test Telugu conversion (Indic script)
-        if test_name == "Medium Text (Complex)" {
-            println!("\n📖 Telugu → Devanagari Conversion:");
-            let telugu_text = "తెలుగు లిపిలో వ్రాయబడిన పాఠ్యం ధర్మక్షేత్రే కురుక్షేత్రే".repeat(repeat_count);
-            benchmark_telugu(&shlesha_telugu, &mut vidyut, &telugu_text);
-        }
-
-        println!("\n{}\n", "─".repeat(60));
+        println!("\n{}", "─".repeat(60));
     }
 
-    // Memory usage comparison
-    println!("🧠 MEMORY USAGE ANALYSIS");
-    println!("========================");
-    analyze_memory_usage();
+    // Performance summary
+    println!("\n📊 PERFORMANCE SUMMARY");
+    println!("=====================");
+    
+    // Calculate averages
+    let indic_to_roman: Vec<_> = all_results.iter()
+        .filter(|r| is_indic(&r.from) && is_roman(&r.to))
+        .collect();
+    let roman_to_indic: Vec<_> = all_results.iter()
+        .filter(|r| is_roman(&r.from) && is_indic(&r.to))
+        .collect();
 
-    // Feature comparison
-    println!("\n🔧 FEATURE COMPARISON");
-    println!("====================");
-    compare_features();
+    println!("\nAverage Performance (Cross-Hub Only):");
+    
+    if !indic_to_roman.is_empty() {
+        let avg_ratio: f64 = indic_to_roman.iter().map(|r| r.speed_ratio).sum::<f64>() / indic_to_roman.len() as f64;
+        println!("Indic → Roman: Shlesha is {:.1}x {} than Vidyut", 
+            if avg_ratio > 1.0 { avg_ratio } else { 1.0 / avg_ratio },
+            if avg_ratio > 1.0 { "faster" } else { "slower" }
+        );
+    }
+    
+    if !roman_to_indic.is_empty() {
+        let avg_ratio: f64 = roman_to_indic.iter().map(|r| r.speed_ratio).sum::<f64>() / roman_to_indic.len() as f64;
+        println!("Roman → Indic: Shlesha is {:.1}x {} than Vidyut", 
+            if avg_ratio > 1.0 { avg_ratio } else { 1.0 / avg_ratio },
+            if avg_ratio > 1.0 { "faster" } else { "slower" }
+        );
+    }
 
-    // Final summary
-    println!("\n📊 PERFORMANCE POSITIONING SUMMARY");
-    println!("==================================");
-    print_summary();
+    println!("\n🔍 Why Cross-Hub Matters:");
+    println!("Cross-hub conversions are the most performance-critical paths because:");
+    println!("1. They require 3 conversion steps vs direct conversion");
+    println!("2. They must traverse the Devanagari ↔ ISO-15919 bridge");
+    println!("3. They represent the worst-case scenario for hub architectures");
+    println!("4. Optimizing these paths benefits all cross-script conversions");
+    
+    println!("\n📈 Optimization Opportunities:");
+    println!("The Devanagari ↔ ISO-15919 mapping is the bottleneck.");
+    println!("Future optimizations should focus on this critical path.");
 }
 
-fn benchmark_slp1(shlesha: &Slp1Converter, vidyut: &mut Lipika, text: &str) {
+struct BenchmarkResult {
+    from: String,
+    to: String,
+    speed_ratio: f64,
+}
+
+fn benchmark_conversion(
+    shlesha: &Shlesha,
+    vidyut: &mut Lipika,
+    text: &str,
+    from: &str,
+    to: &str,
+    vidyut_from: Scheme,
+    vidyut_to: Scheme,
+) -> BenchmarkResult {
     let iterations = if text.len() < 100 {
         10000
     } else if text.len() < 10000 {
@@ -95,279 +133,68 @@ fn benchmark_slp1(shlesha: &Slp1Converter, vidyut: &mut Lipika, text: &str) {
         100
     };
 
+    print!("  {} → {}: ", from, to);
+
     // Warm up
     for _ in 0..10 {
-        let _ = shlesha.to_hub("slp1", text);
-        let _ = vidyut.transliterate(text, Scheme::Slp1, Scheme::Iast);
+        let _ = shlesha.transliterate(text, from, to);
+        let _ = vidyut.transliterate(text, vidyut_from, vidyut_to);
     }
 
     // Benchmark Shlesha
     let start = Instant::now();
+    let mut success = true;
     for _ in 0..iterations {
-        let _ = shlesha.to_hub("slp1", text).unwrap();
+        if shlesha.transliterate(text, from, to).is_err() {
+            success = false;
+            break;
+        }
     }
     let shlesha_duration = start.elapsed();
-    let shlesha_throughput =
-        (text.len() as f64 * iterations as f64) / shlesha_duration.as_secs_f64() / 1_000_000.0;
+    let shlesha_throughput = if success {
+        (text.len() as f64 * iterations as f64) / shlesha_duration.as_secs_f64() / 1_000_000.0
+    } else {
+        0.0
+    };
 
     // Benchmark Vidyut
     let start = Instant::now();
     for _ in 0..iterations {
-        let _ = vidyut.transliterate(text, Scheme::Slp1, Scheme::Iast);
+        let _ = vidyut.transliterate(text, vidyut_from, vidyut_to);
     }
     let vidyut_duration = start.elapsed();
-    let vidyut_throughput =
-        (text.len() as f64 * iterations as f64) / vidyut_duration.as_secs_f64() / 1_000_000.0;
+    let vidyut_throughput = (text.len() as f64 * iterations as f64) / vidyut_duration.as_secs_f64() / 1_000_000.0;
 
     // Calculate relative performance
-    let speed_ratio = vidyut_duration.as_secs_f64() / shlesha_duration.as_secs_f64();
-
-    println!(
-        "  📈 Shlesha:  {:.2} MB/s ({:?} avg, {} iterations)",
-        shlesha_throughput,
-        shlesha_duration / iterations,
-        iterations
-    );
-    println!(
-        "  🚀 Vidyut:   {:.2} MB/s ({:?} avg, {} iterations)",
-        vidyut_throughput,
-        vidyut_duration / iterations,
-        iterations
-    );
-    println!(
-        "  📊 Ratio:    Shlesha is {:.2}x {} than Vidyut",
-        if speed_ratio > 1.0 {
-            speed_ratio
-        } else {
-            1.0 / speed_ratio
-        },
-        if speed_ratio > 1.0 {
-            "faster"
-        } else {
-            "slower"
-        }
-    );
-
-    // Correctness check
-    let shlesha_result = shlesha.to_hub("slp1", "dharma").unwrap();
-    let vidyut_result = vidyut.transliterate("dharma", Scheme::Slp1, Scheme::Iast);
-    println!(
-        "  ✅ Correctness: {} (Shlesha: {:?}, Vidyut: {:?})",
-        if format!("{:?}", shlesha_result).contains("dharma") && vidyut_result.contains("dharma") {
-            "PASS"
-        } else {
-            "DIFF"
-        },
-        shlesha_result,
-        vidyut_result
-    );
-}
-
-fn benchmark_itrans(shlesha: &ItransConverter, vidyut: &mut Lipika, text: &str) {
-    let iterations = if text.len() < 100 {
-        10000
-    } else if text.len() < 10000 {
-        1000
+    let speed_ratio = if success {
+        vidyut_duration.as_secs_f64() / shlesha_duration.as_secs_f64()
     } else {
-        100
+        0.0
     };
 
-    // Warm up
-    for _ in 0..10 {
-        let _ = shlesha.to_hub("itrans", text);
-        let _ = vidyut.transliterate(text, Scheme::Itrans, Scheme::Iast);
-    }
-
-    // Benchmark Shlesha
-    let start = Instant::now();
-    for _ in 0..iterations {
-        let _ = shlesha.to_hub("itrans", text).unwrap();
-    }
-    let shlesha_duration = start.elapsed();
-    let shlesha_throughput =
-        (text.len() as f64 * iterations as f64) / shlesha_duration.as_secs_f64() / 1_000_000.0;
-
-    // Benchmark Vidyut
-    let start = Instant::now();
-    for _ in 0..iterations {
-        let _ = vidyut.transliterate(text, Scheme::Itrans, Scheme::Iast);
-    }
-    let vidyut_duration = start.elapsed();
-    let vidyut_throughput =
-        (text.len() as f64 * iterations as f64) / vidyut_duration.as_secs_f64() / 1_000_000.0;
-
-    let speed_ratio = vidyut_duration.as_secs_f64() / shlesha_duration.as_secs_f64();
-
-    println!(
-        "  📈 Shlesha:  {:.2} MB/s ({:?} avg, {} iterations)",
-        shlesha_throughput,
-        shlesha_duration / iterations,
-        iterations
-    );
-    println!(
-        "  🚀 Vidyut:   {:.2} MB/s ({:?} avg, {} iterations)",
-        vidyut_throughput,
-        vidyut_duration / iterations,
-        iterations
-    );
-    println!(
-        "  📊 Ratio:    Shlesha is {:.2}x {} than Vidyut",
-        if speed_ratio > 1.0 {
-            speed_ratio
-        } else {
-            1.0 / speed_ratio
-        },
-        if speed_ratio > 1.0 {
-            "faster"
-        } else {
-            "slower"
-        }
-    );
-}
-
-fn benchmark_iast(shlesha: &IastConverter, vidyut: &mut Lipika, text: &str) {
-    let iterations = if text.len() < 100 {
-        10000
-    } else if text.len() < 10000 {
-        1000
+    if success {
+        println!(
+            "Shlesha {:.2}x {} ({:.2} MB/s vs {:.2} MB/s)",
+            if speed_ratio > 1.0 { speed_ratio } else { 1.0 / speed_ratio },
+            if speed_ratio > 1.0 { "faster" } else { "slower" },
+            shlesha_throughput,
+            vidyut_throughput
+        );
     } else {
-        100
-    };
-
-    // Convert SLP1 text to IAST for testing
-    let iast_text = text.replace("A", "ā").replace("S", "ś").replace("z", "ṣ");
-
-    // Warm up
-    for _ in 0..10 {
-        let _ = shlesha.to_hub("iast", &iast_text);
-        let _ = vidyut.transliterate(&iast_text, Scheme::Iast, Scheme::Iast);
+        println!("Shlesha: ERROR - conversion not supported");
     }
 
-    // Benchmark Shlesha
-    let start = Instant::now();
-    for _ in 0..iterations {
-        let _ = shlesha.to_hub("iast", &iast_text).unwrap();
+    BenchmarkResult {
+        from: from.to_string(),
+        to: to.to_string(),
+        speed_ratio,
     }
-    let shlesha_duration = start.elapsed();
-    let shlesha_throughput =
-        (iast_text.len() as f64 * iterations as f64) / shlesha_duration.as_secs_f64() / 1_000_000.0;
-
-    // Benchmark Vidyut
-    let start = Instant::now();
-    for _ in 0..iterations {
-        let _ = vidyut.transliterate(&iast_text, Scheme::Iast, Scheme::Iast);
-    }
-    let vidyut_duration = start.elapsed();
-    let vidyut_throughput =
-        (iast_text.len() as f64 * iterations as f64) / vidyut_duration.as_secs_f64() / 1_000_000.0;
-
-    let speed_ratio = vidyut_duration.as_secs_f64() / shlesha_duration.as_secs_f64();
-
-    println!(
-        "  📈 Shlesha:  {:.2} MB/s ({:?} avg, {} iterations)",
-        shlesha_throughput,
-        shlesha_duration / iterations,
-        iterations
-    );
-    println!(
-        "  🚀 Vidyut:   {:.2} MB/s ({:?} avg, {} iterations)",
-        vidyut_throughput,
-        vidyut_duration / iterations,
-        iterations
-    );
-    println!(
-        "  📊 Ratio:    Shlesha is {:.2}x {} than Vidyut",
-        if speed_ratio > 1.0 {
-            speed_ratio
-        } else {
-            1.0 / speed_ratio
-        },
-        if speed_ratio > 1.0 {
-            "faster"
-        } else {
-            "slower"
-        }
-    );
 }
 
-fn benchmark_telugu(shlesha: &TeluguConverter, _vidyut: &mut Lipika, text: &str) {
-    let iterations = if text.len() < 100 {
-        10000
-    } else if text.len() < 10000 {
-        1000
-    } else {
-        100
-    };
-
-    // Warm up
-    for _ in 0..10 {
-        let _ = shlesha.to_hub("telugu", text);
-        // Note: Vidyut may not support Telugu directly, so we'll measure what we can
-    }
-
-    // Benchmark Shlesha
-    let start = Instant::now();
-    for _ in 0..iterations {
-        let _ = shlesha.to_hub("telugu", text).unwrap();
-    }
-    let shlesha_duration = start.elapsed();
-    let shlesha_throughput =
-        (text.len() as f64 * iterations as f64) / shlesha_duration.as_secs_f64() / 1_000_000.0;
-
-    println!(
-        "  📈 Shlesha:  {:.2} MB/s ({:?} avg, {} iterations)",
-        shlesha_throughput,
-        shlesha_duration / iterations,
-        iterations
-    );
-    println!("  🚀 Vidyut:   Not directly comparable (different architecture)");
-    println!("  📊 Note:     Shlesha's Indic script performance is already highly optimized");
+fn is_roman(script: &str) -> bool {
+    matches!(script, "slp1" | "iast" | "itrans" | "hk" | "velthuis" | "wx" | "iso15919")
 }
 
-fn analyze_memory_usage() {
-    println!("Memory allocation patterns:");
-    println!("  📚 Shlesha:");
-    println!("    - Roman scripts: Zero-copy string slicing (optimized)");
-    println!("    - Indic scripts: Minimal allocations with char mapping");
-    println!("    - Hub architecture: Single conversion path");
-    println!("  🚀 Vidyut:");
-    println!("    - Highly optimized memory usage");
-    println!("    - Direct scheme-to-scheme conversion");
-    println!("    - Compiled-in efficiency optimizations");
-}
-
-fn compare_features() {
-    println!("Feature comparison:");
-    println!("  📚 Shlesha Advantages:");
-    println!("    ✅ Extensible hub-and-spoke architecture");
-    println!("    ✅ Runtime-loadable script schemas");
-    println!("    ✅ Python and WASM bindings");
-    println!("    ✅ 15+ script support with easy addition");
-    println!("    ✅ Modular design for custom workflows");
-    println!();
-    println!("  🚀 Vidyut Advantages:");
-    println!("    ✅ Highly optimized for speed");
-    println!("    ✅ Comprehensive Sanskrit toolkit");
-    println!("    ✅ Battle-tested in production");
-    println!("    ✅ Minimal memory footprint");
-    println!("    ✅ Direct scheme-to-scheme conversions");
-}
-
-fn print_summary() {
-    println!("Performance positioning after optimization:");
-    println!();
-    println!("🎯 TARGET ACHIEVEMENT:");
-    println!("  Goal: Outperform Aksharamukha and Dharmamitra");
-    println!("  Accept: Being ~19x slower than Vidyut for extensibility benefits");
-    println!();
-    println!("📈 ACTUAL RESULTS:");
-    println!("  Roman Scripts: 131.7% improvement (2.32x faster than before)");
-    println!("  Indic Scripts: Already highly efficient (10.99 MB/s)");
-    println!("  Architecture: Extensible hub-and-spoke vs pure performance");
-    println!();
-    println!("🏆 CONCLUSION:");
-    println!("  Shlesha provides excellent performance with superior extensibility");
-    println!("  Roman script optimizations bring us much closer to Vidyut");
-    println!("  Indic scripts already perform exceptionally well");
-    println!("  Trade-off: Slightly slower peak performance for much greater flexibility");
+fn is_indic(script: &str) -> bool {
+    matches!(script, "devanagari" | "bengali" | "telugu" | "tamil" | "kannada" | "malayalam" | "gujarati" | "gurmukhi" | "odia")
 }

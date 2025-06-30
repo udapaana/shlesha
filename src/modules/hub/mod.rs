@@ -540,7 +540,7 @@ impl HubTrait for Hub {
     }
 
     fn deva_to_iso_with_metadata(&self, input: &str) -> Result<HubResult, HubError> {
-        let mut result = String::new();
+        let mut result = String::with_capacity(input.len() * 2); // Pre-allocate for expansion
         let mut metadata = TransliterationMetadata::new("devanagari", "iso15919");
 
         let chars: Vec<char> = input.chars().collect();
@@ -648,7 +648,7 @@ impl HubTrait for Hub {
     }
 
     fn iso_to_deva_with_metadata(&self, input: &str) -> Result<HubResult, HubError> {
-        let mut result = String::new();
+        let mut result = String::with_capacity(input.len() * 2); // Pre-allocate for expansion
         let mut metadata = TransliterationMetadata::new("iso15919", "devanagari");
 
         let normalized: String = input.nfc().collect();
