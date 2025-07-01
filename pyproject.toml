@@ -71,16 +71,10 @@ dev-dependencies = [
 build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
 # Skip 32-bit builds and musl builds to save time and focus on main platforms
 skip = "*-win32 *-manylinux_i686 *-musllinux_*"
-# Use maturin for building (configured via environment in GitHub Actions)
+# Use maturin for building Rust extensions
 before-build = "pip install maturin"
+build-frontend = "pip"
 # Set environment variable for PyO3 compatibility
 environment = {PYO3_USE_ABI3_FORWARD_COMPATIBILITY = "1"}
 # Test that the wheel imports correctly
 test-command = "python -c \"import shlesha; print('✅ shlesha wheel import test passed')\""
-
-# Platform-specific repair commands
-[tool.cibuildwheel.linux]
-repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
-
-[tool.cibuildwheel.macos]
-repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"

@@ -7,12 +7,22 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+  workflow_run:
+    workflows: ["CI", "Integration Tests", "Quality Gate"]
+    types:
+      - completed
 
 jobs:
   # Test WASM build
   test-wasm:
     name: Test WASM Build
     runs-on: ubuntu-latest
+    # Only run if this is a workflow_run from successful Quality Gate (for commits) or Integration Tests (for releases),
+    # or if manually triggered/on pull request
+    if: |
+      github.event_name != 'push' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && 
+       (github.event.workflow_run.name == 'Quality Gate' || github.event.workflow_run.name == 'Integration Tests'))
     steps:
       - uses: actions/checkout@v4
       
@@ -42,7 +52,9 @@ jobs:
   publish-npm:
     name: Publish to npm
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    if: |
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'refs/tags/'))
     needs: test-wasm
     environment: ${{ contains(github.ref, 'rc') && 'dev' || 'prd' }}
     steps:
