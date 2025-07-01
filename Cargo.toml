@@ -1,6 +1,6 @@
 [package]
 name = "shlesha"
-version = "0.1.8"
+version = "0.1.9"
 edition = "2021"
 authors = ["Shlesha Contributors"]
 description = "High-performance extensible transliteration library with hub-and-spoke architecture"
@@ -86,6 +86,10 @@ python-source = "python"
 
 [[bench]]
 name = "comprehensive_benchmark"
+harness = false
+
+[[bench]]
+name = "profiling_benchmark"
 harness = false
 
 # Examples that require vidyut-lipi (not available for WASM)

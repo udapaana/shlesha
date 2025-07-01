@@ -42,6 +42,7 @@ pub mod wasm_bindings;
 use modules::hub::{Hub, HubInput, HubOutput, HubTrait};
 use modules::registry::{SchemaRegistry, SchemaRegistryTrait};
 use modules::script_converter::ScriptConverterRegistry;
+use modules::profiler::{Profiler, ProfilerConfig, OptimizationCache};
 
 // Re-export unknown handler types for public API
 pub use modules::core::unknown_handler::{
@@ -63,6 +64,8 @@ pub struct Shlesha {
     hub: Hub,
     script_converter_registry: ScriptConverterRegistry,
     registry: SchemaRegistry,
+    profiler: Option<Profiler>,
+    optimization_cache: OptimizationCache,
 }
 
 impl Shlesha {
@@ -84,11 +87,40 @@ impl Shlesha {
             hub: Hub::new(),
             script_converter_registry,
             registry,
+            profiler: None,
+            optimization_cache: OptimizationCache::new(),
         }
     }
 
     /// Transliterate text from one script to another via the central hub
     pub fn transliterate(
+        &self,
+        text: &str,
+        from: &str,
+        to: &str,
+    ) -> Result<String, Box<dyn std::error::Error>> {
+        use std::time::Instant;
+        let start_time = Instant::now();
+
+        // Try optimized conversion first if available
+        let result = self.optimization_cache.apply_optimization(
+            text,
+            from,
+            to,
+            |text| self.transliterate_internal(text, from, to),
+        );
+
+        // Record profiling data if enabled
+        if let Some(ref profiler) = self.profiler {
+            let processing_time = start_time.elapsed();
+            profiler.record_conversion(from, to, text, processing_time);
+        }
+
+        result
+    }
+
+    /// Internal transliteration method (the original implementation)
+    fn transliterate_internal(
         &self,
         text: &str,
         from: &str,
@@ -386,7 +418,53 @@ impl Shlesha {
             hub: Hub::new(),
             script_converter_registry,
             registry,
+            profiler: None,
+            optimization_cache: OptimizationCache::new(),
         }
+    }
+
+    /// Enable profiling with default configuration
+    pub fn enable_profiling(&mut self) {
+        self.profiler = Some(Profiler::new());
+    }
+
+    /// Enable profiling with custom configuration
+    pub fn enable_profiling_with_config(&mut self, config: ProfilerConfig) {
+        self.profiler = Some(Profiler::with_config(config));
+    }
+
+    /// Disable profiling
+    pub fn disable_profiling(&mut self) {
+        self.profiler = None;
+    }
+
+    /// Get profiling statistics
+    pub fn get_profile_stats(&self) -> Option<rustc_hash::FxHashMap<(String, String), modules::profiler::ProfileStats>> {
+        self.profiler.as_ref().map(|p| p.get_profile_stats())
+    }
+
+    /// Generate optimized lookup tables from current profiles
+    pub fn generate_optimizations(&self) -> Vec<modules::profiler::OptimizedLookupTable> {
+        self.profiler.as_ref().map(|p| p.generate_optimizations()).unwrap_or_default()
+    }
+
+    /// Load an optimization table for hot-reloading
+    pub fn load_optimization(&self, optimization: modules::profiler::OptimizedLookupTable) {
+        self.optimization_cache.load(optimization);
+    }
+
+    /// Save current profiles to disk
+    pub fn save_profiles(&self) {
+        if let Some(ref profiler) = self.profiler {
+            profiler.save_profiles();
+        }
+    }
+
+    /// Create Shlesha instance with profiling enabled
+    pub fn with_profiling() -> Self {
+        let mut instance = Self::new();
+        instance.enable_profiling();
+        instance
     }
 }
 
