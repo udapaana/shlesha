@@ -120,10 +120,17 @@ jobs:
           else
             # Use uv on other platforms
             uv venv .venv
-            source .venv/bin/activate
+            # Handle Windows vs Unix path differences
+            if [[ "${{ runner.os }}" == "Windows" ]]; then
+              source .venv/Scripts/activate
+              echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
+              echo "$PWD/.venv/Scripts" >> $GITHUB_PATH
+            else
+              source .venv/bin/activate
+              echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
+              echo "$PWD/.venv/bin" >> $GITHUB_PATH
+            fi
             uv pip install maturin pytest
-            echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
-            echo "$PWD/.venv/bin" >> $GITHUB_PATH
           fi
       
       - name: Build wheel
