@@ -3,8 +3,8 @@
 //! This benchmark measures the effectiveness of the profiling system
 //! by comparing baseline performance with optimized performance.
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
-use shlesha::{Shlesha, modules::profiler::ProfilerConfig};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
+use shlesha::{modules::profiler::ProfilerConfig, Shlesha};
 use std::path::PathBuf;
 use std::time::Duration;
 
@@ -12,9 +12,21 @@ use std::time::Duration;
 const REPEATED_SANSKRIT_TEXT: &str = "धर्म कर्म योग वेद मन्त्र धर्म योग कर्म वेद धर्म मन्त्र योग कर्म वेद धर्म योग वेद कर्म मन्त्र धर्म योग कर्म वेद मन्त्र धर्म योग";
 
 const COMMON_WORDS: &[&str] = &[
-    "धर्म", "कर्म", "योग", "वेद", "मन्त्र",
-    "भगवान्", "देव", "देवी", "गुरु", "शिष्य",
-    "नमस्ते", "श्री", "महा", "राज", "पुत्र",
+    "धर्म",
+    "कर्म",
+    "योग",
+    "वेद",
+    "मन्त्र",
+    "भगवान्",
+    "देव",
+    "देवी",
+    "गुरु",
+    "शिष्य",
+    "नमस्ते",
+    "श्री",
+    "महा",
+    "राज",
+    "पुत्र",
 ];
 
 fn benchmark_baseline_vs_optimized(c: &mut Criterion) {
@@ -28,7 +40,7 @@ fn benchmark_baseline_vs_optimized(c: &mut Criterion) {
     config.profile_dir = PathBuf::from("bench_profiles");
     config.optimization_dir = PathBuf::from("bench_optimizations");
     config.min_sequence_frequency = 2; // Low threshold for benchmark
-    
+
     let mut profiled_transliterator = Shlesha::new();
     profiled_transliterator.enable_profiling_with_config(config);
 
@@ -52,11 +64,11 @@ fn benchmark_baseline_vs_optimized(c: &mut Criterion) {
         &REPEATED_SANSKRIT_TEXT,
         |b, text| {
             b.iter(|| {
-                black_box(baseline_transliterator.transliterate(
-                    black_box(text),
-                    black_box("devanagari"),
-                    black_box("iast"),
-                ).unwrap())
+                black_box(
+                    baseline_transliterator
+                        .transliterate(black_box(text), black_box("devanagari"), black_box("iast"))
+                        .unwrap(),
+                )
             })
         },
     );
@@ -67,44 +79,36 @@ fn benchmark_baseline_vs_optimized(c: &mut Criterion) {
         &REPEATED_SANSKRIT_TEXT,
         |b, text| {
             b.iter(|| {
-                black_box(profiled_transliterator.transliterate(
-                    black_box(text),
-                    black_box("devanagari"),
-                    black_box("iast"),
-                ).unwrap())
+                black_box(
+                    profiled_transliterator
+                        .transliterate(black_box(text), black_box("devanagari"), black_box("iast"))
+                        .unwrap(),
+                )
             })
         },
     );
 
     // Benchmark individual common words
     for word in COMMON_WORDS.iter().take(5) {
-        group.bench_with_input(
-            BenchmarkId::new("baseline_word", word),
-            word,
-            |b, word| {
-                b.iter(|| {
-                    black_box(baseline_transliterator.transliterate(
-                        black_box(word),
-                        black_box("devanagari"),
-                        black_box("iast"),
-                    ).unwrap())
-                })
-            },
-        );
+        group.bench_with_input(BenchmarkId::new("baseline_word", word), word, |b, word| {
+            b.iter(|| {
+                black_box(
+                    baseline_transliterator
+                        .transliterate(black_box(word), black_box("devanagari"), black_box("iast"))
+                        .unwrap(),
+                )
+            })
+        });
 
-        group.bench_with_input(
-            BenchmarkId::new("optimized_word", word),
-            word,
-            |b, word| {
-                b.iter(|| {
-                    black_box(profiled_transliterator.transliterate(
-                        black_box(word),
-                        black_box("devanagari"),
-                        black_box("iast"),
-                    ).unwrap())
-                })
-            },
-        );
+        group.bench_with_input(BenchmarkId::new("optimized_word", word), word, |b, word| {
+            b.iter(|| {
+                black_box(
+                    profiled_transliterator
+                        .transliterate(black_box(word), black_box("devanagari"), black_box("iast"))
+                        .unwrap(),
+                )
+            })
+        });
     }
 
     group.finish();
@@ -119,21 +123,21 @@ fn benchmark_profiling_overhead(c: &mut Criterion) {
     // Benchmark the overhead of profiling itself
     group.bench_function("baseline_no_profiling", |b| {
         b.iter(|| {
-            black_box(baseline_transliterator.transliterate(
-                black_box("धर्म"),
-                black_box("devanagari"),
-                black_box("iast"),
-            ).unwrap())
+            black_box(
+                baseline_transliterator
+                    .transliterate(black_box("धर्म"), black_box("devanagari"), black_box("iast"))
+                    .unwrap(),
+            )
         })
     });
 
     group.bench_function("with_profiling", |b| {
         b.iter(|| {
-            black_box(profiled_transliterator.transliterate(
-                black_box("धर्म"),
-                black_box("devanagari"),
-                black_box("iast"),
-            ).unwrap())
+            black_box(
+                profiled_transliterator
+                    .transliterate(black_box("धर्म"), black_box("devanagari"), black_box("iast"))
+                    .unwrap(),
+            )
         })
     });
 
@@ -145,7 +149,7 @@ fn benchmark_optimization_generation(c: &mut Criterion) {
 
     // Create transliterator with substantial profile data
     let mut transliterator = Shlesha::with_profiling();
-    
+
     // Build up a realistic profile
     for i in 0..100 {
         for word in COMMON_WORDS {
@@ -157,9 +161,7 @@ fn benchmark_optimization_generation(c: &mut Criterion) {
     }
 
     group.bench_function("generate_optimizations", |b| {
-        b.iter(|| {
-            black_box(transliterator.generate_optimizations())
-        })
+        b.iter(|| black_box(transliterator.generate_optimizations()))
     });
 
     group.finish();

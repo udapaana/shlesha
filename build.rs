@@ -1,6 +1,6 @@
 use handlebars::Handlebars;
-use serde_json::json;
 use rustc_hash::FxHashMap;
+use serde_json::json;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -120,16 +120,18 @@ use crate::modules::hub::{HubFormat, HubTrait};
                 ));
 
                 // For Roman scripts targeting ISO-15919, also generate direct Roman → Devanagari converter
-                if schema.metadata.script_type == "roman" && schema.target.as_deref() == Some("iso15919") {
-                    let devanagari_converter_code = generate_roman_to_devanagari_converter(
-                        &handlebars, 
-                        &schema
-                    ).map_err(|e| {
-                        format!(
-                            "Failed to generate Roman→Devanagari converter for {}: {}",
-                            schema.metadata.name, e
-                        )
-                    })?;
+                if schema.metadata.script_type == "roman"
+                    && schema.target.as_deref() == Some("iso15919")
+                {
+                    let devanagari_converter_code =
+                        generate_roman_to_devanagari_converter(&handlebars, &schema).map_err(
+                            |e| {
+                                format!(
+                                    "Failed to generate Roman→Devanagari converter for {}: {}",
+                                    schema.metadata.name, e
+                                )
+                            },
+                        )?;
                     generated_code.push_str(&devanagari_converter_code);
 
                     converter_registrations.push(format!(
@@ -414,7 +416,7 @@ fn generate_roman_to_devanagari_converter(
 
     // Compose Roman → ISO-15919 → Devanagari mappings at COMPILE TIME
     let mut roman_to_deva_mappings = FxHashMap::default();
-    
+
     // Process all mapping categories from the schema
     let all_roman_mappings = [
         &schema.mappings.vowels,
@@ -432,7 +434,7 @@ fn generate_roman_to_devanagari_converter(
                 if let Some(deva_value) = iso_to_deva_mappings.get(iso_value) {
                     roman_to_deva_mappings.insert(roman_key.clone(), deva_value.clone());
                 }
-                
+
                 // For consonants, also try with 'a' suffix (for inherent vowel)
                 let iso_with_a = format!("{}a", iso_value);
                 if let Some(deva_value) = iso_to_deva_mappings.get(&iso_with_a) {
@@ -442,9 +444,13 @@ fn generate_roman_to_devanagari_converter(
             }
         }
     }
-    
+
     // Add vowel sign mappings by deriving them from hub data
-    add_vowel_sign_mappings(&mut roman_to_deva_mappings, &iso_to_deva_mappings, &schema.mappings.vowels);
+    add_vowel_sign_mappings(
+        &mut roman_to_deva_mappings,
+        &iso_to_deva_mappings,
+        &schema.mappings.vowels,
+    );
 
     // Sort by length (longest first) for proper matching
     let mut sorted_mappings: Vec<_> = roman_to_deva_mappings.iter().collect();
@@ -469,7 +475,7 @@ fn get_iso_to_devanagari_mappings() -> FxHashMap<String, String> {
     // Hardcode the hub mappings since we can't access the crate from build.rs
     // This is still better than before since we're deriving vowel signs dynamically
     let mut iso_to_deva_mappings = FxHashMap::default();
-    
+
     // Core vowels
     iso_to_deva_mappings.insert("a".to_string(), "अ".to_string());
     iso_to_deva_mappings.insert("ā".to_string(), "आ".to_string());
@@ -560,7 +566,7 @@ fn get_iso_to_devanagari_mappings() -> FxHashMap<String, String> {
     iso_to_deva_mappings.insert("॥".to_string(), "॥".to_string());
     iso_to_deva_mappings.insert("kṣa".to_string(), "क्ष".to_string());
     iso_to_deva_mappings.insert("jña".to_string(), "ज्ञ".to_string());
-    
+
     // Nukta consonants (for extended characters) - using precomposed forms
     iso_to_deva_mappings.insert("qa".to_string(), "\u{0958}".to_string()); // क़ precomposed
     iso_to_deva_mappings.insert("ḵẖa".to_string(), "\u{0959}".to_string()); // ख़ precomposed
@@ -576,15 +582,15 @@ fn get_iso_to_devanagari_mappings() -> FxHashMap<String, String> {
 
 fn add_vowel_sign_mappings(
     roman_to_deva_mappings: &mut FxHashMap<String, String>,
-    iso_to_deva_mappings: &FxHashMap<String, String>, 
-    vowel_mappings: &Option<FxHashMap<String, String>>
+    iso_to_deva_mappings: &FxHashMap<String, String>,
+    vowel_mappings: &Option<FxHashMap<String, String>>,
 ) {
     if let Some(vowels) = vowel_mappings {
         for (roman_vowel, iso_vowel) in vowels.iter() {
             // Get the vowel sign by testing with a sample consonant
             if let (Some(ka_vowel), Some(ka_base)) = (
                 iso_to_deva_mappings.get(&format!("k{}", iso_vowel)),
-                iso_to_deva_mappings.get("ka")
+                iso_to_deva_mappings.get("ka"),
             ) {
                 // Extract vowel sign by comparing ka + vowel vs ka
                 if ka_vowel != ka_base && ka_vowel.starts_with(ka_base) {
@@ -592,7 +598,7 @@ fn add_vowel_sign_mappings(
                     if !vowel_sign.is_empty() {
                         roman_to_deva_mappings.insert(
                             format!("__vowel_sign_{}", roman_vowel),
-                            vowel_sign.to_string()
+                            vowel_sign.to_string(),
                         );
                     }
                 }

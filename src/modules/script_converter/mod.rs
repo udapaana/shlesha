@@ -512,12 +512,12 @@ mod send_sync_tests {
         fn assert_send<T: Send>() {}
         fn assert_sync<T: Sync>() {}
         fn assert_send_sync<T: Send + Sync>() {}
-        
+
         // Test Box<dyn ScriptConverter>
         assert_send::<Box<dyn ScriptConverter>>();
         assert_sync::<Box<dyn ScriptConverter>>();
         assert_send_sync::<Box<dyn ScriptConverter>>();
-        
+
         // Test Arc<dyn ScriptConverter>
         assert_send::<Arc<dyn ScriptConverter>>();
         assert_sync::<Arc<dyn ScriptConverter>>();
@@ -528,14 +528,14 @@ mod send_sync_tests {
     fn test_script_converter_thread_safety() {
         // Test that we can actually use ScriptConverter in threads
         let converter: Arc<dyn ScriptConverter> = Arc::new(ISO15919Converter::new());
-        
+
         // Clone for thread
         let converter_clone = Arc::clone(&converter);
         let handle = thread::spawn(move || {
             let scripts = converter_clone.supported_scripts();
             assert!(scripts.contains(&"iso15919"));
         });
-        
+
         handle.join().unwrap();
     }
 
@@ -545,11 +545,11 @@ mod send_sync_tests {
         fn assert_send<T: Send>() {}
         fn assert_sync<T: Sync>() {}
         fn assert_send_sync<T: Send + Sync>() {}
-        
+
         assert_send::<ScriptConverterRegistry>();
         assert_sync::<ScriptConverterRegistry>();
         assert_send_sync::<ScriptConverterRegistry>();
-        
+
         // Test Arc<ScriptConverterRegistry>
         assert_send::<Arc<ScriptConverterRegistry>>();
         assert_sync::<Arc<ScriptConverterRegistry>>();
@@ -560,13 +560,13 @@ mod send_sync_tests {
     fn test_registry_thread_safety() {
         // Test that we can actually use ScriptConverterRegistry in threads
         let registry = Arc::new(ScriptConverterRegistry::new());
-        
+
         let registry_clone = Arc::clone(&registry);
         let handle = thread::spawn(move || {
             let scripts = registry_clone.list_supported_scripts();
             assert!(scripts.contains(&"devanagari"));
         });
-        
+
         handle.join().unwrap();
     }
 }

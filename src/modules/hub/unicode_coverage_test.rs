@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod unicode_coverage_test {
-    
+
     use crate::modules::hub::Hub;
 
     #[test]

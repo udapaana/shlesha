@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod extended_coverage_tests {
-    
+
     use crate::modules::hub::{Hub, HubOutput, HubTrait};
 
     /// Test all extended vowels including vocalic L and long vocalic vowels

@@ -6,9 +6,9 @@
 //! - Script discovery and validation
 //! - Runtime schema loading
 
+use once_cell::sync::Lazy;
 use pyo3::prelude::*;
 use std::collections::HashMap;
-use once_cell::sync::Lazy;
 
 use crate::Shlesha;
 

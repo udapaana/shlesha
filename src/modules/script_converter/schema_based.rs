@@ -68,12 +68,12 @@ impl SchemaBasedConverter {
                 let mut next_ch_buf = [0u8; 4];
                 let ch_str = ch.encode_utf8(&mut ch_buf);
                 let next_ch_str = next_ch.encode_utf8(&mut next_ch_buf);
-                
+
                 // Create a small string with pre-allocated capacity for the two-character key
                 let mut two_char_key = String::with_capacity(8);
                 two_char_key.push_str(ch_str);
                 two_char_key.push_str(next_ch_str);
-                
+
                 if let Some(mapped) = mapping_to_use.get(&two_char_key) {
                     result.push_str(mapped);
                     chars.next(); // Consume the second character
@@ -87,7 +87,7 @@ impl SchemaBasedConverter {
                 // Use a small buffer to avoid String allocation for single chars
                 let mut ch_buf = [0u8; 4]; // Max UTF-8 char is 4 bytes
                 let ch_str = ch.encode_utf8(&mut ch_buf);
-                
+
                 if let Some(mapped) = mapping_to_use.get(ch_str) {
                     result.push_str(mapped);
                 } else {

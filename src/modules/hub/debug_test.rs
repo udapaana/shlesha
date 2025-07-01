@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod debug_test {
-    
+
     use crate::modules::hub::Hub;
 
     #[test]

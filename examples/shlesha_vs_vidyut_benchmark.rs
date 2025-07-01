@@ -29,9 +29,21 @@ fn main() {
     // Test data sets
     let test_cases = vec![
         ("Short Text", "dharma", 1),
-        ("Medium Text", "dharmakSetrekuruSetrasamavetAyuyutsavaHmAmakAHpANDavAzcaivakimakurvatasaMjaya", 1),
-        ("Long Text", "dharmakSetrekuruSetrasamavetAyuyutsavaHmAmakAHpANDavAzcaivakimakurvatasaMjaya", 100),
-        ("Very Long Text", "dharmakSetrekuruSetrasamavetAyuyutsavaHmAmakAHpANDavAzcaivakimakurvatasaMjaya", 1000),
+        (
+            "Medium Text",
+            "dharmakSetrekuruSetrasamavetAyuyutsavaHmAmakAHpANDavAzcaivakimakurvatasaMjaya",
+            1,
+        ),
+        (
+            "Long Text",
+            "dharmakSetrekuruSetrasamavetAyuyutsavaHmAmakAHpANDavAzcaivakimakurvatasaMjaya",
+            100,
+        ),
+        (
+            "Very Long Text",
+            "dharmakSetrekuruSetrasamavetAyuyutsavaHmAmakAHpANDavAzcaivakimakurvatasaMjaya",
+            1000,
+        ),
     ];
 
     let mut all_results = Vec::new();
@@ -42,28 +54,92 @@ fn main() {
 
         // Test Indic → Roman (cross-hub) conversions
         println!("\n📖 Indic → Roman (Cross-Hub: 3 steps):");
-        
+
         // Bengali text
         let bengali_text = "ধর্মক্ষেত্রে কুরুক্ষেত্রে সমবেতা যুযুৎসবঃ মামকাঃ পাণ্ডবাশ্চৈব".repeat(repeat_count);
-        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &bengali_text, "bengali", "iast", Scheme::Bengali, Scheme::Iast));
-        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &bengali_text, "bengali", "slp1", Scheme::Bengali, Scheme::Slp1));
-        
+        all_results.push(benchmark_conversion(
+            &shlesha,
+            &mut vidyut,
+            &bengali_text,
+            "bengali",
+            "iast",
+            Scheme::Bengali,
+            Scheme::Iast,
+        ));
+        all_results.push(benchmark_conversion(
+            &shlesha,
+            &mut vidyut,
+            &bengali_text,
+            "bengali",
+            "slp1",
+            Scheme::Bengali,
+            Scheme::Slp1,
+        ));
+
         // Telugu text
         let telugu_text = "ధర్మక్షేత్రే కురుక్షేత్రే సమవేతా యుయుత్సవః మామకాః పాండవాశ్చైవ".repeat(repeat_count);
-        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &telugu_text, "telugu", "itrans", Scheme::Telugu, Scheme::Itrans));
-        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &telugu_text, "telugu", "iast", Scheme::Telugu, Scheme::Iast));
+        all_results.push(benchmark_conversion(
+            &shlesha,
+            &mut vidyut,
+            &telugu_text,
+            "telugu",
+            "itrans",
+            Scheme::Telugu,
+            Scheme::Itrans,
+        ));
+        all_results.push(benchmark_conversion(
+            &shlesha,
+            &mut vidyut,
+            &telugu_text,
+            "telugu",
+            "iast",
+            Scheme::Telugu,
+            Scheme::Iast,
+        ));
 
         // Test Roman → Indic (cross-hub) conversions
         println!("\n📖 Roman → Indic (Cross-Hub: 3 steps):");
-        
+
         // Roman text samples
         let slp1_text = base_text.repeat(repeat_count);
-        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &slp1_text, "slp1", "bengali", Scheme::Slp1, Scheme::Bengali));
-        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &slp1_text, "slp1", "telugu", Scheme::Slp1, Scheme::Telugu));
-        
+        all_results.push(benchmark_conversion(
+            &shlesha,
+            &mut vidyut,
+            &slp1_text,
+            "slp1",
+            "bengali",
+            Scheme::Slp1,
+            Scheme::Bengali,
+        ));
+        all_results.push(benchmark_conversion(
+            &shlesha,
+            &mut vidyut,
+            &slp1_text,
+            "slp1",
+            "telugu",
+            Scheme::Slp1,
+            Scheme::Telugu,
+        ));
+
         let iast_text = "dharmakṣetre kurukṣetre samavetā yuyutsavaḥ".repeat(repeat_count);
-        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &iast_text, "iast", "bengali", Scheme::Iast, Scheme::Bengali));
-        all_results.push(benchmark_conversion(&shlesha, &mut vidyut, &iast_text, "iast", "telugu", Scheme::Iast, Scheme::Telugu));
+        all_results.push(benchmark_conversion(
+            &shlesha,
+            &mut vidyut,
+            &iast_text,
+            "iast",
+            "bengali",
+            Scheme::Iast,
+            Scheme::Bengali,
+        ));
+        all_results.push(benchmark_conversion(
+            &shlesha,
+            &mut vidyut,
+            &iast_text,
+            "iast",
+            "telugu",
+            Scheme::Iast,
+            Scheme::Telugu,
+        ));
 
         println!("\n{}", "─".repeat(60));
     }
@@ -71,29 +147,43 @@ fn main() {
     // Performance summary
     println!("\n📊 PERFORMANCE SUMMARY");
     println!("=====================");
-    
+
     // Calculate averages
-    let indic_to_roman: Vec<_> = all_results.iter()
+    let indic_to_roman: Vec<_> = all_results
+        .iter()
         .filter(|r| is_indic(&r.from) && is_roman(&r.to))
         .collect();
-    let roman_to_indic: Vec<_> = all_results.iter()
+    let roman_to_indic: Vec<_> = all_results
+        .iter()
         .filter(|r| is_roman(&r.from) && is_indic(&r.to))
         .collect();
 
     println!("\nAverage Performance (Cross-Hub Only):");
-    
+
     if !indic_to_roman.is_empty() {
-        let avg_ratio: f64 = indic_to_roman.iter().map(|r| r.speed_ratio).sum::<f64>() / indic_to_roman.len() as f64;
-        println!("Indic → Roman: Shlesha is {:.1}x {} than Vidyut", 
-            if avg_ratio > 1.0 { avg_ratio } else { 1.0 / avg_ratio },
+        let avg_ratio: f64 =
+            indic_to_roman.iter().map(|r| r.speed_ratio).sum::<f64>() / indic_to_roman.len() as f64;
+        println!(
+            "Indic → Roman: Shlesha is {:.1}x {} than Vidyut",
+            if avg_ratio > 1.0 {
+                avg_ratio
+            } else {
+                1.0 / avg_ratio
+            },
             if avg_ratio > 1.0 { "faster" } else { "slower" }
         );
     }
-    
+
     if !roman_to_indic.is_empty() {
-        let avg_ratio: f64 = roman_to_indic.iter().map(|r| r.speed_ratio).sum::<f64>() / roman_to_indic.len() as f64;
-        println!("Roman → Indic: Shlesha is {:.1}x {} than Vidyut", 
-            if avg_ratio > 1.0 { avg_ratio } else { 1.0 / avg_ratio },
+        let avg_ratio: f64 =
+            roman_to_indic.iter().map(|r| r.speed_ratio).sum::<f64>() / roman_to_indic.len() as f64;
+        println!(
+            "Roman → Indic: Shlesha is {:.1}x {} than Vidyut",
+            if avg_ratio > 1.0 {
+                avg_ratio
+            } else {
+                1.0 / avg_ratio
+            },
             if avg_ratio > 1.0 { "faster" } else { "slower" }
         );
     }
@@ -104,7 +194,7 @@ fn main() {
     println!("2. They must traverse the Devanagari ↔ ISO-15919 bridge");
     println!("3. They represent the worst-case scenario for hub architectures");
     println!("4. Optimizing these paths benefits all cross-script conversions");
-    
+
     println!("\n📈 Optimization Opportunities:");
     println!("The Devanagari ↔ ISO-15919 mapping is the bottleneck.");
     println!("Future optimizations should focus on this critical path.");
@@ -163,7 +253,8 @@ fn benchmark_conversion(
         let _ = vidyut.transliterate(text, vidyut_from, vidyut_to);
     }
     let vidyut_duration = start.elapsed();
-    let vidyut_throughput = (text.len() as f64 * iterations as f64) / vidyut_duration.as_secs_f64() / 1_000_000.0;
+    let vidyut_throughput =
+        (text.len() as f64 * iterations as f64) / vidyut_duration.as_secs_f64() / 1_000_000.0;
 
     // Calculate relative performance
     let speed_ratio = if success {
@@ -175,8 +266,16 @@ fn benchmark_conversion(
     if success {
         println!(
             "Shlesha {:.2}x {} ({:.2} MB/s vs {:.2} MB/s)",
-            if speed_ratio > 1.0 { speed_ratio } else { 1.0 / speed_ratio },
-            if speed_ratio > 1.0 { "faster" } else { "slower" },
+            if speed_ratio > 1.0 {
+                speed_ratio
+            } else {
+                1.0 / speed_ratio
+            },
+            if speed_ratio > 1.0 {
+                "faster"
+            } else {
+                "slower"
+            },
             shlesha_throughput,
             vidyut_throughput
         );
@@ -192,9 +291,23 @@ fn benchmark_conversion(
 }
 
 fn is_roman(script: &str) -> bool {
-    matches!(script, "slp1" | "iast" | "itrans" | "hk" | "velthuis" | "wx" | "iso15919")
+    matches!(
+        script,
+        "slp1" | "iast" | "itrans" | "hk" | "velthuis" | "wx" | "iso15919"
+    )
 }
 
 fn is_indic(script: &str) -> bool {
-    matches!(script, "devanagari" | "bengali" | "telugu" | "tamil" | "kannada" | "malayalam" | "gujarati" | "gurmukhi" | "odia")
+    matches!(
+        script,
+        "devanagari"
+            | "bengali"
+            | "telugu"
+            | "tamil"
+            | "kannada"
+            | "malayalam"
+            | "gujarati"
+            | "gurmukhi"
+            | "odia"
+    )
 }

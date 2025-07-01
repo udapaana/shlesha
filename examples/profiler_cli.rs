@@ -6,7 +6,10 @@
 //! - Benchmark optimization effectiveness
 //! - Manage profile data
 
-use shlesha::{Shlesha, modules::profiler::{ProfilerConfig, OptimizationGenerator}};
+use shlesha::{
+    modules::profiler::{OptimizationGenerator, ProfilerConfig},
+    Shlesha,
+};
 use std::fs;
 use std::path::PathBuf;
 use std::time::Instant;
@@ -35,7 +38,7 @@ enum Command {
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
-    
+
     if args.len() < 2 {
         print_help();
         return;
@@ -63,7 +66,10 @@ fn parse_args(args: &[String]) -> Result<Command, String> {
     match args[1].as_str() {
         "profile" => {
             if args.len() < 5 {
-                return Err("Profile command requires: input_file from_script to_script [output_dir]".to_string());
+                return Err(
+                    "Profile command requires: input_file from_script to_script [output_dir]"
+                        .to_string(),
+                );
             }
             Ok(Command::Profile {
                 input_file: args[2].clone(),
@@ -105,13 +111,24 @@ fn parse_args(args: &[String]) -> Result<Command, String> {
 
 fn execute_command(command: Command) -> Result<(), Box<dyn std::error::Error>> {
     match command {
-        Command::Profile { input_file, from_script, to_script, output_dir } => {
+        Command::Profile {
+            input_file,
+            from_script,
+            to_script,
+            output_dir,
+        } => {
             profile_file(input_file, from_script, to_script, output_dir)?;
         }
-        Command::GenerateOptimizations { profile_dir, output_dir } => {
+        Command::GenerateOptimizations {
+            profile_dir,
+            output_dir,
+        } => {
             generate_optimizations(profile_dir, output_dir)?;
         }
-        Command::Benchmark { optimization_file, test_file } => {
+        Command::Benchmark {
+            optimization_file,
+            test_file,
+        } => {
             benchmark_optimization(optimization_file, test_file)?;
         }
         Command::Stats { profile_dir } => {
@@ -134,13 +151,13 @@ fn profile_file(
     println!("Conversion: {} -> {}", from_script, to_script);
 
     let text = fs::read_to_string(&input_file)?;
-    
+
     // Configure profiler
     let mut config = ProfilerConfig::default();
     if let Some(dir) = output_dir {
         config.profile_dir = PathBuf::from(dir);
     }
-    
+
     // Create transliterator with profiling
     let mut transliterator = Shlesha::new();
     transliterator.enable_profiling_with_config(config);
@@ -156,16 +173,21 @@ fn profile_file(
 
     // Save profiles
     transliterator.save_profiles();
-    
+
     // Show profile statistics
     if let Some(stats) = transliterator.get_profile_stats() {
         for ((from, to), profile_stats) in stats {
             println!("\nProfile for {} -> {}:", from, to);
-            println!("  Total sequences profiled: {}", profile_stats.total_sequences_profiled);
+            println!(
+                "  Total sequences profiled: {}",
+                profile_stats.total_sequences_profiled
+            );
             println!("  Unique sequences: {}", profile_stats.unique_sequences);
             println!("  Top 10 sequences:");
             for (i, (seq, count)) in profile_stats.top_sequences.iter().enumerate() {
-                if i >= 10 { break; }
+                if i >= 10 {
+                    break;
+                }
                 println!("    {}: {} ({}x)", i + 1, seq, count);
             }
         }
@@ -180,44 +202,54 @@ fn generate_optimizations(
     output_dir: String,
 ) -> Result<(), Box<dyn std::error::Error>> {
     println!("Generating optimizations from profiles in: {}", profile_dir);
-    
+
     // Create transliterator and load profiles
     let mut config = ProfilerConfig::default();
     config.profile_dir = PathBuf::from(&profile_dir);
     config.optimization_dir = PathBuf::from(&output_dir);
-    
+
     let mut transliterator = Shlesha::new();
     transliterator.enable_profiling_with_config(config);
-    
+
     // Generate optimizations
     let optimizations = transliterator.generate_optimizations();
-    
+
     if optimizations.is_empty() {
-        println!("No optimizations generated. Check that profile directory contains valid profiles.");
+        println!(
+            "No optimizations generated. Check that profile directory contains valid profiles."
+        );
         return Ok(());
     }
 
     // Use the optimization generator to create actual mappings
     let _generator = OptimizationGenerator::new();
-    
+
     let mut generated_count = 0;
     for optimization in &optimizations {
-        println!("Generated optimization for {} -> {}", 
-                 optimization.from_script, optimization.to_script);
+        println!(
+            "Generated optimization for {} -> {}",
+            optimization.from_script, optimization.to_script
+        );
         println!("  Sequences: {}", optimization.sequence_mappings.len());
         println!("  Words: {}", optimization.word_mappings.len());
         println!("  Total entries: {}", optimization.metadata.sequence_count);
-        
+
         // Save the optimization
-        let filename = format!("{}_{}_opt.json", optimization.from_script, optimization.to_script);
+        let filename = format!(
+            "{}_{}_opt.json",
+            optimization.from_script, optimization.to_script
+        );
         let output_path = PathBuf::from(&output_dir).join(filename);
         let json = serde_json::to_string_pretty(optimization)?;
         fs::write(&output_path, json)?;
-        
+
         generated_count += 1;
     }
 
-    println!("\nGenerated {} optimization files in: {}", generated_count, output_dir);
+    println!(
+        "\nGenerated {} optimization files in: {}",
+        generated_count, output_dir
+    );
     Ok(())
 }
 
@@ -230,7 +262,7 @@ fn benchmark_optimization(
 
     // Load optimization
     let opt_content = fs::read_to_string(&optimization_file)?;
-    let optimization: shlesha::modules::profiler::OptimizedLookupTable = 
+    let optimization: shlesha::modules::profiler::OptimizedLookupTable =
         serde_json::from_str(&opt_content)?;
 
     // Load test text
@@ -244,16 +276,25 @@ fn benchmark_optimization(
     println!("  Baseline time: {} ns", benchmark.baseline_time_ns);
     println!("  Optimized time: {} ns", benchmark.optimized_time_ns);
     println!("  Speedup factor: {:.2}x", benchmark.speedup_factor);
-    println!("  Cache hits: {}/{} sequences", benchmark.cache_hits, benchmark.total_sequences);
-    println!("  Cache hit rate: {:.1}%", 
-             (benchmark.cache_hits as f64 / benchmark.total_sequences as f64) * 100.0);
+    println!(
+        "  Cache hits: {}/{} sequences",
+        benchmark.cache_hits, benchmark.total_sequences
+    );
+    println!(
+        "  Cache hit rate: {:.1}%",
+        (benchmark.cache_hits as f64 / benchmark.total_sequences as f64) * 100.0
+    );
 
     if benchmark.speedup_factor > 1.0 {
-        println!("  ✓ Optimization provides {:.1}% speedup", 
-                 (benchmark.speedup_factor - 1.0) * 100.0);
+        println!(
+            "  ✓ Optimization provides {:.1}% speedup",
+            (benchmark.speedup_factor - 1.0) * 100.0
+        );
     } else if benchmark.speedup_factor < 1.0 {
-        println!("  ⚠ Optimization is {:.1}% slower", 
-                 (1.0 - benchmark.speedup_factor) * 100.0);
+        println!(
+            "  ⚠ Optimization is {:.1}% slower",
+            (1.0 - benchmark.speedup_factor) * 100.0
+        );
     } else {
         println!("  → No significant performance difference");
     }
@@ -278,15 +319,20 @@ fn show_stats(profile_dir: String) -> Result<(), Box<dyn std::error::Error>> {
     for entry in fs::read_dir(&profile_path)? {
         let entry = entry?;
         let path = entry.path();
-        
+
         if path.extension().and_then(|s| s.to_str()) == Some("json") {
             if let Ok(content) = fs::read_to_string(&path) {
-                if let Ok(profile) = serde_json::from_str::<shlesha::modules::profiler::ConversionProfile>(&content) {
+                if let Ok(profile) =
+                    serde_json::from_str::<shlesha::modules::profiler::ConversionProfile>(&content)
+                {
                     total_profiles += 1;
                     total_sequences += profile.sequences.len();
                     total_conversions += profile.total_conversions;
 
-                    println!("\nProfile: {} -> {}", profile.from_script, profile.to_script);
+                    println!(
+                        "\nProfile: {} -> {}",
+                        profile.from_script, profile.to_script
+                    );
                     println!("  Conversions: {}", profile.total_conversions);
                     println!("  Unique sequences: {}", profile.sequences.len());
                     println!("  Created: {:?}", profile.created_at);
@@ -295,11 +341,16 @@ fn show_stats(profile_dir: String) -> Result<(), Box<dyn std::error::Error>> {
                     // Show top sequences
                     let mut sequences: Vec<_> = profile.sequences.iter().collect();
                     sequences.sort_by_key(|(_, stats)| std::cmp::Reverse(stats.count));
-                    
+
                     println!("  Top sequences:");
                     for (i, (seq, stats)) in sequences.iter().take(5).enumerate() {
-                        println!("    {}: '{}' ({}x, avg: {:.0}ns)", 
-                                 i + 1, seq, stats.count, stats.avg_processing_ns);
+                        println!(
+                            "    {}: '{}' ({}x, avg: {:.0}ns)",
+                            i + 1,
+                            seq,
+                            stats.count,
+                            stats.avg_processing_ns
+                        );
                     }
                 }
             }
@@ -312,10 +363,14 @@ fn show_stats(profile_dir: String) -> Result<(), Box<dyn std::error::Error>> {
     println!("Total conversions recorded: {}", total_conversions);
 
     if total_profiles > 0 {
-        println!("Average sequences per profile: {:.1}", 
-                 total_sequences as f64 / total_profiles as f64);
-        println!("Average conversions per profile: {:.1}", 
-                 total_conversions as f64 / total_profiles as f64);
+        println!(
+            "Average sequences per profile: {:.1}",
+            total_sequences as f64 / total_profiles as f64
+        );
+        println!(
+            "Average conversions per profile: {:.1}",
+            total_conversions as f64 / total_profiles as f64
+        );
     }
 
     Ok(())

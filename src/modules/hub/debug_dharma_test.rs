@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod debug_dharma_test {
-    
+
     use crate::modules::hub::{Hub, HubOutput, HubTrait};
 
     #[test]

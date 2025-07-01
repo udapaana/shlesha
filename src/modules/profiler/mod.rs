@@ -6,11 +6,11 @@
 //! - Supports hot-reloading of optimizations without recompilation
 //! - Focuses on frequently used Sanskrit/Hindi words and phrases
 
-pub mod optimizer;
 pub mod hot_reload;
+pub mod optimizer;
 
 pub use hot_reload::{HotReloadManager, OptimizationCache};
-pub use optimizer::{OptimizationGenerator, OptimizationBenchmark};
+pub use optimizer::{OptimizationBenchmark, OptimizationGenerator};
 
 use rustc_hash::FxHashMap;
 use serde::{Deserialize, Serialize};
@@ -168,41 +168,42 @@ impl Profiler {
 
         let key = (from_script.to_string(), to_script.to_string());
         let mut profiles = self.profiles.write().unwrap();
-        
-        let profile = profiles.entry(key.clone()).or_insert_with(|| {
-            ConversionProfile {
+
+        let profile = profiles
+            .entry(key.clone())
+            .or_insert_with(|| ConversionProfile {
                 from_script: from_script.to_string(),
                 to_script: to_script.to_string(),
                 sequences: FxHashMap::default(),
                 total_conversions: 0,
                 created_at: SystemTime::now(),
                 updated_at: SystemTime::now(),
-            }
-        });
+            });
 
         profile.total_conversions += 1;
         profile.updated_at = SystemTime::now();
 
-        let stats = profile.sequences.entry(sequence.to_string()).or_insert_with(|| {
-            SequenceStats {
+        let stats = profile
+            .sequences
+            .entry(sequence.to_string())
+            .or_insert_with(|| SequenceStats {
                 sequence: sequence.to_string(),
                 count: 0,
                 last_used: SystemTime::now(),
                 avg_processing_ns: 0.0,
-            }
-        });
+            });
 
         stats.count += 1;
         stats.last_used = SystemTime::now();
-        
+
         // Update average processing time
         let new_time_ns = processing_time.as_nanos() as f64;
         if stats.count == 1 {
             stats.avg_processing_ns = new_time_ns;
         } else {
             // Weighted average
-            stats.avg_processing_ns = 
-                (stats.avg_processing_ns * (stats.count - 1) as f64 + new_time_ns) 
+            stats.avg_processing_ns = (stats.avg_processing_ns * (stats.count - 1) as f64
+                + new_time_ns)
                 / stats.count as f64;
         }
 
@@ -236,7 +237,7 @@ impl Profiler {
     fn extract_sequences(&self, text: &str) -> Vec<String> {
         let mut sequences = Vec::new();
         let chars: Vec<char> = text.chars().collect();
-        
+
         // Extract individual characters
         for ch in &chars {
             if !ch.is_whitespace() && !ch.is_ascii_punctuation() {
@@ -260,7 +261,8 @@ impl Profiler {
 
         // Extract words (space-separated)
         for word in text.split_whitespace() {
-            if word.len() > 1 && word.len() <= 20 { // Reasonable word length
+            if word.len() > 1 && word.len() <= 20 {
+                // Reasonable word length
                 sequences.push(word.to_string());
             }
         }
@@ -275,11 +277,13 @@ impl Profiler {
 
         for ((from_script, to_script), profile) in profiles.iter() {
             // Get top sequences by frequency
-            let mut sequences: Vec<_> = profile.sequences.iter()
+            let mut sequences: Vec<_> = profile
+                .sequences
+                .iter()
                 .filter(|(_, stats)| stats.count >= self.config.min_sequence_frequency)
                 .map(|(seq, stats)| (seq.clone(), stats.count))
                 .collect();
-            
+
             sequences.sort_by_key(|(_, count)| std::cmp::Reverse(*count));
             sequences.truncate(self.config.max_sequences_per_table);
 
@@ -318,7 +322,9 @@ impl Profiler {
         to_script: &str,
     ) -> Option<OptimizedLookupTable> {
         let optimizations = self.optimizations.read().unwrap();
-        optimizations.get(&(from_script.to_string(), to_script.to_string())).cloned()
+        optimizations
+            .get(&(from_script.to_string(), to_script.to_string()))
+            .cloned()
     }
 
     /// Load optimization table (for hot-reloading)
@@ -335,11 +341,11 @@ impl Profiler {
     /// Save current profiles to disk
     pub fn save_profiles(&self) {
         let profiles = self.profiles.read().unwrap();
-        
+
         for ((from_script, to_script), profile) in profiles.iter() {
             let filename = format!("{}_{}_profile.json", from_script, to_script);
             let path = self.config.profile_dir.join(filename);
-            
+
             if let Ok(json) = serde_json::to_string_pretty(profile) {
                 let _ = fs::write(path, json);
             }
@@ -355,7 +361,7 @@ impl Profiler {
         }
 
         let mut profiles = self.profiles.write().unwrap();
-        
+
         if let Ok(entries) = fs::read_dir(&self.config.profile_dir) {
             for entry in entries.flatten() {
                 let path = entry.path();
@@ -374,9 +380,12 @@ impl Profiler {
     /// Save optimizations to disk
     pub fn save_optimizations(&self, optimizations: &[OptimizedLookupTable]) {
         for optimization in optimizations {
-            let filename = format!("{}_{}_opt.json", optimization.from_script, optimization.to_script);
+            let filename = format!(
+                "{}_{}_opt.json",
+                optimization.from_script, optimization.to_script
+            );
             let path = self.config.optimization_dir.join(filename);
-            
+
             if let Ok(json) = serde_json::to_string_pretty(optimization) {
                 let _ = fs::write(path, json);
             }
@@ -390,7 +399,7 @@ impl Profiler {
         }
 
         let mut optimizations = self.optimizations.write().unwrap();
-        
+
         if let Ok(entries) = fs::read_dir(&self.config.optimization_dir) {
             for entry in entries.flatten() {
                 let path = entry.path();
@@ -420,18 +429,23 @@ impl Profiler {
         let mut stats = FxHashMap::default();
 
         for (key, profile) in profiles.iter() {
-            let mut top_sequences: Vec<_> = profile.sequences.iter()
+            let mut top_sequences: Vec<_> = profile
+                .sequences
+                .iter()
                 .map(|(seq, stats)| (seq.clone(), stats.count))
                 .collect();
-            
+
             top_sequences.sort_by_key(|(_, count)| std::cmp::Reverse(*count));
             top_sequences.truncate(10);
 
-            stats.insert(key.clone(), ProfileStats {
-                total_sequences_profiled: profile.total_conversions,
-                unique_sequences: profile.sequences.len(),
-                top_sequences,
-            });
+            stats.insert(
+                key.clone(),
+                ProfileStats {
+                    total_sequences_profiled: profile.total_conversions,
+                    unique_sequences: profile.sequences.len(),
+                    top_sequences,
+                },
+            );
         }
 
         stats
@@ -452,7 +466,7 @@ impl Profiler {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     use std::time::Duration;
 
     #[test]
@@ -464,14 +478,14 @@ mod tests {
     #[test]
     fn test_sequence_recording() {
         let profiler = Profiler::new();
-        
+
         profiler.record_sequence("devanagari", "iso15919", "धर्म", Duration::from_nanos(1000));
         profiler.record_sequence("devanagari", "iso15919", "धर्म", Duration::from_nanos(1200));
         profiler.record_sequence("devanagari", "iso15919", "योग", Duration::from_nanos(800));
-        
+
         let profiles = profiler.profiles.read().unwrap();
         let key = ("devanagari".to_string(), "iso15919".to_string());
-        
+
         assert!(profiles.contains_key(&key));
         let profile = &profiles[&key];
         assert_eq!(profile.sequences.len(), 2);
@@ -483,7 +497,7 @@ mod tests {
     fn test_sequence_extraction() {
         let profiler = Profiler::new();
         let sequences = profiler.extract_sequences("धर्म योग");
-        
+
         // Should extract individual chars, bigrams, trigrams, and words
         assert!(sequences.contains(&"ध".to_string()));
         assert!(sequences.contains(&"धर".to_string()));
@@ -496,7 +510,7 @@ mod tests {
         let mut config = ProfilerConfig::default();
         config.min_sequence_frequency = 1; // Lower threshold for testing
         let profiler = Profiler::with_config(config);
-        
+
         // Record some sequences
         for _ in 0..5 {
             profiler.record_sequence("devanagari", "iso15919", "धर्म", Duration::from_nanos(1000));
@@ -504,10 +518,10 @@ mod tests {
         for _ in 0..3 {
             profiler.record_sequence("devanagari", "iso15919", "योग", Duration::from_nanos(800));
         }
-        
+
         let optimizations = profiler.generate_optimizations();
         assert_eq!(optimizations.len(), 1);
-        
+
         let opt = &optimizations[0];
         assert_eq!(opt.from_script, "devanagari");
         assert_eq!(opt.to_script, "iso15919");

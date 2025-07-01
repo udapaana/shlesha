@@ -35,14 +35,13 @@ pub mod modules;
 #[cfg(feature = "python")]
 pub mod python_bindings;
 
-
 #[cfg(feature = "wasm")]
 pub mod wasm_bindings;
 
 use modules::hub::{Hub, HubInput, HubOutput, HubTrait};
+use modules::profiler::{OptimizationCache, Profiler, ProfilerConfig};
 use modules::registry::{SchemaRegistry, SchemaRegistryTrait};
 use modules::script_converter::ScriptConverterRegistry;
-use modules::profiler::{Profiler, ProfilerConfig, OptimizationCache};
 
 // Re-export unknown handler types for public API
 pub use modules::core::unknown_handler::{
@@ -103,12 +102,11 @@ impl Shlesha {
         let start_time = Instant::now();
 
         // Try optimized conversion first if available
-        let result = self.optimization_cache.apply_optimization(
-            text,
-            from,
-            to,
-            |text| self.transliterate_internal(text, from, to),
-        );
+        let result = self
+            .optimization_cache
+            .apply_optimization(text, from, to, |text| {
+                self.transliterate_internal(text, from, to)
+            });
 
         // Record profiling data if enabled
         if let Some(ref profiler) = self.profiler {
@@ -130,8 +128,7 @@ impl Shlesha {
         if self.is_roman_script(from) && self.is_indic_script(to) {
             // Try using the optimized Roman → Devanagari → Indic path
             let roman_deva_script = format!("{}_devanagari", from);
-            
-            
+
             if let Ok(deva_result) = self.script_converter_registry.to_hub_with_schema_registry(
                 &roman_deva_script,
                 text,
@@ -140,11 +137,10 @@ impl Shlesha {
                 if let HubInput::Devanagari(deva_text) = deva_result {
                     // Now convert Devanagari → target Indic script
                     let deva_hub_input = HubInput::Devanagari(deva_text);
-                    if let Ok(result) = self.script_converter_registry.from_hub_with_schema_registry(
-                        to,
-                        &deva_hub_input,
-                        Some(&self.registry),
-                    ) {
+                    if let Ok(result) = self
+                        .script_converter_registry
+                        .from_hub_with_schema_registry(to, &deva_hub_input, Some(&self.registry))
+                    {
                         return Ok(result);
                     }
                 }
@@ -225,7 +221,15 @@ impl Shlesha {
     fn is_roman_script(&self, script: &str) -> bool {
         matches!(
             script.to_lowercase().as_str(),
-            "slp1" | "iast" | "itrans" | "harvard_kyoto" | "hk" | "velthuis" | "wx" | "iso15919" | "iso"
+            "slp1"
+                | "iast"
+                | "itrans"
+                | "harvard_kyoto"
+                | "hk"
+                | "velthuis"
+                | "wx"
+                | "iso15919"
+                | "iso"
         )
     }
 
@@ -233,8 +237,18 @@ impl Shlesha {
     fn is_indic_script(&self, script: &str) -> bool {
         matches!(
             script.to_lowercase().as_str(),
-            "devanagari" | "deva" | "bengali" | "telugu" | "tamil" | "kannada" | "malayalam" | 
-            "gujarati" | "gurmukhi" | "odia" | "sinhala" | "grantha"
+            "devanagari"
+                | "deva"
+                | "bengali"
+                | "telugu"
+                | "tamil"
+                | "kannada"
+                | "malayalam"
+                | "gujarati"
+                | "gurmukhi"
+                | "odia"
+                | "sinhala"
+                | "grantha"
         )
     }
 
@@ -439,13 +453,18 @@ impl Shlesha {
     }
 
     /// Get profiling statistics
-    pub fn get_profile_stats(&self) -> Option<rustc_hash::FxHashMap<(String, String), modules::profiler::ProfileStats>> {
+    pub fn get_profile_stats(
+        &self,
+    ) -> Option<rustc_hash::FxHashMap<(String, String), modules::profiler::ProfileStats>> {
         self.profiler.as_ref().map(|p| p.get_profile_stats())
     }
 
     /// Generate optimized lookup tables from current profiles
     pub fn generate_optimizations(&self) -> Vec<modules::profiler::OptimizedLookupTable> {
-        self.profiler.as_ref().map(|p| p.generate_optimizations()).unwrap_or_default()
+        self.profiler
+            .as_ref()
+            .map(|p| p.generate_optimizations())
+            .unwrap_or_default()
     }
 
     /// Load an optimization table for hot-reloading
