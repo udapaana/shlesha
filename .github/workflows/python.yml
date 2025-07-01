@@ -170,6 +170,7 @@ jobs:
           pacman -S --noconfirm rust cargo gcc base-devel
           # Install uv for better Python package management
           curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           export PATH="$HOME/.cargo/bin:$PATH"
           uv venv .venv
           source .venv/bin/activate
