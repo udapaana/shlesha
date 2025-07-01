@@ -107,6 +107,7 @@ jobs:
         uses: astral-sh/setup-uv@v3
       
       - name: Install maturin and pytest
+        shell: bash
         run: |
           if [ "${{ matrix.container }}" = "archlinux:latest" ]; then
             # Use uv with virtual environment on Arch Linux
@@ -134,6 +135,7 @@ jobs:
           uv pip install target/wheels/*.whl
       
       - name: Run Python tests
+        shell: bash
         run: |
           python -m pytest python/tests -v
           python -c "import shlesha; print(shlesha.__version__)"
