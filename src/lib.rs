@@ -127,7 +127,7 @@ impl Shlesha {
         // Check for Roman → Indic optimization first
         if self.is_roman_script(from) && self.is_indic_script(to) {
             // Try using the optimized Roman → Devanagari → Indic path
-            let roman_deva_script = format!("{}_devanagari", from);
+            let roman_deva_script = format!("{from}_devanagari");
 
             if let Ok(HubInput::Devanagari(deva_text)) = self
                 .script_converter_registry
