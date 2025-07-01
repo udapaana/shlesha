@@ -496,6 +496,7 @@ impl Default for Shlesha {
 /// Library version information
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
+
 #[cfg(test)]
 mod tests {
     use super::*;
