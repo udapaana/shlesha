@@ -83,7 +83,7 @@ crate-type = ["cdylib", "rlib"]
 
 [package.metadata.maturin]
 python-source = "python"
-module-name = "shlesha"
+name = "shlesha"
 
 [[bench]]
 name = "comprehensive_benchmark"
