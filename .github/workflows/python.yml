@@ -180,8 +180,10 @@ jobs:
           pacman -S --noconfirm python python-pip rust gcc --needed
           # Install uv for better Python package management
           curl -LsSf https://astral.sh/uv/install.sh | sh
+          # Add uv to PATH immediately
+          export PATH="$HOME/.local/bin:$PATH"
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-          export PATH="$HOME/.cargo/bin:$PATH"
           uv venv .venv
           source .venv/bin/activate
           uv pip install maturin
@@ -191,6 +193,8 @@ jobs:
       - name: Build wheels (Arch Linux)
         if: matrix.container == 'archlinux:latest'
         run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          source .venv/bin/activate
           maturin build --release --out dist --features python
       
       - name: Build wheels (other platforms)
