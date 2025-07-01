@@ -113,7 +113,11 @@ jobs:
       - name: Install wheel
         shell: bash
         run: |
-          pip install target/wheels/*.whl
+          if [ "${{ matrix.container }}" = "archlinux:latest" ]; then
+            pip install --break-system-packages target/wheels/*.whl
+          else
+            pip install target/wheels/*.whl
+          fi
       
       - name: Run Python tests
         run: |
