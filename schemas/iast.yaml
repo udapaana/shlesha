@@ -68,6 +68,15 @@ mappings:
   special:
     "kṣ": "kṣ"
     "jñ": "jñ"
+    # Extended characters for nukta consonants (used in Urdu/Hindi loan words)
+    "q": "qa"      # IAST q → ISO qa (maps to क़)
+    "z": "za"      # IAST z → ISO za (maps to ज़)  
+    "f": "fa"      # IAST f → ISO fa (maps to फ़)
+    "ġ": "ġa"      # IAST ġ → ISO ġa (maps to ग़)
+    "ḵ": "ḵẖa"     # IAST ḵ → ISO ḵẖa (maps to ख़)
+    "ḍ̇": "ṛa"      # IAST retroflex D with dot → ISO ṛa (maps to ड़)
+    "ṛh": "ṛha"    # IAST ṛh → ISO ṛha (maps to ढ़)
+    "ẏ": "ẏa"      # IAST ẏ → ISO ẏa (maps to य़)
   
   digits:
     "0": "0"

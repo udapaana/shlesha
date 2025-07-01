@@ -560,6 +560,16 @@ fn get_iso_to_devanagari_mappings() -> FxHashMap<String, String> {
     iso_to_deva_mappings.insert("॥".to_string(), "॥".to_string());
     iso_to_deva_mappings.insert("kṣa".to_string(), "क्ष".to_string());
     iso_to_deva_mappings.insert("jña".to_string(), "ज्ञ".to_string());
+    
+    // Nukta consonants (for extended characters)
+    iso_to_deva_mappings.insert("qa".to_string(), "क़".to_string());
+    iso_to_deva_mappings.insert("ḵẖa".to_string(), "ख़".to_string());
+    iso_to_deva_mappings.insert("ġa".to_string(), "ग़".to_string());
+    iso_to_deva_mappings.insert("za".to_string(), "ज़".to_string());
+    iso_to_deva_mappings.insert("ṛa".to_string(), "ड़".to_string());
+    iso_to_deva_mappings.insert("ṛha".to_string(), "ढ़".to_string());
+    iso_to_deva_mappings.insert("fa".to_string(), "फ़".to_string());
+    iso_to_deva_mappings.insert("ẏa".to_string(), "य़".to_string());
 
     iso_to_deva_mappings
 }
