@@ -1,0 +1,135 @@
+name: Integration Tests
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+env:
+  PYO3_USE_ABI3_FORWARD_COMPATIBILITY: 1
+
+jobs:
+  # Build wheels for testing
+  build-test-wheels:
+    name: Build wheels for integration testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: x86_64-unknown-linux-gnu
+          args: --release --out dist --features python
+          sccache: 'true'
+          manylinux: auto
+      
+      - name: Upload wheels as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-wheels
+          path: dist
+
+  # Docker-based integration tests
+  integration-tests:
+    name: Integration Tests (${{ matrix.environment }})
+    runs-on: ubuntu-latest
+    needs: build-test-wheels
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [ubuntu, archlinux, colab]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download test wheels
+        uses: actions/download-artifact@v4
+        with:
+          name: test-wheels
+          path: docker/test-environments/wheels
+      
+      - name: Make scripts executable
+        run: chmod +x docker/test-environments/scripts/*.sh
+      
+      - name: Build Docker image
+        run: |
+          cd docker/test-environments
+          docker build -f Dockerfile.${{ matrix.environment }} -t shlesha-test-${{ matrix.environment }} .
+      
+      - name: Run integration tests
+        run: |
+          cd docker/test-environments
+          docker run --rm shlesha-test-${{ matrix.environment }}
+
+  # PyPI installation test (test actual published packages)
+  pypi-installation-test:
+    name: PyPI Installation Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: Test PyPI installation in clean environment
+        run: |
+          # Extract version from tag
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "Testing version: $VERSION"
+          
+          # Create test script
+          cat > test_pypi.py << 'EOF'
+          import sys
+          import subprocess
+          import time
+          
+          def test_installation():
+              """Test installing and using shlesha from PyPI"""
+              
+              # Wait a bit for PyPI to update
+              print("Waiting for PyPI to update...")
+              time.sleep(60)
+              
+              # Install shlesha
+              subprocess.run([sys.executable, "-m", "pip", "install", f"shlesha=={sys.argv[1]}", "--no-cache-dir"], check=True)
+              
+              # Test import and functionality
+              import shlesha
+              print(f"✅ Successfully imported shlesha v{shlesha.__version__}")
+              
+              # Test basic functionality
+              result = shlesha.transliterate('धर्म', 'devanagari', 'iast')
+              assert result == 'dharma', f"Expected 'dharma', got '{result}'"
+              print("✅ Basic transliteration works")
+              
+              # Test class methods
+              translator = shlesha.Shlesha()
+              result2 = translator.transliterate('योग', 'devanagari', 'iast')
+              assert result2 == 'yoga', f"Expected 'yoga', got '{result2}'"
+              print("✅ Class methods work")
+              
+              print("🎉 PyPI installation test passed!")
+          
+          if __name__ == "__main__":
+              test_installation()
+          EOF
+          
+          python test_pypi.py $VERSION
+
+  # Summary job
+  integration-summary:
+    name: Integration Tests Summary
+    runs-on: ubuntu-latest
+    needs: [integration-tests]
+    if: always()
+    
+    steps:
+      - name: Check integration test results
+        run: |
+          if [ "${{ needs.integration-tests.result }}" = "success" ]; then
+            echo "✅ All integration tests passed!"
+          else
+            echo "❌ Some integration tests failed"
+            exit 1
+          fi

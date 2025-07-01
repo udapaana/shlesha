@@ -1,0 +1,23 @@
+FROM python:3.11-slim
+
+# Install system dependencies 
+RUN apt-get update && apt-get install -y \
+    curl \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="$HOME/.local/bin:$PATH"
+
+WORKDIR /app
+
+# Copy test script
+COPY test_import.py .
+
+# Install shlesha from PyPI
+RUN /root/.local/bin/uv venv .venv && \
+    . .venv/bin/activate && \
+    /root/.local/bin/uv pip install shlesha==0.1.12
+
+CMD ["/bin/bash", "-c", ". .venv/bin/activate && python test_import.py"]

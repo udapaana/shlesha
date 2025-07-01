@@ -1,0 +1,27 @@
+# Mimic Google Colab environment as closely as possible
+FROM python:3.11-slim
+
+# Install system dependencies similar to Colab
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    build-essential \
+    binutils \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+
+WORKDIR /test
+
+# Copy test scripts
+COPY scripts/ ./scripts/
+COPY wheels/ ./wheels/
+
+# Make scripts executable
+RUN chmod +x scripts/*.sh
+
+# Default command runs all tests
+CMD ["./scripts/run_tests.sh"]

@@ -1,0 +1,22 @@
+FROM archlinux:latest
+
+# Update package database and install dependencies
+RUN pacman -Sy --noconfirm && \
+    pacman -S --noconfirm python python-pip rust gcc curl binutils && \
+    pacman -Scc --noconfirm
+
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+
+WORKDIR /test
+
+# Copy test scripts
+COPY scripts/ ./scripts/
+COPY wheels/ ./wheels/
+
+# Make scripts executable
+RUN chmod +x scripts/*.sh
+
+# Default command runs all tests
+CMD ["./scripts/run_tests.sh"]
