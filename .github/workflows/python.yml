@@ -8,7 +8,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
   workflow_run:
-    workflows: ["CI", "Integration Tests", "Quality Gate"]
+    workflows: ["Quality Gate", "Integration Tests"]
     types:
       - completed
 
@@ -20,12 +20,15 @@ jobs:
   test-python:
     name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}${{ matrix.container && ' (Arch Linux)' || '' }}
     runs-on: ${{ matrix.os }}
-    # Only run if this is a workflow_run from successful Quality Gate (for commits) or Integration Tests (for releases),
-    # or if manually triggered/on pull request
+    # Only run if:
+    # - workflow_run from successful Quality Gate (for non-release commits) 
+    # - workflow_run from successful Integration Tests (for release tags)
+    # - manually triggered/on pull request
     if: |
       github.event_name != 'push' ||
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && 
-       (github.event.workflow_run.name == 'Quality Gate' || github.event.workflow_run.name == 'Integration Tests'))
+       ((github.event.workflow_run.name == 'Quality Gate' && !startsWith(github.event.workflow_run.head_branch, 'refs/tags/')) ||
+        (github.event.workflow_run.name == 'Integration Tests' && startsWith(github.event.workflow_run.head_branch, 'refs/tags/'))))
     container: ${{ matrix.container }}
     strategy:
       matrix:
