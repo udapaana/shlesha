@@ -116,7 +116,7 @@ mod tests {
 
     #[test]
     fn test_flatten_mappings() {
-        let mut categories = MappingCategories {
+        let categories = MappingCategories {
             vowels: Some(HashMap::from([
                 ("a".to_string(), "अ".to_string()),
                 ("ā".to_string(), "आ".to_string()),

@@ -264,7 +264,7 @@ impl OptimizationCache {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::modules::profiler::{ProfilerConfig, OptimizationMetadata, ProfileStats};
+    use crate::modules::profiler::{OptimizationMetadata, ProfileStats};
     use tempfile::tempdir;
 
     #[test]

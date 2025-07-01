@@ -198,7 +198,7 @@ fn generate_optimizations(
     }
 
     // Use the optimization generator to create actual mappings
-    let generator = OptimizationGenerator::new();
+    let _generator = OptimizationGenerator::new();
     
     let mut generated_count = 0;
     for optimization in &optimizations {

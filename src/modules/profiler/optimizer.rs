@@ -293,7 +293,7 @@ mod tests {
     fn test_optimization_generation() {
         let generator = OptimizationGenerator::new();
         
-        let mut profile = ConversionProfile {
+        let profile = ConversionProfile {
             from_script: "devanagari".to_string(),
             to_script: "iast".to_string(),
             sequences: FxHashMap::default(),

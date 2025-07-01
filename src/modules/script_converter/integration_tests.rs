@@ -333,7 +333,7 @@ mod integration_tests {
     /// Test Bengali → ISO → Devanagari conversion (cross-script via hub)
     #[test]
     fn test_bengali_to_devanagari_roundtrip() {
-        let hub = Hub::new();
+        let _hub = Hub::new();
         let bengali_converter = BengaliConverter::new();
 
         let test_cases = vec![
@@ -426,7 +426,7 @@ mod integration_tests {
     /// Test Tamil → ISO → Devanagari conversion (cross-script via hub)
     #[test]
     fn test_tamil_to_devanagari_roundtrip() {
-        let hub = Hub::new();
+        let _hub = Hub::new();
         let tamil_converter = TamilConverter::new();
 
         let test_cases = vec![
@@ -467,7 +467,7 @@ mod integration_tests {
     /// Test Telugu → ISO → Devanagari conversion (cross-script via hub)
     #[test]
     fn test_telugu_to_devanagari_roundtrip() {
-        let hub = Hub::new();
+        let _hub = Hub::new();
         let telugu_converter = TeluguConverter::new();
 
         let test_cases = vec![

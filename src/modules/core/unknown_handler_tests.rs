@@ -177,5 +177,3 @@ mod comprehensive_tests {
 }
 
 // Export the test module
-#[cfg(test)]
-pub use comprehensive_tests::*;
