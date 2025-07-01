@@ -591,6 +591,12 @@ mod tests {
     }
 }
 
-// Re-export the Python module function so PyO3 can find it
+// Python module definition - must be in lib.rs for PyO3 to find it
 #[cfg(feature = "python")]
-pub use python_bindings::shlesha;
+use pyo3::prelude::*;
+
+#[cfg(feature = "python")]
+#[pymodule]
+fn shlesha(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    python_bindings::configure_module(m)
+}

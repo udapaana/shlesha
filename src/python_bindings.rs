@@ -427,9 +427,8 @@ fn get_supported_scripts() -> Vec<String> {
         .collect()
 }
 
-/// Python module definition
-#[pymodule]
-pub fn shlesha(m: &Bound<'_, PyModule>) -> PyResult<()> {
+/// Configure the Python module with all classes and functions
+pub fn configure_module(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Add classes
     m.add_class::<PyShlesha>()?;
     m.add_class::<PyTransliterationResult>()?;
