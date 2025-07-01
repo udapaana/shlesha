@@ -590,3 +590,7 @@ mod tests {
         assert_eq!(result, "xyz123"); // Should pass through unchanged
     }
 }
+
+// Re-export the Python module function so PyO3 can find it
+#[cfg(feature = "python")]
+pub use python_bindings::shlesha;
