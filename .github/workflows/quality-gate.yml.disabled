@@ -1,0 +1,27 @@
+# DISABLED - This workflow caused cascading triggers and feedback loops
+# The workflow_run approach is fundamentally flawed for dependency management
+# 
+# Instead, we use simpler approaches:
+# - For commits: Run CI and Integration Tests independently 
+# - For releases: Integration Tests act as the quality gate
+# - Python/WASM only run on pull_request and workflow_dispatch to avoid cascades
+
+name: Quality Gate (DISABLED)
+
+on:
+  # Disabled all triggers to prevent cascading workflow issues
+  workflow_dispatch:
+    inputs:
+      disabled:
+        description: 'This workflow is disabled to prevent cascade issues'
+        required: false
+        default: 'true'
+
+jobs:
+  disabled:
+    name: Quality Gate Disabled
+    runs-on: ubuntu-latest
+    if: false  # Never run
+    steps:
+      - name: Disabled
+        run: echo "This workflow is disabled"
