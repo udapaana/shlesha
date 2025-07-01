@@ -61,7 +61,7 @@ impl {{struct_name}} {
                     }
 
                     let cons_seq: String = chars[i..i + cons_len].iter().collect();
-                    let cons_with_a = format!("{}a", cons_seq);
+                    let cons_with_a = format!("{cons_seq}a");
 
                     // Check if this consonant exists in our mappings (with inherent 'a')
                     if let Some(&cons_char) = self.{{lowercase original_script}}_to_deva_map.get(&cons_with_a) {
@@ -78,7 +78,7 @@ impl {{struct_name}} {
                                 break;
                             } else {
                                 // Get vowel sign mapping
-                                let vowel_sign_key = format!("__vowel_sign_{}", vowel_seq);
+                                let vowel_sign_key = format!("__vowel_sign_{vowel_seq}");
                                 if let Some(&sign) = self.{{lowercase original_script}}_to_deva_map.get(&vowel_sign_key) {
                                     // Consonant + vowel sign
                                     result.push_str(cons_char);
@@ -105,7 +105,7 @@ impl {{struct_name}} {
                     }
 
                     let cons_seq: String = chars[i..i + cons_len].iter().collect();
-                    let cons_with_a = format!("{}a", cons_seq);
+                    let cons_with_a = format!("{cons_seq}a");
 
                     if let Some(&cons_char) = self.{{lowercase original_script}}_to_deva_map.get(&cons_with_a) {
                         // No vowel found, treat as bare consonant
@@ -196,7 +196,7 @@ impl {{struct_name}} {
         let iso_result = hub.deva_to_iso(input)
             .map_err(|e| ConverterError::ConversionFailed {
                 script: "{{original_script}}".to_string(),
-                reason: format!("Hub conversion failed: {}", e),
+                reason: format!("Hub conversion failed: {e}"),
             })?;
         
         match iso_result {
