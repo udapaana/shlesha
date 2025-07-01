@@ -91,18 +91,18 @@ impl HotReloadManager {
                         // Validate the optimization before loading
                         if self.validate_optimization(&optimization) {
                             self.profiler.load_optimization(optimization);
-                            eprintln!("Hot-reloaded optimization from: {:?}", path);
+                            eprintln!("Hot-reloaded optimization from: {path:?}");
                         } else {
-                            eprintln!("Invalid optimization file: {:?}", path);
+                            eprintln!("Invalid optimization file: {path:?}");
                         }
                     }
                     Err(e) => {
-                        eprintln!("Failed to parse optimization file {:?}: {}", path, e);
+                        eprintln!("Failed to parse optimization file {path:?}: {e}");
                     }
                 }
             }
             Err(e) => {
-                eprintln!("Failed to read optimization file {:?}: {}", path, e);
+                eprintln!("Failed to read optimization file {path:?}: {e}");
             }
         }
     }

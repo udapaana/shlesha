@@ -349,7 +349,7 @@ impl Profiler {
         let profiles = self.profiles.read().unwrap();
 
         for ((from_script, to_script), profile) in profiles.iter() {
-            let filename = format!("{}_{}_profile.json", from_script, to_script);
+            let filename = format!("{from_script}_{to_script}_profile.json");
             let path = self.config.profile_dir.join(filename);
 
             if let Ok(json) = serde_json::to_string_pretty(profile) {

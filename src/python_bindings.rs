@@ -13,7 +13,7 @@ use std::collections::HashMap;
 use crate::Shlesha;
 
 // Global transliterator instance for convenience function
-static GLOBAL_TRANSLITERATOR: Lazy<Shlesha> = Lazy::new(|| Shlesha::new());
+static GLOBAL_TRANSLITERATOR: Lazy<Shlesha> = Lazy::new(Shlesha::new);
 
 /// Python wrapper for the Shlesha transliterator
 #[pyclass(unsendable)]
