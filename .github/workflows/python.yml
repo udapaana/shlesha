@@ -100,7 +100,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       
       - name: Install maturin
-        run: pip install maturin pytest
+        run: |
+          if [ "${{ matrix.container }}" = "archlinux:latest" ]; then
+            pip install --break-system-packages maturin pytest
+          else
+            pip install maturin pytest
+          fi
       
       - name: Build wheel
         run: maturin build --features python
@@ -145,7 +150,7 @@ jobs:
           pacman -Syu --noconfirm
           pacman -S --noconfirm python python-pip python-wheel python-setuptools
           pacman -S --noconfirm rust cargo gcc base-devel
-          pip install maturin
+          pip install --break-system-packages maturin
       
       - name: Build wheels (Arch Linux)
         if: matrix.container == 'archlinux:latest'
