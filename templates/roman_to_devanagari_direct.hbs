@@ -136,7 +136,39 @@ impl {{struct_name}} {
                 }
 
                 if let Some((matched_str, len)) = best_match {
-                    result.push_str(matched_str);
+                    // Check if this is a consonant that needs virama
+                    let matched_chars: Vec<char> = matched_str.chars().collect();
+                    let is_consonant = if matched_chars.len() >= 1 {
+                        let first_char_code = matched_chars[0] as u32;
+                        // Check if first character is a Devanagari consonant
+                        (first_char_code >= 0x0915 && first_char_code <= 0x0939) || // Basic consonants
+                        (first_char_code >= 0x0958 && first_char_code <= 0x095F) || // Precomposed nukta consonants
+                        (first_char_code == 0x0933 || first_char_code == 0x0934 || first_char_code == 0x0935) // Additional
+                    } else {
+                        false
+                    };
+                    
+                    if is_consonant {
+                        // Check if next char is NOT a vowel (needs virama)
+                        let needs_virama = if i + len < chars.len() {
+                            let next_chars: String = chars[i + len..].iter().take(3).collect();
+                            // Check if any vowel follows
+                            !["a", "ā", "i", "ī", "u", "ū", "e", "ai", "o", "au", "r̥", "r̥̄", "l̥", "l̥̄"]
+                                .iter()
+                                .any(|v| next_chars.starts_with(v))
+                        } else {
+                            true // End of string
+                        };
+                        
+                        result.push_str(matched_str);
+                        if needs_virama {
+                            result.push('्'); // virama
+                        }
+                    } else {
+                        // Not a consonant (vowel, mark, etc.) - just add as-is
+                        result.push_str(matched_str);
+                    }
+                    
                     i += len;
                     parsed = true;
                 }
