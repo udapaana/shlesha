@@ -452,14 +452,13 @@ mod tests {
         let result = transliterator
             .transliterate("dharmaqx", "iast", "devanagari")
             .unwrap();
-        // q converts to क़् (composed form), x passes through unchanged
+        // q and x pass through unchanged since they're not in IAST schema
         let expected = format!(
-            "{}{}{}{}{}{}",
+            "{}{}{}{}{}",
             "ध",
             "र्",
             "म",
-            "\u{0958}", // क़ (composed qa)
-            "्",         // virama
+            "q",
             "x"
         );
         assert_eq!(result, expected);
