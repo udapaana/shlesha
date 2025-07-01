@@ -435,9 +435,9 @@ fn generate_roman_to_devanagari_converter(
             }
 
             // For consonants, also try with 'a' suffix (for inherent vowel)
-            let iso_with_a = format!("{}a", iso_value);
+            let iso_with_a = format!("{iso_value}a");
             if let Some(deva_value) = iso_to_deva_mappings.get(&iso_with_a) {
-                let roman_with_a = format!("{}a", roman_key);
+                let roman_with_a = format!("{roman_key}a");
                 roman_to_deva_mappings.insert(roman_with_a, deva_value.clone());
             }
         }
@@ -587,7 +587,7 @@ fn add_vowel_sign_mappings(
         for (roman_vowel, iso_vowel) in vowels.iter() {
             // Get the vowel sign by testing with a sample consonant
             if let (Some(ka_vowel), Some(ka_base)) = (
-                iso_to_deva_mappings.get(&format!("k{}", iso_vowel)),
+                iso_to_deva_mappings.get(&format!("k{iso_vowel}")),
                 iso_to_deva_mappings.get("ka"),
             ) {
                 // Extract vowel sign by comparing ka + vowel vs ka
@@ -595,7 +595,7 @@ fn add_vowel_sign_mappings(
                     let vowel_sign = &ka_vowel[ka_base.len()..];
                     if !vowel_sign.is_empty() {
                         roman_to_deva_mappings.insert(
-                            format!("__vowel_sign_{}", roman_vowel),
+                            format!("__vowel_sign_{roman_vowel}"),
                             vowel_sign.to_string(),
                         );
                     }
