@@ -84,9 +84,9 @@ jobs:
       - name: Install Python and uv on Arch Linux
         if: matrix.container == 'archlinux:latest'
         run: |
-          pacman -Syu --noconfirm
-          pacman -S --noconfirm python python-pip python-wheel python-setuptools
-          pacman -S --noconfirm rust cargo gcc base-devel
+          # Skip system upgrade to save time
+          pacman -Sy --noconfirm
+          pacman -S --noconfirm python python-pip rust gcc --needed
           python --version
           pip --version
           # Install uv for better Python package management
@@ -167,9 +167,9 @@ jobs:
       - name: Install dependencies on Arch Linux
         if: matrix.container == 'archlinux:latest'
         run: |
-          pacman -Syu --noconfirm
-          pacman -S --noconfirm python python-pip python-wheel python-setuptools
-          pacman -S --noconfirm rust cargo gcc base-devel
+          # Skip system upgrade to save time
+          pacman -Sy --noconfirm
+          pacman -S --noconfirm python python-pip rust gcc --needed
           # Install uv for better Python package management
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
