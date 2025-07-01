@@ -134,6 +134,7 @@ jobs:
           fi
       
       - name: Build wheel
+        shell: bash
         run: maturin build --features python
       
       - name: Install wheel
