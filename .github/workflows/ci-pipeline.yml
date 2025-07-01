@@ -49,15 +49,15 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
       
-      - name: Install maturin
-        run: pip install maturin
+      - name: Install uv
+        run: pip install uv
       
-      - name: Build and install package directly
+      - name: Create virtual environment and install
         run: |
+          uv venv
+          source .venv/bin/activate
+          uv pip install maturin
           maturin develop --release --features python
-      
-      - name: Test import
-        run: |
           python -c "import shlesha; print('✅ Integration test passed')"
 
   # Step 3: Python builds (only after CI and Integration Tests pass)
