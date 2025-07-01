@@ -81,7 +81,7 @@ fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> 
 
 use once_cell::sync::Lazy;
 use crate::modules::script_converter::processors::RomanScriptProcessor;
-use crate::modules::hub::{HubFormat, HubTrait};
+use crate::modules::hub::HubFormat;
 
 "#,
     );
@@ -427,20 +427,18 @@ fn generate_roman_to_devanagari_converter(
         &schema.mappings.special,
     ];
 
-    for mapping_category in all_roman_mappings.iter() {
-        if let Some(mappings) = mapping_category {
-            for (roman_key, iso_value) in mappings.iter() {
-                // Direct mapping for all keys
-                if let Some(deva_value) = iso_to_deva_mappings.get(iso_value) {
-                    roman_to_deva_mappings.insert(roman_key.clone(), deva_value.clone());
-                }
+    for mappings in all_roman_mappings.iter().copied().flatten() {
+        for (roman_key, iso_value) in mappings.iter() {
+            // Direct mapping for all keys
+            if let Some(deva_value) = iso_to_deva_mappings.get(iso_value) {
+                roman_to_deva_mappings.insert(roman_key.clone(), deva_value.clone());
+            }
 
-                // For consonants, also try with 'a' suffix (for inherent vowel)
-                let iso_with_a = format!("{}a", iso_value);
-                if let Some(deva_value) = iso_to_deva_mappings.get(&iso_with_a) {
-                    let roman_with_a = format!("{}a", roman_key);
-                    roman_to_deva_mappings.insert(roman_with_a, deva_value.clone());
-                }
+            // For consonants, also try with 'a' suffix (for inherent vowel)
+            let iso_with_a = format!("{}a", iso_value);
+            if let Some(deva_value) = iso_to_deva_mappings.get(&iso_with_a) {
+                let roman_with_a = format!("{}a", roman_key);
+                roman_to_deva_mappings.insert(roman_with_a, deva_value.clone());
             }
         }
     }

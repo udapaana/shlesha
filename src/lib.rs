@@ -129,20 +129,17 @@ impl Shlesha {
             // Try using the optimized Roman → Devanagari → Indic path
             let roman_deva_script = format!("{}_devanagari", from);
 
-            if let Ok(deva_result) = self.script_converter_registry.to_hub_with_schema_registry(
-                &roman_deva_script,
-                text,
-                Some(&self.registry),
-            ) {
-                if let HubInput::Devanagari(deva_text) = deva_result {
-                    // Now convert Devanagari → target Indic script
-                    let deva_hub_input = HubInput::Devanagari(deva_text);
-                    if let Ok(result) = self
-                        .script_converter_registry
-                        .from_hub_with_schema_registry(to, &deva_hub_input, Some(&self.registry))
-                    {
-                        return Ok(result);
-                    }
+            if let Ok(HubInput::Devanagari(deva_text)) = self
+                .script_converter_registry
+                .to_hub_with_schema_registry(&roman_deva_script, text, Some(&self.registry))
+            {
+                // Now convert Devanagari → target Indic script
+                let deva_hub_input = HubInput::Devanagari(deva_text);
+                if let Ok(result) = self
+                    .script_converter_registry
+                    .from_hub_with_schema_registry(to, &deva_hub_input, Some(&self.registry))
+                {
+                    return Ok(result);
                 }
             }
             // If optimized path fails, fall through to standard routing
@@ -495,7 +492,6 @@ impl Default for Shlesha {
 
 /// Library version information
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
-
 
 #[cfg(test)]
 mod tests {

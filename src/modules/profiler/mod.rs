@@ -126,6 +126,12 @@ pub struct Profiler {
     last_save_time: Arc<Mutex<Instant>>,
 }
 
+impl Default for Profiler {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Profiler {
     /// Create a new profiler with default configuration
     pub fn new() -> Self {

@@ -138,11 +138,11 @@ impl {{struct_name}} {
                 if let Some((matched_str, len)) = best_match {
                     // Check if this is a consonant that needs virama
                     let matched_chars: Vec<char> = matched_str.chars().collect();
-                    let is_consonant = if matched_chars.len() >= 1 {
+                    let is_consonant = if !matched_chars.is_empty() {
                         let first_char_code = matched_chars[0] as u32;
                         // Check if first character is a Devanagari consonant
-                        (first_char_code >= 0x0915 && first_char_code <= 0x0939) || // Basic consonants
-                        (first_char_code >= 0x0958 && first_char_code <= 0x095F) || // Precomposed nukta consonants
+                        (0x0915..=0x0939).contains(&first_char_code) || // Basic consonants
+                        (0x0958..=0x095F).contains(&first_char_code) || // Precomposed nukta consonants
                         (first_char_code == 0x0933 || first_char_code == 0x0934 || first_char_code == 0x0935) // Additional
                     } else {
                         false

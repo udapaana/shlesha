@@ -69,7 +69,7 @@ impl HotReloadManager {
                 // Check if file is newer than last check
                 if let Ok(metadata) = entry.metadata() {
                     if let Ok(modified) = metadata.modified() {
-                        let modified_time = SystemTime::from(modified);
+                        let modified_time = modified;
 
                         if modified_time > last_check {
                             self.try_load_optimization(&path);
@@ -159,6 +159,12 @@ pub struct OptimizationCache {
 
 use rustc_hash::FxHashMap;
 
+impl Default for OptimizationCache {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl OptimizationCache {
     /// Create a new optimization cache
     pub fn new() -> Self {
@@ -211,10 +217,10 @@ impl OptimizationCache {
         if let Some(optimization) = self.get(from_script, to_script) {
             // Try to use optimized conversion
             let mut result = String::new();
-            let mut chars = text.chars().peekable();
+            let chars = text.chars();
             let mut buffer = String::new();
 
-            while let Some(ch) = chars.next() {
+            for ch in chars {
                 buffer.push(ch);
 
                 // Try to match against optimizations

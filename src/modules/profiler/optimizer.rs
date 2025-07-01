@@ -16,6 +16,12 @@ pub struct OptimizationGenerator {
     transliterator: Shlesha,
 }
 
+impl Default for OptimizationGenerator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl OptimizationGenerator {
     /// Create a new optimization generator
     pub fn new() -> Self {
