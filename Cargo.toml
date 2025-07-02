@@ -81,10 +81,6 @@ crate-type = ["cdylib", "rlib"]
 
 # Python module configuration - PyO3 will use the lib automatically when python feature is enabled
 
-[package.metadata.maturin]
-python-source = "python"
-name = "shlesha"
-
 [[bench]]
 name = "comprehensive_benchmark"
 harness = false
