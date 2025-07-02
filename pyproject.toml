@@ -52,11 +52,8 @@ docs = [
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
-python-source = "python"
 
-[tool.pytest.ini_options]
-testpaths = ["python/tests"]
-python_files = ["test_*.py", "*_test.py"]
+# Removed pytest configuration as python/ directory was removed
 
 [tool.uv]
 dev-dependencies = [
