@@ -85,6 +85,7 @@ jobs:
           maturin build --release --features python
       
       - name: Test wheel installation
+        shell: bash
         run: |
           pip install target/wheels/*.whl
           python -c "import shlesha; print('✅ Wheel import test passed')"
