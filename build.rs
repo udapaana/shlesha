@@ -52,7 +52,10 @@ fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> 
     // Initialize Handlebars template engine
     let mut handlebars = Handlebars::new();
     handlebars.register_template_file("roman_converter", "templates/roman_converter.hbs")?;
-    handlebars.register_template_file("roman_converter_aho_corasick", "templates/roman_converter_aho_corasick.hbs")?;
+    handlebars.register_template_file(
+        "roman_converter_aho_corasick",
+        "templates/roman_converter_aho_corasick.hbs",
+    )?;
     handlebars.register_template_file(
         "roman_to_devanagari_direct",
         "templates/roman_to_devanagari_direct.hbs",
@@ -291,37 +294,43 @@ fn generate_roman_converter_with_template(
     // Note: reverse mapping means ISO → source_script, so ISO should be the key
     let mut reverse_mappings: Vec<(&str, &str)> = sorted_mappings
         .iter()
-        .map(|(from, to)| (to.as_str(), from.as_str()))  // (ISO, source_script)
+        .map(|(from, to)| (to.as_str(), from.as_str())) // (ISO, source_script)
         .collect();
-    
+
     // Sort by length (longest first) for proper matching priority
     reverse_mappings.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
-    
+
     // Create reverse mappings with preference for canonical forms
     let mut reverse_priority_mappings: FxHashMap<&str, &str> = FxHashMap::default();
-    
+
     // If canonical forms are specified in schema, use them; otherwise use first occurrence
     if let Some(canonical) = canonical_forms {
         // Pre-build sets for faster lookup (avoids repeated iteration)
-        let iso_values: std::collections::HashSet<&str> = mappings.values().map(|s| s.as_str()).collect();
-        let source_keys: std::collections::HashSet<&str> = mappings.keys().map(|s| s.as_str()).collect();
-        
+        let iso_values: std::collections::HashSet<&str> =
+            mappings.values().map(|s| s.as_str()).collect();
+        let source_keys: std::collections::HashSet<&str> =
+            mappings.keys().map(|s| s.as_str()).collect();
+
         // First, add all mappings
         for (iso_char, source_char) in reverse_mappings {
             reverse_priority_mappings.insert(iso_char, source_char);
         }
-        
+
         // Then override with canonical forms where specified
         for (iso_char, canonical_source) in canonical {
             // Quick verification using pre-built sets
-            if iso_values.contains(iso_char.as_str()) && source_keys.contains(canonical_source.as_str()) {
+            if iso_values.contains(iso_char.as_str())
+                && source_keys.contains(canonical_source.as_str())
+            {
                 reverse_priority_mappings.insert(iso_char, canonical_source);
             }
         }
     } else {
         // No canonical forms specified, use first occurrence (original behavior)
         for (iso_char, source_char) in reverse_mappings {
-            reverse_priority_mappings.entry(iso_char).or_insert(source_char);
+            reverse_priority_mappings
+                .entry(iso_char)
+                .or_insert(source_char);
         }
     }
 
@@ -354,7 +363,7 @@ fn generate_roman_converter_with_template(
     } else {
         "roman_converter"
     };
-    
+
     let code = handlebars.render(template_name, &template_data)?;
     Ok(code)
 }

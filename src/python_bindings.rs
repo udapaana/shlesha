@@ -331,60 +331,71 @@ impl PyShlesha {
     }
 
     /// Benchmark different processor implementations
-    /// 
+    ///
     /// This is for performance testing only - exposes internal processor methods
-    /// 
+    ///
     /// Args:
     ///     text (str): Text to process
     ///     processor_type (str): "fx_hashmap", "aho_corasick", or "fast_lookup"
     ///     mappings (Dict[str, str]): Mapping dictionary for conversion
-    /// 
+    ///
     /// Returns:
     ///     str: Processed text
-    fn benchmark_processor(&self, text: &str, processor_type: &str, mappings: HashMap<String, String>) -> PyResult<String> {
-        use crate::modules::script_converter::processors::{RomanScriptProcessor, FastMappingBuilder};
+    fn benchmark_processor(
+        &self,
+        text: &str,
+        processor_type: &str,
+        mappings: HashMap<String, String>,
+    ) -> PyResult<String> {
+        use crate::modules::script_converter::processors::{
+            FastMappingBuilder, RomanScriptProcessor,
+        };
         use rustc_hash::FxHashMap;
-        
+
         // Convert Python dict to appropriate format
-        let fx_mappings: FxHashMap<&str, &str> = mappings.iter()
+        let fx_mappings: FxHashMap<&str, &str> = mappings
+            .iter()
             .map(|(k, v)| (k.as_str(), v.as_str()))
             .collect();
-        
+
         let result = match processor_type {
-            "fx_hashmap" => {
-                RomanScriptProcessor::process_with_fx_hashmap(text, &fx_mappings)
-            },
+            "fx_hashmap" => RomanScriptProcessor::process_with_fx_hashmap(text, &fx_mappings),
             "aho_corasick" => {
-                let mappings_vec: Vec<(&str, &str)> = mappings.iter()
+                let mappings_vec: Vec<(&str, &str)> = mappings
+                    .iter()
                     .map(|(k, v)| (k.as_str(), v.as_str()))
                     .collect();
-                
-                let (ac, replacements) = FastMappingBuilder::build_aho_corasick_mapping(&mappings_vec)
-                    .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(
-                        format!("Failed to build Aho-Corasick automaton: {e}")
-                    ))?;
-                
+
+                let (ac, replacements) =
+                    FastMappingBuilder::build_aho_corasick_mapping(&mappings_vec).map_err(|e| {
+                        PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
+                            "Failed to build Aho-Corasick automaton: {e}"
+                        ))
+                    })?;
+
                 RomanScriptProcessor::process_with_aho_corasick(text, &ac, &replacements)
-            },
+            }
             "fast_lookup" => {
-                let mappings_vec: Vec<(&str, &str)> = mappings.iter()
+                let mappings_vec: Vec<(&str, &str)> = mappings
+                    .iter()
                     .map(|(k, v)| (k.as_str(), v.as_str()))
                     .collect();
-                
-                let (mapping, by_first_char) = FastMappingBuilder::build_optimized_mapping(&mappings_vec);
-                
+
+                let (mapping, by_first_char) =
+                    FastMappingBuilder::build_optimized_mapping(&mappings_vec);
+
                 RomanScriptProcessor::process_with_fast_lookup(text, &mapping, &by_first_char)
-            },
+            }
             _ => {
                 return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
                     format!("Unknown processor type: {processor_type}. Use 'fx_hashmap', 'aho_corasick', or 'fast_lookup'")
                 ));
             }
         };
-        
-        result.map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(
-            format!("Processor failed: {e}")
-        ))
+
+        result.map_err(|e| {
+            PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Processor failed: {e}"))
+        })
     }
 }
 

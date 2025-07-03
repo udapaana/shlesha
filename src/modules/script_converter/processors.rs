@@ -1,7 +1,7 @@
 use super::ConverterError;
+use aho_corasick::AhoCorasick;
 use rustc_hash::FxHashMap;
 use std::collections::HashMap;
-use aho_corasick::AhoCorasick;
 
 /// Helper to build optimized mapping structures for fast lookup
 pub struct FastMappingBuilder;
