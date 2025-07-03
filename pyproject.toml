@@ -74,4 +74,4 @@ build-frontend = "pip"
 # Set environment variable for PyO3 compatibility
 environment = {PYO3_USE_ABI3_FORWARD_COMPATIBILITY = "1"}
 # Test that the wheel imports correctly
-test-command = "python -c \"import shlesha; print('✅ shlesha wheel import test passed')\""
+test-command = "python -c \"import shlesha; print('shlesha wheel import test passed')\""
