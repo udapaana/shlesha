@@ -51,7 +51,8 @@ docs = [
 ]
 
 [tool.maturin]
-features = ["pyo3/extension-module"]
+features = ["pyo3/extension-module", "python"]
+module-name = "shlesha"
 
 # Removed pytest configuration as python/ directory was removed
 
@@ -67,7 +68,7 @@ dev-dependencies = [
 build = "cp39-* cp310-* cp311-* cp312-* cp313-*"
 # Skip 32-bit builds and musl builds to save time and focus on main platforms
 skip = "*-win32 *-manylinux_i686 *-musllinux_*"
-# Use maturin for building Rust extensions
+# Use maturin for building Rust extensions with Python features
 before-build = "pip install maturin"
 build-frontend = "pip"
 # Set environment variable for PyO3 compatibility

@@ -60,11 +60,46 @@ jobs:
           maturin develop --release --features python
           python -c "import shlesha; print('✅ Integration test passed')"
 
+  # Step 2b: Wheel Build Test (ensure wheels work before release)
+  wheel-test:
+    name: Test Wheel Building
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.9', '3.11']
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      
+      - name: Build wheel with maturin
+        run: |
+          pip install maturin
+          maturin build --release --features python
+      
+      - name: Test wheel installation
+        run: |
+          pip install target/wheels/*.whl
+          python -c "import shlesha; print('✅ Wheel import test passed')"
+      
+      - name: Run diagnostic script
+        if: failure()
+        run: |
+          pip install maturin
+          python tests/integration/diagnose_wheel_issue.py || true
+
   # Step 3: Python builds (only after CI and Integration Tests pass)
   python:
     name: Python Builds
     runs-on: ${{ matrix.os }}
-    needs: [ci, integration-tests]
+    needs: [ci, integration-tests, wheel-test]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     strategy:
       matrix:
