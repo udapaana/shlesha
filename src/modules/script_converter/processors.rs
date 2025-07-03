@@ -1,6 +1,7 @@
 use super::ConverterError;
 use rustc_hash::FxHashMap;
 use std::collections::HashMap;
+use aho_corasick::AhoCorasick;
 
 /// Helper to build optimized mapping structures for fast lookup
 pub struct FastMappingBuilder;
@@ -30,6 +31,30 @@ impl FastMappingBuilder {
         }
 
         (mapping, by_first_char)
+    }
+
+    /// Build Aho-Corasick automaton for ultra-fast pattern matching
+    #[inline]
+    pub fn build_aho_corasick_mapping<'a>(
+        mappings: &'a [(&'a str, &'a str)],
+    ) -> Result<(AhoCorasick, Vec<&'a str>), aho_corasick::BuildError> {
+        let mut patterns = Vec::new();
+        let mut replacements = Vec::new();
+
+        // Sort by length descending for greedy longest match
+        let mut sorted_mappings = mappings.to_vec();
+        sorted_mappings.sort_by_key(|(from, _)| std::cmp::Reverse(from.len()));
+
+        for &(from, to) in &sorted_mappings {
+            patterns.push(from);
+            replacements.push(to);
+        }
+
+        let ac = AhoCorasick::builder()
+            .match_kind(aho_corasick::MatchKind::LeftmostLongest)
+            .build(patterns)?;
+
+        Ok((ac, replacements))
     }
 
     /// Convert std::HashMap to FxHashMap for improved performance
@@ -179,6 +204,41 @@ impl RomanScriptProcessor {
                 }
                 i += 1;
             }
+        }
+
+        Ok(result)
+    }
+
+    /// Ultra-high-performance version using Aho-Corasick automaton for pattern matching
+    /// This provides the fastest possible longest-match transliteration
+    #[inline]
+    pub fn process_with_aho_corasick(
+        input: &str,
+        ac: &AhoCorasick,
+        replacements: &[&str],
+    ) -> Result<String, ConverterError> {
+        let mut result = String::with_capacity(input.len() * 2);
+        let mut last_end = 0;
+
+        // Use Aho-Corasick to find all matches with leftmost-longest strategy
+        for mat in ac.find_iter(input) {
+            let match_start = mat.start();
+            let match_end = mat.end();
+            let pattern_id = mat.pattern().as_usize();
+
+            // Add any text before this match
+            if last_end < match_start {
+                result.push_str(&input[last_end..match_start]);
+            }
+
+            // Add the replacement text
+            result.push_str(replacements[pattern_id]);
+            last_end = match_end;
+        }
+
+        // Add any remaining text after the last match
+        if last_end < input.len() {
+            result.push_str(&input[last_end..]);
         }
 
         Ok(result)

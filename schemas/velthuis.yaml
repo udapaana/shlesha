@@ -6,6 +6,17 @@ metadata:
 
 target: "iso15919"
 
+codegen:
+  processor_type: "roman_aho_corasick"
+
+# Canonical forms for reverse mapping (ISO → Velthuis)
+# When multiple Velthuis forms map to the same ISO character,
+# specify which Velthuis form should be used for ISO → Velthuis conversion
+canonical_forms:
+  "ā": "aa"     # prefer "aa" over "A" for ā → Velthuis
+  "ī": "ii"     # prefer "ii" over "I" for ī → Velthuis
+  "ū": "uu"     # prefer "uu" over "U" for ū → Velthuis
+
 mappings:
   vowels:
     "a": "a"

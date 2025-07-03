@@ -7,6 +7,17 @@ metadata:
 
 target: "iso15919"
 
+codegen:
+  processor_type: "roman_aho_corasick"
+
+# Canonical forms for reverse mapping (ISO → Harvard-Kyoto)
+# When multiple Harvard-Kyoto forms map to the same ISO character,
+# specify which Harvard-Kyoto form should be used for ISO → Harvard-Kyoto conversion
+canonical_forms:
+  "ā": "A"      # prefer "A" over "aa" for ā → Harvard-Kyoto
+  "ī": "I"      # prefer "I" over "ii" for ī → Harvard-Kyoto
+  "ū": "U"      # prefer "U" over "uu" for ū → Harvard-Kyoto
+
 mappings:
   vowels:
     "a": "a"

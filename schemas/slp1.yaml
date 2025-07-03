@@ -6,7 +6,11 @@ metadata:
 
 target: "iso15919"
 
+codegen:
+  processor_type: "roman_aho_corasick"
+
 mappings:
+  # SLP1 to ISO-15919 mappings (SLP1 is the source, ISO is the target)
   vowels:
     "a": "a"
     "A": "ā"

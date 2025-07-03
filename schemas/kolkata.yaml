@@ -7,6 +7,9 @@ metadata:
 
 target: "iso15919"
 
+codegen:
+  processor_type: "roman_aho_corasick"
+
 mappings:
   vowels:
     "a": "a"

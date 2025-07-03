@@ -6,6 +6,9 @@ metadata:
 
 target: "iso15919"
 
+codegen:
+  processor_type: "roman_aho_corasick"
+
 mappings:
   # IAST and ISO-15919 are very similar, but have key differences
   vowels:

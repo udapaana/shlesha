@@ -9,6 +9,20 @@ metadata:
 # For Indic scripts, the direction is TO/FROM Devanagari
 target: "iso15919"  # or "devanagari" for Indic scripts
 
+codegen:
+  processor_type: "roman_aho_corasick"
+
+# Canonical forms for reverse mapping (ISO → ITRANS)
+# When multiple ITRANS forms map to the same ISO character,
+# specify which ITRANS form should be used for ISO → ITRANS conversion
+canonical_forms:
+  "ā": "aa"     # prefer "aa" over "A" for ā → ITRANS
+  "ī": "ii"     # prefer "ii" over "I" for ī → ITRANS  
+  "ū": "uu"     # prefer "uu" over "U" for ū → ITRANS
+  "ṁ": "M"      # prefer "M" over ".N" or ".n" for ṁ → ITRANS
+  "kṣ": "kSh"   # prefer "kSh" over "ksh" or "x" for kṣ → ITRANS
+  "jñ": "j~n"   # prefer "j~n" over "gy", "GY", or "dny" for jñ → ITRANS
+
 mappings:
   vowels:
     "a": "a"
