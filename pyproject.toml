@@ -52,7 +52,7 @@ docs = [
 
 [tool.maturin]
 features = ["pyo3/extension-module", "python"]
-module-name = "shlesha"
+module-name = "shlesha.shlesha"
 
 # Removed pytest configuration as python/ directory was removed
 
