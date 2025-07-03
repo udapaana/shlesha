@@ -239,7 +239,9 @@ fn prop_ascii_preservation(ascii_chars: String, script1: String, script2: String
 
     // Skip inputs that contain Sanskrit transliteration patterns
     // These are expected to be transformed (e.g., 'dh' → 'D', 'ch' → 'C')
-    let sanskrit_patterns = ["dh", "ch", "bh", "gh", "jh", "kh", "ph", "th", "zh", "sh", "ng", "ny"];
+    let sanskrit_patterns = [
+        "dh", "ch", "bh", "gh", "jh", "kh", "ph", "th", "zh", "sh", "ng", "ny",
+    ];
     for pattern in &sanskrit_patterns {
         if ascii_chars.to_lowercase().contains(pattern) {
             return true; // Skip this test case
