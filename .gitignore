@@ -87,3 +87,31 @@ coverage.xml
 
 # Build cache
 .shlesha-build-cache
+
+# Wheel files and build artifacts
+*.whl
+wheelhouse/
+test_wheelhouse/
+
+# Test directories
+test_extract/
+temp_wheel/
+test_venv/
+*_test/
+*_temp/
+
+# Python development
+.pytest_cache/
+*.pyc
+
+# Profiling output
+profiles/
+optimizations/
+
+# Temporary analysis
+temp_analysis/
+
+# Docker test artifacts
+docker/test-environments/temp_wheel/
+docker/test-environments/wheels/
+docker/test-environments/test_venv/
