@@ -1,0 +1,282 @@
+// Generated token-based converter for {{script_name}}
+
+pub struct {{struct_name}};
+
+// Pre-compiled AhoCorasick matcher for ultra-fast pattern matching
+static {{uppercase script_name}}_MATCHER: Lazy<AhoCorasick> = Lazy::new(|| {
+    let patterns = vec![
+        {{#each mappings}}
+        {{#each entries}}
+        {{#each all_inputs}}
+        "{{this}}",
+        {{/each}}
+        {{/each}}
+        {{/each}}
+    ];
+    AhoCorasick::new(patterns).unwrap()
+});
+
+// Pattern to token lookup table (same order as patterns above)
+static {{uppercase script_name}}_TOKENS: Lazy<Vec<{{#if is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}>> = Lazy::new(|| {
+    vec![
+        {{#each mappings}}
+        {{#each entries}}
+        {{#each all_inputs}}
+        {{#if @root.is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}::{{../token}},
+        {{/each}}
+        {{/each}}
+        {{/each}}
+    ]
+});
+
+impl {{struct_name}} {
+    pub fn new() -> Self {
+        Self
+    }
+    
+    // Convert string to token using compile-time generated pattern matching
+    pub fn string_to_token(&self, input: &str) -> Option<{{#if is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}> {
+        match input {
+            {{#each mappings}}
+            // {{category}} mappings
+            {{#each entries}}
+            {{#each all_inputs}}
+            "{{this}}" => Some({{#if @root.is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}::{{../token}}),
+            {{/each}}
+            {{/each}}
+            {{/each}}
+            _ => None,
+        }
+    }
+    
+    // Convert token to preferred string representation (zero allocations!)
+    pub fn token_to_string(&self, token: &{{#if is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}) -> &'static str {
+        match token {
+            {{#each mappings}}
+            // {{category}} mappings
+            {{#each entries}}
+            {{#if @root.is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}::{{token}} => "{{preferred}}",
+            {{/each}}
+            {{/each}}
+            {{#unless is_alphabet}}
+            AbugidaToken::Unknown(_) => "?", // Handled specially in tokens_to_string_impl
+            _ => "?", // Catch-all for AbugidaToken variants not in this schema
+            {{/unless}}
+            {{#if is_alphabet}}
+            AlphabetToken::Unknown(_) => "?", // Handled specially in tokens_to_string_impl
+            _ => "?", // Catch-all for AlphabetToken variants not in this schema
+            {{/if}}
+        }
+    }
+}
+
+// Token-based converter implementation
+impl crate::modules::script_converter::TokenConverter for {{struct_name}} {
+    fn script_name(&self) -> &'static str {
+        "{{script_name}}"
+    }
+    
+    fn is_alphabet(&self) -> bool {
+        {{is_alphabet}}
+    }
+    
+    fn string_to_tokens(&self, input: &str) -> crate::modules::hub::tokens::HubTokenSequence {
+        self.string_to_tokens_impl(input)
+    }
+    
+    fn tokens_to_string(&self, tokens: &crate::modules::hub::tokens::HubTokenSequence) -> String {
+        self.tokens_to_string_impl(tokens)
+    }
+}
+
+impl {{struct_name}} {
+    fn string_to_tokens_impl(&self, input: &str) -> HubTokenSequence {
+        let mut tokens = Vec::new();
+        let mut pos = 0;
+        
+        // Use AhoCorasick for ultra-fast pattern matching - finds all patterns at once!
+        while pos < input.len() {
+            let remaining = &input[pos..];
+            
+            // Find the longest match starting at current position
+            if let Some(mat) = {{uppercase script_name}}_MATCHER.find(remaining) {
+                if mat.start() == 0 {
+                    // Pattern matches at current position - get the corresponding token
+                    let pattern_id = mat.pattern().as_usize();
+                    let token = {{uppercase script_name}}_TOKENS[pattern_id].clone();
+                    tokens.push(HubToken::{{#if is_alphabet}}Alphabet{{else}}Abugida{{/if}}(token));
+                    pos += mat.end();
+                    continue;
+                }
+            }
+            
+            // No pattern matched at current position, handle single character
+            if let Some(ch) = remaining.chars().next() {
+                {{#if is_alphabet}}
+                tokens.push(HubToken::Alphabet(AlphabetToken::Unknown(ch)));
+                {{else}}
+                tokens.push(HubToken::Abugida(AbugidaToken::Unknown(ch)));
+                {{/if}}
+                pos += ch.len_utf8();
+            } else {
+                break;
+            }
+        }
+        
+        tokens
+    }
+    
+    fn tokens_to_string_impl(&self, tokens: &HubTokenSequence) -> String {
+        {{#if is_alphabet}}
+        // Roman script (explicit vowels)
+        let mut result = String::new();
+        let mut i = 0;
+        
+        while i < tokens.len() {
+            match &tokens[i] {
+                HubToken::Alphabet(alphabet_token) => {
+                    match alphabet_token {
+                        AlphabetToken::Unknown(ch) => {
+                            result.push(*ch);
+                        }
+                        _ => {
+                            result.push_str(self.token_to_string(alphabet_token));
+                        }
+                    }
+                }
+                HubToken::Abugida(_) => {
+                    result.push('?'); // Cross-token-type conversion not supported
+                }
+            }
+            i += 1;
+        }
+        
+        result
+        {{else}}
+        // Indic script (implicit 'a' vowels)
+        let mut result = String::new();
+        let mut i = 0;
+        
+        while i < tokens.len() {
+            match &tokens[i] {
+                HubToken::Abugida(abugida_token) => {
+                    match abugida_token {
+                        // Independent vowels - output directly
+                        AbugidaToken::VowelA | AbugidaToken::VowelAa | AbugidaToken::VowelI |
+                        AbugidaToken::VowelIi | AbugidaToken::VowelU | AbugidaToken::VowelUu |
+                        AbugidaToken::VowelVocalicR | AbugidaToken::VowelVocalicRr |
+                        AbugidaToken::VowelVocalicL | AbugidaToken::VowelVocalicLl |
+                        AbugidaToken::VowelE | AbugidaToken::VowelAi | AbugidaToken::VowelO | 
+                        AbugidaToken::VowelAu => {
+                            result.push_str(self.token_to_string(abugida_token));
+                        }
+                        
+                        // Consonants - check what follows
+                        AbugidaToken::ConsonantK | AbugidaToken::ConsonantKh | AbugidaToken::ConsonantG |
+                        AbugidaToken::ConsonantGh | AbugidaToken::ConsonantNg | AbugidaToken::ConsonantC |
+                        AbugidaToken::ConsonantCh | AbugidaToken::ConsonantJ | AbugidaToken::ConsonantJh |
+                        AbugidaToken::ConsonantNy | AbugidaToken::ConsonantT | AbugidaToken::ConsonantTh |
+                        AbugidaToken::ConsonantD | AbugidaToken::ConsonantDh | AbugidaToken::ConsonantN |
+                        AbugidaToken::ConsonantTt | AbugidaToken::ConsonantTth | AbugidaToken::ConsonantDd |
+                        AbugidaToken::ConsonantDdh | AbugidaToken::ConsonantNn | AbugidaToken::ConsonantP |
+                        AbugidaToken::ConsonantPh | AbugidaToken::ConsonantB | AbugidaToken::ConsonantBh |
+                        AbugidaToken::ConsonantM | AbugidaToken::ConsonantY | AbugidaToken::ConsonantR |
+                        AbugidaToken::ConsonantL | AbugidaToken::ConsonantV | AbugidaToken::ConsonantLl |
+                        AbugidaToken::ConsonantSh | AbugidaToken::ConsonantSs | AbugidaToken::ConsonantS |
+                        AbugidaToken::ConsonantH => {
+                            // Output the consonant
+                            result.push_str(self.token_to_string(abugida_token));
+                            
+                            // Check if this consonant needs a virama before the next token
+                            let needs_virama = if i + 1 < tokens.len() {
+                                match &tokens[i + 1] {
+                                    HubToken::Abugida(next_token) => {
+                                        match next_token {
+                                            // Vowel signs - no virama needed (consonant takes vowel)
+                                            AbugidaToken::VowelSignAa | AbugidaToken::VowelSignI |
+                                            AbugidaToken::VowelSignIi | AbugidaToken::VowelSignU |
+                                            AbugidaToken::VowelSignUu | AbugidaToken::VowelSignVocalicR |
+                                            AbugidaToken::VowelSignVocalicRr | AbugidaToken::VowelSignVocalicL |
+                                            AbugidaToken::VowelSignVocalicLl | AbugidaToken::VowelSignE |
+                                            AbugidaToken::VowelSignAi | AbugidaToken::VowelSignO |
+                                            AbugidaToken::VowelSignAu => false,
+                                            
+                                            // Virama already present - no additional virama needed
+                                            AbugidaToken::MarkVirama => false,
+                                            
+                                            // Another consonant - check if there's a virama after the next consonant
+                                            AbugidaToken::ConsonantK | AbugidaToken::ConsonantKh | 
+                                            AbugidaToken::ConsonantG | AbugidaToken::ConsonantGh | 
+                                            AbugidaToken::ConsonantNg | AbugidaToken::ConsonantC |
+                                            AbugidaToken::ConsonantCh | AbugidaToken::ConsonantJ | 
+                                            AbugidaToken::ConsonantJh | AbugidaToken::ConsonantNy | 
+                                            AbugidaToken::ConsonantT | AbugidaToken::ConsonantTh |
+                                            AbugidaToken::ConsonantD | AbugidaToken::ConsonantDh | 
+                                            AbugidaToken::ConsonantN | AbugidaToken::ConsonantTt | 
+                                            AbugidaToken::ConsonantTth | AbugidaToken::ConsonantDd |
+                                            AbugidaToken::ConsonantDdh | AbugidaToken::ConsonantNn | 
+                                            AbugidaToken::ConsonantP | AbugidaToken::ConsonantPh | 
+                                            AbugidaToken::ConsonantB | AbugidaToken::ConsonantBh |
+                                            AbugidaToken::ConsonantM | AbugidaToken::ConsonantY | 
+                                            AbugidaToken::ConsonantR | AbugidaToken::ConsonantL | 
+                                            AbugidaToken::ConsonantV | AbugidaToken::ConsonantLl |
+                                            AbugidaToken::ConsonantSh | AbugidaToken::ConsonantSs | 
+                                            AbugidaToken::ConsonantS | AbugidaToken::ConsonantH => {
+                                                // Check if the consonant after this one has a virama
+                                                if i + 2 < tokens.len() {
+                                                    match &tokens[i + 2] {
+                                                        HubToken::Abugida(AbugidaToken::MarkVirama) => false,
+                                                        _ => true,
+                                                    }
+                                                } else {
+                                                    true // No virama found, so add one
+                                                }
+                                            }
+                                            
+                                            // Default: no virama (end of word, marks, etc.)
+                                            _ => false,
+                                        }
+                                    }
+                                    _ => false,
+                                }
+                            } else {
+                                false // End of sequence, keep implicit 'a'
+                            };
+                            
+                            if needs_virama {
+                                // Add virama
+                                result.push_str(self.token_to_string(&AbugidaToken::MarkVirama));
+                            }
+                        }
+                        
+                        // Vowel signs - output directly
+                        AbugidaToken::VowelSignAa | AbugidaToken::VowelSignI | AbugidaToken::VowelSignIi |
+                        AbugidaToken::VowelSignU | AbugidaToken::VowelSignUu | AbugidaToken::VowelSignVocalicR |
+                        AbugidaToken::VowelSignVocalicRr | AbugidaToken::VowelSignVocalicL |
+                        AbugidaToken::VowelSignVocalicLl | AbugidaToken::VowelSignE | AbugidaToken::VowelSignAi |
+                        AbugidaToken::VowelSignO | AbugidaToken::VowelSignAu => {
+                            result.push_str(self.token_to_string(abugida_token));
+                        }
+                        
+                        // Unknown characters - pass through unchanged
+                        AbugidaToken::Unknown(ch) => {
+                            result.push(*ch);
+                        }
+                        
+                        // Other tokens - output directly
+                        _ => {
+                            result.push_str(self.token_to_string(abugida_token));
+                        }
+                    }
+                }
+                HubToken::Alphabet(_) => {
+                    result.push('?'); // Cross-token-type conversion not supported
+                }
+            }
+            i += 1;
+        }
+        
+        result
+        {{/if}}
+    }
+}
