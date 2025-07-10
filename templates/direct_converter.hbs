@@ -1,0 +1,44 @@
+// Generated direct converter: {{from_script}} → {{to_script}}
+// This bypasses the hub for maximum performance
+
+pub struct {{struct_name}};
+
+// Pre-compiled direct conversion lookup ({{from_script}} → {{to_script}})
+static {{uppercase from_script}}_TO_{{uppercase to_script}}_MATCHER: Lazy<AhoCorasick> = Lazy::new(|| {
+    let patterns = vec![
+        {{#each direct_mappings}}
+        "{{from_pattern}}",
+        {{/each}}
+    ];
+    AhoCorasick::new(patterns).unwrap()
+});
+
+static {{uppercase from_script}}_TO_{{uppercase to_script}}_REPLACEMENTS: Lazy<Vec<&'static str>> = Lazy::new(|| {
+    vec![
+        {{#each direct_mappings}}
+        "{{to_pattern}}",
+        {{/each}}
+    ]
+});
+
+impl {{struct_name}} {
+    pub fn new() -> Self {
+        Self
+    }
+    
+    /// Ultra-fast direct conversion without hub overhead
+    pub fn convert(&self, input: &str) -> Result<String, ConverterError> {
+        // Use AhoCorasick for simultaneous multi-pattern replacement
+        let result = {{uppercase from_script}}_TO_{{uppercase to_script}}_MATCHER
+            .replace_all(input, &{{uppercase from_script}}_TO_{{uppercase to_script}}_REPLACEMENTS[..]);
+        Ok(result.into())
+    }
+    
+    pub fn from_script(&self) -> &'static str {
+        "{{from_script}}"
+    }
+    
+    pub fn to_script(&self) -> &'static str {
+        "{{to_script}}"
+    }
+}

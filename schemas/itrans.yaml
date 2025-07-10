@@ -5,101 +5,68 @@ metadata:
   description: "ITRANS transliteration scheme using ASCII combinations"
   aliases: ["i-trans"]
 
-# For Roman scripts, the direction is TO ISO-15919
-# For Indic scripts, the direction is TO/FROM Devanagari
-target: "iso15919"  # or "devanagari" for Indic scripts
-
-codegen:
-  processor_type: "roman_aho_corasick"
-
-# Canonical forms for reverse mapping (ISO → ITRANS)
-# When multiple ITRANS forms map to the same ISO character,
-# specify which ITRANS form should be used for ISO → ITRANS conversion
-canonical_forms:
-  "ā": "aa"     # prefer "aa" over "A" for ā → ITRANS
-  "ī": "ii"     # prefer "ii" over "I" for ī → ITRANS  
-  "ū": "uu"     # prefer "uu" over "U" for ū → ITRANS
-  "ṁ": "M"      # prefer "M" over ".N" or ".n" for ṁ → ITRANS
-  "kṣ": "kSh"   # prefer "kSh" over "ksh" or "x" for kṣ → ITRANS
-  "jñ": "j~n"   # prefer "j~n" over "gy", "GY", or "dny" for jñ → ITRANS
+target: "alphabet_tokens"
 
 mappings:
   vowels:
-    "a": "a"
-    "A": "ā"
-    "aa": "ā"
-    "i": "i"
-    "I": "ī"
-    "ii": "ī"
-    "u": "u"
-    "U": "ū"
-    "uu": "ū"
-    "R": "r̥"
-    "RR": "r̥̄"
-    "lR": "l̥"
-    "lRR": "l̥̄"
-    "L": "l̥"
-    "LL": "l̥̄"
-    "e": "e"
-    "ai": "ai"
-    "o": "o"
-    "au": "au"
+    VowelA: "a"
+    VowelAa: ["aa", "A"]  # prefer "aa" over "A" for output
+    VowelI: "i"
+    VowelIi: ["ii", "I"]  # prefer "ii" over "I" for output
+    VowelU: "u"
+    VowelUu: ["uu", "U"]  # prefer "uu" over "U" for output
+    VowelVocalicR: "R"
+    VowelVocalicRr: "RR"
+    VowelVocalicL: ["lR", "L"]  # prefer "lR" over "L" for output
+    VowelVocalicLl: ["lRR", "LL"]  # prefer "lRR" over "LL" for output
+    VowelE: "e"
+    VowelAi: "ai"
+    VowelO: "o"
+    VowelAu: "au"
 
   consonants:
-    "k": "k"
-    "kh": "kh"
-    "g": "g"
-    "gh": "gh"
-    "~N": "ṅ"
-    "N^": "ṅ"
-    "ch": "ch"
-    "Ch": "ch"
-    "chh": "ch"
-    "j": "j"
-    "jh": "jh"
-    "~n": "ñ"
-    "JN": "ñ"
-    "T": "ṭ"
-    "Th": "ṭh"
-    "D": "ḍ"
-    "Dh": "ḍh"
-    "N": "ṇ"
-    "t": "t"
-    "th": "th"
-    "d": "d"
-    "dh": "dh"
-    "n": "n"
-    "p": "p"
-    "ph": "ph"
-    "b": "b"
-    "bh": "bh"
-    "m": "m"
-    "y": "y"
-    "r": "r"
-    "l": "l"
-    "v": "v"
-    "sh": "ś"
-    "Sh": "ṣ"
-    "shh": "ṣ"
-    "s": "s"
-    "h": "h"
+    ConsonantK: "k"
+    ConsonantKh: "kh"
+    ConsonantG: "g"
+    ConsonantGh: "gh"
+    ConsonantNg: ["~N", "N^"]  # prefer "~N" over "N^" for output
+    ConsonantC: "ch"  # canonical form
+    ConsonantCh: ["ch", "Ch", "chh"]  # prefer "ch" for output
+    ConsonantJ: "j"
+    ConsonantJh: "jh"
+    ConsonantNy: ["~n", "JN"]  # prefer "~n" over "JN" for output
+    ConsonantT: "T"
+    ConsonantTh: "Th"
+    ConsonantD: "D"
+    ConsonantDh: "Dh"
+    ConsonantN: "N"
+    ConsonantTt: "t"
+    ConsonantTth: "th"
+    ConsonantDd: "d"
+    ConsonantDdh: "dh"
+    ConsonantNn: "n"
+    ConsonantP: "p"
+    ConsonantPh: "ph"
+    ConsonantB: "b"
+    ConsonantBh: "bh"
+    ConsonantM: "m"
+    ConsonantY: "y"
+    ConsonantR: "r"
+    ConsonantL: "l"
+    ConsonantV: "v"
+    ConsonantSh: "sh"
+    ConsonantSs: ["Sh", "shh"]  # prefer "Sh" over "shh" for output
+    ConsonantS: "s"
+    ConsonantH: "h"
 
   marks:
-    "M": "ṁ"      # anusvara
-    "H": "ḥ"      # visarga
-    ".N": "ṁ"     # anusvara
-    ".n": "ṁ"     # anusvara
+    MarkAnusvara: ["M", ".N", ".n"]  # prefer "M" for output
+    MarkVisarga: "H"
 
   special:
-    "OM": "oṁ"
-    "AUM": "oṁ"
-    "kSh": "kṣ"
-    "ksh": "kṣ"
-    "x": "kṣ"
-    "GY": "jñ"
-    "gy": "jñ"
-    "j~n": "jñ"
-    "dny": "jñ"
+    SpecialKs: ["kSh", "ksh", "x"]  # prefer "kSh" for output
+    SpecialJn: ["j~n", "gy", "GY", "dny"]  # prefer "j~n" for output
+    # SpecialOm: ["OM", "AUM"]  # prefer "OM" for output - no token yet
 
-  # For better matching, longer sequences should be checked first
-  # The build process will handle this automatically
+codegen:
+  processor_type: "roman_token_based"

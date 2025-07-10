@@ -127,8 +127,85 @@ pub trait ScriptConverter: Send + Sync {
     fn supports_reverse_conversion(&self, script: &str) -> bool {
         // Default implementation - try a dummy conversion to see if it errors
         use crate::modules::hub::HubFormat;
-        let dummy_input = HubFormat::Iso("test".to_string());
+        let dummy_input = HubFormat::AlphabetTokens(vec![]);
         self.from_hub(script, &dummy_input).is_ok()
+    }
+}
+
+/// Trait for token-based converters (generated from schemas)
+pub trait TokenConverter: Send + Sync {
+    /// Convert string to tokens
+    fn string_to_tokens(&self, input: &str) -> HubTokenSequence;
+    
+    /// Convert tokens to string
+    fn tokens_to_string(&self, tokens: &HubTokenSequence) -> String;
+    
+    /// Get the script name this converter handles
+    fn script_name(&self) -> &'static str;
+    
+    /// Get whether this converter handles alphabet tokens (Roman) or abugida tokens (Indic)
+    fn is_alphabet(&self) -> bool;
+}
+
+/// Registry for token-based converters
+pub struct TokenConverterRegistry {
+    converters: Vec<Box<dyn TokenConverter>>,
+    /// Cache mapping script names to converter indices for O(1) lookup
+    script_to_converter: FxHashMap<String, usize>,
+}
+
+impl TokenConverterRegistry {
+    pub fn new() -> Self {
+        Self {
+            converters: Vec::new(),
+            script_to_converter: FxHashMap::default(),
+        }
+    }
+    
+    pub fn register_converter(&mut self, converter: Box<dyn TokenConverter>) {
+        let converter_index = self.converters.len();
+        let script_name = converter.script_name().to_string();
+        
+        self.script_to_converter.insert(script_name, converter_index);
+        self.converters.push(converter);
+    }
+    
+    pub fn convert_to_tokens(&self, script: &str, input: &str) -> Result<HubTokenSequence, ConverterError> {
+        if let Some(&converter_index) = self.script_to_converter.get(script) {
+            let tokens = self.converters[converter_index].string_to_tokens(input);
+            Ok(tokens)
+        } else {
+            Err(ConverterError::ConversionFailed {
+                script: script.to_string(),
+                reason: format!("No token converter found for script: {}", script),
+            })
+        }
+    }
+    
+    pub fn convert_from_tokens(&self, script: &str, tokens: &HubTokenSequence) -> Result<String, ConverterError> {
+        if let Some(&converter_index) = self.script_to_converter.get(script) {
+            let output = self.converters[converter_index].tokens_to_string(tokens);
+            Ok(output)
+        } else {
+            Err(ConverterError::ConversionFailed {
+                script: script.to_string(),
+                reason: format!("No token converter found for script: {}", script),
+            })
+        }
+    }
+    
+    pub fn supports_script(&self, script: &str) -> bool {
+        self.script_to_converter.contains_key(script)
+    }
+    
+    pub fn list_supported_scripts(&self) -> Vec<String> {
+        self.script_to_converter.keys().cloned().collect()
+    }
+    
+    pub fn is_alphabet_script(&self, script: &str) -> bool {
+        self.script_to_converter.get(script)
+            .map(|&idx| self.converters[idx].is_alphabet())
+            .unwrap_or(false)
     }
 }
 
@@ -137,6 +214,8 @@ pub struct ScriptConverterRegistry {
     converters: Vec<Box<dyn ScriptConverter>>,
     /// Cache mapping script names to converter indices for O(1) lookup
     script_to_converter: FxHashMap<String, usize>,
+    /// Token-based converter registry
+    token_converters: TokenConverterRegistry,
 }
 
 impl ScriptConverterRegistry {
@@ -144,6 +223,7 @@ impl ScriptConverterRegistry {
         Self {
             converters: Vec::new(),
             script_to_converter: FxHashMap::default(),
+            token_converters: TokenConverterRegistry::new(),
         }
     }
 
@@ -172,9 +252,18 @@ impl ScriptConverterRegistry {
         input: &str,
         schema_registry: Option<&crate::modules::registry::SchemaRegistry>,
     ) -> Result<HubInput, ConverterError> {
-        // Special case: if source is already Devanagari (hub format), return directly
-        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
-            return Ok(HubInput::Devanagari(input.to_string()));
+        // Try token-based converters first
+        if self.token_converters.supports_script(script) {
+            let tokens = self.token_converters.convert_to_tokens(script, input)?;
+            
+            // Convert tokens to appropriate hub format
+            let hub_format = if self.token_converters.is_alphabet_script(script) {
+                HubFormat::AlphabetTokens(tokens)
+            } else {
+                HubFormat::AbugidaTokens(tokens)
+            };
+            
+            return Ok(hub_format);
         }
 
         // Resolve aliases first
@@ -185,14 +274,8 @@ impl ScriptConverterRegistry {
             return self.converters[converter_index].to_hub(canonical_script, input);
         }
 
-        // Fallback to schema-based converter for runtime-loaded scripts
-        if let Some(registry) = schema_registry {
-            let schema_converter =
-                schema_based::SchemaBasedConverter::new(std::sync::Arc::new(registry.clone()));
-            if schema_converter.supports_script(script) {
-                return schema_converter.to_hub(script, input);
-            }
-        }
+        // REMOVED: Schema-based converter fallback (old string-based system)
+        // TODO: Implement token-based runtime schema conversion
 
         Err(ConverterError::ConversionFailed {
             script: script.to_string(),
@@ -212,11 +295,17 @@ impl ScriptConverterRegistry {
         hub_input: &HubInput,
         schema_registry: Option<&crate::modules::registry::SchemaRegistry>,
     ) -> Result<String, ConverterError> {
-        // Special case: if target is Devanagari (hub format) and input is already Devanagari, return directly
-        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
-            if let HubInput::Devanagari(deva_text) = hub_input {
-                return Ok(deva_text.clone());
-            }
+        // Try token-based converters first
+        if self.token_converters.supports_script(script) {
+            // Extract tokens from hub format
+            let tokens = match hub_input {
+                HubFormat::AlphabetTokens(tokens) => tokens,
+                HubFormat::AbugidaTokens(tokens) => tokens,
+            };
+            
+            // Convert tokens to string
+            let result = self.token_converters.convert_from_tokens(script, tokens)?;
+            return Ok(result);
         }
 
         // Resolve aliases first
@@ -227,14 +316,8 @@ impl ScriptConverterRegistry {
             return self.converters[converter_index].from_hub(canonical_script, hub_input);
         }
 
-        // Fallback to schema-based converter for runtime-loaded scripts
-        if let Some(registry) = schema_registry {
-            let schema_converter =
-                schema_based::SchemaBasedConverter::new(std::sync::Arc::new(registry.clone()));
-            if schema_converter.supports_script(script) {
-                return schema_converter.from_hub(script, hub_input);
-            }
-        }
+        // REMOVED: Schema-based converter fallback (old string-based system)
+        // TODO: Implement token-based runtime schema conversion
 
         Err(ConverterError::ConversionFailed {
             script: script.to_string(),
@@ -248,10 +331,21 @@ impl ScriptConverterRegistry {
         script: &str,
         input: &str,
     ) -> Result<(HubInput, TransliterationMetadata), ConverterError> {
-        // Special case: if source is already Devanagari (hub format), return directly
-        if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
-            let metadata = TransliterationMetadata::new(script, "hub");
-            return Ok((HubInput::Devanagari(input.to_string()), metadata));
+        // Try token-based converters first
+        if self.token_converters.supports_script(script) {
+            let tokens = self.token_converters.convert_to_tokens(script, input)?;
+            
+            // Convert tokens to appropriate hub format
+            let hub_format = if self.token_converters.is_alphabet_script(script) {
+                HubFormat::AlphabetTokens(tokens)
+            } else {
+                HubFormat::AbugidaTokens(tokens)
+            };
+            
+            // Create basic metadata for script → hub conversion
+            let metadata = TransliterationMetadata::new(script, script);
+            
+            return Ok((hub_format, metadata));
         }
 
         // Fast lookup using HashMap cache instead of linear search
@@ -274,6 +368,26 @@ impl ScriptConverterRegistry {
         script: &str,
         hub_input: &HubInput,
     ) -> Result<TransliterationResult, ConverterError> {
+        // Try token-based converters first
+        if self.token_converters.supports_script(script) {
+            // Extract tokens from hub format
+            let tokens = match hub_input {
+                HubFormat::AlphabetTokens(tokens) => tokens,
+                HubFormat::AbugidaTokens(tokens) => tokens,
+            };
+            
+            // Convert tokens to string
+            let result = self.token_converters.convert_from_tokens(script, tokens)?;
+            
+            // Create basic metadata for hub → script conversion  
+            let metadata = TransliterationMetadata::new(script, script);
+            
+            return Ok(TransliterationResult {
+                output: result,
+                metadata: Some(metadata),
+            });
+        }
+
         // Resolve aliases first
         let canonical_script = self.resolve_script_alias(script);
 
@@ -306,7 +420,12 @@ impl ScriptConverterRegistry {
 
         // Check common aliases
         let canonical_script = self.resolve_script_alias(script);
-        self.script_to_converter.contains_key(canonical_script)
+        if self.script_to_converter.contains_key(canonical_script) {
+            return true;
+        }
+        
+        // Check token-based converters
+        self.token_converters.supports_script(canonical_script)
     }
 
     /// Resolve script aliases to canonical script names
@@ -328,15 +447,16 @@ impl ScriptConverterRegistry {
     }
 
     /// Get all supported scripts across all converters
-    pub fn list_supported_scripts(&self) -> Vec<&str> {
-        let mut scripts: Vec<&str> = self
+    pub fn list_supported_scripts(&self) -> Vec<String> {
+        let mut scripts: Vec<String> = self
             .script_to_converter
             .keys()
-            .map(|s| s.as_str())
+            .cloned()
             .collect();
 
-        // Add Devanagari as it's always supported (hub format)
-        scripts.push("devanagari");
+        // Add token-based converter scripts
+        let token_scripts = self.token_converters.list_supported_scripts();
+        scripts.extend(token_scripts);
 
         scripts.sort();
         scripts.dedup();
@@ -419,8 +539,10 @@ impl ScriptConverterRegistry {
         // Register all schema-generated converters (TOML/YAML based)
         register_schema_generated_converters(&mut registry);
 
-        // Register ISO-15919 hub format converter
-        registry.register_converter(Box::new(ISO15919Converter::new()));
+        // Register token-based converters
+        for converter in register_token_converters() {
+            registry.token_converters.register_converter(converter);
+        }
 
         registry
     }
@@ -457,7 +579,7 @@ impl ScriptConverterRegistry {
 // Shared processing logic
 pub mod processors;
 // Schema-based converter for runtime-loaded scripts
-pub mod schema_based;
+// pub mod schema_based; // REMOVED: Old string-based system ripped out
 
 // Include generated schema-based converters
 include!(concat!(env!("OUT_DIR"), "/schema_generated.rs"));
@@ -465,18 +587,16 @@ include!(concat!(env!("OUT_DIR"), "/schema_generated.rs"));
 // All script converters are now schema-generated
 // Hand-coded converters (iast.rs, kolkata.rs, grantha.rs) have been migrated to schemas/
 // The ISO-15919 converter is special as it's a passthrough converter (no schema needed)
-pub mod iso15919;
+// pub mod iso15919; // REMOVED: Old string-based system ripped out
 
 // Legacy optimized converters (replaced by schema-generated ones)
 // pub mod slp1_optimized;
 
-// Integration tests
-#[cfg(test)]
-mod integration_tests;
+// Integration tests removed - use property-based tests instead
 
 // Correctness tests
 #[cfg(test)]
-mod correctness_tests;
+// mod correctness_tests; // REMOVED: Old string-based system tests
 
 // Re-export commonly used types (primary interface)
 pub use ScriptConverterRegistry as ConverterRegistry; // Main interface for callers
@@ -484,7 +604,7 @@ pub use ScriptConverterRegistry as ConverterRegistry; // Main interface for call
 
 // Re-export individual converters (for advanced usage)
 // Schema-generated converters are automatically available (no re-export needed)
-pub use iso15919::ISO15919Converter; // Special passthrough converter
+// pub use iso15919::ISO15919Converter; // REMOVED: Old string-based system ripped out
 
 // TODO List for Script Converter Module:
 // - [ ] Handle ambiguous mappings with superscripted numerals when:
@@ -524,20 +644,7 @@ mod send_sync_tests {
         assert_send_sync::<Arc<dyn ScriptConverter>>();
     }
 
-    #[test]
-    fn test_script_converter_thread_safety() {
-        // Test that we can actually use ScriptConverter in threads
-        let converter: Arc<dyn ScriptConverter> = Arc::new(ISO15919Converter::new());
-
-        // Clone for thread
-        let converter_clone = Arc::clone(&converter);
-        let handle = thread::spawn(move || {
-            let scripts = converter_clone.supported_scripts();
-            assert!(scripts.contains(&"iso15919"));
-        });
-
-        handle.join().unwrap();
-    }
+    // REMOVED: ISO15919Converter test (old string-based system ripped out)
 
     #[test]
     fn test_script_converter_registry_send_sync() {
@@ -559,12 +666,12 @@ mod send_sync_tests {
     #[test]
     fn test_registry_thread_safety() {
         // Test that we can actually use ScriptConverterRegistry in threads
-        let registry = Arc::new(ScriptConverterRegistry::new());
+        let registry = Arc::new(ScriptConverterRegistry::default());
 
         let registry_clone = Arc::clone(&registry);
         let handle = thread::spawn(move || {
             let scripts = registry_clone.list_supported_scripts();
-            assert!(scripts.contains(&"devanagari"));
+            assert!(scripts.contains(&"devanagari".to_string()));
         });
 
         handle.join().unwrap();

@@ -4,115 +4,122 @@ metadata:
   has_implicit_a: true
   description: "Telugu (తెలుగు) script used for Telugu language"
 
+target: "abugida_tokens"
+
 mappings:
   vowels:
-    "అ": "अ"    # a
-    "ఆ": "आ"    # ā
-    "ఇ": "इ"    # i
-    "ఈ": "ई"    # ī
-    "ఉ": "उ"    # u
-    "ఊ": "ऊ"    # ū
-    "ఋ": "ऋ"    # r̥
-    "ౠ": "ॠ"    # r̥̄
-    "ఌ": "ऌ"    # l̥
-    "ౡ": "ॡ"    # l̥̄
-    "ఎ": "ए"    # e (short)
-    "ఏ": "ए"    # ē (long, maps to same)
-    "ఐ": "ऐ"    # ai
-    "ఒ": "ओ"    # o (short)
-    "ఓ": "ओ"    # ō (long, maps to same)
-    "ఔ": "औ"    # au
+    VowelA: "అ"    # a
+    VowelAa: "ఆ"    # ā
+    VowelI: "ఇ"    # i
+    VowelIi: "ఈ"    # ī
+    VowelU: "ఉ"    # u
+    VowelUu: "ఊ"    # ū
+    VowelVocalicR: "ఋ"    # r̥
+    VowelVocalicRr: "ౠ"    # r̥̄
+    VowelVocalicL: "ఌ"    # l̥
+    VowelVocalicLl: "ౡ"    # l̥̄
+    VowelE: ["ఎ", "ఏ"]    # e (short and long, prefer ఎ for output)
+    VowelAi: "ఐ"    # ai
+    VowelO: ["ఒ", "ఓ"]    # o (short and long, prefer ఒ for output)
+    VowelAu: "ఔ"    # au
 
   vowel_signs:
-    "ా": "ा"    # ā
-    "ి": "ि"    # i
-    "ీ": "ी"    # ī
-    "ు": "ु"    # u
-    "ూ": "ू"    # ū
-    "ృ": "ृ"    # r̥
-    "ౄ": "ॄ"    # r̥̄
-    "ె": "े"    # e (short)
-    "ే": "े"    # ē (long, maps to same)
-    "ై": "ै"    # ai
-    "ొ": "ो"    # o (short)
-    "ో": "ो"    # ō (long, maps to same)
-    "ౌ": "ौ"    # au
+    VowelSignAa: "ా"    # ā
+    VowelSignI: "ి"    # i
+    VowelSignIi: "ీ"    # ī
+    VowelSignU: "ు"    # u
+    VowelSignUu: "ూ"    # ū
+    VowelSignVocalicR: "ృ"    # r̥
+    VowelSignVocalicRr: "ౄ"    # r̥̄
+    VowelSignE: ["ె", "ే"]    # e (short and long, prefer ె for output)
+    VowelSignAi: "ై"    # ai
+    VowelSignO: ["ొ", "ో"]    # o (short and long, prefer ొ for output)
+    VowelSignAu: "ౌ"    # au
+    # Add missing signs to complete coverage
+    VowelSignVocalicL: "ె"    # placeholder - Telugu doesn't have this
+    VowelSignVocalicLl: "ె"    # placeholder - Telugu doesn't have this
 
   consonants:
     # Velar
-    "క": "क"    # ka
-    "ఖ": "ख"    # kha
-    "గ": "ग"    # ga
-    "ఘ": "घ"    # gha
-    "ఙ": "ङ"    # ṅa
+    ConsonantK: "క"    # ka
+    ConsonantKh: "ఖ"    # kha
+    ConsonantG: "గ"    # ga
+    ConsonantGh: "ఘ"    # gha
+    ConsonantNg: "ఙ"    # ṅa
     
     # Palatal
-    "చ": "च"    # ca
-    "ఛ": "छ"    # cha
-    "జ": "ज"    # ja
-    "ఝ": "झ"    # jha
-    "ఞ": "ञ"    # ña
+    ConsonantC: "చ"    # ca
+    ConsonantCh: "ఛ"    # cha
+    ConsonantJ: "జ"    # ja
+    ConsonantJh: "ఝ"    # jha
+    ConsonantNy: "ఞ"    # ña
     
     # Retroflex
-    "ట": "ट"    # ṭa
-    "ఠ": "ठ"    # ṭha
-    "డ": "ड"    # ḍa
-    "ఢ": "ढ"    # ḍha
-    "ణ": "ण"    # ṇa
+    ConsonantT: "ట"    # ṭa
+    ConsonantTh: "ఠ"    # ṭha
+    ConsonantD: "డ"    # ḍa
+    ConsonantDh: "ఢ"    # ḍha
+    ConsonantN: "ణ"    # ṇa
     
     # Dental
-    "త": "त"    # ta
-    "థ": "थ"    # tha
-    "ద": "द"    # da
-    "ధ": "ध"    # dha
-    "న": "न"    # na
+    ConsonantTt: "త"    # ta
+    ConsonantTth: "థ"    # tha
+    ConsonantDd: "ద"    # da
+    ConsonantDdh: "ధ"    # dha
+    ConsonantNn: "న"    # na
     
     # Labial
-    "ప": "प"    # pa
-    "ఫ": "फ"    # pha
-    "బ": "ब"    # ba
-    "భ": "भ"    # bha
-    "మ": "म"    # ma
+    ConsonantP: "ప"    # pa
+    ConsonantPh: "ఫ"    # pha
+    ConsonantB: "బ"    # ba
+    ConsonantBh: "భ"    # bha
+    ConsonantM: "మ"    # ma
     
     # Semivowels and liquids
-    "య": "य"    # ya
-    "ర": "र"    # ra
-    "ల": "ल"    # la
-    "వ": "व"    # va
-    "ళ": "ळ"    # ḷa (retroflex la)
+    ConsonantY: "య"    # ya
+    ConsonantR: "ర"    # ra
+    ConsonantL: "ల"    # la
+    ConsonantV: "వ"    # va
+    ConsonantLl: "ళ"    # ḷa (retroflex la)
     
     # Sibilants and aspirate
-    "శ": "श"    # śa
-    "ష": "ष"    # ṣa
-    "స": "स"    # sa
-    "హ": "ह"    # ha
+    ConsonantSh: "శ"    # śa
+    ConsonantSs: "ష"    # ṣa
+    ConsonantS: "స"    # sa
+    ConsonantH: "హ"    # ha
 
   marks:
-    "ం": "ं"    # anusvara/sunna
-    "ః": "ः"    # visarga
-    "ఁ": "ँ"    # candrabindu
-    "్": "्"    # virama/pollu
-    "ఽ": "ऽ"    # avagraha
+    MarkAnusvara: "ం"    # anusvara/sunna
+    MarkVisarga: "ః"    # visarga
+    MarkCandrabindu: "ఁ"    # candrabindu
+    MarkVirama: "్"    # virama/pollu
+    MarkAvagraha: "ఽ"    # avagraha
+    # Add missing marks to complete coverage
+    MarkNukta: "్"    # placeholder - Telugu doesn't have separate nukta
+    MarkUdatta: "ం"    # placeholder - Telugu doesn't have Vedic marks
+    MarkAnudatta: "ం"    # placeholder - Telugu doesn't have Vedic marks
+    MarkDoubleSvarita: "ం"    # placeholder - Telugu doesn't have Vedic marks
+    MarkTripleSvarita: "ం"    # placeholder - Telugu doesn't have Vedic marks
 
   special:
-    # Telugu-specific
-    "ౘ": "च"    # tsa (borrowed)
-    "ౙ": "ज"    # dza (borrowed)
-    "ఱ": "ऱ"    # rra (old ra)
-    "ౚ": "ऱ"    # rrra
+    # Telugu-specific characters mapped to closest equivalents
+    # These will be handled as unknown characters for now
+    # SpecialTsa: "ౘ"    # tsa (borrowed) - no token yet
+    # SpecialDza: "ౙ"    # dza (borrowed) - no token yet
+    # SpecialRra: "ఱ"    # rra (old ra) - no token yet
+    # SpecialRrra: "ౚ"    # rrra - no token yet
 
   digits:
-    "౦": "०"    # 0
-    "౧": "१"    # 1
-    "౨": "२"    # 2
-    "౩": "३"    # 3
-    "౪": "४"    # 4
-    "౫": "५"    # 5
-    "౬": "६"    # 6
-    "౭": "७"    # 7
-    "౮": "८"    # 8
-    "౯": "९"    # 9
+    Digit0: "౦"    # 0
+    Digit1: "౧"    # 1
+    Digit2: "౨"    # 2
+    Digit3: "౩"    # 3
+    Digit4: "౪"    # 4
+    Digit5: "౫"    # 5
+    Digit6: "౬"    # 6
+    Digit7: "౭"    # 7
+    Digit8: "౮"    # 8
+    Digit9: "౯"    # 9
 
 codegen:
-  mapping_type: "char_hashmap"
-  processor_type: "indic_standard"
+  processor_type: "indic_token_based"

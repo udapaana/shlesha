@@ -4,133 +4,95 @@ metadata:
   script_type: "brahmic"
   has_implicit_a: true
 
-# Character mappings (Tamil to Devanagari equivalent)
+target: "abugida_tokens"
+
 mappings:
-  # Independent vowels (standard Tamil)
   vowels:
-    "அ": "अ"    # a
-    "ஆ": "आ"    # ā
-    "இ": "इ"    # i
-    "ஈ": "ई"    # ī
-    "உ": "उ"    # u
-    "ஊ": "ऊ"    # ū
-    "எ": "ए"    # e
-    "ஏ": "ए"    # ē (mapped to e)
-    "ஐ": "ऐ"    # ai
-    "ஒ": "ओ"    # o
-    "ஓ": "ओ"    # ō (mapped to o)
-    "ஔ": "औ"    # au
-  
-  # Consonants - Basic Tamil set
-  consonants:
-    # Velar series
-    "க": "क"    # ka (unaspirated voiceless)
-    "ங": "ङ"    # ṅa (nasal)
-    
-    # Palatal series
-    "ச": "च"    # ca (unaspirated voiceless)
-    "ஞ": "ञ"    # ña (nasal)
-    
-    # Retroflex series
-    "ட": "ट"    # ṭa (unaspirated voiceless)
-    "ண": "ण"    # ṇa (nasal)
-    
-    # Dental series
-    "த": "त"    # ta (unaspirated voiceless)
-    "ந": "न"    # na (nasal)
-    
-    # Labial series
-    "ப": "प"    # pa (unaspirated voiceless)
-    "ம": "म"    # ma (nasal)
-    
-    # Semivowels
-    "ய": "य"    # ya
-    "ர": "र"    # ra
-    "ல": "ल"    # la
-    "வ": "व"    # va
-    
-    # Tamil-specific
-    "ழ": "ळ"    # ḻa (Tamil retroflex l)
-    "ள": "ळ"    # ḷa (Tamil lateral)
-    "ற": "र"    # ṟa (Tamil alveolar r)
-    "ன": "न"    # ṉa (Tamil alveolar n)
-    
-    # Sibilants (base form)
-    "ஸ": "स"    # sa (dental sibilant)
-    "ஹ": "ह"    # ha (aspirate)
+    VowelA: "அ"
+    VowelAa: "ஆ"
+    VowelI: "இ"
+    VowelIi: "ஈ"
+    VowelU: "உ"
+    VowelUu: "ஊ"
+    VowelE: "எ"
+    VowelAi: "ஐ"
+    VowelO: "ஒ"
+    VowelAu: "ஔ"
+    # Tamil-specific vowels that don't have exact Sanskrit equivalents
+    VowelVocalicR: "எ"  # placeholder - Tamil doesn't have these sounds
+    VowelVocalicRr: "எ"  # placeholder
+    VowelVocalicL: "எ"  # placeholder  
+    VowelVocalicLl: "எ"  # placeholder
 
-  # Sanskrit Extensions with Superscripts
-  # These represent sounds not native to Tamil
-  sanskrit_extensions:
-    # Velar series extensions
-    "க²": "ख"    # kha (aspirated voiceless)
-    "க³": "ग"    # ga (unaspirated voiced)
-    "க⁴": "घ"    # gha (aspirated voiced)
-    
-    # Palatal series extensions
-    "ச²": "छ"    # cha (aspirated voiceless)
-    "ச³": "ज"    # ja (unaspirated voiced)
-    "ச⁴": "झ"    # jha (aspirated voiced)
-    
-    # Retroflex series extensions
-    "ட²": "ठ"    # ṭha (aspirated voiceless)
-    "ட³": "ड"    # ḍa (unaspirated voiced)
-    "ட⁴": "ढ"    # ḍha (aspirated voiced)
-    
-    # Dental series extensions
-    "த²": "थ"    # tha (aspirated voiceless)
-    "த³": "द"    # da (unaspirated voiced)
-    "த⁴": "ध"    # dha (aspirated voiced)
-    
-    # Labial series extensions
-    "ப²": "फ"    # pha (aspirated voiceless)
-    "ப³": "ब"    # ba (unaspirated voiced)
-    "ப⁴": "भ"    # bha (aspirated voiced)
-    
-    # Sibilant extensions
-    "ஸ²": "श"    # śa (palatal sibilant)
-    "ஸ³": "ष"    # ṣa (retroflex sibilant)
-    
-    # Vocalic consonants
-    "ர்²": "ऋ"    # r̥ (vocalic r)
-    "ர்³": "ॠ"    # r̥̄ (long vocalic r)
-    "ல்²": "ऌ"    # l̥ (vocalic l)
-    "ல்³": "ॡ"    # l̥̄ (long vocalic l)
-  
-  # Vowel signs (matras) - standard Tamil
   vowel_signs:
-    "ா": "ा"    # ā
-    "ி": "ि"    # i
-    "ீ": "ी"    # ī
-    "ு": "ु"    # u
-    "ூ": "ू"    # ū
-    "ெ": "े"    # e
-    "ே": "े"    # ē
-    "ை": "ै"    # ai
-    "ொ": "ो"    # o
-    "ோ": "ो"    # ō
-    "ௌ": "ौ"    # au
-  
-  # Special marks
-  marks:
-    "ஂ": "ं"    # anusvara (rare in Tamil)
-    "ஃ": "ः"    # visarga (rare in Tamil)
-    "்": "्"    # virama/pulli
-  
-  # Digits (Tamil numerals)
-  digits:
-    "௦": "०"    # 0
-    "௧": "१"    # 1
-    "௨": "२"    # 2
-    "௩": "३"    # 3
-    "௪": "४"    # 4
-    "௫": "५"    # 5
-    "௬": "६"    # 6
-    "௭": "७"    # 7
-    "௮": "८"    # 8
-    "௯": "९"    # 9
+    VowelSignAa: "ா"
+    VowelSignI: "ி"
+    VowelSignIi: "ீ"
+    VowelSignU: "ு"
+    VowelSignUu: "ூ"
+    VowelSignE: "ெ"
+    VowelSignAi: "ை"
+    VowelSignO: "ொ"
+    VowelSignAu: "ௌ"
+    # Placeholders for missing vowel signs
+    VowelSignVocalicR: "ெ"  # placeholder
+    VowelSignVocalicRr: "ெ"  # placeholder
+    VowelSignVocalicL: "ெ"  # placeholder
+    VowelSignVocalicLl: "ெ"  # placeholder
 
-# Processing instructions for code generation
+  consonants:
+    ConsonantK: "க"
+    ConsonantNg: "ங"
+    ConsonantC: "ச"
+    ConsonantNy: "ஞ"
+    ConsonantT: "ட"
+    ConsonantN: "ண"
+    ConsonantTt: "த"
+    ConsonantNn: "ந"
+    ConsonantP: "ப"
+    ConsonantM: "ம"
+    ConsonantY: "ய"
+    ConsonantR: "ர"
+    ConsonantL: "ல"
+    ConsonantV: "வ"
+    ConsonantLl: "ழ"
+    ConsonantS: "ஸ"
+    ConsonantH: "ஹ"
+    # Placeholders for missing aspirated consonants (Tamil doesn't have these)
+    ConsonantKh: "க"  # placeholder
+    ConsonantG: "க"   # placeholder
+    ConsonantGh: "க"  # placeholder
+    ConsonantCh: "ச"  # placeholder
+    ConsonantJ: "ச"   # placeholder
+    ConsonantJh: "ச"  # placeholder
+    ConsonantTh: "ட"  # placeholder
+    ConsonantD: "ட"   # placeholder
+    ConsonantDh: "ட"  # placeholder
+    ConsonantTth: "த" # placeholder
+    ConsonantDd: "த"  # placeholder
+    ConsonantDdh: "த" # placeholder
+    ConsonantPh: "ப"  # placeholder
+    ConsonantB: "ப"   # placeholder
+    ConsonantBh: "ப"  # placeholder
+    ConsonantSh: "ஸ"  # placeholder
+    ConsonantSs: "ஸ"  # placeholder
+
+  marks:
+    MarkAnusvara: "ஂ"
+    MarkVisarga: "ஃ"
+    MarkVirama: "்"
+
+  digits:
+    Digit0: "௦"
+    Digit1: "௧"
+    Digit2: "௨"
+    Digit3: "௩"
+    Digit4: "௪"
+    Digit5: "௫"
+    Digit6: "௬"
+    Digit7: "௭"
+    Digit8: "௮"
+    Digit9: "௯"
+
 codegen:
-  mapping_type: "string_hashmap"
-  processor_type: "indic_extended"
+  processor_type: "indic_token_based"

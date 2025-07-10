@@ -1,0 +1,119 @@
+metadata:
+  name: "devanagari"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Devanagari (देवनागरी) script - hub script for Indic processing"
+  aliases: ["deva"]
+
+target: "abugida_tokens"
+
+mappings:
+  vowels:
+    VowelA: "अ"    # a
+    VowelAa: "आ"    # ā
+    VowelI: "इ"    # i
+    VowelIi: "ई"    # ī
+    VowelU: "उ"    # u
+    VowelUu: "ऊ"    # ū
+    VowelVocalicR: "ऋ"    # r̥
+    VowelVocalicRr: "ॠ"    # r̥̄
+    VowelVocalicL: "ऌ"    # l̥
+    VowelVocalicLl: "ॡ"    # l̥̄
+    VowelE: "ए"    # e
+    VowelAi: "ऐ"    # ai
+    VowelO: "ओ"    # o
+    VowelAu: "औ"    # au
+
+  vowel_signs:
+    VowelSignAa: "ा"    # ā
+    VowelSignI: "ि"    # i
+    VowelSignIi: "ी"    # ī
+    VowelSignU: "ु"    # u
+    VowelSignUu: "ू"    # ū
+    VowelSignVocalicR: "ृ"    # r̥
+    VowelSignVocalicRr: "ॄ"    # r̥̄
+    VowelSignVocalicL: "ॢ"    # l̥
+    VowelSignVocalicLl: "ॣ"    # l̥̄
+    VowelSignE: "े"    # e
+    VowelSignAi: "ै"    # ai
+    VowelSignO: "ो"    # o
+    VowelSignAu: "ौ"    # au
+
+  consonants:
+    # Velar
+    ConsonantK: "क"    # ka
+    ConsonantKh: "ख"    # kha
+    ConsonantG: "ग"    # ga
+    ConsonantGh: "घ"    # gha
+    ConsonantNg: "ङ"    # ṅa
+    
+    # Palatal
+    ConsonantC: "च"    # ca
+    ConsonantCh: "छ"    # cha
+    ConsonantJ: "ज"    # ja
+    ConsonantJh: "झ"    # jha
+    ConsonantNy: "ञ"    # ña
+    
+    # Retroflex
+    ConsonantT: "ट"    # ṭa
+    ConsonantTh: "ठ"    # ṭha
+    ConsonantD: "ड"    # ḍa
+    ConsonantDh: "ढ"    # ḍha
+    ConsonantN: "ण"    # ṇa
+    
+    # Dental
+    ConsonantTt: "त"    # ta
+    ConsonantTth: "थ"    # tha
+    ConsonantDd: "द"    # da
+    ConsonantDdh: "ध"    # dha
+    ConsonantNn: "न"    # na
+    
+    # Labial
+    ConsonantP: "प"    # pa
+    ConsonantPh: "फ"    # pha
+    ConsonantB: "ब"    # ba
+    ConsonantBh: "भ"    # bha
+    ConsonantM: "म"    # ma
+    
+    # Semivowels and liquids
+    ConsonantY: "य"    # ya
+    ConsonantR: "र"    # ra
+    ConsonantL: "ल"    # la
+    ConsonantV: "व"    # va
+    ConsonantLl: "ळ"    # ḷa (Marathi/Dravidian)
+    
+    # Sibilants and aspirate
+    ConsonantSh: "श"    # śa
+    ConsonantSs: "ष"    # ṣa
+    ConsonantS: "स"    # sa
+    ConsonantH: "ह"    # ha
+
+  marks:
+    MarkAnusvara: "ं"    # anusvara
+    MarkVisarga: "ः"    # visarga
+    MarkCandrabindu: "ँ"    # candrabindu
+    MarkNukta: "़"    # nukta
+    MarkVirama: "्"    # virama/halanta
+    MarkAvagraha: "ऽ"    # avagraha
+
+  special:
+    # Vedic marks
+    MarkUdatta: "॑"    # udatta
+    MarkAnudatta: "॒"    # anudatta
+    MarkDoubleSvarita: "᳚"    # double svarita
+    MarkTripleSvarita: "᳛"    # triple svarita
+
+  digits:
+    Digit0: "०"    # 0
+    Digit1: "१"    # 1
+    Digit2: "२"    # 2
+    Digit3: "३"    # 3
+    Digit4: "४"    # 4
+    Digit5: "५"    # 5
+    Digit6: "६"    # 6
+    Digit7: "७"    # 7
+    Digit8: "८"    # 8
+    Digit9: "९"    # 9
+
+codegen:
+  processor_type: "indic_token_based"

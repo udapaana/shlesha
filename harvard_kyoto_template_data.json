@@ -1,0 +1,409 @@
+{
+  "has_multi_char_mappings": true,
+  "is_alphabet": true,
+  "mappings": [
+    {
+      "category": "Vowels",
+      "entries": [
+        {
+          "all_inputs": [
+            "RR",
+            "r̥̄"
+          ],
+          "preferred": "RR",
+          "token": "VowelVocalicRr"
+        },
+        {
+          "all_inputs": [
+            "i"
+          ],
+          "preferred": "i",
+          "token": "VowelI"
+        },
+        {
+          "all_inputs": [
+            "A"
+          ],
+          "preferred": "A",
+          "token": "VowelAa"
+        },
+        {
+          "all_inputs": [
+            "U"
+          ],
+          "preferred": "U",
+          "token": "VowelUu"
+        },
+        {
+          "all_inputs": [
+            "I"
+          ],
+          "preferred": "I",
+          "token": "VowelIi"
+        },
+        {
+          "all_inputs": [
+            "a"
+          ],
+          "preferred": "a",
+          "token": "VowelA"
+        },
+        {
+          "all_inputs": [
+            "lRR",
+            "l̥̄"
+          ],
+          "preferred": "lRR",
+          "token": "VowelVocalicLl"
+        },
+        {
+          "all_inputs": [
+            "e"
+          ],
+          "preferred": "e",
+          "token": "VowelE"
+        },
+        {
+          "all_inputs": [
+            "ai"
+          ],
+          "preferred": "ai",
+          "token": "VowelAi"
+        },
+        {
+          "all_inputs": [
+            "R"
+          ],
+          "preferred": "R",
+          "token": "VowelVocalicR"
+        },
+        {
+          "all_inputs": [
+            "au"
+          ],
+          "preferred": "au",
+          "token": "VowelAu"
+        },
+        {
+          "all_inputs": [
+            "lR"
+          ],
+          "preferred": "lR",
+          "token": "VowelVocalicL"
+        },
+        {
+          "all_inputs": [
+            "u"
+          ],
+          "preferred": "u",
+          "token": "VowelU"
+        },
+        {
+          "all_inputs": [
+            "o"
+          ],
+          "preferred": "o",
+          "token": "VowelO"
+        }
+      ]
+    },
+    {
+      "category": "Consonants",
+      "entries": [
+        {
+          "all_inputs": [
+            "Th"
+          ],
+          "preferred": "Th",
+          "token": "ConsonantTh"
+        },
+        {
+          "all_inputs": [
+            "bh"
+          ],
+          "preferred": "bh",
+          "token": "ConsonantBh"
+        },
+        {
+          "all_inputs": [
+            "S"
+          ],
+          "preferred": "S",
+          "token": "ConsonantSs"
+        },
+        {
+          "all_inputs": [
+            "v"
+          ],
+          "preferred": "v",
+          "token": "ConsonantV"
+        },
+        {
+          "all_inputs": [
+            "dh"
+          ],
+          "preferred": "dh",
+          "token": "ConsonantDdh"
+        },
+        {
+          "all_inputs": [
+            "j"
+          ],
+          "preferred": "j",
+          "token": "ConsonantJ"
+        },
+        {
+          "all_inputs": [
+            "jh"
+          ],
+          "preferred": "jh",
+          "token": "ConsonantJh"
+        },
+        {
+          "all_inputs": [
+            "t"
+          ],
+          "preferred": "t",
+          "token": "ConsonantTt"
+        },
+        {
+          "all_inputs": [
+            "l"
+          ],
+          "preferred": "l",
+          "token": "ConsonantL"
+        },
+        {
+          "all_inputs": [
+            "d"
+          ],
+          "preferred": "d",
+          "token": "ConsonantDd"
+        },
+        {
+          "all_inputs": [
+            "y"
+          ],
+          "preferred": "y",
+          "token": "ConsonantY"
+        },
+        {
+          "all_inputs": [
+            "k"
+          ],
+          "preferred": "k",
+          "token": "ConsonantK"
+        },
+        {
+          "all_inputs": [
+            "D"
+          ],
+          "preferred": "D",
+          "token": "ConsonantD"
+        },
+        {
+          "all_inputs": [
+            "Dh"
+          ],
+          "preferred": "Dh",
+          "token": "ConsonantDh"
+        },
+        {
+          "all_inputs": [
+            "r"
+          ],
+          "preferred": "r",
+          "token": "ConsonantR"
+        },
+        {
+          "all_inputs": [
+            "p"
+          ],
+          "preferred": "p",
+          "token": "ConsonantP"
+        },
+        {
+          "all_inputs": [
+            "b"
+          ],
+          "preferred": "b",
+          "token": "ConsonantB"
+        },
+        {
+          "all_inputs": [
+            "gh"
+          ],
+          "preferred": "gh",
+          "token": "ConsonantGh"
+        },
+        {
+          "all_inputs": [
+            "T"
+          ],
+          "preferred": "T",
+          "token": "ConsonantT"
+        },
+        {
+          "all_inputs": [
+            "c"
+          ],
+          "preferred": "c",
+          "token": "ConsonantC"
+        },
+        {
+          "all_inputs": [
+            "th"
+          ],
+          "preferred": "th",
+          "token": "ConsonantTth"
+        },
+        {
+          "all_inputs": [
+            "kh"
+          ],
+          "preferred": "kh",
+          "token": "ConsonantKh"
+        },
+        {
+          "all_inputs": [
+            "h"
+          ],
+          "preferred": "h",
+          "token": "ConsonantH"
+        },
+        {
+          "all_inputs": [
+            "s"
+          ],
+          "preferred": "s",
+          "token": "ConsonantS"
+        },
+        {
+          "all_inputs": [
+            "z"
+          ],
+          "preferred": "z",
+          "token": "ConsonantSh"
+        },
+        {
+          "all_inputs": [
+            "L"
+          ],
+          "preferred": "L",
+          "token": "ConsonantLl"
+        },
+        {
+          "all_inputs": [
+            "g"
+          ],
+          "preferred": "g",
+          "token": "ConsonantG"
+        },
+        {
+          "all_inputs": [
+            "m"
+          ],
+          "preferred": "m",
+          "token": "ConsonantM"
+        },
+        {
+          "all_inputs": [
+            "J"
+          ],
+          "preferred": "J",
+          "token": "ConsonantNy"
+        },
+        {
+          "all_inputs": [
+            "N"
+          ],
+          "preferred": "N",
+          "token": "ConsonantN"
+        },
+        {
+          "all_inputs": [
+            "G"
+          ],
+          "preferred": "G",
+          "token": "ConsonantNg"
+        },
+        {
+          "all_inputs": [
+            "ph"
+          ],
+          "preferred": "ph",
+          "token": "ConsonantPh"
+        },
+        {
+          "all_inputs": [
+            "ch"
+          ],
+          "preferred": "ch",
+          "token": "ConsonantCh"
+        },
+        {
+          "all_inputs": [
+            "n"
+          ],
+          "preferred": "n",
+          "token": "ConsonantNn"
+        }
+      ]
+    },
+    {
+      "category": "Marks",
+      "entries": [
+        {
+          "all_inputs": [
+            "M"
+          ],
+          "preferred": "M",
+          "token": "MarkAnusvara"
+        },
+        {
+          "all_inputs": [
+            "H"
+          ],
+          "preferred": "H",
+          "token": "MarkVisarga"
+        },
+        {
+          "all_inputs": [
+            ".N"
+          ],
+          "preferred": ".N",
+          "token": "MarkCandrabindu"
+        },
+        {
+          "all_inputs": [
+            "'"
+          ],
+          "preferred": "'",
+          "token": "MarkAvagraha"
+        }
+      ]
+    },
+    {
+      "category": "Special",
+      "entries": [
+        {
+          "all_inputs": [
+            "kS"
+          ],
+          "preferred": "kS",
+          "token": "SpecialKs"
+        },
+        {
+          "all_inputs": [
+            "jJ"
+          ],
+          "preferred": "jJ",
+          "token": "SpecialJn"
+        }
+      ]
+    }
+  ],
+  "script_name": "harvard_kyoto",
+  "struct_name": "HarvardKyotoConverter",
+  "target_type": "alphabet_tokens"
+}

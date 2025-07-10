@@ -5,14 +5,14 @@ use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-#[derive(serde::Deserialize, Debug)]
+#[derive(serde::Deserialize, Debug, Clone)]
 struct ScriptMetadata {
     name: String,
     script_type: String,
     has_implicit_a: bool,
 }
 
-#[derive(serde::Deserialize, Debug)]
+#[derive(serde::Deserialize, Debug, Clone)]
 struct TokenMappings {
     vowels: Option<FxHashMap<String, TokenMapping>>,      // "VowelA" -> ["a", "A"] or "VowelA" -> "a"
     consonants: Option<FxHashMap<String, TokenMapping>>,  // "ConsonantK" -> ["k", "K"] 
@@ -23,26 +23,19 @@ struct TokenMappings {
 }
 
 // Support both single string and array of strings for flexibility
-#[derive(serde::Deserialize, serde::Serialize, Debug)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 #[serde(untagged)]
 enum TokenMapping {
     Single(String),      // "a"
     Multiple(Vec<String>), // ["a", "A"]
 }
 
-#[derive(serde::Deserialize, Debug)]
+#[derive(serde::Deserialize, Debug, Clone)]
 struct CodegenConfig {
     processor_type: String,
 }
 
 impl TokenMapping {
-    fn get_all_values(&self) -> Vec<String> {
-        match self {
-            TokenMapping::Single(s) => vec![s.clone()],
-            TokenMapping::Multiple(vec) => vec.clone(),
-        }
-    }
-    
     fn get_preferred(&self) -> String {
         match self {
             TokenMapping::Single(s) => s.clone(),
@@ -51,7 +44,7 @@ impl TokenMapping {
     }
 }
 
-#[derive(serde::Deserialize, Debug)]
+#[derive(serde::Deserialize, Debug, Clone)]
 struct ScriptSchema {
     metadata: ScriptMetadata,
     target: Option<String>, // "alphabet_tokens" or "abugida_tokens" (optional for legacy schemas)
@@ -66,16 +59,9 @@ fn flatten_token_mappings(mappings: &FxHashMap<String, TokenMapping>) -> FxHashM
         .collect()
 }
 
-// Helper to flatten a HashMap of &TokenMapping references
-fn flatten_token_mappings_refs(mappings: &FxHashMap<String, &TokenMapping>) -> FxHashMap<String, String> {
-    mappings.iter()
-        .map(|(k, v)| (k.clone(), v.get_preferred()))
-        .collect()
-}
 
 fn main() {
     println!("cargo:rerun-if-changed=schemas/");
-    println!("cargo:warning=DEBUG: Build script starting");
 
     if let Err(e) = generate_schema_based_converters() {
         println!("cargo:warning=Failed to generate schema-based converters: {e}");
@@ -83,33 +69,22 @@ fn main() {
 }
 
 fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> {
-    println!("cargo:warning=DEBUG: Starting schema-based converter generation");
     let out_dir = PathBuf::from(env::var("OUT_DIR")?);
     let schemas_dir = Path::new("schemas");
-    println!("cargo:warning=DEBUG: Looking for schemas in: {}", schemas_dir.display());
 
-    // Initialize Handlebars template engine
+    // Initialize Handlebars template engine - token-based only!
     let mut handlebars = Handlebars::new();
-    handlebars.register_template_file("roman_converter", "templates/roman_converter.hbs")?;
-    handlebars.register_template_file(
-        "roman_converter_aho_corasick",
-        "templates/roman_converter_aho_corasick.hbs",
-    )?;
-    handlebars.register_template_file(
-        "roman_to_devanagari_direct",
-        "templates/roman_to_devanagari_direct.hbs",
-    )?;
-    handlebars.register_template_file(
-        "indic_standard_converter",
-        "templates/indic_standard_converter.hbs",
-    )?;
-    handlebars.register_template_file(
-        "indic_extended_converter",
-        "templates/indic_extended_converter.hbs",
-    )?;
     handlebars.register_template_file(
         "token_based_converter",
         "templates/token_based_converter.hbs",
+    )?;
+    handlebars.register_template_file(
+        "hub_converter",
+        "templates/hub_converter.hbs",
+    )?;
+    handlebars.register_template_file(
+        "direct_converter",
+        "templates/direct_converter.hbs",
     )?;
 
     // Register helper functions for templates
@@ -117,11 +92,13 @@ fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> 
     handlebars.register_helper("lowercase", Box::new(lowercase_helper));
     handlebars.register_helper("capitalize", Box::new(capitalize_helper));
     handlebars.register_helper("escape", Box::new(escape_helper));
+    handlebars.register_helper("eq", Box::new(eq_helper));
 
     let mut generated_code = String::new();
     let mut converter_registrations = Vec::new();
+    let mut schemas = Vec::new();
 
-    // Add header
+    // Add header with all necessary imports once
     generated_code.push_str(
         r#"
 // Auto-generated converters from TOML/YAML schemas
@@ -145,28 +122,21 @@ use aho_corasick::AhoCorasick;
             if path.extension().and_then(|s| s.to_str()) == Some("yaml") {
                 println!("cargo:rerun-if-changed={}", path.display());
 
-                println!("cargo:warning=DEBUG: Loading schema file: {}", path.display());
                 let content = fs::read_to_string(&path)?;
                 let schema: ScriptSchema = serde_yaml::from_str(&content).map_err(|e| {
                     format!("Failed to parse YAML schema {}: {}", path.display(), e)
                 })?;
-                println!("cargo:warning=DEBUG: Loaded schema '{}' with target '{:?}'", schema.metadata.name, schema.target);
                 
-                // Debug the first few mappings to see if they're swapped
-                if let Some(ref digits) = schema.mappings.digits {
-                    for (k, v) in digits.iter().take(2) {
-                        println!("cargo:warning=DEBUG: digits mapping: key='{}', value='{:?}'", k, v);
-                    }
-                }
-                if let Some(ref vowels) = schema.mappings.vowels {
-                    for (k, v) in vowels.iter().take(2) {
-                        println!("cargo:warning=DEBUG: vowels mapping: key='{}', value='{:?}'", k, v);
-                    }
-                }
+                // Add schema to collection for Hub generation
+                schemas.push(schema.clone());
 
-                // Skip Devanagari as it's the hub script and handled directly
-                if schema.metadata.name.to_lowercase() == "devanagari" {
-                    continue;
+                // Only process token-based schemas
+                if let Some(ref target) = schema.target {
+                    if target != "alphabet_tokens" && target != "abugida_tokens" {
+                        continue; // Skip non-token schemas
+                    }
+                } else {
+                    continue; // Skip schemas without target
                 }
 
                 let converter_code =
@@ -178,69 +148,51 @@ use aho_corasick::AhoCorasick;
                     })?;
                 generated_code.push_str(&converter_code);
 
-                // Skip token-based converters from being registered with ScriptConverter registry
+                // Only register token-based converters!
                 if let Some(ref target) = schema.target {
-                    if target != "alphabet_tokens" && target != "abugida_tokens" {
+                    if target == "alphabet_tokens" || target == "abugida_tokens" {
                         converter_registrations.push(format!(
                             "{}Converter",
                             capitalize_first(&schema.metadata.name)
                         ));
                     }
-                } else {
-                    // For legacy schemas without target field, register them
-                    converter_registrations.push(format!(
-                        "{}Converter",
-                        capitalize_first(&schema.metadata.name)
-                    ));
                 }
 
-                // For Roman scripts targeting ISO-15919, also generate direct Roman → Devanagari converter
-                if schema.metadata.script_type == "roman"
-                    && schema.target.as_ref().map(|s| s.as_str()) == Some("iso15919")
-                {
-                    let devanagari_converter_code =
-                        generate_roman_to_devanagari_converter(&handlebars, &schema).map_err(
-                            |e| {
-                                format!(
-                                    "Failed to generate Roman→Devanagari converter for {}: {}",
-                                    schema.metadata.name, e
-                                )
-                            },
-                        )?;
-                    generated_code.push_str(&devanagari_converter_code);
-
-                    // Skip token-based converters from being registered with ScriptConverter registry
-                    if let Some(ref target) = schema.target {
-                        if target != "alphabet_tokens" && target != "abugida_tokens" {
-                            converter_registrations.push(format!(
-                                "{}DevanagariConverter",
-                                capitalize_first(&schema.metadata.name)
-                            ));
-                        }
-                    } else {
-                        // For legacy schemas without target field, register them
-                        converter_registrations.push(format!(
-                            "{}DevanagariConverter",
-                            capitalize_first(&schema.metadata.name)
-                        ));
-                    }
-                }
+                // No more Roman → Devanagari converters - everything goes through tokens!
             }
         }
     }
 
-    // Add registration function
+    // Generate Hub converter from token-based schemas separately
+    if let Ok(hub_code) = generate_hub_converter(&handlebars, &schemas) {
+        fs::write(out_dir.join("hub_generated.rs"), hub_code)?;
+    }
+    
+    // Generate direct converters for common script pairs to bypass hub overhead
+    if let Ok(direct_code) = generate_direct_converters(&handlebars, &schemas) {
+        fs::write(out_dir.join("direct_converters_generated.rs"), direct_code)?;
+    }
+
+    // Generate token-based converter registry
+    let token_registrations = converter_registrations.iter()
+        .map(|name| format!("    Box::new({}::new()),", name))
+        .collect::<Vec<_>>()
+        .join("\n");
+    
     generated_code.push_str(&format!(r#"
-/// Register all schema-generated converters
-pub fn register_schema_generated_converters(registry: &mut crate::modules::script_converter::ScriptConverterRegistry) {{
-{}
+/// Register token-based converters
+pub fn register_schema_generated_converters(_registry: &mut crate::modules::script_converter::ScriptConverterRegistry) {{
+    // Old string-based registration system has been removed
+    // Token-based converters are managed separately
 }}
-"#, 
-        converter_registrations.iter()
-            .map(|name| format!("    registry.register_converter(Box::new({name}::new()));"))
-            .collect::<Vec<_>>()
-            .join("\n")
-    ));
+
+/// Get all token-based converters
+pub fn register_token_converters() -> Vec<Box<dyn crate::modules::script_converter::TokenConverter>> {{
+    vec![
+{}
+    ]
+}}
+"#, token_registrations));
 
     // Write generated code
     fs::write(out_dir.join("schema_generated.rs"), generated_code)?;
@@ -252,111 +204,8 @@ fn generate_converter_from_schema(
     handlebars: &Handlebars,
     schema: &ScriptSchema,
 ) -> Result<String, Box<dyn std::error::Error>> {
-    println!("DEBUG: Processing schema '{}' with target '{:?}'", schema.metadata.name, schema.target);
-    let script_name = &schema.metadata.name;
-    let struct_name = format!("{}Converter", capitalize_first(script_name));
-
-    // Check if this is a token-based schema
-    if let Some(ref target) = schema.target {
-        if target == "alphabet_tokens" || target == "abugida_tokens" {
-            return generate_token_based_converter(handlebars, schema);
-        }
-    }
-
-    // Legacy processing for backward compatibility (will be removed)
-    let processor_type = schema
-        .codegen
-        .as_ref()
-        .map(|c| c.processor_type.as_str())
-        .unwrap_or_else(|| {
-            // Use target field to determine processor type
-            match schema.target.as_ref().map(|s| s.as_str()) {
-                Some("iso15919") => "roman",
-                Some("devanagari") => "indic_standard",
-                Some("alphabet_tokens") => "alphabet_token_based",
-                Some("abugida_tokens") => "abugida_token_based",
-                _ => {
-                    // Fallback to script_type for backward compatibility
-                    if schema.metadata.script_type == "roman" {
-                        "roman"
-                    } else {
-                        "indic_standard"
-                    }
-                }
-            }
-        });
-
-    // For legacy compatibility, directly flatten all mappings to String
-    let mut all_mappings = FxHashMap::default();
-    if let Some(ref vowels) = schema.mappings.vowels {
-        for (k, v) in vowels {
-            all_mappings.insert(k.clone(), v.get_preferred());
-        }
-    }
-    if let Some(ref consonants) = schema.mappings.consonants {
-        for (k, v) in consonants {
-            all_mappings.insert(k.clone(), v.get_preferred());
-        }
-    }
-    if let Some(ref vowel_signs) = schema.mappings.vowel_signs {
-        for (k, v) in vowel_signs {
-            all_mappings.insert(k.clone(), v.get_preferred());
-        }
-    }
-    if let Some(ref marks) = schema.mappings.marks {
-        for (k, v) in marks {
-            all_mappings.insert(k.clone(), v.get_preferred());
-        }
-    }
-    if let Some(ref digits) = schema.mappings.digits {
-        for (k, v) in digits {
-            all_mappings.insert(k.clone(), v.get_preferred());
-        }
-    }
-    if let Some(ref special) = schema.mappings.special {
-        for (k, v) in special {
-            all_mappings.insert(k.clone(), v.get_preferred());
-        }
-    }
-
-    match processor_type {
-        "roman" => generate_roman_converter_with_template(
-            handlebars,
-            &struct_name,
-            script_name,
-            &all_mappings,
-            &schema.metadata,
-            &None, // No canonical_forms in new schema
-            false, // Use standard FxHashMap implementation
-        ),
-        "roman_aho_corasick" => generate_roman_converter_with_template(
-            handlebars,
-            &struct_name,
-            script_name,
-            &all_mappings,
-            &schema.metadata,
-            &None, // No canonical_forms in new schema
-            true, // Use Aho-Corasick implementation
-        ),
-        "alphabet_token_based" | "abugida_token_based" => {
-            generate_token_based_converter(handlebars, schema)
-        }
-        "indic_standard" => generate_indic_converter_with_template(
-            handlebars,
-            &struct_name,
-            script_name,
-            &all_mappings,
-            &schema.metadata,
-        ),
-        "indic_extended" => generate_extended_indic_converter_with_template(
-            handlebars,
-            &struct_name,
-            script_name,
-            &all_mappings,
-            &schema.metadata,
-        ),
-        _ => Err(format!("Unknown processor type: {processor_type}").into()),
-    }
+    // Token-based only! All converters must use tokens
+    generate_token_based_converter(handlebars, schema)
 }
 
 fn capitalize_first(s: &str) -> String {
@@ -515,6 +364,23 @@ fn escape_helper(
 ) -> handlebars::HelperResult {
     let param = h.param(0).unwrap().value().as_str().unwrap();
     out.write(&escape_string(param))?;
+    Ok(())
+}
+
+fn eq_helper(
+    h: &handlebars::Helper,
+    _: &handlebars::Handlebars,
+    _: &handlebars::Context,
+    _rc: &mut handlebars::RenderContext,
+    out: &mut dyn handlebars::Output,
+) -> handlebars::HelperResult {
+    let param1 = h.param(0).unwrap().value().as_str().unwrap();
+    let param2 = h.param(1).unwrap().value().as_str().unwrap();
+    if param1 == param2 {
+        out.write("true")?;
+    } else {
+        out.write("false")?;
+    }
     Ok(())
 }
 
@@ -778,7 +644,6 @@ fn generate_token_based_converter(
     let script_name = &schema.metadata.name;
     let struct_name = format!("{}Converter", capitalize_first(script_name));
     let is_alphabet = schema.target.as_ref().map(|s| s.as_str()) == Some("alphabet_tokens");
-    println!("cargo:warning=DEBUG: is_alphabet = {}", is_alphabet);
     
     // Collect all mappings with their categories
     let mut mappings = Vec::new();
@@ -791,7 +656,6 @@ fn generate_token_based_converter(
                     TokenMapping::Multiple(v) => (v[0].clone(), v.clone()),
                 };
                 // Debug output to understand the issue
-                println!("cargo:warning=DEBUG: token={}, preferred={}, all_inputs={:?}", token, preferred, all_inputs);
                 json!({
                     "token": token,
                     "preferred": preferred,
@@ -931,4 +795,370 @@ fn generate_token_based_converter(
     
     handlebars.render("token_based_converter", &template_data)
         .map_err(|e| format!("Template rendering failed: {}", e).into())
+}
+
+/// Generate Hub converter from token-based schemas
+fn generate_hub_converter(
+    handlebars: &Handlebars,
+    schemas: &[ScriptSchema],
+) -> Result<String, Box<dyn std::error::Error>> {
+    let mut abugida_schema = None;
+    let mut alphabet_schemas = Vec::new();
+    
+    // Find the abugida schema and alphabet schemas
+    for schema in schemas {
+        if schema.target.as_ref().map(|s| s.as_str()) == Some("abugida_tokens") {
+            abugida_schema = Some(schema);
+        } else if schema.target.as_ref().map(|s| s.as_str()) == Some("alphabet_tokens") {
+            alphabet_schemas.push(schema);
+        }
+    }
+    
+    let abugida_schema = abugida_schema.ok_or("No abugida_tokens schema found")?;
+    if alphabet_schemas.is_empty() {
+        return Err("No alphabet_tokens schemas found".into());
+    }
+    
+    // Build token mappings from the schemas
+    let mut abugida_to_alphabet_mappings = Vec::new();
+    let mut alphabet_to_abugida_mappings = Vec::new();
+    
+    // Get all tokens from the abugida schema
+    let all_abugida_tokens = collect_all_tokens(&abugida_schema);
+    
+    // Get union of all tokens from ALL alphabet schemas
+    let mut all_alphabet_tokens = std::collections::HashSet::new();
+    for schema in &alphabet_schemas {
+        let tokens = collect_all_tokens(schema);
+        all_alphabet_tokens.extend(tokens);
+    }
+    
+    // Create mappings for all abugida tokens
+    for abugida_token in &all_abugida_tokens {
+        if all_alphabet_tokens.contains(abugida_token) {
+            // Direct mapping exists
+            abugida_to_alphabet_mappings.push(json!({
+                "abugida_token": abugida_token,
+                "alphabet_token": abugida_token
+            }));
+        } else {
+            // Special handling for tokens that don't have direct equivalents
+            match abugida_token.as_str() {
+                "MarkVirama" => {
+                    // Virama should be dropped in Roman scripts (it's implicit in consonant clusters)
+                    // We'll handle this in the template with special logic
+                    abugida_to_alphabet_mappings.push(json!({
+                        "abugida_token": abugida_token,
+                        "special_handling": "drop"
+                    }));
+                }
+                "VowelSignVocalicL" | "VowelSignVocalicLl" | "VowelVocalicL" | "VowelVocalicLl" => {
+                    // These might not exist in all scripts, map to closest equivalent
+                    abugida_to_alphabet_mappings.push(json!({
+                        "abugida_token": abugida_token,
+                        "alphabet_token": if abugida_token.contains("Ll") { "VowelVocalicRr" } else { "VowelVocalicR" }
+                    }));
+                }
+                _ => {
+                    // Default: skip unknown tokens
+                    abugida_to_alphabet_mappings.push(json!({
+                        "abugida_token": abugida_token,
+                        "special_handling": "skip"
+                    }));
+                }
+            }
+        }
+    }
+    
+    // Create reverse mappings for all alphabet tokens
+    for alphabet_token in &all_alphabet_tokens {
+        if all_abugida_tokens.contains(alphabet_token) {
+            alphabet_to_abugida_mappings.push(json!({
+                "alphabet_token": alphabet_token,
+                "abugida_token": alphabet_token
+            }));
+        } else {
+            // Special handling for alphabet tokens that don't have abugida equivalents
+            alphabet_to_abugida_mappings.push(json!({
+                "alphabet_token": alphabet_token,
+                "special_handling": "skip"
+            }));
+        }
+    }
+    
+    let template_data = json!({
+        "abugida_to_alphabet_mappings": abugida_to_alphabet_mappings,
+        "alphabet_to_abugida_mappings": alphabet_to_abugida_mappings,
+    });
+    
+    handlebars.render("hub_converter", &template_data)
+        .map_err(|e| format!("Hub template rendering failed: {}", e).into())
+}
+
+/// Collect all token names from a schema
+fn collect_all_tokens(schema: &ScriptSchema) -> Vec<String> {
+    let mut tokens = Vec::new();
+    
+    if let Some(ref vowels) = schema.mappings.vowels {
+        tokens.extend(vowels.keys().cloned());
+    }
+    if let Some(ref vowel_signs) = schema.mappings.vowel_signs {
+        tokens.extend(vowel_signs.keys().cloned());
+    }
+    if let Some(ref consonants) = schema.mappings.consonants {
+        tokens.extend(consonants.keys().cloned());
+    }
+    if let Some(ref marks) = schema.mappings.marks {
+        tokens.extend(marks.keys().cloned());
+    }
+    if let Some(ref digits) = schema.mappings.digits {
+        tokens.extend(digits.keys().cloned());
+    }
+    if let Some(ref special) = schema.mappings.special {
+        tokens.extend(special.keys().cloned());
+    }
+    
+    tokens
+}
+
+/// Generate direct converters for common script pairs to bypass hub overhead
+fn generate_direct_converters(
+    handlebars: &Handlebars,
+    schemas: &[ScriptSchema],
+) -> Result<String, Box<dyn std::error::Error>> {
+    let mut generated_code = String::new();
+    
+    // Add imports and header
+    generated_code.push_str(r#"
+// Auto-generated direct converters - bypass hub for maximum performance
+// DO NOT EDIT - Generated by build.rs at compile time
+
+use crate::modules::script_converter::ConverterError;
+use aho_corasick::AhoCorasick;
+use once_cell::sync::Lazy;
+
+"#);
+
+    // Common high-performance conversion pairs
+    let conversion_pairs = vec![
+        // Roman ↔ Roman (very common)
+        ("iast", "slp1"),
+        ("slp1", "iast"),
+        ("iast", "itrans"),
+        ("itrans", "iast"),
+        ("iast", "harvard_kyoto"),
+        ("harvard_kyoto", "iast"),
+        
+        // Indic → Roman (performance critical)
+        ("devanagari", "iast"),
+        ("devanagari", "slp1"),
+        ("telugu", "iast"),
+        ("telugu", "slp1"),
+        ("bengali", "iast"),
+        ("tamil", "iast"),
+        ("gujarati", "iast"),
+        
+        // Roman → Indic (also important)
+        ("iast", "devanagari"),
+        ("slp1", "devanagari"),
+        ("iast", "telugu"),
+        ("slp1", "telugu"),
+    ];
+    
+    // Find schemas by name
+    let schema_map: FxHashMap<_, _> = schemas.iter()
+        .map(|s| (s.metadata.name.as_str(), s))
+        .collect();
+    
+    for (from_script, to_script) in &conversion_pairs {
+        if let (Some(from_schema), Some(to_schema)) = (schema_map.get(from_script), schema_map.get(to_script)) {
+            if let Ok(converter_code) = generate_single_direct_converter(handlebars, from_schema, to_schema) {
+                generated_code.push_str(&converter_code);
+                generated_code.push('\n');
+            }
+        }
+    }
+    
+    // Add registry function to access all direct converters
+    generated_code.push_str(r#"
+/// Registry of all direct converters for fast lookup
+pub struct DirectConverterRegistry {
+    converters: std::collections::HashMap<(String, String), Box<dyn DirectConverter>>,
+}
+
+impl DirectConverterRegistry {
+    pub fn new() -> Self {
+        let mut converters: std::collections::HashMap<(String, String), Box<dyn DirectConverter>> = std::collections::HashMap::new();
+        
+        // Register all generated direct converters
+"#);
+
+    // Register each converter
+    for (from_script, to_script) in &conversion_pairs {
+        if schema_map.contains_key(from_script) && schema_map.contains_key(to_script) {
+            let struct_name = format!("{}To{}Converter", 
+                capitalize_first(from_script), 
+                capitalize_first(to_script)
+            );
+            generated_code.push_str(&format!(
+                "        converters.insert((\"{}\".to_string(), \"{}\".to_string()), Box::new({}::new()));\n",
+                from_script, to_script, struct_name
+            ));
+        }
+    }
+    
+    generated_code.push_str(r#"        
+        Self { converters }
+    }
+    
+    pub fn get_converter(&self, from: &str, to: &str) -> Option<&dyn DirectConverter> {
+        self.converters.get(&(from.to_string(), to.to_string()))
+            .map(|c| c.as_ref())
+    }
+}
+
+pub trait DirectConverter: Send + Sync {
+    fn convert(&self, input: &str) -> Result<String, ConverterError>;
+    fn from_script(&self) -> &'static str;
+    fn to_script(&self) -> &'static str;
+}
+"#);
+
+    Ok(generated_code)
+}
+
+/// Generate a single direct converter between two schemas
+fn generate_single_direct_converter(
+    handlebars: &Handlebars,
+    from_schema: &ScriptSchema,
+    to_schema: &ScriptSchema,
+) -> Result<String, Box<dyn std::error::Error>> {
+    let from_script = &from_schema.metadata.name;
+    let to_script = &to_schema.metadata.name;
+    
+    // Build direct mapping by computing token-to-token conversion at build time
+    let mut direct_mappings = Vec::new();
+    
+    // Get all mappings from both schemas
+    let from_mappings = collect_all_mappings(from_schema);
+    let to_mappings = collect_all_mappings(to_schema);
+    
+    // Create reverse mapping for target schema (string -> token)
+    let mut to_reverse_map = FxHashMap::default();
+    for (token, strings) in &to_mappings {
+        for string in strings {
+            to_reverse_map.insert(token.clone(), string.clone());
+        }
+    }
+    
+    // For each source pattern, find the corresponding target pattern
+    for (token, from_strings) in &from_mappings {
+        if let Some(to_string) = to_reverse_map.get(token) {
+            for from_string in from_strings {
+                direct_mappings.push(json!({
+                    "from_pattern": from_string,
+                    "to_pattern": to_string
+                }));
+            }
+        }
+    }
+    
+    // Sort by length (longest first) for proper matching
+    direct_mappings.sort_by(|a, b| {
+        let a_len = a["from_pattern"].as_str().unwrap().len();
+        let b_len = b["from_pattern"].as_str().unwrap().len();
+        b_len.cmp(&a_len)
+    });
+    
+    let struct_name = format!("{}To{}Converter", 
+        capitalize_first(from_script), 
+        capitalize_first(to_script)
+    );
+    
+    let template_data = json!({
+        "struct_name": struct_name,
+        "from_script": from_script,
+        "to_script": to_script,
+        "direct_mappings": direct_mappings,
+    });
+    
+    let mut converter_code = handlebars.render("direct_converter", &template_data)?;
+    
+    // Add trait implementation
+    converter_code.push_str(&format!(r#"
+
+impl DirectConverter for {} {{
+    fn convert(&self, input: &str) -> Result<String, ConverterError> {{
+        self.convert(input)
+    }}
+    
+    fn from_script(&self) -> &'static str {{
+        "{}"
+    }}
+    
+    fn to_script(&self) -> &'static str {{
+        "{}"
+    }}
+}}
+"#, struct_name, from_script, to_script));
+    
+    Ok(converter_code)
+}
+
+/// Collect all mappings from a schema (token -> [strings])
+fn collect_all_mappings(schema: &ScriptSchema) -> FxHashMap<String, Vec<String>> {
+    let mut mappings = FxHashMap::default();
+    
+    // Process each mapping category
+    if let Some(ref vowels) = schema.mappings.vowels {
+        for (token, mapping) in vowels {
+            let strings = match mapping {
+                TokenMapping::Single(s) => vec![s.clone()],
+                TokenMapping::Multiple(v) => v.clone(),
+            };
+            mappings.insert(token.clone(), strings);
+        }
+    }
+    
+    if let Some(ref consonants) = schema.mappings.consonants {
+        for (token, mapping) in consonants {
+            let strings = match mapping {
+                TokenMapping::Single(s) => vec![s.clone()],
+                TokenMapping::Multiple(v) => v.clone(),
+            };
+            mappings.insert(token.clone(), strings);
+        }
+    }
+    
+    if let Some(ref marks) = schema.mappings.marks {
+        for (token, mapping) in marks {
+            let strings = match mapping {
+                TokenMapping::Single(s) => vec![s.clone()],
+                TokenMapping::Multiple(v) => v.clone(),
+            };
+            mappings.insert(token.clone(), strings);
+        }
+    }
+    
+    if let Some(ref digits) = schema.mappings.digits {
+        for (token, mapping) in digits {
+            let strings = match mapping {
+                TokenMapping::Single(s) => vec![s.clone()],
+                TokenMapping::Multiple(v) => v.clone(),
+            };
+            mappings.insert(token.clone(), strings);
+        }
+    }
+    
+    if let Some(ref special) = schema.mappings.special {
+        for (token, mapping) in special {
+            let strings = match mapping {
+                TokenMapping::Single(s) => vec![s.clone()],
+                TokenMapping::Multiple(v) => v.clone(),
+            };
+            mappings.insert(token.clone(), strings);
+        }
+    }
+    
+    mappings
 }

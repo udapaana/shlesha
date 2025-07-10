@@ -4,91 +4,79 @@ metadata:
   has_implicit_a: false
   description: "International Alphabet of Sanskrit Transliteration"
 
-target: "iso15919"
-
-codegen:
-  processor_type: "roman_aho_corasick"
+target: "alphabet_tokens"
 
 mappings:
-  # IAST and ISO-15919 are very similar, but have key differences
   vowels:
-    "a": "a"
-    "ā": "ā"
-    "i": "i"
-    "ī": "ī"
-    "u": "u"
-    "ū": "ū"
-    "ṛ": "r̥"     # IAST ṛ → ISO r̥
-    "ṝ": "r̥̄"    # IAST ṝ → ISO r̥̄
-    "ḷ": "l̥"     # IAST ḷ → ISO l̥
-    "ḹ": "l̥̄"    # IAST ḹ → ISO l̥̄
-    "e": "e"
-    "ai": "ai"
-    "o": "o"
-    "au": "au"
+    VowelA: "a"
+    VowelAa: "ā"
+    VowelI: "i"
+    VowelIi: "ī"
+    VowelU: "u"
+    VowelUu: "ū"
+    VowelVocalicR: "ṛ"
+    VowelVocalicRr: "ṝ"
+    VowelVocalicL: "ḷ"
+    VowelVocalicLl: "ḹ"
+    VowelE: "e"
+    VowelAi: "ai"
+    VowelO: "o"
+    VowelAu: "au"
   
   consonants:
-    "k": "k"
-    "kh": "kh"
-    "g": "g"
-    "gh": "gh"
-    "ṅ": "ṅ"
-    "c": "c"
-    "ch": "ch"
-    "j": "j"
-    "jh": "jh"
-    "ñ": "ñ"
-    "ṭ": "ṭ"
-    "ṭh": "ṭh"
-    "ḍ": "ḍ"
-    "ḍh": "ḍh"
-    "ṇ": "ṇ"
-    "t": "t"
-    "th": "th"
-    "d": "d"
-    "dh": "dh"
-    "n": "n"
-    "p": "p"
-    "ph": "ph"
-    "b": "b"
-    "bh": "bh"
-    "m": "m"
-    "y": "y"
-    "r": "r"
-    "l": "l"
-    "v": "v"
-    "ś": "ś"
-    "ṣ": "ṣ"
-    "s": "s"
-    "h": "h"
+    ConsonantK: "k"
+    ConsonantKh: "kh"
+    ConsonantG: "g"
+    ConsonantGh: "gh"
+    ConsonantNg: "ṅ"
+    ConsonantC: "c"
+    ConsonantCh: "ch"
+    ConsonantJ: "j"
+    ConsonantJh: "jh"
+    ConsonantNy: "ñ"
+    ConsonantT: "ṭ"
+    ConsonantTh: "ṭh"
+    ConsonantD: "ḍ"
+    ConsonantDh: "ḍh"
+    ConsonantN: "ṇ"
+    ConsonantTt: "t"
+    ConsonantTth: "th"
+    ConsonantDd: "d"
+    ConsonantDdh: "dh"
+    ConsonantNn: "n"
+    ConsonantP: "p"
+    ConsonantPh: "ph"
+    ConsonantB: "b"
+    ConsonantBh: "bh"
+    ConsonantM: "m"
+    ConsonantY: "y"
+    ConsonantR: "r"
+    ConsonantL: "l"
+    ConsonantV: "v"
+    ConsonantSh: "ś"
+    ConsonantSs: "ṣ"
+    ConsonantS: "s"
+    ConsonantH: "h"
   
   marks:
-    "ṃ": "ṁ"      # IAST ṃ → ISO ṁ (anusvara)
-    "ḥ": "ḥ"      # Same (visarga)
-    "m̐": "m̐"     # Same (candrabindu)
-    "'": "'"      # Avagraha
+    MarkAnusvara: "ṃ"
+    MarkVisarga: "ḥ"
   
   special:
-    "kṣ": "kṣ"
-    "jñ": "jñ"
-    # Extended characters for nukta consonants (used in Urdu/Hindi loan words)
-    "q": "qa"      # IAST q → ISO qa (maps to क़)
-    "z": "za"      # IAST z → ISO za (maps to ज़)  
-    "f": "fa"      # IAST f → ISO fa (maps to फ़)
-    "ġ": "ġa"      # IAST ġ → ISO ġa (maps to ग़)
-    "ḵ": "ḵẖa"     # IAST ḵ → ISO ḵẖa (maps to ख़)
-    "ḍ̇": "ṛa"      # IAST retroflex D with dot → ISO ṛa (maps to ड़)
-    "ṛh": "ṛha"    # IAST ṛh → ISO ṛha (maps to ढ़)
-    "ẏ": "ẏa"      # IAST ẏ → ISO ẏa (maps to य़)
-  
+    SpecialKs: "kṣ"
+    SpecialJn: "jñ"
+
   digits:
-    "0": "0"
-    "1": "1"
-    "2": "2"
-    "3": "3"
-    "4": "4"
-    "5": "5"
-    "6": "6"
-    "7": "7"
-    "8": "8"
-    "9": "9"
+    Digit0: "0"
+    Digit1: "1"
+    Digit2: "2"
+    Digit3: "3"
+    Digit4: "4"
+    Digit5: "5"
+    Digit6: "6"
+    Digit7: "7"
+    Digit8: "8"
+    Digit9: "9"
+
+codegen:
+  processor_type: "roman_token_based"

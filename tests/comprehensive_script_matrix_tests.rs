@@ -1,5 +1,5 @@
 use shlesha::Shlesha;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 /// All supported scripts based on schema files
 const ALL_SCRIPTS: &[&str] = &[

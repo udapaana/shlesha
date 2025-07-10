@@ -179,6 +179,7 @@ impl Schema {
 pub trait SchemaRegistryTrait {
     fn get_schema(&self, script_name: &str) -> Option<&Schema>;
     fn register_schema(&mut self, name: String, schema: Schema) -> Result<(), RegistryError>;
+    fn add_schema(&mut self, name: String, schema: Schema) -> Result<(), RegistryError>;
     fn load_schema(&mut self, schema_path: &str) -> Result<(), RegistryError>;
     fn load_schema_from_string(
         &mut self,
@@ -364,6 +365,11 @@ impl SchemaRegistryTrait for SchemaRegistry {
 
         self.schemas.insert(name, schema);
         Ok(())
+    }
+
+    fn add_schema(&mut self, name: String, schema: Schema) -> Result<(), RegistryError> {
+        // Same as register_schema for now
+        self.register_schema(name, schema)
     }
 
     fn load_schema(&mut self, schema_path: &str) -> Result<(), RegistryError> {

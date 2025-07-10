@@ -204,7 +204,7 @@ impl {{struct_name}} {
                                             // Virama already present - no additional virama needed
                                             AbugidaToken::MarkVirama => false,
                                             
-                                            // Another consonant - check if there's a virama after the next consonant
+                                            // Another consonant - this forms a consonant cluster
                                             AbugidaToken::ConsonantK | AbugidaToken::ConsonantKh | 
                                             AbugidaToken::ConsonantG | AbugidaToken::ConsonantGh | 
                                             AbugidaToken::ConsonantNg | AbugidaToken::ConsonantC |
@@ -222,14 +222,16 @@ impl {{struct_name}} {
                                             AbugidaToken::ConsonantV | AbugidaToken::ConsonantLl |
                                             AbugidaToken::ConsonantSh | AbugidaToken::ConsonantSs | 
                                             AbugidaToken::ConsonantS | AbugidaToken::ConsonantH => {
-                                                // Check if the consonant after this one has a virama
+                                                // In a consonant cluster, check if we need to suppress the current consonant's 'a'
+                                                // Look ahead to see if there's an explicit virama after the next consonant
+                                                // If so, that means we're in a "C1 C2 virama" situation where C1 should be suppressed
                                                 if i + 2 < tokens.len() {
                                                     match &tokens[i + 2] {
-                                                        HubToken::Abugida(AbugidaToken::MarkVirama) => false,
-                                                        _ => true,
+                                                        HubToken::Abugida(AbugidaToken::MarkVirama) => true, // Pattern: C1 C2 virama -> suppress C1
+                                                        _ => false, // No explicit virama after next consonant, both consonants keep their vowels
                                                     }
                                                 } else {
-                                                    true // No virama found, so add one
+                                                    false // End of sequence, don't suppress current consonant
                                                 }
                                             }
                                             

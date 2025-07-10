@@ -4,69 +4,68 @@ metadata:
   has_implicit_a: false
   description: "Sanskrit Library Phonetic encoding"
 
-target: "iso15919"
-
-codegen:
-  processor_type: "roman_aho_corasick"
+target: "alphabet_tokens"
 
 mappings:
-  # SLP1 to ISO-15919 mappings (SLP1 is the source, ISO is the target)
   vowels:
-    "a": "a"
-    "A": "ā"
-    "i": "i"
-    "I": "ī"
-    "u": "u"
-    "U": "ū"
-    "f": "r̥"
-    "F": "r̥̄"
-    "x": "l̥"
-    "X": "l̥̄"
-    "e": "e"
-    "o": "o"
-    "E": "ai"
-    "O": "au"
+    VowelA: "a"
+    VowelAa: "A"
+    VowelI: "i"
+    VowelIi: "I"
+    VowelU: "u"
+    VowelUu: "U"
+    VowelVocalicR: "f"
+    VowelVocalicRr: "F"
+    VowelVocalicL: "x"
+    VowelVocalicLl: "X"
+    VowelE: "e"
+    VowelO: "o"
+    VowelAi: "E"
+    VowelAu: "O"
 
   consonants:
-    "k": "k"
-    "K": "kh"
-    "g": "g"
-    "G": "gh"
-    "N": "ṅ"
-    "c": "c"
-    "C": "ch"
-    "j": "j"
-    "J": "jh"
-    "Y": "ñ"
-    "w": "ṭ"
-    "W": "ṭh"
-    "q": "ḍ"
-    "Q": "ḍh"
-    "R": "ṇ"
-    "t": "t"
-    "T": "th"
-    "d": "d"
-    "D": "dh"
-    "n": "n"
-    "p": "p"
-    "P": "ph"
-    "b": "b"
-    "B": "bh"
-    "m": "m"
-    "y": "y"
-    "r": "r"
-    "l": "l"
-    "v": "v"
-    "S": "ś"
-    "z": "ṣ"
-    "s": "s"
-    "h": "h"
+    ConsonantK: "k"
+    ConsonantKh: "K"
+    ConsonantG: "g"
+    ConsonantGh: "G"
+    ConsonantNg: "N"
+    ConsonantC: "c"
+    ConsonantCh: "C"
+    ConsonantJ: "j"
+    ConsonantJh: "J"
+    ConsonantNy: "Y"
+    ConsonantT: "w"
+    ConsonantTh: "W"
+    ConsonantD: "q"
+    ConsonantDh: "Q"
+    ConsonantN: "R"
+    ConsonantTt: "t"
+    ConsonantTth: "T"
+    ConsonantDd: "d"
+    ConsonantDdh: "D"
+    ConsonantNn: "n"
+    ConsonantP: "p"
+    ConsonantPh: "P"
+    ConsonantB: "b"
+    ConsonantBh: "B"
+    ConsonantM: "m"
+    ConsonantY: "y"
+    ConsonantR: "r"
+    ConsonantL: "l"
+    ConsonantV: "v"
+    ConsonantSh: "S"
+    ConsonantSs: "z"
+    ConsonantS: "s"
+    ConsonantH: "h"
+    ConsonantLl: "L"  # Vedic ḷ
 
   marks:
-    "M": "ṁ"      # anusvara
-    "H": "ḥ"      # visarga
+    MarkAnusvara: "M"
+    MarkVisarga: "H"
 
   special:
-    "L": "ḷ"      # Vedic
-    "|": "।"      # danda
-    "||": "॥"     # double danda
+    # MarkDanda: "|"    # danda - no token yet
+    # MarkDoubleDanda: "||"  # double danda - no token yet
+
+codegen:
+  processor_type: "roman_token_based"

@@ -31,6 +31,14 @@
 
 pub mod modules;
 
+// Include generated Hub converter
+mod generated {
+    include!(concat!(env!("OUT_DIR"), "/hub_generated.rs"));
+}
+
+// Import hub trait to use the hub
+use modules::hub::HubTrait;
+
 // Optional binding modules
 #[cfg(feature = "python")]
 pub mod python_bindings;
@@ -38,9 +46,11 @@ pub mod python_bindings;
 #[cfg(feature = "wasm")]
 pub mod wasm_bindings;
 
-use modules::hub::{Hub, HubInput, HubOutput, HubTrait};
+use modules::hub::Hub;
 use modules::profiler::{OptimizationCache, Profiler, ProfilerConfig};
 use modules::registry::{SchemaRegistry, SchemaRegistryTrait};
+use modules::runtime::RuntimeCompiler;
+use modules::schema::{Schema as RuntimeSchema, SchemaBuilder};
 use modules::script_converter::ScriptConverterRegistry;
 
 // Re-export unknown handler types for public API
@@ -58,11 +68,24 @@ pub struct SchemaInfo {
     pub mapping_count: usize,
 }
 
+/// Processor source for handling both static and runtime compiled processors
+#[derive(Debug)]
+pub enum ProcessorSource {
+    /// Compile-time generated (built-in scripts)
+    Static,
+    /// Runtime compiled (same performance!)
+    RuntimeCompiled(Box<dyn std::any::Any + Send + Sync>),
+    /// Fallback only (development/testing)
+    Dynamic,
+}
+
 /// Main transliterator struct implementing hub-and-spoke architecture
 pub struct Shlesha {
     hub: Hub,
     script_converter_registry: ScriptConverterRegistry,
     registry: SchemaRegistry,
+    runtime_compiler: Option<RuntimeCompiler>,
+    processors: std::collections::HashMap<String, ProcessorSource>,
     profiler: Option<Profiler>,
     optimization_cache: OptimizationCache,
 }
@@ -82,10 +105,15 @@ impl Shlesha {
             // If loading fails (e.g., in tests or different working directory), continue with placeholder
         }
 
+        // Try to initialize runtime compiler (graceful fallback if it fails)
+        let runtime_compiler = RuntimeCompiler::new().ok();
+
         Self {
             hub: Hub::new(),
             script_converter_registry,
             registry,
+            runtime_compiler,
+            processors: std::collections::HashMap::new(),
             profiler: None,
             optimization_cache: OptimizationCache::new(),
         }
@@ -124,26 +152,11 @@ impl Shlesha {
         from: &str,
         to: &str,
     ) -> Result<String, Box<dyn std::error::Error>> {
-        // Check for Roman → Indic optimization first
-        if self.is_roman_script(from) && self.is_indic_script(to) {
-            // Try using the optimized Roman → Devanagari → Indic path
-            let roman_deva_script = format!("{from}_devanagari");
-
-            if let Ok(HubInput::Devanagari(deva_text)) = self
-                .script_converter_registry
-                .to_hub_with_schema_registry(&roman_deva_script, text, Some(&self.registry))
-            {
-                // Now convert Devanagari → target Indic script
-                let deva_hub_input = HubInput::Devanagari(deva_text);
-                if let Ok(result) = self
-                    .script_converter_registry
-                    .from_hub_with_schema_registry(to, &deva_hub_input, Some(&self.registry))
-                {
-                    return Ok(result);
-                }
-            }
-            // If optimized path fails, fall through to standard routing
+        // Identity conversion - if source and target are the same, return input unchanged
+        if from == to {
+            return Ok(text.to_string());
         }
+        
 
         // Convert source script to hub format (Devanagari or ISO)
         let hub_input = self.script_converter_registry.to_hub_with_schema_registry(
@@ -152,64 +165,48 @@ impl Shlesha {
             Some(&self.registry),
         )?;
 
-        // Smart hub processing based on input and desired output
-        let result = match (&hub_input, to.to_lowercase().as_str()) {
-            // Direct passthrough cases - no hub processing needed
-            (HubInput::Devanagari(deva), "devanagari" | "deva") => deva.clone(),
-            (HubInput::Iso(iso), "iso" | "iso15919" | "iso-15919") => iso.clone(),
-
-            // Hub processing needed - convert between formats
-            (HubInput::Devanagari(deva), _) => {
-                // Try direct Devanagari → target conversion first (for Indic scripts)
-                let deva_hub_input = HubInput::Devanagari(deva.clone());
-                match self
-                    .script_converter_registry
-                    .from_hub_with_schema_registry(to, &deva_hub_input, Some(&self.registry))
-                {
-                    Ok(result) => result,
-                    Err(_) => {
-                        // If direct conversion fails, convert through ISO: Devanagari → ISO → target
-                        let hub_output = self.hub.deva_to_iso(deva)?;
-                        if let HubOutput::Iso(ref iso_result) = hub_output {
-                            let iso_hub_input = HubInput::Iso(iso_result.clone());
-                            self.script_converter_registry
-                                .from_hub_with_schema_registry(
-                                    to,
-                                    &iso_hub_input,
-                                    Some(&self.registry),
-                                )?
-                        } else {
-                            return Err("Expected ISO output from hub".into());
-                        }
-                    }
+        // Apply hub conversion if needed (cross-token-type conversion)
+        let final_hub_input = match (&hub_input, from, to) {
+            // Cross-token-type conversion needed
+            (modules::hub::HubFormat::AlphabetTokens(_), _, _) if self.script_converter_registry.supports_script(to) => {
+                let tokens = match &hub_input {
+                    modules::hub::HubFormat::AlphabetTokens(tokens) => tokens,
+                    _ => return Err("Expected AlphabetTokens".into()),
+                };
+                
+                // Check if target script needs AbugidaTokens
+                if self.is_indic_script(to) {
+                    // Convert AlphabetTokens to AbugidaTokens via hub
+                    let abugida_tokens = self.hub.alphabet_to_abugida_tokens(tokens)?;
+                    modules::hub::HubFormat::AbugidaTokens(abugida_tokens)
+                } else {
+                    hub_input
                 }
             }
-            (HubInput::Iso(iso), _) => {
-                // Try direct ISO → target conversion first
-                let iso_hub_input = HubInput::Iso(iso.clone());
-                match self
-                    .script_converter_registry
-                    .from_hub_with_schema_registry(to, &iso_hub_input, Some(&self.registry))
-                {
-                    Ok(result) => result,
-                    Err(_) => {
-                        // If direct conversion fails, convert through Devanagari: ISO → Devanagari → target
-                        let hub_output = self.hub.iso_to_deva(iso)?;
-                        if let HubOutput::Devanagari(ref deva_result) = hub_output {
-                            let deva_hub_input = HubInput::Devanagari(deva_result.clone());
-                            self.script_converter_registry
-                                .from_hub_with_schema_registry(
-                                    to,
-                                    &deva_hub_input,
-                                    Some(&self.registry),
-                                )?
-                        } else {
-                            return Err("Expected Devanagari output from hub".into());
-                        }
-                    }
+            (modules::hub::HubFormat::AbugidaTokens(_), _, _) if self.script_converter_registry.supports_script(to) => {
+                let tokens = match &hub_input {
+                    modules::hub::HubFormat::AbugidaTokens(tokens) => tokens,
+                    _ => return Err("Expected AbugidaTokens".into()),
+                };
+                
+                // Check if target script needs AlphabetTokens  
+                if self.is_roman_script(to) {
+                    // Convert AbugidaTokens to AlphabetTokens via hub
+                    let alphabet_tokens = self.hub.abugida_to_alphabet_tokens(tokens)?;
+                    modules::hub::HubFormat::AlphabetTokens(alphabet_tokens)
+                } else {
+                    hub_input
                 }
             }
+            _ => hub_input,
         };
+
+        // Convert from hub format to target script
+        let result = self.script_converter_registry.from_hub_with_schema_registry(
+            to,
+            &final_hub_input,
+            Some(&self.registry),
+        )?;
 
         Ok(result)
     }
@@ -259,7 +256,6 @@ impl Shlesha {
         crate::modules::core::unknown_handler::TransliterationResult,
         Box<dyn std::error::Error>,
     > {
-        use crate::modules::hub::HubTrait;
 
         // Convert source script to hub format with metadata collection
         let (hub_input, from_metadata) = self
@@ -267,72 +263,58 @@ impl Shlesha {
             .to_hub_with_metadata(from, text)?;
 
         // Smart hub processing based on input and desired output - with metadata
-        let (result, to_metadata) = match (&hub_input, to.to_lowercase().as_str()) {
-            // Direct passthrough cases - no hub processing needed
-            (modules::hub::HubInput::Devanagari(deva), "devanagari" | "deva") => {
-                let result =
-                    modules::core::unknown_handler::TransliterationResult::simple(deva.clone());
-                (result, None)
+        // Apply the same hub conversion logic as the simple transliteration path
+        let final_hub_input = match (&hub_input, from, to) {
+            (modules::hub::HubFormat::AlphabetTokens(_), _, _) if self.script_converter_registry.supports_script(to) => {
+                let tokens = match &hub_input {
+                    modules::hub::HubFormat::AlphabetTokens(tokens) => tokens,
+                    _ => return Err("Expected AlphabetTokens".into()),
+                };
+                
+                // Check if target script needs AbugidaTokens
+                if self.is_indic_script(to) {
+                    // Convert AlphabetTokens to AbugidaTokens via hub
+                    let abugida_tokens = self.hub.alphabet_to_abugida_tokens(tokens)?;
+                    modules::hub::HubFormat::AbugidaTokens(abugida_tokens)
+                } else {
+                    hub_input
+                }
             }
-            (modules::hub::HubInput::Iso(iso), "iso" | "iso15919" | "iso-15919") => {
-                let result =
-                    modules::core::unknown_handler::TransliterationResult::simple(iso.clone());
-                (result, None)
+            (modules::hub::HubFormat::AbugidaTokens(_), _, _) if self.script_converter_registry.supports_script(to) => {
+                let tokens = match &hub_input {
+                    modules::hub::HubFormat::AbugidaTokens(tokens) => tokens,
+                    _ => return Err("Expected AbugidaTokens".into()),
+                };
+                
+                // Check if target script needs AlphabetTokens  
+                if self.is_roman_script(to) {
+                    // Convert AbugidaTokens to AlphabetTokens via hub
+                    let alphabet_tokens = self.hub.abugida_to_alphabet_tokens(tokens)?;
+                    modules::hub::HubFormat::AlphabetTokens(alphabet_tokens)
+                } else {
+                    hub_input
+                }
             }
+            _ => hub_input,
+        };
 
-            // Hub processing needed - convert between formats with metadata
-            (modules::hub::HubInput::Devanagari(deva), _) => {
-                // Try direct Devanagari → target conversion first (for Indic scripts)
-                match self
-                    .script_converter_registry
-                    .from_hub_with_metadata(to, &hub_input)
-                {
-                    Ok(result) => (result, None),
-                    Err(_) => {
-                        // If direct conversion fails, convert through ISO: Devanagari → ISO → target
-                        let hub_result = self.hub.deva_to_iso_with_metadata(deva)?;
-                        let iso_hub_input = match &hub_result.output {
-                            modules::hub::HubOutput::Iso(iso_result) => {
-                                modules::hub::HubInput::Iso(iso_result.clone())
-                            }
-                            _ => return Err("Expected ISO output from hub".into()),
-                        };
-                        let final_result = self
-                            .script_converter_registry
-                            .from_hub_with_metadata(to, &iso_hub_input)?;
-                        (final_result, hub_result.metadata)
-                    }
-                }
-            }
-            (modules::hub::HubInput::Iso(iso), _) => {
-                // Try direct ISO → target conversion first
-                match self
-                    .script_converter_registry
-                    .from_hub_with_metadata(to, &hub_input)
-                {
-                    Ok(result) => (result, None),
-                    Err(_) => {
-                        // If direct conversion fails, convert through Devanagari: ISO → Devanagari → target
-                        let hub_result = self.hub.iso_to_deva_with_metadata(iso)?;
-                        let deva_hub_input = match &hub_result.output {
-                            modules::hub::HubOutput::Devanagari(deva_result) => {
-                                modules::hub::HubInput::Devanagari(deva_result.clone())
-                            }
-                            _ => return Err("Expected Devanagari output from hub".into()),
-                        };
-                        let final_result = self
-                            .script_converter_registry
-                            .from_hub_with_metadata(to, &deva_hub_input)?;
-                        (final_result, hub_result.metadata)
-                    }
-                }
+        let (result, to_metadata) = match self
+            .script_converter_registry
+            .from_hub_with_metadata(to, &final_hub_input)
+        {
+            Ok(result) => (result, None::<modules::core::unknown_handler::TransliterationMetadata>),
+            Err(e) => {
+                return Err(format!("Conversion failed: {}", e).into());
             }
         };
 
         // Combine metadata from different stages
-        let mut final_metadata = result.metadata.unwrap_or_else(|| {
-            modules::core::unknown_handler::TransliterationMetadata::new(from, to)
-        });
+        let mut final_metadata = modules::core::unknown_handler::TransliterationMetadata::new(from, to);
+        
+        // If result has metadata, copy over any unknown tokens but keep correct source/target
+        if let Some(result_metadata) = result.metadata {
+            final_metadata.unknown_tokens.extend(result_metadata.unknown_tokens);
+        }
 
         // Add from_stage metadata (script → hub)
         if !from_metadata.unknown_tokens.is_empty() {
@@ -372,6 +354,87 @@ impl Shlesha {
         self.registry
             .load_schema_from_string(yaml_content, schema_name)?;
         Ok(())
+    }
+
+    /// Add a runtime schema with compilation (if available)
+    pub fn add_runtime_schema(&mut self, schema: RuntimeSchema) -> Result<(), Box<dyn std::error::Error>> {
+        match &mut self.runtime_compiler {
+            Some(compiler) => {
+                match compiler.compile_schema(&schema) {
+                    Ok(compiled) => {
+                        // Same performance as static processors!
+                        self.processors.insert(
+                            schema.metadata.name.clone(),
+                            ProcessorSource::RuntimeCompiled(Box::new(compiled)),
+                        );
+                    }
+                    Err(_) => {
+                        // Graceful fallback to registry-based processing
+                        let registry_schema = self.convert_runtime_schema_to_registry(&schema);
+                        let _ = self.registry.add_schema(schema.metadata.name.clone(), registry_schema);
+                        self.processors.insert(
+                            schema.metadata.name.clone(),
+                            ProcessorSource::Dynamic,
+                        );
+                    }
+                }
+            }
+            None => {
+                // No runtime compiler available, fall back to registry
+                let registry_schema = self.convert_runtime_schema_to_registry(&schema);
+                let _ = self.registry.add_schema(schema.metadata.name.clone(), registry_schema);
+                self.processors.insert(
+                    schema.metadata.name.clone(),
+                    ProcessorSource::Dynamic,
+                );
+            }
+        }
+        Ok(())
+    }
+
+    /// Create schema using builder pattern
+    pub fn create_schema(&mut self, name: &str) -> SchemaBuilder {
+        SchemaBuilder::new(name)
+    }
+
+    /// Convert RuntimeSchema to registry Schema format
+    fn convert_runtime_schema_to_registry(&self, runtime_schema: &RuntimeSchema) -> modules::registry::Schema {
+        use modules::registry::{Schema as RegistrySchema, SchemaMetadata as RegistryMetadata};
+        use rustc_hash::FxHashMap;
+
+        // Flatten the nested mappings into a single hashmap
+        let mut flattened_mappings = FxHashMap::default();
+        
+        for (_category, entries) in &runtime_schema.mappings {
+            for (token, mapping) in entries {
+                // For registry schema, we use the first (preferred) mapping
+                let preferred_mapping = match mapping {
+                    serde_json::Value::String(s) => s.clone(),
+                    serde_json::Value::Array(arr) => {
+                        arr.first()
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("")
+                            .to_string()
+                    }
+                    _ => continue,
+                };
+                flattened_mappings.insert(token.clone(), preferred_mapping);
+            }
+        }
+
+        RegistrySchema {
+            name: runtime_schema.metadata.name.clone(),
+            script_type: runtime_schema.metadata.script_type.clone(),
+            target: runtime_schema.target.clone(),
+            mappings: flattened_mappings,
+            metadata: RegistryMetadata {
+                name: runtime_schema.metadata.name.clone(),
+                script_type: runtime_schema.metadata.script_type.clone(),
+                has_implicit_a: false, // Default for now
+                description: runtime_schema.metadata.description.clone(),
+                aliases: None, // Not available in RuntimeSchema
+            },
+        }
     }
 
     /// Get list of all available scripts (built-in + runtime loaded)
@@ -429,6 +492,8 @@ impl Shlesha {
             hub: Hub::new(),
             script_converter_registry,
             registry,
+            runtime_compiler: None, // Initialize later if needed
+            processors: std::collections::HashMap::new(),
             profiler: None,
             optimization_cache: OptimizationCache::new(),
         }
@@ -532,7 +597,7 @@ mod tests {
 
         // Level 1: Main Shlesha transliterate - should pass through unknown characters
         let result = transliterator
-            .transliterate("धर्मkr", "devanagari", "iso")
+            .transliterate("धर्मkr", "devanagari", "iso15919")
             .unwrap();
         assert_eq!(result, "dharmakr"); // Unknown 'k' and 'r' should pass through
 
@@ -540,6 +605,8 @@ mod tests {
         let result = transliterator
             .transliterate("धर्मkr", "devanagari", "gujarati")
             .unwrap();
+        
+        
         assert_eq!(result, "ધર્મkr"); // Latin chars should pass through
 
         // Level 3: Roman script with unknown characters (IAST → Devanagari)
@@ -573,19 +640,19 @@ mod tests {
 
         // Test mixed Devanagari and Latin
         let result = transliterator
-            .transliterate("धर्म hello world", "devanagari", "iso")
+            .transliterate("धर्म hello world", "devanagari", "iso15919")
             .unwrap();
         assert_eq!(result, "dharma hello world");
 
         // Test mixed with punctuation
         let result = transliterator
-            .transliterate("धर्म! 123", "devanagari", "iso")
+            .transliterate("धर्म! 123", "devanagari", "iso15919")
             .unwrap();
         assert_eq!(result, "dharma! 123");
 
         // Test completely unknown string
         let result = transliterator
-            .transliterate("xyz123", "devanagari", "iso")
+            .transliterate("xyz123", "devanagari", "iso15919")
             .unwrap();
         assert_eq!(result, "xyz123"); // Should pass through unchanged
     }

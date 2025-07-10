@@ -4,111 +4,90 @@ metadata:
   has_implicit_a: true
   description: "Bengali (বাংলা) script used for Bengali and other languages"
 
+target: "abugida_tokens"
+
 mappings:
   vowels:
-    "অ": "अ"    # a
-    "আ": "आ"    # ā
-    "ই": "इ"    # i
-    "ঈ": "ई"    # ī
-    "উ": "उ"    # u
-    "ঊ": "ऊ"    # ū
-    "ঋ": "ऋ"    # r̥
-    "ৠ": "ॠ"    # r̥̄
-    "ঌ": "ऌ"    # l̥
-    "ৡ": "ॡ"    # l̥̄
-    "এ": "ए"    # e
-    "ঐ": "ऐ"    # ai
-    "ও": "ओ"    # o
-    "ঔ": "औ"    # au
+    VowelA: "অ"
+    VowelAa: "আ"
+    VowelI: "ই"
+    VowelIi: "ঈ"
+    VowelU: "উ"
+    VowelUu: "ঊ"
+    VowelVocalicR: "ঋ"
+    VowelVocalicRr: "ৠ"
+    VowelVocalicL: "ঌ"
+    VowelVocalicLl: "ৡ"
+    VowelE: "এ"
+    VowelAi: "ঐ"
+    VowelO: "ও"
+    VowelAu: "ঔ"
 
   vowel_signs:
-    "া": "ा"    # ā
-    "ি": "ि"    # i
-    "ী": "ी"    # ī
-    "ু": "ु"    # u
-    "ূ": "ू"    # ū
-    "ৃ": "ृ"    # r̥
-    "ৄ": "ॄ"    # r̥̄
-    "ৢ": "ॢ"    # l̥
-    "ৣ": "ॣ"    # l̥̄
-    "ে": "े"    # e
-    "ৈ": "ै"    # ai
-    "ো": "ो"    # o
-    "ৌ": "ौ"    # au
+    VowelSignAa: "া"
+    VowelSignI: "ি"
+    VowelSignIi: "ী"
+    VowelSignU: "ু"
+    VowelSignUu: "ূ"
+    VowelSignVocalicR: "ৃ"
+    VowelSignVocalicRr: "ৄ"
+    VowelSignVocalicL: "ৢ"
+    VowelSignVocalicLl: "ৣ"
+    VowelSignE: "ে"
+    VowelSignAi: "ৈ"
+    VowelSignO: "ো"
+    VowelSignAu: "ৌ"
 
   consonants:
-    # Velar
-    "ক": "क"    # ka
-    "খ": "ख"    # kha
-    "গ": "ग"    # ga
-    "ঘ": "घ"    # gha
-    "ঙ": "ङ"    # ṅa
-    
-    # Palatal
-    "চ": "च"    # ca
-    "ছ": "छ"    # cha
-    "জ": "ज"    # ja
-    "ঝ": "झ"    # jha
-    "ঞ": "ञ"    # ña
-    
-    # Retroflex
-    "ট": "ट"    # ṭa
-    "ঠ": "ठ"    # ṭha
-    "ড": "ड"    # ḍa
-    "ঢ": "ढ"    # ḍha
-    "ণ": "ण"    # ṇa
-    
-    # Dental
-    "ত": "त"    # ta
-    "থ": "थ"    # tha
-    "দ": "द"    # da
-    "ধ": "ध"    # dha
-    "ন": "न"    # na
-    
-    # Labial
-    "প": "प"    # pa
-    "ফ": "फ"    # pha
-    "ব": "ब"    # ba
-    "ভ": "भ"    # bha
-    "ম": "म"    # ma
-    
-    # Semivowels and liquids
-    "য": "य"    # ya
-    "র": "र"    # ra
-    "ল": "ल"    # la
-    
-    # Sibilants and aspirate
-    "শ": "श"    # śa
-    "ষ": "ष"    # ṣa
-    "স": "स"    # sa
-    "হ": "ह"    # ha
+    ConsonantK: "ক"
+    ConsonantKh: "খ"
+    ConsonantG: "গ"
+    ConsonantGh: "ঘ"
+    ConsonantNg: "ঙ"
+    ConsonantC: "চ"
+    ConsonantCh: "ছ"
+    ConsonantJ: "জ"
+    ConsonantJh: "ঝ"
+    ConsonantNy: "ঞ"
+    ConsonantT: "ট"
+    ConsonantTh: "ঠ"
+    ConsonantD: "ড"
+    ConsonantDh: "ঢ"
+    ConsonantN: "ণ"
+    ConsonantTt: "ত"
+    ConsonantTth: "থ"
+    ConsonantDd: "দ"
+    ConsonantDdh: "ধ"
+    ConsonantNn: "ন"
+    ConsonantP: "প"
+    ConsonantPh: "ফ"
+    ConsonantB: "ব"
+    ConsonantBh: "ভ"
+    ConsonantM: "ম"
+    ConsonantY: "য"
+    ConsonantR: "র"
+    ConsonantL: "ল"
+    ConsonantSh: "শ"
+    ConsonantSs: "ষ"
+    ConsonantS: "স"
+    ConsonantH: "হ"
 
   marks:
-    "ং": "ं"    # anusvara
-    "ঃ": "ः"    # visarga
-    "ঁ": "ँ"    # candrabindu
-    "়": "़"    # nukta
-    "্": "्"    # virama/hasanta
-    "ঽ": "ऽ"    # avagraha
-
-  special:
-    # Nukta forms
-    "ড়": "ड़"    # ṛa
-    "ঢ়": "ढ़"    # ṛha
-    "য়": "य़"    # ẏa
+    MarkAnusvara: "ং"
+    MarkVisarga: "ঃ"
+    MarkVirama: "্"
 
   digits:
-    "০": "०"    # 0
-    "১": "१"    # 1
-    "২": "२"    # 2
-    "৩": "३"    # 3
-    "৪": "४"    # 4
-    "৫": "५"    # 5
-    "৬": "६"    # 6
-    "৭": "७"    # 7
-    "৮": "८"    # 8
-    "৯": "९"    # 9
+    Digit0: "০"
+    Digit1: "১"
+    Digit2: "২"
+    Digit3: "৩"
+    Digit4: "৪"
+    Digit5: "৫"
+    Digit6: "৬"
+    Digit7: "৭"
+    Digit8: "৮"
+    Digit9: "৯"
 
 codegen:
-  mapping_type: "char_hashmap"
-  processor_type: "indic_standard"
+  processor_type: "indic_token_based"

@@ -4,99 +4,92 @@ metadata:
   script_type: "brahmic"
   has_implicit_a: true
 
-# Character mappings (Gujarati to Devanagari equivalent)
+target: "abugida_tokens"
+
 mappings:
-  # Independent vowels
   vowels:
-    "અ": "अ"    # a
-    "આ": "आ"    # ā
-    "ઇ": "इ"    # i
-    "ઈ": "ई"    # ī
-    "ઉ": "उ"    # u
-    "ઊ": "ऊ"    # ū
-    "ઋ": "ऋ"    # ṛ
-    "ૠ": "ॠ"    # ṝ
-    "ઍ": "ऍ"    # ĕ
-    "એ": "ए"    # e
-    "ઐ": "ऐ"    # ai
-    "ઑ": "ऑ"    # ŏ
-    "ઓ": "ओ"    # o
-    "ઔ": "औ"    # au
-  
-  # Consonants (with inherent 'a')
-  consonants:
-    "ક": "क"    # ka
-    "ખ": "ख"    # kha
-    "ગ": "ग"    # ga
-    "ઘ": "घ"    # gha
-    "ઙ": "ङ"    # ṅa
-    "ચ": "च"    # ca
-    "છ": "छ"    # cha
-    "જ": "ज"    # ja
-    "ઝ": "झ"    # jha
-    "ઞ": "ञ"    # ña
-    "ટ": "ट"    # ṭa
-    "ઠ": "ठ"    # ṭha
-    "ડ": "ड"    # ḍa
-    "ઢ": "ढ"    # ḍha
-    "ણ": "ण"    # ṇa
-    "ત": "त"    # ta
-    "થ": "थ"    # tha
-    "દ": "द"    # da
-    "ધ": "ध"    # dha
-    "ન": "न"    # na
-    "પ": "प"    # pa
-    "ફ": "फ"    # pha
-    "બ": "ब"    # ba
-    "ભ": "भ"    # bha
-    "મ": "म"    # ma
-    "ય": "य"    # ya
-    "ર": "र"    # ra
-    "લ": "ल"    # la
-    "વ": "व"    # va
-    "શ": "श"    # śa
-    "ષ": "ष"    # ṣa
-    "સ": "स"    # sa
-    "હ": "ह"    # ha
-    "ળ": "ळ"    # ḷa
-  
-  # Vowel signs (matras)
+    VowelA: "અ"
+    VowelAa: "આ"
+    VowelI: "ઇ"
+    VowelIi: "ઈ"
+    VowelU: "ઉ"
+    VowelUu: "ઊ"
+    VowelVocalicR: "ઋ"
+    VowelVocalicRr: "ૠ"
+    VowelVocalicL: "ઋ"  # placeholder - Gujarati doesn't have distinct ḷ
+    VowelVocalicLl: "ૠ"  # placeholder
+    VowelE: "એ"
+    VowelAi: "ઐ"
+    VowelO: "ઓ"
+    VowelAu: "ઔ"
+
   vowel_signs:
-    "ા": "ा"    # ā
-    "િ": "ि"    # i
-    "ી": "ी"    # ī
-    "ુ": "ु"    # u
-    "ૂ": "ू"    # ū
-    "ૃ": "ृ"    # ṛ
-    "ૄ": "ॄ"    # ṝ
-    "ૅ": "ॅ"    # ĕ
-    "ે": "े"    # e
-    "ૈ": "ै"    # ai
-    "ૉ": "ॉ"    # ŏ
-    "ો": "ो"    # o
-    "ૌ": "ौ"    # au
-  
-  # Special marks
+    VowelSignAa: "ા"
+    VowelSignI: "િ"
+    VowelSignIi: "ી"
+    VowelSignU: "ુ"
+    VowelSignUu: "ૂ"
+    VowelSignVocalicR: "ૃ"
+    VowelSignVocalicRr: "ૄ"
+    VowelSignVocalicL: "ૃ"  # placeholder
+    VowelSignVocalicLl: "ૄ"  # placeholder
+    VowelSignE: "ે"
+    VowelSignAi: "ૈ"
+    VowelSignO: "ો"
+    VowelSignAu: "ૌ"
+
+  consonants:
+    ConsonantK: "ક"
+    ConsonantKh: "ખ"
+    ConsonantG: "ગ"
+    ConsonantGh: "ઘ"
+    ConsonantNg: "ઙ"
+    ConsonantC: "ચ"
+    ConsonantCh: "છ"
+    ConsonantJ: "જ"
+    ConsonantJh: "ઝ"
+    ConsonantNy: "ઞ"
+    ConsonantT: "ટ"
+    ConsonantTh: "ઠ"
+    ConsonantD: "ડ"
+    ConsonantDh: "ઢ"
+    ConsonantN: "ણ"
+    ConsonantTt: "ત"
+    ConsonantTth: "થ"
+    ConsonantDd: "દ"
+    ConsonantDdh: "ધ"
+    ConsonantNn: "ન"
+    ConsonantP: "પ"
+    ConsonantPh: "ફ"
+    ConsonantB: "બ"
+    ConsonantBh: "ભ"
+    ConsonantM: "મ"
+    ConsonantY: "ય"
+    ConsonantR: "ર"
+    ConsonantL: "લ"
+    ConsonantV: "વ"
+    ConsonantLl: "ળ"
+    ConsonantSh: "શ"
+    ConsonantSs: "ષ"
+    ConsonantS: "સ"
+    ConsonantH: "હ"
+
   marks:
-    "ં": "ं"    # anusvara
-    "ઃ": "ः"    # visarga
-    "્": "्"    # virama/halanta
-    "ઽ": "ऽ"    # avagraha
-    "ૐ": "ॐ"    # om
-  
-  # Digits
+    MarkAnusvara: "ં"
+    MarkVisarga: "ઃ"
+    MarkVirama: "્"
+
   digits:
-    "૦": "०"    # 0
-    "૧": "१"    # 1
-    "૨": "२"    # 2
-    "૩": "३"    # 3
-    "૪": "४"    # 4
-    "૫": "५"    # 5
-    "૬": "६"    # 6
-    "૭": "७"    # 7
-    "૮": "८"    # 8
-    "૯": "९"    # 9
+    Digit0: "૦"
+    Digit1: "૧"
+    Digit2: "૨"
+    Digit3: "૩"
+    Digit4: "૪"
+    Digit5: "૫"
+    Digit6: "૬"
+    Digit7: "૭"
+    Digit8: "૮"
+    Digit9: "૯"
 
 codegen:
-  mapping_type: "char_hashmap"
-  processor_type: "indic_standard"
+  processor_type: "indic_token_based"
