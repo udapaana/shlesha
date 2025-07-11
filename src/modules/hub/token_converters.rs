@@ -177,15 +177,15 @@ impl TokenToStringConverter {
         alphabet_to_iso.insert(AlphabetToken::SpecialKs, "kṣ");
         alphabet_to_iso.insert(AlphabetToken::SpecialJn, "jñ");
 
-        // Extended characters
-        alphabet_to_iso.insert(AlphabetToken::ExtendedQ, "qa");
-        alphabet_to_iso.insert(AlphabetToken::ExtendedZ, "za");
-        alphabet_to_iso.insert(AlphabetToken::ExtendedF, "fa");
-        alphabet_to_iso.insert(AlphabetToken::ExtendedGh, "ġa");
-        alphabet_to_iso.insert(AlphabetToken::ExtendedKh, "ḵẖa");
-        alphabet_to_iso.insert(AlphabetToken::ExtendedRr, "ṛa");
-        alphabet_to_iso.insert(AlphabetToken::ExtendedRrh, "ṛha");
-        alphabet_to_iso.insert(AlphabetToken::ExtendedY, "ẏa");
+        // Nukta characters
+        alphabet_to_iso.insert(AlphabetToken::ConsonantQa, "qa");
+        alphabet_to_iso.insert(AlphabetToken::ConsonantZa, "za");
+        alphabet_to_iso.insert(AlphabetToken::ConsonantFa, "fa");
+        alphabet_to_iso.insert(AlphabetToken::ConsonantGha, "ġa");
+        alphabet_to_iso.insert(AlphabetToken::ConsonantKha, "ḵẖa");
+        alphabet_to_iso.insert(AlphabetToken::ConsonantRra, "ṛa");
+        alphabet_to_iso.insert(AlphabetToken::ConsonantRrha, "ṛha");
+        alphabet_to_iso.insert(AlphabetToken::ConsonantYa, "ẏa");
 
         // Digits
         alphabet_to_iso.insert(AlphabetToken::Digit0, "0");

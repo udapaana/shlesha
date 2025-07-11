@@ -606,6 +606,32 @@ mod tests {
             .transliterate("धर्मkr", "devanagari", "gujarati")
             .unwrap();
         
+        // Debug: Print the actual result
+        println!("Test input: धर्मkr");
+        println!("Expected: ધર્મkr");
+        println!("Actual:   {}", result);
+        
+        // Test simpler case to debug virama issue
+        let simple_result = transliterator
+            .transliterate("धर्म", "devanagari", "gujarati")
+            .unwrap();
+        println!("\nSimple test: धर्म -> {}", simple_result);
+        println!("Expected:    ધર્મ");
+        
+        // Compare with working case (to roman)
+        let roman_result = transliterator
+            .transliterate("धर्म", "devanagari", "iast")
+            .unwrap();
+        println!("To Roman:    {}", roman_result);
+        
+        // DEBUG: Test individual characters to trace virama
+        println!("\nDEBUG: Character by character analysis");
+        for (i, ch) in "धर्म".chars().enumerate() {
+            println!("  [{}] {} (U+{:04X})", i, ch, ch as u32);
+            if ch == '्' {
+                println!("      ^ This is the virama character!");
+            }
+        }
         
         assert_eq!(result, "ધર્મkr"); // Latin chars should pass through
 
@@ -655,6 +681,51 @@ mod tests {
             .transliterate("xyz123", "devanagari", "iso15919")
             .unwrap();
         assert_eq!(result, "xyz123"); // Should pass through unchanged
+    }
+
+    #[test]
+    fn test_virama_across_scripts() {
+        let transliterator = Shlesha::new();
+        let input = "धर्म"; // dha + ra + virama + ma
+        
+        println!("Testing virama handling across scripts:");
+        println!("Input: {} (Devanagari)", input);
+        
+        // Test various Indic scripts
+        let scripts = vec![
+            ("bengali", "ধর্ম"),
+            ("gujarati", "ધર્મ"), 
+            ("telugu", "ధర్మ"),
+            ("kannada", "ಧರ್ಮ"),
+            ("malayalam", "ധര്മ"),
+        ];
+        
+        for (script, expected) in scripts {
+            match transliterator.transliterate(input, "devanagari", script) {
+                Ok(result) => {
+                    let chars_result: Vec<char> = result.chars().collect();
+                    let chars_expected: Vec<char> = expected.chars().collect();
+                    
+                    println!("\n{} script:", script);
+                    println!("  Result:   {} ({} chars)", result, chars_result.len());
+                    println!("  Expected: {} ({} chars)", expected, chars_expected.len());
+                    
+                    if chars_result.len() != chars_expected.len() {
+                        println!("  ❌ Character count mismatch!");
+                        for (i, ch) in chars_result.iter().enumerate() {
+                            println!("    [{}] {} (U+{:04X})", i, ch, *ch as u32);
+                        }
+                        println!("  Expected breakdown:");
+                        for (i, ch) in chars_expected.iter().enumerate() {
+                            println!("    [{}] {} (U+{:04X})", i, ch, *ch as u32);
+                        }
+                    } else {
+                        println!("  ✅ Character count matches");
+                    }
+                },
+                Err(e) => println!("{}: Error - {}", script, e),
+            }
+        }
     }
 }
 

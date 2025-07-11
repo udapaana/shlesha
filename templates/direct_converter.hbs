@@ -10,7 +10,11 @@ static {{uppercase from_script}}_TO_{{uppercase to_script}}_MATCHER: Lazy<AhoCor
         "{{from_pattern}}",
         {{/each}}
     ];
-    AhoCorasick::new(patterns).unwrap()
+    // Use longest-match for consistent multi-character tokenization
+    AhoCorasick::builder()
+        .match_kind(aho_corasick::MatchKind::LeftmostLongest)
+        .build(patterns)
+        .unwrap()
 });
 
 static {{uppercase from_script}}_TO_{{uppercase to_script}}_REPLACEMENTS: Lazy<Vec<&'static str>> = Lazy::new(|| {

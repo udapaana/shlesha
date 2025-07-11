@@ -13,7 +13,12 @@ static {{uppercase script_name}}_MATCHER: Lazy<AhoCorasick> = Lazy::new(|| {
         {{/each}}
         {{/each}}
     ];
-    AhoCorasick::new(patterns).unwrap()
+    // All scripts need leftmost-longest matching for proper multi-character tokenization
+    // This handles cases like "dh" vs "d"+"h" in Roman and precomposed chars in Indic
+    AhoCorasick::builder()
+        .match_kind(aho_corasick::MatchKind::LeftmostLongest)
+        .build(patterns)
+        .unwrap()
 });
 
 // Pattern to token lookup table (same order as patterns above)
@@ -171,7 +176,7 @@ impl {{struct_name}} {
                             result.push_str(self.token_to_string(abugida_token));
                         }
                         
-                        // Consonants - check what follows
+                        // Consonants (including extended) - check what follows
                         AbugidaToken::ConsonantK | AbugidaToken::ConsonantKh | AbugidaToken::ConsonantG |
                         AbugidaToken::ConsonantGh | AbugidaToken::ConsonantNg | AbugidaToken::ConsonantC |
                         AbugidaToken::ConsonantCh | AbugidaToken::ConsonantJ | AbugidaToken::ConsonantJh |
@@ -183,7 +188,9 @@ impl {{struct_name}} {
                         AbugidaToken::ConsonantM | AbugidaToken::ConsonantY | AbugidaToken::ConsonantR |
                         AbugidaToken::ConsonantL | AbugidaToken::ConsonantV | AbugidaToken::ConsonantLl |
                         AbugidaToken::ConsonantSh | AbugidaToken::ConsonantSs | AbugidaToken::ConsonantS |
-                        AbugidaToken::ConsonantH => {
+                        AbugidaToken::ConsonantH | AbugidaToken::ConsonantQa | AbugidaToken::ConsonantZa |
+                        AbugidaToken::ConsonantFa | AbugidaToken::ConsonantGha | AbugidaToken::ConsonantKha |
+                        AbugidaToken::ConsonantRra | AbugidaToken::ConsonantRrha | AbugidaToken::ConsonantYa => {
                             // Output the consonant
                             result.push_str(self.token_to_string(abugida_token));
                             
@@ -204,7 +211,7 @@ impl {{struct_name}} {
                                             // Virama already present - no additional virama needed
                                             AbugidaToken::MarkVirama => false,
                                             
-                                            // Another consonant - this forms a consonant cluster
+                                            // Another consonant - let explicit viramas handle cluster formation
                                             AbugidaToken::ConsonantK | AbugidaToken::ConsonantKh | 
                                             AbugidaToken::ConsonantG | AbugidaToken::ConsonantGh | 
                                             AbugidaToken::ConsonantNg | AbugidaToken::ConsonantC |
@@ -222,17 +229,8 @@ impl {{struct_name}} {
                                             AbugidaToken::ConsonantV | AbugidaToken::ConsonantLl |
                                             AbugidaToken::ConsonantSh | AbugidaToken::ConsonantSs | 
                                             AbugidaToken::ConsonantS | AbugidaToken::ConsonantH => {
-                                                // In a consonant cluster, check if we need to suppress the current consonant's 'a'
-                                                // Look ahead to see if there's an explicit virama after the next consonant
-                                                // If so, that means we're in a "C1 C2 virama" situation where C1 should be suppressed
-                                                if i + 2 < tokens.len() {
-                                                    match &tokens[i + 2] {
-                                                        HubToken::Abugida(AbugidaToken::MarkVirama) => true, // Pattern: C1 C2 virama -> suppress C1
-                                                        _ => false, // No explicit virama after next consonant, both consonants keep their vowels
-                                                    }
-                                                } else {
-                                                    false // End of sequence, don't suppress current consonant
-                                                }
+                                                // Don't auto-add viramas - rely on explicit virama tokens from source
+                                                false
                                             }
                                             
                                             // Default: no virama (end of word, marks, etc.)
@@ -265,7 +263,12 @@ impl {{struct_name}} {
                             result.push(*ch);
                         }
                         
-                        // Other tokens - output directly
+                        // Virama - output explicit virama tokens directly
+                        AbugidaToken::MarkVirama => {
+                            result.push_str(self.token_to_string(abugida_token));
+                        }
+                        
+                        // Other tokens (marks, digits, etc.) - output directly
                         _ => {
                             result.push_str(self.token_to_string(abugida_token));
                         }

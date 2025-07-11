@@ -134,7 +134,8 @@ impl HubTrait for Hub {
     }
     
     fn alphabet_to_abugida_tokens(&self, tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
-        self.generated_hub.alphabet_to_abugida_tokens(tokens)
+        // Use manual implementation for proper implicit 'a' handling
+        manual_converter::ManualHubConverter::alphabet_to_abugida(tokens)
     }
 }
 

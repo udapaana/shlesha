@@ -62,6 +62,12 @@ mappings:
   marks:
     MarkAnusvara: "M"
     MarkVisarga: "H"
+    
+    # Vedic accent marks
+    MarkUdatta: "'"     # acute accent
+    MarkAnudatta: "_"   # grave accent  
+    MarkDoubleSvarita: "~"  # double svarita
+    MarkTripleSvarita: "~~" # triple svarita
 
   special:
     # MarkDanda: "|"    # danda - no token yet

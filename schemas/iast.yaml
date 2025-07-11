@@ -16,8 +16,8 @@ mappings:
     VowelUu: "ū"
     VowelVocalicR: "ṛ"
     VowelVocalicRr: "ṝ"
-    VowelVocalicL: "ḷ"
-    VowelVocalicLl: "ḹ"
+    VowelVocalicL: "l̥"
+    VowelVocalicLl: "l̥̄"
     VowelE: "e"
     VowelAi: "ai"
     VowelO: "o"
@@ -53,6 +53,7 @@ mappings:
     ConsonantR: "r"
     ConsonantL: "l"
     ConsonantV: "v"
+    ConsonantLl: "ḷ"
     ConsonantSh: "ś"
     ConsonantSs: "ṣ"
     ConsonantS: "s"
@@ -65,6 +66,7 @@ mappings:
   special:
     SpecialKs: "kṣ"
     SpecialJn: "jñ"
+    ConsonantQa: "q"
 
   digits:
     Digit0: "0"

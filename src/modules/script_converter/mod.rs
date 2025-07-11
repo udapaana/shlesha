@@ -256,6 +256,7 @@ impl ScriptConverterRegistry {
         if self.token_converters.supports_script(script) {
             let tokens = self.token_converters.convert_to_tokens(script, input)?;
             
+            
             // Convert tokens to appropriate hub format
             let hub_format = if self.token_converters.is_alphabet_script(script) {
                 HubFormat::AlphabetTokens(tokens)
@@ -302,6 +303,7 @@ impl ScriptConverterRegistry {
                 HubFormat::AlphabetTokens(tokens) => tokens,
                 HubFormat::AbugidaTokens(tokens) => tokens,
             };
+            
             
             // Convert tokens to string
             let result = self.token_converters.convert_from_tokens(script, tokens)?;

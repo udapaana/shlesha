@@ -17,7 +17,7 @@ mappings:
     VowelUu: ["uu", "U"]  # prefer "uu" over "U" for output
     VowelVocalicR: "R"
     VowelVocalicRr: "RR"
-    VowelVocalicL: ["lR", "L"]  # prefer "lR" over "L" for output
+    VowelVocalicL: "lR"  # Use only "lR" for vocalic L to avoid conflict with retroflex consonant
     VowelVocalicLl: ["lRR", "LL"]  # prefer "lRR" over "LL" for output
     VowelE: "e"
     VowelAi: "ai"
@@ -54,6 +54,7 @@ mappings:
     ConsonantR: "r"
     ConsonantL: "l"
     ConsonantV: "v"
+    ConsonantLl: "L"
     ConsonantSh: "sh"
     ConsonantSs: ["Sh", "shh"]  # prefer "Sh" over "shh" for output
     ConsonantS: "s"

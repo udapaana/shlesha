@@ -20,6 +20,7 @@ struct TokenMappings {
     marks: Option<FxHashMap<String, TokenMapping>>,       // "MarkAnusvara" -> ["M", "ṁ"]
     digits: Option<FxHashMap<String, TokenMapping>>,      // "Digit0" -> "0"
     special: Option<FxHashMap<String, TokenMapping>>,     // "SpecialKs" -> ["kS", "kṣ"]
+    extended: Option<FxHashMap<String, TokenMapping>>,    // "ExtendedQ" -> "q"
 }
 
 // Support both single string and array of strings for flexibility
@@ -108,7 +109,7 @@ use once_cell::sync::Lazy;
 use crate::modules::script_converter::processors::{RomanScriptProcessor, FastMappingBuilder};
 use crate::modules::hub::HubFormat;
 use crate::modules::hub::tokens::{AbugidaToken, AlphabetToken, HubToken, HubTokenSequence};
-use aho_corasick::AhoCorasick;
+use aho_corasick::{AhoCorasick, MatchKind};
 
 "#,
     );
@@ -749,6 +750,26 @@ fn generate_token_based_converter(
         }));
     }
     
+    if let Some(ref extended) = schema.mappings.extended {
+        let entries: Vec<_> = extended.iter()
+            .map(|(token, mapping)| {
+                let (preferred, all_inputs) = match mapping {
+                    TokenMapping::Single(s) => (s.clone(), vec![s.clone()]),
+                    TokenMapping::Multiple(v) => (v[0].clone(), v.clone()),
+                };
+                json!({
+                    "token": token,
+                    "preferred": preferred,
+                    "all_inputs": all_inputs
+                })
+            })
+            .collect();
+        mappings.push(json!({
+            "category": "Extended",
+            "entries": entries
+        }));
+    }
+    
     if let Some(ref digits) = schema.mappings.digits {
         let entries: Vec<_> = digits.iter()
             .map(|(token, mapping)| {
@@ -916,6 +937,9 @@ fn collect_all_tokens(schema: &ScriptSchema) -> Vec<String> {
     }
     if let Some(ref special) = schema.mappings.special {
         tokens.extend(special.keys().cloned());
+    }
+    if let Some(ref extended) = schema.mappings.extended {
+        tokens.extend(extended.keys().cloned());
     }
     
     tokens
@@ -1152,6 +1176,16 @@ fn collect_all_mappings(schema: &ScriptSchema) -> FxHashMap<String, Vec<String>>
     
     if let Some(ref special) = schema.mappings.special {
         for (token, mapping) in special {
+            let strings = match mapping {
+                TokenMapping::Single(s) => vec![s.clone()],
+                TokenMapping::Multiple(v) => v.clone(),
+            };
+            mappings.insert(token.clone(), strings);
+        }
+    }
+    
+    if let Some(ref extended) = schema.mappings.extended {
+        for (token, mapping) in extended {
             let strings = match mapping {
                 TokenMapping::Single(s) => vec![s.clone()],
                 TokenMapping::Multiple(v) => v.clone(),

@@ -18,11 +18,12 @@ mappings:
     VowelAi: "ஐ"
     VowelO: "ஒ"
     VowelAu: "ஔ"
-    # Tamil-specific vowels that don't have exact Sanskrit equivalents
-    VowelVocalicR: "எ"  # placeholder - Tamil doesn't have these sounds
-    VowelVocalicRr: "எ"  # placeholder
-    VowelVocalicL: "எ"  # placeholder  
-    VowelVocalicLl: "எ"  # placeholder
+    
+    # Vocalic vowels - typically rendered as combinations in Tamil
+    VowelVocalicR: "ரி"   # ri combination
+    VowelVocalicRr: "ரீ"  # rī combination
+    VowelVocalicL: "லி"   # li combination  
+    VowelVocalicLl: "லீ"  # lī combination
 
   vowel_signs:
     VowelSignAa: "ா"
@@ -34,11 +35,12 @@ mappings:
     VowelSignAi: "ை"
     VowelSignO: "ொ"
     VowelSignAu: "ௌ"
-    # Placeholders for missing vowel signs
-    VowelSignVocalicR: "ெ"  # placeholder
-    VowelSignVocalicRr: "ெ"  # placeholder
-    VowelSignVocalicL: "ெ"  # placeholder
-    VowelSignVocalicLl: "ெ"  # placeholder
+    
+    # Vocalic vowel signs - different from independent vowels
+    VowelSignVocalicR: "ிர"   # ri sign combination
+    VowelSignVocalicRr: "ீர"  # rī sign combination
+    VowelSignVocalicL: "ில"   # li sign combination
+    VowelSignVocalicLl: "ீல"  # lī sign combination
 
   consonants:
     ConsonantK: "க"
@@ -58,24 +60,25 @@ mappings:
     ConsonantLl: "ழ"
     ConsonantS: "ஸ"
     ConsonantH: "ஹ"
-    # Placeholders for missing aspirated consonants (Tamil doesn't have these)
-    ConsonantKh: "க"  # placeholder
-    ConsonantG: "க"   # placeholder
-    ConsonantGh: "க"  # placeholder
-    ConsonantCh: "ச"  # placeholder
-    ConsonantJ: "ச"   # placeholder
-    ConsonantJh: "ச"  # placeholder
-    ConsonantTh: "ட"  # placeholder
-    ConsonantD: "ட"   # placeholder
-    ConsonantDh: "ட"  # placeholder
-    ConsonantTth: "த" # placeholder
-    ConsonantDd: "த"  # placeholder
-    ConsonantDdh: "த" # placeholder
-    ConsonantPh: "ப"  # placeholder
-    ConsonantB: "ப"   # placeholder
-    ConsonantBh: "ப"  # placeholder
-    ConsonantSh: "ஸ"  # placeholder
-    ConsonantSs: "ஸ"  # placeholder
+    
+    # Sanskrit consonants using Tamil superscript notation
+    ConsonantKh: "க²"   # kha
+    ConsonantG: "க³"    # ga
+    ConsonantGh: "க⁴"   # gha
+    ConsonantCh: "ச²"   # cha
+    ConsonantJ: "ஜ"     # ja (distinct character)
+    ConsonantJh: "ஜ²"   # jha
+    ConsonantTh: "ட²"   # ṭha
+    ConsonantD: "ட³"    # ḍa
+    ConsonantDh: "ட⁴"   # ḍha
+    ConsonantTth: "த²"  # tha
+    ConsonantDd: "த³"   # da
+    ConsonantDdh: "த⁴"  # dha
+    ConsonantPh: "ப²"   # pha
+    ConsonantB: "ப³"    # ba
+    ConsonantBh: "ப⁴"   # bha
+    ConsonantSh: "ஶ"    # śa (distinct character)
+    ConsonantSs: "ஷ"    # ṣa (distinct character)
 
   marks:
     MarkAnusvara: "ஂ"

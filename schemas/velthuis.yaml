@@ -16,8 +16,8 @@ mappings:
     VowelUu: ["uu", "U"]  # prefer "uu" over "U" for output
     VowelVocalicR: ".r"
     VowelVocalicRr: ".R"
-    VowelVocalicL: ".l"
-    VowelVocalicLl: ".L"
+    VowelVocalicL: ".ll"
+    VowelVocalicLl: ".LL"
     VowelE: "e"
     VowelAi: "ai"
     VowelO: "o"
@@ -53,6 +53,7 @@ mappings:
     ConsonantR: "r"
     ConsonantL: "l"
     ConsonantV: "v"
+    ConsonantLl: ".l"
     ConsonantSh: "\"s"
     ConsonantSs: ".s"
     ConsonantS: "s"

@@ -87,6 +87,16 @@ mappings:
     ConsonantSs: "ष"
     ConsonantS: "स"
     ConsonantH: "ह"
+    
+    # Nukta consonants (composite characters)
+    ConsonantQa: "क़"   # qa
+    ConsonantZa: "ज़"   # za  
+    ConsonantFa: "फ़"   # fa
+    ConsonantGha: "ग़"  # ġa
+    ConsonantKha: "ख़"  # ḵha
+    ConsonantRra: "ड़"  # ṛa
+    ConsonantRrha: "ढ़" # ṛha  
+    ConsonantYa: "य़"   # ẏa
 
   marks:
     MarkAnusvara: "ं"
