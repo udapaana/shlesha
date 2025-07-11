@@ -27,9 +27,6 @@ enum Commands {
         to: String,
         /// Text to transliterate (or read from stdin if not provided)
         text: Option<String>,
-        /// Show unknown tokens inline: output[script:token]
-        #[arg(long)]
-        show_metadata: bool,
         /// Show detailed metadata breakdown
         #[arg(short, long)]
         verbose: bool,
@@ -47,7 +44,6 @@ fn main() {
             from,
             to,
             text,
-            show_metadata,
             verbose,
         } => {
             // Get input text
@@ -64,56 +60,32 @@ fn main() {
             };
 
             // Perform transliteration with or without metadata
-            if show_metadata || verbose {
+            if verbose {
                 match transliterator.transliterate_with_metadata(&input, &from, &to) {
                     Ok(result) => {
-                        if verbose {
-                            // Detailed metadata output
-                            println!("{}", result.output);
-                            if let Some(metadata) = result.metadata {
-                                println!("\nMetadata:");
-                                println!(
-                                    "  Source: {} -> Target: {}",
-                                    metadata.source_script, metadata.target_script
-                                );
-                                println!("  Extensions used: {}", metadata.used_extensions);
-                                if !metadata.unknown_tokens.is_empty() {
-                                    println!("  Unknown tokens: {}", metadata.unknown_tokens.len());
-                                    for (i, token) in metadata.unknown_tokens.iter().enumerate() {
-                                        println!(
-                                            "    {}. '{}' at position {} ({})",
-                                            i + 1,
-                                            token.token,
-                                            token.position,
-                                            token.unicode
-                                        );
-                                    }
-                                } else {
-                                    println!("  Unknown tokens: 0");
+                        // Detailed metadata output
+                        println!("{}", result.output);
+                        if let Some(metadata) = result.metadata {
+                            println!("\nMetadata:");
+                            println!(
+                                "  Source: {} -> Target: {}",
+                                metadata.source_script, metadata.target_script
+                            );
+                            println!("  Extensions used: {}", metadata.used_extensions);
+                            if !metadata.unknown_tokens.is_empty() {
+                                println!("  Unknown tokens: {}", metadata.unknown_tokens.len());
+                                for (i, token) in metadata.unknown_tokens.iter().enumerate() {
+                                    println!(
+                                        "    {}. '{}' at position {} ({})",
+                                        i + 1,
+                                        token.token,
+                                        token.position,
+                                        token.unicode
+                                    );
                                 }
+                            } else {
+                                println!("  Unknown tokens: 0");
                             }
-                        } else {
-                            // Simple inline metadata output
-                            let mut output = result.output.clone();
-                            if let Some(metadata) = result.metadata {
-                                if !metadata.unknown_tokens.is_empty() {
-                                    // Sort by position to insert annotations in correct order
-                                    let mut tokens = metadata.unknown_tokens.clone();
-                                    tokens.sort_by(|a, b| b.position.cmp(&a.position)); // Reverse order for correct insertion
-
-                                    for token in tokens {
-                                        let annotation =
-                                            format!("[{}:{}]", token.script, token.token);
-                                        // Insert annotation after the token position
-                                        if token.position < output.len() {
-                                            output.insert_str(token.position + 1, &annotation);
-                                        } else {
-                                            output.push_str(&annotation);
-                                        }
-                                    }
-                                }
-                            }
-                            println!("{output}");
                         }
                     }
                     Err(e) => {

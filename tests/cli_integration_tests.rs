@@ -1,7 +1,7 @@
 use std::io::Write;
 use std::process::Command;
 
-/// Test CLI integration including new metadata flags
+/// Test CLI integration
 #[cfg(test)]
 mod cli_tests {
     use super::*;
@@ -45,26 +45,6 @@ mod cli_tests {
         assert_eq!(stdout.trim(), "a");
     }
 
-    #[test]
-    fn test_cli_show_metadata_flag() {
-        let output = Command::new(get_cli_binary())
-            .arg("transliterate")
-            .arg("--from")
-            .arg("devanagari")
-            .arg("--to")
-            .arg("iast")
-            .arg("--show-metadata")
-            .arg("धर्मkr")
-            .output()
-            .expect("Failed to execute CLI");
-
-        assert!(output.status.success());
-        let stdout = String::from_utf8(output.stdout).unwrap();
-        // Should contain the output plus any metadata annotations
-        assert!(stdout.contains("dharma"));
-        // Should contain inline metadata annotations like [devanagari:k] for unknown tokens
-        assert!(stdout.contains("[devanagari:k]"));
-    }
 
     #[test]
     fn test_cli_verbose_flag() {
