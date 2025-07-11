@@ -653,7 +653,7 @@ mod tests {
 
         // Test metadata collection with unknown characters
         let result = transliterator
-            .transliterate_with_metadata("धर्मkr", "devanagari", "iso")
+            .transliterate_with_metadata("धर्मkr", "devanagari", "iso15919")
             .unwrap();
         assert_eq!(result.output, "dharmakr");
         // Should have metadata tracking the unknown characters
