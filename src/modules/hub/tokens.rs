@@ -418,10 +418,7 @@ impl HubToken {
     }
 
     pub fn is_virama(&self) -> bool {
-        match self {
-            HubToken::Abugida(AbugidaToken::MarkVirama) => true,
-            _ => false,
-        }
+        matches!(self, HubToken::Abugida(AbugidaToken::MarkVirama))
     }
 }
 

@@ -111,6 +111,7 @@ fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> 
 #[allow(dead_code)]
 #[allow(clippy::new_without_default)]
 #[allow(clippy::clone_on_copy)]
+#[allow(clippy::match_like_matches_macro)]
 
 use once_cell::sync::Lazy;
 use crate::modules::hub::HubFormat;
@@ -131,7 +132,7 @@ use aho_corasick::AhoCorasick;
 
                 let content = fs::read_to_string(&path)?;
                 let schema: ScriptSchema = serde_yaml::from_str(&content).map_err(|e| {
-                    format!("Failed to parse YAML schema {}: {}", path.display(), e)
+                    format!("Failed to parse YAML schema {}: {e}", path.display())
                 })?;
 
                 // Add schema to collection for Hub generation
@@ -149,8 +150,8 @@ use aho_corasick::AhoCorasick;
                 let converter_code =
                     generate_converter_from_schema(&handlebars, &schema).map_err(|e| {
                         format!(
-                            "Failed to generate converter for {}: {}",
-                            schema.metadata.name, e
+                            "Failed to generate converter for {}: {e}",
+                            schema.metadata.name
                         )
                     })?;
                 generated_code.push_str(&converter_code);
@@ -183,7 +184,7 @@ use aho_corasick::AhoCorasick;
     // Generate token-based converter registry with aliases
     let token_registrations = converter_registrations
         .iter()
-        .map(|name| format!("        Box::new({}::new()),", name))
+        .map(|name| format!("        Box::new({name}::new()),"))
         .collect::<Vec<_>>()
         .join("\n");
 
@@ -212,15 +213,14 @@ use aho_corasick::AhoCorasick;
                     .map(|aliases| {
                         aliases
                             .iter()
-                            .map(|alias| format!("\"{}\".to_string()", alias))
+                            .map(|alias| format!("\"{alias}\".to_string()"))
                             .collect::<Vec<_>>()
                             .join(", ")
                     })
                     .unwrap_or_default();
 
                 Some(format!(
-                    "        (Box::new({}::new()), vec![{}]),",
-                    converter_name, aliases
+                    "        (Box::new({converter_name}::new()), vec![{aliases}]),"
                 ))
             } else {
                 None
@@ -239,17 +239,17 @@ pub fn register_schema_generated_converters(_registry: &mut crate::modules::scri
 /// Get all token-based converters (legacy)
 pub fn register_token_converters() -> Vec<Box<dyn crate::modules::script_converter::TokenConverter>> {{
     vec![
-{}
+{token_registrations}
     ]
 }}
 
 /// Get all token-based converters with their aliases
 pub fn register_token_converters_with_aliases() -> Vec<(Box<dyn crate::modules::script_converter::TokenConverter>, Vec<String>)> {{
     vec![
-{}
+{token_registrations_with_aliases}
     ]
 }}
-"#, token_registrations, token_registrations_with_aliases));
+"#));
 
     // Write generated code
     fs::write(out_dir.join("schema_generated.rs"), generated_code)?;
@@ -896,7 +896,7 @@ fn generate_token_based_converter(
 
     handlebars
         .render("token_based_converter", &template_data)
-        .map_err(|e| format!("Template rendering failed: {}", e).into())
+        .map_err(|e| format!("Template rendering failed: {e}").into())
 }
 
 /// Generate Hub converter from token-based schemas

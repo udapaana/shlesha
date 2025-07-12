@@ -28,7 +28,7 @@ pub enum HubFormat {
 
 impl HubFormat {
     /// Convert tokens to string representation
-    pub fn to_string(&self) -> String {
+    pub fn to_debug_string(&self) -> String {
         match self {
             HubFormat::AbugidaTokens(tokens) => {
                 let converter = TokenToStringConverter::new();

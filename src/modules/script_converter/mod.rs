@@ -148,6 +148,7 @@ pub trait TokenConverter: Send + Sync {
 }
 
 /// Registry for token-based converters
+#[derive(Default)]
 pub struct TokenConverterRegistry {
     converters: Vec<Box<dyn TokenConverter>>,
     /// Cache mapping script names to converter indices for O(1) lookup

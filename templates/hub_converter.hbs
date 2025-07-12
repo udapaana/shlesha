@@ -1,9 +1,11 @@
 // Generated Hub token conversion implementation
+
 use crate::modules::hub::tokens::{AbugidaToken, AlphabetToken, HubToken, HubTokenSequence};
 use crate::modules::hub::{HubError, HubTrait};
 use rustc_hash::FxHashMap;
 use once_cell::sync::Lazy;
 
+#[derive(Default)]
 pub struct GeneratedHub;
 
 // Optimized lookup tables for ultra-fast token conversion

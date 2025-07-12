@@ -60,14 +60,14 @@ impl ManualHubConverter {
                 }
                 HubToken::Alphabet(alphabet_token) => {
                     // Already alphabet, flush stack and pass through
-                    result.extend(stack.drain(..));
+                    result.append(&mut stack);
                     result.push(HubToken::Alphabet(alphabet_token.clone()));
                 }
             }
         }
 
         // Flush any remaining tokens in stack
-        result.extend(stack.drain(..));
+        result.append(&mut stack);
 
         Ok(result)
     }
@@ -282,7 +282,7 @@ impl ManualHubConverter {
                 }
                 HubToken::Abugida(abugida_token) => {
                     // Already abugida, pass through
-                    result.push(HubToken::Abugida(abugida_token.clone()));
+                    result.push(HubToken::Abugida(*abugida_token));
                     i += 1;
                 }
             }

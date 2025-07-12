@@ -239,7 +239,7 @@ pub extern "C" fn convert_tokens_to_string(tokens: *const std::os::raw::c_char) 
     fn compile_to_dylib(&self, crate_dir: &Path) -> Result<PathBuf, RuntimeCompilerError> {
         // Run cargo build --release
         let output = Command::new("cargo")
-            .args(&["build", "--release"])
+            .args(["build", "--release"])
             .current_dir(crate_dir)
             .output()?;
 
