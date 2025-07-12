@@ -31,10 +31,13 @@
 
 pub mod modules;
 
+
 // Include generated Hub converter
 mod generated {
     include!(concat!(env!("OUT_DIR"), "/hub_generated.rs"));
 }
+
+// ToString/FromStr implementations are now in modules/hub/token_string_impl.rs
 
 // Import hub trait to use the hub
 use modules::hub::HubTrait;
@@ -457,7 +460,7 @@ impl Shlesha {
 
     /// Check if a specific script is supported (built-in or runtime)
     pub fn supports_script(&self, script_name: &str) -> bool {
-        self.script_converter_registry.supports_script(script_name)
+        self.script_converter_registry.supports_script_with_registry(script_name, Some(&self.registry))
             || self.registry.get_schema(script_name).is_some()
     }
 
@@ -639,17 +642,8 @@ mod tests {
         let result = transliterator
             .transliterate("dharmaqx", "iast", "devanagari")
             .unwrap();
-        // q converts to क़् (composed form), x passes through unchanged
-        let expected = format!(
-            "{}{}{}{}{}{}",
-            "ध",
-            "र्",
-            "म",
-            "\u{0958}", // क़ (composed qa)
-            "्",         // virama
-            "x"
-        );
-        assert_eq!(result, expected);
+        // q and x are not part of IAST, so they pass through unchanged
+        assert_eq!(result, "धर्मqx");
 
         // Test metadata collection with unknown characters
         let result = transliterator

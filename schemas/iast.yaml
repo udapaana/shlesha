@@ -66,7 +66,6 @@ mappings:
   special:
     SpecialKs: "kṣ"
     SpecialJn: "jñ"
-    ConsonantQa: "q"
 
   digits:
     Digit0: "0"

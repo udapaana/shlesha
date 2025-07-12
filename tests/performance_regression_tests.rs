@@ -8,7 +8,8 @@ use std::time::{Duration, Instant};
 
 /// Performance thresholds - these should be conservative enough to avoid flaky tests
 /// but strict enough to catch real regressions
-const MAX_BASIC_CONVERSION_MICROS: u128 = 1000; // 1ms for basic conversions
+/// Debug builds are significantly slower than release builds - these thresholds account for that
+const MAX_BASIC_CONVERSION_MICROS: u128 = if cfg!(debug_assertions) { 10000 } else { 1000 }; // 10ms debug, 1ms release
 const MAX_MEDIUM_TEXT_MILLIS: u128 = 10; // 10ms for medium text
 const MAX_LARGE_TEXT_MILLIS: u128 = 100; // 100ms for large text
 const MAX_SCHEMA_LOAD_MILLIS: u128 = 50; // 50ms for schema loading

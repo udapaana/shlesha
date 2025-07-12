@@ -356,7 +356,13 @@ impl SchemaRegistry {
 
 impl SchemaRegistryTrait for SchemaRegistry {
     fn get_schema(&self, script_name: &str) -> Option<&Schema> {
-        self.schemas.get(script_name)
+        // First try exact name match
+        if let Some(schema) = self.schemas.get(script_name) {
+            return Some(schema);
+        }
+        
+        // If not found, try alias lookup
+        self.find_schema_by_alias(script_name)
     }
 
     fn register_schema(&mut self, name: String, schema: Schema) -> Result<(), RegistryError> {
@@ -459,11 +465,13 @@ impl SchemaRegistryTrait for SchemaRegistry {
     }
 
     fn has_schema(&self, script_name: &str) -> bool {
-        self.schemas.contains_key(script_name)
+        // Check both exact name and alias
+        self.schemas.contains_key(script_name) || self.find_schema_by_alias(script_name).is_some()
     }
 
     fn get_schema_metadata(&self, script_name: &str) -> Option<&SchemaMetadata> {
-        self.schemas.get(script_name).map(|schema| &schema.metadata)
+        // Use get_schema to support both exact names and aliases
+        self.get_schema(script_name).map(|schema| &schema.metadata)
     }
 
     fn get_registry_stats(&self) -> RegistryStats {

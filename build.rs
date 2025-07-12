@@ -8,8 +8,11 @@ use std::path::{Path, PathBuf};
 #[derive(serde::Deserialize, Debug, Clone)]
 struct ScriptMetadata {
     name: String,
+    #[allow(dead_code)]
     script_type: String,
+    #[allow(dead_code)]
     has_implicit_a: bool,
+    aliases: Option<Vec<String>>,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -33,10 +36,12 @@ enum TokenMapping {
 
 #[derive(serde::Deserialize, Debug, Clone)]
 struct CodegenConfig {
+    #[allow(dead_code)]
     processor_type: String,
 }
 
 impl TokenMapping {
+    #[allow(dead_code)]
     fn get_preferred(&self) -> String {
         match self {
             TokenMapping::Single(s) => s.clone(),
@@ -50,10 +55,12 @@ struct ScriptSchema {
     metadata: ScriptMetadata,
     target: Option<String>, // "alphabet_tokens" or "abugida_tokens" (optional for legacy schemas)
     mappings: TokenMappings,
+    #[allow(dead_code)]
     codegen: Option<CodegenConfig>,
 }
 
 // Convert TokenMapping mappings to legacy String mappings for compatibility
+#[allow(dead_code)]
 fn flatten_token_mappings(mappings: &FxHashMap<String, TokenMapping>) -> FxHashMap<String, String> {
     mappings.iter()
         .map(|(k, v)| (k.clone(), v.get_preferred()))
@@ -174,9 +181,34 @@ use aho_corasick::{AhoCorasick, MatchKind};
         fs::write(out_dir.join("direct_converters_generated.rs"), direct_code)?;
     }
 
-    // Generate token-based converter registry
+    // Generate token-based converter registry with aliases
     let token_registrations = converter_registrations.iter()
-        .map(|name| format!("    Box::new({}::new()),", name))
+        .map(|name| format!("        Box::new({}::new()),", name))
+        .collect::<Vec<_>>()
+        .join("\n");
+    
+    // Generate registration with aliases
+    let token_registrations_with_aliases = schemas.iter()
+        .filter_map(|schema| {
+            let converter_name = format!("{}Converter", 
+                schema.metadata.name.chars()
+                    .next().unwrap().to_uppercase().to_string() +
+                    &schema.metadata.name[1..]
+            );
+            
+            if converter_registrations.contains(&converter_name) {
+                let aliases = schema.metadata.aliases.as_ref()
+                    .map(|aliases| aliases.iter()
+                        .map(|alias| format!("\"{}\".to_string()", alias))
+                        .collect::<Vec<_>>()
+                        .join(", "))
+                    .unwrap_or_default();
+                
+                Some(format!("        (Box::new({}::new()), vec![{}]),", converter_name, aliases))
+            } else {
+                None
+            }
+        })
         .collect::<Vec<_>>()
         .join("\n");
     
@@ -187,17 +219,23 @@ pub fn register_schema_generated_converters(_registry: &mut crate::modules::scri
     // Token-based converters are managed separately
 }}
 
-/// Get all token-based converters
+/// Get all token-based converters (legacy)
 pub fn register_token_converters() -> Vec<Box<dyn crate::modules::script_converter::TokenConverter>> {{
     vec![
 {}
     ]
 }}
-"#, token_registrations));
+
+/// Get all token-based converters with their aliases
+pub fn register_token_converters_with_aliases() -> Vec<(Box<dyn crate::modules::script_converter::TokenConverter>, Vec<String>)> {{
+    vec![
+{}
+    ]
+}}
+"#, token_registrations, token_registrations_with_aliases));
 
     // Write generated code
     fs::write(out_dir.join("schema_generated.rs"), generated_code)?;
-
     Ok(())
 }
 
@@ -228,6 +266,7 @@ fn escape_string(s: &str) -> String {
 
 // Template-based converter generators
 
+#[allow(dead_code)]
 fn generate_roman_converter_with_template(
     handlebars: &Handlebars,
     struct_name: &str,
@@ -385,6 +424,7 @@ fn eq_helper(
     Ok(())
 }
 
+#[allow(dead_code)]
 fn generate_indic_converter_with_template(
     handlebars: &Handlebars,
     struct_name: &str,
@@ -410,6 +450,7 @@ fn generate_indic_converter_with_template(
     Ok(code)
 }
 
+#[allow(dead_code)]
 fn generate_extended_indic_converter_with_template(
     handlebars: &Handlebars,
     struct_name: &str,
@@ -434,6 +475,7 @@ fn generate_extended_indic_converter_with_template(
     Ok(code)
 }
 
+#[allow(dead_code)]
 fn generate_roman_to_devanagari_converter(
     handlebars: &Handlebars,
     schema: &ScriptSchema,
@@ -502,6 +544,7 @@ fn generate_roman_to_devanagari_converter(
     Ok(code)
 }
 
+#[allow(dead_code)]
 fn get_iso_to_devanagari_mappings() -> FxHashMap<String, String> {
     // Hardcode the hub mappings since we can't access the crate from build.rs
     // This is still better than before since we're deriving vowel signs dynamically
@@ -611,6 +654,7 @@ fn get_iso_to_devanagari_mappings() -> FxHashMap<String, String> {
     iso_to_deva_mappings
 }
 
+#[allow(dead_code)]
 fn add_vowel_sign_mappings(
     roman_to_deva_mappings: &mut FxHashMap<String, String>,
     iso_to_deva_mappings: &FxHashMap<String, String>,
@@ -1196,3 +1240,4 @@ fn collect_all_mappings(schema: &ScriptSchema) -> FxHashMap<String, Vec<String>>
     
     mappings
 }
+

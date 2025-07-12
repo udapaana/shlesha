@@ -4,6 +4,7 @@ use thiserror::Error;
 pub mod tokens;
 pub mod token_converters;
 pub mod manual_converter;
+pub mod token_string_impl;
 pub use tokens::{AbugidaToken, AlphabetToken, HubToken, HubTokenSequence};
 pub use token_converters::TokenToStringConverter;
 
@@ -116,6 +117,7 @@ pub trait HubTrait {
 
 /// Central hub implementing token-based conversions
 pub struct Hub {
+    #[allow(dead_code)]
     generated_hub: crate::generated::GeneratedHub,
 }
 

@@ -3,7 +3,7 @@ use crate::modules::hub::tokens::{AbugidaToken, AlphabetToken, HubToken};
 
 #[test]
 fn test_hub_creation() {
-    let hub = Hub::new();
+    let _hub = Hub::new();
     assert!(true); // Basic creation test
 }
 

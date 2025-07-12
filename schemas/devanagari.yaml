@@ -1,0 +1,104 @@
+metadata:
+  name: devanagari
+  script_type: brahmic
+  has_implicit_a: true
+  description: Devanagari (देवनागरी) script - hub script for Indic processing
+  aliases:
+  - deva
+target: abugida_tokens
+mappings:
+  vowels:
+    VowelA: अ
+    VowelAa: आ
+    VowelI: इ
+    VowelIi: ई
+    VowelU: उ
+    VowelUu: ऊ
+    VowelVocalicR: ऋ
+    VowelVocalicRr: ॠ
+    VowelVocalicL: ऌ
+    VowelVocalicLl: ॡ
+    VowelE: ए
+    VowelAi: ऐ
+    VowelO: ओ
+    VowelAu: औ
+  vowel_signs:
+    VowelSignAa: ा
+    VowelSignI: ि
+    VowelSignIi: ी
+    VowelSignU: ु
+    VowelSignUu: ू
+    VowelSignVocalicR: ृ
+    VowelSignVocalicRr: ॄ
+    VowelSignVocalicL: ॢ
+    VowelSignVocalicLl: ॣ
+    VowelSignE: े
+    VowelSignAi: ै
+    VowelSignO: ो
+    VowelSignAu: ौ
+  consonants:
+    ConsonantK: क
+    ConsonantKh: ख
+    ConsonantG: ग
+    ConsonantGh: घ
+    ConsonantNg: ङ
+    ConsonantC: च
+    ConsonantCh: छ
+    ConsonantJ: ज
+    ConsonantJh: झ
+    ConsonantNy: ञ
+    ConsonantT: ट
+    ConsonantTh: ठ
+    ConsonantD: ड
+    ConsonantDh: ढ
+    ConsonantN: ण
+    ConsonantTt: त
+    ConsonantTth: थ
+    ConsonantDd: द
+    ConsonantDdh: ध
+    ConsonantNn: न
+    ConsonantP: प
+    ConsonantPh: फ
+    ConsonantB: ब
+    ConsonantBh: भ
+    ConsonantM: म
+    ConsonantY: य
+    ConsonantR: र
+    ConsonantL: ल
+    ConsonantV: व
+    ConsonantLl: ळ
+    ConsonantSh: श
+    ConsonantSs: ष
+    ConsonantS: स
+    ConsonantH: ह
+    ConsonantQa: क़
+    ConsonantZa: ज़
+    ConsonantFa: फ़
+    ConsonantGha: ग़
+    ConsonantKha: ख़
+    ConsonantRra: ड़
+    ConsonantRrha: ढ़
+    ConsonantYa: य़
+  marks:
+    MarkAnusvara: ं
+    MarkVisarga: ः
+    MarkCandrabindu: ँ
+    MarkNukta: ़
+    MarkVirama: ्
+    MarkAvagraha: ऽ
+  special:
+    MarkUdatta: ॑
+    MarkAnudatta: ॒
+    MarkDoubleSvarita: ᳚
+    MarkTripleSvarita: ᳛
+  digits:
+    Digit0: ०
+    Digit1: १
+    Digit2: २
+    Digit3: ३
+    Digit4: ४
+    Digit5: ५
+    Digit6: ६
+    Digit7: ७
+    Digit8: ८
+    Digit9: ९
