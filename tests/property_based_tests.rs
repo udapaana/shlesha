@@ -170,20 +170,27 @@ fn prop_round_trip_conversion(input: SanskritText) -> bool {
                     // For round-trip validation, we need to account for normalization.
                     // First normalize the input by doing a round-trip through the same script,
                     // then compare that normalized form with the round-trip result.
-                    let normalized_input = shlesha.transliterate(&input.text, &input.script, &input.script)
+                    let normalized_input = shlesha
+                        .transliterate(&input.text, &input.script, &input.script)
                         .unwrap_or_else(|_| input.text.clone());
-                    
+
                     if backward != normalized_input {
                         // Known limitation: Harvard-Kyoto "lRR" is ambiguous
                         // Can represent either "l̥̄" (vocalic l + macron) or "l" + "r̥̄" (consonant l + vocalic r + macron)
                         // This will be fixed by the enum-based token system
-                        let is_known_ambiguity = (input.script == "iso" && *target_script == "harvard_kyoto") &&
-                            (input.text.contains("lr̥̄") || input.text.contains("l̥̄"));
-                        
+                        let is_known_ambiguity = (input.script == "iso"
+                            && *target_script == "harvard_kyoto")
+                            && (input.text.contains("lr̥̄") || input.text.contains("l̥̄"));
+
                         if !is_known_ambiguity {
                             eprintln!(
                                 "Round-trip failed: {} '{}' → {} '{}' → '{}' (normalized: '{}')",
-                                input.script, input.text, target_script, forward, backward, normalized_input
+                                input.script,
+                                input.text,
+                                target_script,
+                                forward,
+                                backward,
+                                normalized_input
                             );
                             return false;
                         }
@@ -255,7 +262,7 @@ fn prop_ascii_preservation(ascii_chars: String, script1: String, script2: String
 
     // Additional safety: reject any sequence that could be Sanskrit
     let problematic_patterns = [
-        "ch", "dh", "bh", "gh", "jh", "kh", "ph", "th", "sh", "ng", "ny", "ng"
+        "ch", "dh", "bh", "gh", "jh", "kh", "ph", "th", "sh", "ng", "ny", "ng",
     ];
     for pattern in &problematic_patterns {
         if ascii_chars.contains(pattern) {

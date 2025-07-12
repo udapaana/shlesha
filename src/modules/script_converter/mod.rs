@@ -136,13 +136,13 @@ pub trait ScriptConverter: Send + Sync {
 pub trait TokenConverter: Send + Sync {
     /// Convert string to tokens
     fn string_to_tokens(&self, input: &str) -> HubTokenSequence;
-    
+
     /// Convert tokens to string
     fn tokens_to_string(&self, tokens: &HubTokenSequence) -> String;
-    
+
     /// Get the script name this converter handles
     fn script_name(&self) -> &'static str;
-    
+
     /// Get whether this converter handles alphabet tokens (Roman) or abugida tokens (Indic)
     fn is_alphabet(&self) -> bool;
 }
@@ -161,66 +161,82 @@ impl TokenConverterRegistry {
             script_to_converter: FxHashMap::default(),
         }
     }
-    
+
     pub fn register_converter(&mut self, converter: Box<dyn TokenConverter>) {
         let converter_index = self.converters.len();
         let script_name = converter.script_name().to_string();
-        
-        self.script_to_converter.insert(script_name, converter_index);
+
+        self.script_to_converter
+            .insert(script_name, converter_index);
         self.converters.push(converter);
     }
 
-    pub fn register_converter_with_aliases(&mut self, converter: Box<dyn TokenConverter>, aliases: &[&str]) {
+    pub fn register_converter_with_aliases(
+        &mut self,
+        converter: Box<dyn TokenConverter>,
+        aliases: &[&str],
+    ) {
         let converter_index = self.converters.len();
         let script_name = converter.script_name().to_string();
-        
+
         // Register primary script name
-        self.script_to_converter.insert(script_name, converter_index);
-        
+        self.script_to_converter
+            .insert(script_name, converter_index);
+
         // Register all aliases
         for alias in aliases {
-            self.script_to_converter.insert(alias.to_string(), converter_index);
+            self.script_to_converter
+                .insert(alias.to_string(), converter_index);
         }
-        
+
         self.converters.push(converter);
     }
-    
-    pub fn convert_to_tokens(&self, script: &str, input: &str) -> Result<HubTokenSequence, ConverterError> {
+
+    pub fn convert_to_tokens(
+        &self,
+        script: &str,
+        input: &str,
+    ) -> Result<HubTokenSequence, ConverterError> {
         // Try direct script name first
         if let Some(&converter_index) = self.script_to_converter.get(script) {
             let tokens = self.converters[converter_index].string_to_tokens(input);
             return Ok(tokens);
         }
-        
+
         Err(ConverterError::ConversionFailed {
             script: script.to_string(),
             reason: format!("No token converter found for script: {}", script),
         })
     }
-    
-    pub fn convert_from_tokens(&self, script: &str, tokens: &HubTokenSequence) -> Result<String, ConverterError> {
+
+    pub fn convert_from_tokens(
+        &self,
+        script: &str,
+        tokens: &HubTokenSequence,
+    ) -> Result<String, ConverterError> {
         // Try direct script name first
         if let Some(&converter_index) = self.script_to_converter.get(script) {
             let output = self.converters[converter_index].tokens_to_string(tokens);
             return Ok(output);
         }
-        
+
         Err(ConverterError::ConversionFailed {
             script: script.to_string(),
             reason: format!("No token converter found for script: {}", script),
         })
     }
-    
+
     pub fn supports_script(&self, script: &str) -> bool {
         self.script_to_converter.contains_key(script)
     }
-    
+
     pub fn list_supported_scripts(&self) -> Vec<String> {
         self.script_to_converter.keys().cloned().collect()
     }
-    
+
     pub fn is_alphabet_script(&self, script: &str) -> bool {
-        self.script_to_converter.get(script)
+        self.script_to_converter
+            .get(script)
             .map(|&idx| self.converters[idx].is_alphabet())
             .unwrap_or(false)
     }
@@ -282,16 +298,17 @@ impl ScriptConverterRegistry {
 
         // Try token-based converters first
         if self.token_converters.supports_script(resolved_script) {
-            let tokens = self.token_converters.convert_to_tokens(resolved_script, input)?;
-            
-            
+            let tokens = self
+                .token_converters
+                .convert_to_tokens(resolved_script, input)?;
+
             // Convert tokens to appropriate hub format
             let hub_format = if self.token_converters.is_alphabet_script(resolved_script) {
                 HubFormat::AlphabetTokens(tokens)
             } else {
                 HubFormat::AbugidaTokens(tokens)
             };
-            
+
             return Ok(hub_format);
         }
 
@@ -324,7 +341,7 @@ impl ScriptConverterRegistry {
         hub_input: &HubInput,
         schema_registry: Option<&crate::modules::registry::SchemaRegistry>,
     ) -> Result<String, ConverterError> {
-        // Resolve script aliases using schema registry  
+        // Resolve script aliases using schema registry
         let resolved_script = if let Some(registry) = schema_registry {
             if let Some(schema) = registry.find_schema_by_alias(script) {
                 &schema.name
@@ -342,10 +359,11 @@ impl ScriptConverterRegistry {
                 HubFormat::AlphabetTokens(tokens) => tokens,
                 HubFormat::AbugidaTokens(tokens) => tokens,
             };
-            
-            
+
             // Convert tokens to string
-            let result = self.token_converters.convert_from_tokens(resolved_script, tokens)?;
+            let result = self
+                .token_converters
+                .convert_from_tokens(resolved_script, tokens)?;
             return Ok(result);
         }
 
@@ -375,17 +393,17 @@ impl ScriptConverterRegistry {
         // Try token-based converters first
         if self.token_converters.supports_script(script) {
             let tokens = self.token_converters.convert_to_tokens(script, input)?;
-            
+
             // Convert tokens to appropriate hub format
             let hub_format = if self.token_converters.is_alphabet_script(script) {
                 HubFormat::AlphabetTokens(tokens)
             } else {
                 HubFormat::AbugidaTokens(tokens)
             };
-            
+
             // Create basic metadata for script → hub conversion
             let metadata = TransliterationMetadata::new(script, script);
-            
+
             return Ok((hub_format, metadata));
         }
 
@@ -416,13 +434,13 @@ impl ScriptConverterRegistry {
                 HubFormat::AlphabetTokens(tokens) => tokens,
                 HubFormat::AbugidaTokens(tokens) => tokens,
             };
-            
+
             // Convert tokens to string
             let result = self.token_converters.convert_from_tokens(script, tokens)?;
-            
-            // Create basic metadata for hub → script conversion  
+
+            // Create basic metadata for hub → script conversion
             let metadata = TransliterationMetadata::new(script, script);
-            
+
             return Ok(TransliterationResult {
                 output: result,
                 metadata: Some(metadata),
@@ -454,9 +472,9 @@ impl ScriptConverterRegistry {
 
     /// Check if a script is supported by any converter (with schema registry for alias resolution)
     pub fn supports_script_with_registry(
-        &self, 
-        script: &str, 
-        schema_registry: Option<&crate::modules::registry::SchemaRegistry>
+        &self,
+        script: &str,
+        schema_registry: Option<&crate::modules::registry::SchemaRegistry>,
     ) -> bool {
         // Special case: Devanagari is always supported (hub format)
         if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
@@ -464,7 +482,9 @@ impl ScriptConverterRegistry {
         }
 
         // Check direct script name first
-        if self.script_to_converter.contains_key(script) || self.token_converters.supports_script(script) {
+        if self.script_to_converter.contains_key(script)
+            || self.token_converters.supports_script(script)
+        {
             return true;
         }
 
@@ -483,7 +503,8 @@ impl ScriptConverterRegistry {
 
         // Check resolved script name
         if resolved_script != script {
-            self.script_to_converter.contains_key(resolved_script) || self.token_converters.supports_script(resolved_script)
+            self.script_to_converter.contains_key(resolved_script)
+                || self.token_converters.supports_script(resolved_script)
         } else {
             false
         }
@@ -494,7 +515,7 @@ impl ScriptConverterRegistry {
         // Check hardcoded aliases first for built-in converters
         match script {
             "hk" => "harvard_kyoto",
-            "bn" => "bengali", 
+            "bn" => "bengali",
             "ta" => "tamil",
             "te" => "telugu",
             "gu" => "gujarati",
@@ -533,11 +554,7 @@ impl ScriptConverterRegistry {
 
     /// Get all supported scripts across all converters
     pub fn list_supported_scripts(&self) -> Vec<String> {
-        let mut scripts: Vec<String> = self
-            .script_to_converter
-            .keys()
-            .cloned()
-            .collect();
+        let mut scripts: Vec<String> = self.script_to_converter.keys().cloned().collect();
 
         // Add token-based converter scripts
         let token_scripts = self.token_converters.list_supported_scripts();
@@ -630,7 +647,9 @@ impl ScriptConverterRegistry {
                 registry.token_converters.register_converter(converter);
             } else {
                 let alias_refs: Vec<&str> = aliases.iter().map(|s| s.as_str()).collect();
-                registry.token_converters.register_converter_with_aliases(converter, &alias_refs);
+                registry
+                    .token_converters
+                    .register_converter_with_aliases(converter, &alias_refs);
             }
         }
 

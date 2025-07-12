@@ -125,7 +125,7 @@ impl TokenToStringConverter {
         alphabet_to_iso.insert(AlphabetToken::VowelVocalicR, "r̥");
         alphabet_to_iso.insert(AlphabetToken::VowelVocalicRr, "r̥̄");
         alphabet_to_iso.insert(AlphabetToken::VowelVocalicL, "l̥");
-        alphabet_to_iso.insert(AlphabetToken::VowelVocalicLl, "l̥̄");  // This fixes the ambiguity!
+        alphabet_to_iso.insert(AlphabetToken::VowelVocalicLl, "l̥̄"); // This fixes the ambiguity!
         alphabet_to_iso.insert(AlphabetToken::VowelE, "e");
         alphabet_to_iso.insert(AlphabetToken::VowelAi, "ai");
         alphabet_to_iso.insert(AlphabetToken::VowelO, "o");
@@ -206,8 +206,8 @@ impl TokenToStringConverter {
 
         // Special cases for ambiguous mappings
         // Multiple inputs can map to the same token, but token always outputs preferred form
-        iso_to_alphabet.insert("RR".to_string(), AlphabetToken::VowelVocalicRr);  // Harvard-Kyoto
-        iso_to_alphabet.insert("lR".to_string(), AlphabetToken::VowelVocalicL);   // Harvard-Kyoto  
+        iso_to_alphabet.insert("RR".to_string(), AlphabetToken::VowelVocalicRr); // Harvard-Kyoto
+        iso_to_alphabet.insert("lR".to_string(), AlphabetToken::VowelVocalicL); // Harvard-Kyoto
         iso_to_alphabet.insert("lRR".to_string(), AlphabetToken::VowelVocalicLl); // Harvard-Kyoto - FIXES THE AMBIGUITY!
 
         Self {
@@ -245,7 +245,7 @@ impl TokenToStringConverter {
                 HubToken::Alphabet(alphabet_token) => {
                     if let Some(&text) = self.alphabet_to_iso.get(alphabet_token) {
                         result.push_str(text);
-                    // No more Literal variants - unknown text handled separately
+                        // No more Literal variants - unknown text handled separately
                     }
                 }
                 HubToken::Abugida(_) => {
@@ -272,11 +272,11 @@ impl TokenToStringConverter {
     pub fn iso_to_tokens(&self, text: &str) -> HubTokenSequence {
         let mut tokens = Vec::new();
         let mut chars = text.chars().peekable();
-        
+
         while let Some(c) = chars.next() {
             // Try to match multi-character sequences first
             let mut matched = false;
-            
+
             // Try 3-character sequences
             if let Some(c2) = chars.peek().copied() {
                 let mut remaining_chars = chars.clone();
@@ -291,7 +291,7 @@ impl TokenToStringConverter {
                     }
                 }
             }
-            
+
             // Try 2-character sequences if 3-char didn't match
             if !matched {
                 if let Some(c2) = chars.peek().copied() {
@@ -303,7 +303,7 @@ impl TokenToStringConverter {
                     }
                 }
             }
-            
+
             // Try single character
             if !matched {
                 let single_char = c.to_string();
@@ -315,7 +315,7 @@ impl TokenToStringConverter {
                 }
             }
         }
-        
+
         tokens
     }
 }

@@ -1,4 +1,4 @@
-use super::{HubError, HubToken, HubTokenSequence, AbugidaToken, AlphabetToken};
+use super::{AbugidaToken, AlphabetToken, HubError, HubToken, HubTokenSequence};
 
 /// Manual implementation of hub conversions with proper implicit 'a' handling
 pub struct ManualHubConverter;
@@ -6,17 +6,23 @@ pub struct ManualHubConverter;
 impl ManualHubConverter {
     /// Check if a token is an extended nukta consonant
     fn is_extended_token(token: &AlphabetToken) -> bool {
-        matches!(token,
-            AlphabetToken::ConsonantQa | AlphabetToken::ConsonantZa | AlphabetToken::ConsonantFa |
-            AlphabetToken::ConsonantGha | AlphabetToken::ConsonantKha | AlphabetToken::ConsonantRra |
-            AlphabetToken::ConsonantRrha | AlphabetToken::ConsonantYa
+        matches!(
+            token,
+            AlphabetToken::ConsonantQa
+                | AlphabetToken::ConsonantZa
+                | AlphabetToken::ConsonantFa
+                | AlphabetToken::ConsonantGha
+                | AlphabetToken::ConsonantKha
+                | AlphabetToken::ConsonantRra
+                | AlphabetToken::ConsonantRrha
+                | AlphabetToken::ConsonantYa
         )
     }
     /// Convert abugida tokens to alphabet tokens using stack-based approach for implicit 'a' handling
     pub fn abugida_to_alphabet(tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
         let mut result = Vec::new();
         let mut stack = Vec::new(); // Stack for managing implicit vowels
-        
+
         for token in tokens {
             match token {
                 HubToken::Abugida(abugida_token) => {
@@ -42,12 +48,12 @@ impl ManualHubConverter {
                         stack.push(HubToken::Alphabet(vowel));
                     } else if token.is_vowel() {
                         // Flush stack and add independent vowel
-                        result.extend(stack.drain(..));
+                        result.append(&mut stack);
                         let vowel = Self::map_vowel(abugida_token)?;
                         result.push(HubToken::Alphabet(vowel));
                     } else {
                         // Other tokens (marks, digits, unknown) - flush stack and add directly
-                        result.extend(stack.drain(..));
+                        result.append(&mut stack);
                         let mapped_token = Self::map_other_token(abugida_token)?;
                         result.push(HubToken::Alphabet(mapped_token));
                     }
@@ -59,13 +65,13 @@ impl ManualHubConverter {
                 }
             }
         }
-        
+
         // Flush any remaining tokens in stack
         result.extend(stack.drain(..));
-        
+
         Ok(result)
     }
-    
+
     /// Map consonant tokens 1:1
     fn map_consonant(token: &AbugidaToken) -> Result<AlphabetToken, HubError> {
         match token {
@@ -103,7 +109,7 @@ impl ManualHubConverter {
             AbugidaToken::ConsonantSs => Ok(AlphabetToken::ConsonantSs),
             AbugidaToken::ConsonantS => Ok(AlphabetToken::ConsonantS),
             AbugidaToken::ConsonantH => Ok(AlphabetToken::ConsonantH),
-            
+
             // Nukta consonants
             AbugidaToken::ConsonantQa => Ok(AlphabetToken::ConsonantQa),
             AbugidaToken::ConsonantZa => Ok(AlphabetToken::ConsonantZa),
@@ -113,11 +119,14 @@ impl ManualHubConverter {
             AbugidaToken::ConsonantRra => Ok(AlphabetToken::ConsonantRra),
             AbugidaToken::ConsonantRrha => Ok(AlphabetToken::ConsonantRrha),
             AbugidaToken::ConsonantYa => Ok(AlphabetToken::ConsonantYa),
-            
-            _ => Err(HubError::MappingNotFound(format!("Not a consonant: {:?}", token))),
+
+            _ => Err(HubError::MappingNotFound(format!(
+                "Not a consonant: {:?}",
+                token
+            ))),
         }
     }
-    
+
     /// Map vowel tokens 1:1
     fn map_vowel(token: &AbugidaToken) -> Result<AlphabetToken, HubError> {
         match token {
@@ -135,10 +144,13 @@ impl ManualHubConverter {
             AbugidaToken::VowelAi => Ok(AlphabetToken::VowelAi),
             AbugidaToken::VowelO => Ok(AlphabetToken::VowelO),
             AbugidaToken::VowelAu => Ok(AlphabetToken::VowelAu),
-            _ => Err(HubError::MappingNotFound(format!("Not a vowel: {:?}", token))),
+            _ => Err(HubError::MappingNotFound(format!(
+                "Not a vowel: {:?}",
+                token
+            ))),
         }
     }
-    
+
     /// Map vowel sign tokens to corresponding vowels
     fn map_vowel_sign(token: &AbugidaToken) -> Result<AlphabetToken, HubError> {
         match token {
@@ -155,10 +167,13 @@ impl ManualHubConverter {
             AbugidaToken::VowelSignAi => Ok(AlphabetToken::VowelAi),
             AbugidaToken::VowelSignO => Ok(AlphabetToken::VowelO),
             AbugidaToken::VowelSignAu => Ok(AlphabetToken::VowelAu),
-            _ => Err(HubError::MappingNotFound(format!("Not a vowel sign: {:?}", token))),
+            _ => Err(HubError::MappingNotFound(format!(
+                "Not a vowel sign: {:?}",
+                token
+            ))),
         }
     }
-    
+
     /// Map other tokens (marks, digits, unknown)
     fn map_other_token(token: &AbugidaToken) -> Result<AlphabetToken, HubError> {
         match token {
@@ -167,16 +182,16 @@ impl ManualHubConverter {
             AbugidaToken::MarkVisarga => Ok(AlphabetToken::MarkVisarga),
             AbugidaToken::MarkCandrabindu => Ok(AlphabetToken::MarkCandrabindu),
             AbugidaToken::MarkAvagraha => Ok(AlphabetToken::MarkAvagraha),
-            
+
             // Vedic marks
             AbugidaToken::MarkUdatta => Ok(AlphabetToken::MarkUdatta),
             AbugidaToken::MarkAnudatta => Ok(AlphabetToken::MarkAnudatta),
             AbugidaToken::MarkDoubleSvarita => Ok(AlphabetToken::MarkDoubleSvarita),
             AbugidaToken::MarkTripleSvarita => Ok(AlphabetToken::MarkTripleSvarita),
-            
+
             // Unknown - pass through as character
             AbugidaToken::Unknown(c) => Ok(AlphabetToken::Unknown(*c)),
-            
+
             // For any other unmapped token, pass it through as an unknown character
             // This handles cases where tokens exist but aren't mapped yet
             _ => {
@@ -191,15 +206,15 @@ impl ManualHubConverter {
     pub fn alphabet_to_abugida(tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
         let mut result = Vec::new();
         let mut i = 0;
-        
+
         while i < tokens.len() {
             match &tokens[i] {
                 HubToken::Alphabet(alphabet_token) => {
                     if alphabet_token.is_consonant() {
                         // Check if this consonant is followed by 'a'
-                        let has_explicit_a = i + 1 < tokens.len() && 
-                            matches!(tokens[i + 1], HubToken::Alphabet(AlphabetToken::VowelA));
-                        
+                        let has_explicit_a = i + 1 < tokens.len()
+                            && matches!(tokens[i + 1], HubToken::Alphabet(AlphabetToken::VowelA));
+
                         if has_explicit_a {
                             // Consonant + explicit 'a' -> just the consonant (implicit 'a' in abugida)
                             let abugida_consonant = Self::reverse_map_consonant(alphabet_token)?;
@@ -209,7 +224,7 @@ impl ManualHubConverter {
                             // Consonant + other vowel -> consonant + vowel sign
                             let abugida_consonant = Self::reverse_map_consonant(alphabet_token)?;
                             result.push(HubToken::Abugida(abugida_consonant));
-                            
+
                             if let HubToken::Alphabet(vowel) = &tokens[i + 1] {
                                 let vowel_sign = Self::reverse_map_vowel_to_sign(vowel)?;
                                 result.push(HubToken::Abugida(vowel_sign));
@@ -230,19 +245,21 @@ impl ManualHubConverter {
                     } else if Self::is_extended_token(alphabet_token) {
                         // Nukta consonants - treat as regular consonants
                         // Check if this consonant is followed by 'a'
-                        let has_explicit_a = i + 1 < tokens.len() && 
-                            matches!(tokens[i + 1], HubToken::Alphabet(AlphabetToken::VowelA));
-                        
+                        let has_explicit_a = i + 1 < tokens.len()
+                            && matches!(tokens[i + 1], HubToken::Alphabet(AlphabetToken::VowelA));
+
                         if has_explicit_a {
                             // Nukta consonant + explicit 'a' -> just the extended consonant (implicit 'a' in abugida)
-                            let abugida_consonant = Self::reverse_map_extended_consonant(alphabet_token)?;
+                            let abugida_consonant =
+                                Self::reverse_map_extended_consonant(alphabet_token)?;
                             result.push(HubToken::Abugida(abugida_consonant));
                             i += 2; // Skip both consonant and 'a'
                         } else if i + 1 < tokens.len() && tokens[i + 1].is_vowel() {
                             // Nukta consonant + other vowel -> extended consonant + vowel sign
-                            let abugida_consonant = Self::reverse_map_extended_consonant(alphabet_token)?;
+                            let abugida_consonant =
+                                Self::reverse_map_extended_consonant(alphabet_token)?;
                             result.push(HubToken::Abugida(abugida_consonant));
-                            
+
                             if let HubToken::Alphabet(vowel) = &tokens[i + 1] {
                                 let vowel_sign = Self::reverse_map_vowel_to_sign(vowel)?;
                                 result.push(HubToken::Abugida(vowel_sign));
@@ -250,7 +267,8 @@ impl ManualHubConverter {
                             i += 2; // Skip both consonant and vowel
                         } else {
                             // Nukta consonant alone -> extended consonant + virama
-                            let abugida_consonant = Self::reverse_map_extended_consonant(alphabet_token)?;
+                            let abugida_consonant =
+                                Self::reverse_map_extended_consonant(alphabet_token)?;
                             result.push(HubToken::Abugida(abugida_consonant));
                             result.push(HubToken::Abugida(AbugidaToken::MarkVirama));
                             i += 1;
@@ -269,7 +287,7 @@ impl ManualHubConverter {
                 }
             }
         }
-        
+
         Ok(result)
     }
 
@@ -284,10 +302,13 @@ impl ManualHubConverter {
             AlphabetToken::ConsonantRra => Ok(AbugidaToken::ConsonantRra),
             AlphabetToken::ConsonantRrha => Ok(AbugidaToken::ConsonantRrha),
             AlphabetToken::ConsonantYa => Ok(AbugidaToken::ConsonantYa),
-            _ => Err(HubError::MappingNotFound(format!("Not an extended consonant: {:?}", token))),
+            _ => Err(HubError::MappingNotFound(format!(
+                "Not an extended consonant: {:?}",
+                token
+            ))),
         }
     }
-    
+
     /// Reverse map consonant tokens
     fn reverse_map_consonant(token: &AlphabetToken) -> Result<AbugidaToken, HubError> {
         match token {
@@ -325,8 +346,8 @@ impl ManualHubConverter {
             AlphabetToken::ConsonantSs => Ok(AbugidaToken::ConsonantSs),
             AlphabetToken::ConsonantS => Ok(AbugidaToken::ConsonantS),
             AlphabetToken::ConsonantH => Ok(AbugidaToken::ConsonantH),
-            
-            // Nukta consonants  
+
+            // Nukta consonants
             AlphabetToken::ConsonantQa => Ok(AbugidaToken::ConsonantQa),
             AlphabetToken::ConsonantZa => Ok(AbugidaToken::ConsonantZa),
             AlphabetToken::ConsonantFa => Ok(AbugidaToken::ConsonantFa),
@@ -335,8 +356,11 @@ impl ManualHubConverter {
             AlphabetToken::ConsonantRra => Ok(AbugidaToken::ConsonantRra),
             AlphabetToken::ConsonantRrha => Ok(AbugidaToken::ConsonantRrha),
             AlphabetToken::ConsonantYa => Ok(AbugidaToken::ConsonantYa),
-            
-            _ => Err(HubError::MappingNotFound(format!("Not a consonant: {:?}", token))),
+
+            _ => Err(HubError::MappingNotFound(format!(
+                "Not a consonant: {:?}",
+                token
+            ))),
         }
     }
 
@@ -357,7 +381,10 @@ impl ManualHubConverter {
             AlphabetToken::VowelAi => Ok(AbugidaToken::VowelAi),
             AlphabetToken::VowelO => Ok(AbugidaToken::VowelO),
             AlphabetToken::VowelAu => Ok(AbugidaToken::VowelAu),
-            _ => Err(HubError::MappingNotFound(format!("Not a vowel: {:?}", token))),
+            _ => Err(HubError::MappingNotFound(format!(
+                "Not a vowel: {:?}",
+                token
+            ))),
         }
     }
 
@@ -377,7 +404,10 @@ impl ManualHubConverter {
             AlphabetToken::VowelAi => Ok(AbugidaToken::VowelSignAi),
             AlphabetToken::VowelO => Ok(AbugidaToken::VowelSignO),
             AlphabetToken::VowelAu => Ok(AbugidaToken::VowelSignAu),
-            _ => Err(HubError::MappingNotFound(format!("No vowel sign for: {:?}", token))),
+            _ => Err(HubError::MappingNotFound(format!(
+                "No vowel sign for: {:?}",
+                token
+            ))),
         }
     }
 
@@ -389,18 +419,18 @@ impl ManualHubConverter {
             AlphabetToken::MarkVisarga => Ok(AbugidaToken::MarkVisarga),
             AlphabetToken::MarkCandrabindu => Ok(AbugidaToken::MarkCandrabindu),
             AlphabetToken::MarkAvagraha => Ok(AbugidaToken::MarkAvagraha),
-            
+
             // Vedic marks
             AlphabetToken::MarkUdatta => Ok(AbugidaToken::MarkUdatta),
             AlphabetToken::MarkAnudatta => Ok(AbugidaToken::MarkAnudatta),
             AlphabetToken::MarkDoubleSvarita => Ok(AbugidaToken::MarkDoubleSvarita),
             AlphabetToken::MarkTripleSvarita => Ok(AbugidaToken::MarkTripleSvarita),
-            
+
             // Nukta tokens are handled separately in alphabet_to_abugida conversion
-            
+
             // Unknown - pass through as character
             AlphabetToken::Unknown(c) => Ok(AbugidaToken::Unknown(*c)),
-            
+
             // For any other unmapped token, pass it through as an unknown character
             _ => Ok(AbugidaToken::Unknown('?')),
         }

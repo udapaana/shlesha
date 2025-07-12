@@ -107,20 +107,20 @@ fn main() {
 
         Commands::DebugTest => {
             let transliterator = Shlesha::new();
-            
+
             // Test the API that's failing
             let result = transliterator
                 .transliterate_with_metadata("अ", "devanagari", "iast")
                 .unwrap();
-            
+
             println!("Output: '{}'", result.output);
             println!("Expected: 'a'");
-            
+
             // Also test direct conversion
             let simple_result = transliterator
                 .transliterate("अ", "devanagari", "iast")
                 .unwrap();
-            
+
             println!("Simple result: '{}'", simple_result);
         }
 
@@ -128,13 +128,13 @@ fn main() {
             use shlesha::modules::script_converter::ScriptConverterRegistry;
             let registry = ScriptConverterRegistry::new_with_all_converters();
             let scripts = registry.list_supported_scripts();
-            
+
             println!("Available scripts:");
             for script in &scripts {
                 println!("  - {}", script);
             }
             println!("Total: {} scripts", scripts.len());
-            
+
             // Test specific scripts that tests are looking for
             println!("\nScript availability:");
             println!("  devanagari: {}", registry.supports_script("devanagari"));

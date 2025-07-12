@@ -45,7 +45,6 @@ mod cli_tests {
         assert_eq!(stdout.trim(), "a");
     }
 
-
     #[test]
     fn test_cli_verbose_flag() {
         let output = Command::new(get_cli_binary())

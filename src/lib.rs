@@ -31,7 +31,6 @@
 
 pub mod modules;
 
-
 // Include generated Hub converter
 mod generated {
     include!(concat!(env!("OUT_DIR"), "/hub_generated.rs"));
@@ -159,7 +158,6 @@ impl Shlesha {
         if from == to {
             return Ok(text.to_string());
         }
-        
 
         // Convert source script to hub format (Devanagari or ISO)
         let hub_input = self.script_converter_registry.to_hub_with_schema_registry(
@@ -171,12 +169,14 @@ impl Shlesha {
         // Apply hub conversion if needed (cross-token-type conversion)
         let final_hub_input = match (&hub_input, from, to) {
             // Cross-token-type conversion needed
-            (modules::hub::HubFormat::AlphabetTokens(_), _, _) if self.script_converter_registry.supports_script(to) => {
+            (modules::hub::HubFormat::AlphabetTokens(_), _, _)
+                if self.script_converter_registry.supports_script(to) =>
+            {
                 let tokens = match &hub_input {
                     modules::hub::HubFormat::AlphabetTokens(tokens) => tokens,
                     _ => return Err("Expected AlphabetTokens".into()),
                 };
-                
+
                 // Check if target script needs AbugidaTokens
                 if self.is_indic_script(to) {
                     // Convert AlphabetTokens to AbugidaTokens via hub
@@ -186,13 +186,15 @@ impl Shlesha {
                     hub_input
                 }
             }
-            (modules::hub::HubFormat::AbugidaTokens(_), _, _) if self.script_converter_registry.supports_script(to) => {
+            (modules::hub::HubFormat::AbugidaTokens(_), _, _)
+                if self.script_converter_registry.supports_script(to) =>
+            {
                 let tokens = match &hub_input {
                     modules::hub::HubFormat::AbugidaTokens(tokens) => tokens,
                     _ => return Err("Expected AbugidaTokens".into()),
                 };
-                
-                // Check if target script needs AlphabetTokens  
+
+                // Check if target script needs AlphabetTokens
                 if self.is_roman_script(to) {
                     // Convert AbugidaTokens to AlphabetTokens via hub
                     let alphabet_tokens = self.hub.abugida_to_alphabet_tokens(tokens)?;
@@ -205,11 +207,9 @@ impl Shlesha {
         };
 
         // Convert from hub format to target script
-        let result = self.script_converter_registry.from_hub_with_schema_registry(
-            to,
-            &final_hub_input,
-            Some(&self.registry),
-        )?;
+        let result = self
+            .script_converter_registry
+            .from_hub_with_schema_registry(to, &final_hub_input, Some(&self.registry))?;
 
         Ok(result)
     }
@@ -259,7 +259,6 @@ impl Shlesha {
         crate::modules::core::unknown_handler::TransliterationResult,
         Box<dyn std::error::Error>,
     > {
-
         // Convert source script to hub format with metadata collection
         let (hub_input, from_metadata) = self
             .script_converter_registry
@@ -268,12 +267,14 @@ impl Shlesha {
         // Smart hub processing based on input and desired output - with metadata
         // Apply the same hub conversion logic as the simple transliteration path
         let final_hub_input = match (&hub_input, from, to) {
-            (modules::hub::HubFormat::AlphabetTokens(_), _, _) if self.script_converter_registry.supports_script(to) => {
+            (modules::hub::HubFormat::AlphabetTokens(_), _, _)
+                if self.script_converter_registry.supports_script(to) =>
+            {
                 let tokens = match &hub_input {
                     modules::hub::HubFormat::AlphabetTokens(tokens) => tokens,
                     _ => return Err("Expected AlphabetTokens".into()),
                 };
-                
+
                 // Check if target script needs AbugidaTokens
                 if self.is_indic_script(to) {
                     // Convert AlphabetTokens to AbugidaTokens via hub
@@ -283,13 +284,15 @@ impl Shlesha {
                     hub_input
                 }
             }
-            (modules::hub::HubFormat::AbugidaTokens(_), _, _) if self.script_converter_registry.supports_script(to) => {
+            (modules::hub::HubFormat::AbugidaTokens(_), _, _)
+                if self.script_converter_registry.supports_script(to) =>
+            {
                 let tokens = match &hub_input {
                     modules::hub::HubFormat::AbugidaTokens(tokens) => tokens,
                     _ => return Err("Expected AbugidaTokens".into()),
                 };
-                
-                // Check if target script needs AlphabetTokens  
+
+                // Check if target script needs AlphabetTokens
                 if self.is_roman_script(to) {
                     // Convert AbugidaTokens to AlphabetTokens via hub
                     let alphabet_tokens = self.hub.abugida_to_alphabet_tokens(tokens)?;
@@ -305,18 +308,24 @@ impl Shlesha {
             .script_converter_registry
             .from_hub_with_metadata(to, &final_hub_input)
         {
-            Ok(result) => (result, None::<modules::core::unknown_handler::TransliterationMetadata>),
+            Ok(result) => (
+                result,
+                None::<modules::core::unknown_handler::TransliterationMetadata>,
+            ),
             Err(e) => {
                 return Err(format!("Conversion failed: {}", e).into());
             }
         };
 
         // Combine metadata from different stages
-        let mut final_metadata = modules::core::unknown_handler::TransliterationMetadata::new(from, to);
-        
+        let mut final_metadata =
+            modules::core::unknown_handler::TransliterationMetadata::new(from, to);
+
         // If result has metadata, copy over any unknown tokens but keep correct source/target
         if let Some(result_metadata) = result.metadata {
-            final_metadata.unknown_tokens.extend(result_metadata.unknown_tokens);
+            final_metadata
+                .unknown_tokens
+                .extend(result_metadata.unknown_tokens);
         }
 
         // Add from_stage metadata (script → hub)
@@ -360,7 +369,10 @@ impl Shlesha {
     }
 
     /// Add a runtime schema with compilation (if available)
-    pub fn add_runtime_schema(&mut self, schema: RuntimeSchema) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn add_runtime_schema(
+        &mut self,
+        schema: RuntimeSchema,
+    ) -> Result<(), Box<dyn std::error::Error>> {
         match &mut self.runtime_compiler {
             Some(compiler) => {
                 match compiler.compile_schema(&schema) {
@@ -374,22 +386,22 @@ impl Shlesha {
                     Err(_) => {
                         // Graceful fallback to registry-based processing
                         let registry_schema = self.convert_runtime_schema_to_registry(&schema);
-                        let _ = self.registry.add_schema(schema.metadata.name.clone(), registry_schema);
-                        self.processors.insert(
-                            schema.metadata.name.clone(),
-                            ProcessorSource::Dynamic,
-                        );
+                        let _ = self
+                            .registry
+                            .add_schema(schema.metadata.name.clone(), registry_schema);
+                        self.processors
+                            .insert(schema.metadata.name.clone(), ProcessorSource::Dynamic);
                     }
                 }
             }
             None => {
                 // No runtime compiler available, fall back to registry
                 let registry_schema = self.convert_runtime_schema_to_registry(&schema);
-                let _ = self.registry.add_schema(schema.metadata.name.clone(), registry_schema);
-                self.processors.insert(
-                    schema.metadata.name.clone(),
-                    ProcessorSource::Dynamic,
-                );
+                let _ = self
+                    .registry
+                    .add_schema(schema.metadata.name.clone(), registry_schema);
+                self.processors
+                    .insert(schema.metadata.name.clone(), ProcessorSource::Dynamic);
             }
         }
         Ok(())
@@ -401,24 +413,26 @@ impl Shlesha {
     }
 
     /// Convert RuntimeSchema to registry Schema format
-    fn convert_runtime_schema_to_registry(&self, runtime_schema: &RuntimeSchema) -> modules::registry::Schema {
+    fn convert_runtime_schema_to_registry(
+        &self,
+        runtime_schema: &RuntimeSchema,
+    ) -> modules::registry::Schema {
         use modules::registry::{Schema as RegistrySchema, SchemaMetadata as RegistryMetadata};
         use rustc_hash::FxHashMap;
 
         // Flatten the nested mappings into a single hashmap
         let mut flattened_mappings = FxHashMap::default();
-        
-        for (_category, entries) in &runtime_schema.mappings {
+
+        for entries in runtime_schema.mappings.values() {
             for (token, mapping) in entries {
                 // For registry schema, we use the first (preferred) mapping
                 let preferred_mapping = match mapping {
                     serde_json::Value::String(s) => s.clone(),
-                    serde_json::Value::Array(arr) => {
-                        arr.first()
-                            .and_then(|v| v.as_str())
-                            .unwrap_or("")
-                            .to_string()
-                    }
+                    serde_json::Value::Array(arr) => arr
+                        .first()
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("")
+                        .to_string(),
                     _ => continue,
                 };
                 flattened_mappings.insert(token.clone(), preferred_mapping);
@@ -460,7 +474,8 @@ impl Shlesha {
 
     /// Check if a specific script is supported (built-in or runtime)
     pub fn supports_script(&self, script_name: &str) -> bool {
-        self.script_converter_registry.supports_script_with_registry(script_name, Some(&self.registry))
+        self.script_converter_registry
+            .supports_script_with_registry(script_name, Some(&self.registry))
             || self.registry.get_schema(script_name).is_some()
     }
 
@@ -608,25 +623,25 @@ mod tests {
         let result = transliterator
             .transliterate("धर्मkr", "devanagari", "gujarati")
             .unwrap();
-        
+
         // Debug: Print the actual result
         println!("Test input: धर्मkr");
         println!("Expected: ધર્મkr");
         println!("Actual:   {}", result);
-        
+
         // Test simpler case to debug virama issue
         let simple_result = transliterator
             .transliterate("धर्म", "devanagari", "gujarati")
             .unwrap();
         println!("\nSimple test: धर्म -> {}", simple_result);
         println!("Expected:    ધર્મ");
-        
+
         // Compare with working case (to roman)
         let roman_result = transliterator
             .transliterate("धर्म", "devanagari", "iast")
             .unwrap();
         println!("To Roman:    {}", roman_result);
-        
+
         // DEBUG: Test individual characters to trace virama
         println!("\nDEBUG: Character by character analysis");
         for (i, ch) in "धर्म".chars().enumerate() {
@@ -635,7 +650,7 @@ mod tests {
                 println!("      ^ This is the virama character!");
             }
         }
-        
+
         assert_eq!(result, "ધર્મkr"); // Latin chars should pass through
 
         // Level 3: Roman script with unknown characters (IAST → Devanagari)
@@ -681,29 +696,29 @@ mod tests {
     fn test_virama_across_scripts() {
         let transliterator = Shlesha::new();
         let input = "धर्म"; // dha + ra + virama + ma
-        
+
         println!("Testing virama handling across scripts:");
         println!("Input: {} (Devanagari)", input);
-        
+
         // Test various Indic scripts
         let scripts = vec![
             ("bengali", "ধর্ম"),
-            ("gujarati", "ધર્મ"), 
+            ("gujarati", "ધર્મ"),
             ("telugu", "ధర్మ"),
             ("kannada", "ಧರ್ಮ"),
             ("malayalam", "ധര്മ"),
         ];
-        
+
         for (script, expected) in scripts {
             match transliterator.transliterate(input, "devanagari", script) {
                 Ok(result) => {
                     let chars_result: Vec<char> = result.chars().collect();
                     let chars_expected: Vec<char> = expected.chars().collect();
-                    
+
                     println!("\n{} script:", script);
                     println!("  Result:   {} ({} chars)", result, chars_result.len());
                     println!("  Expected: {} ({} chars)", expected, chars_expected.len());
-                    
+
                     if chars_result.len() != chars_expected.len() {
                         println!("  ❌ Character count mismatch!");
                         for (i, ch) in chars_result.iter().enumerate() {
@@ -716,7 +731,7 @@ mod tests {
                     } else {
                         println!("  ✅ Character count matches");
                     }
-                },
+                }
                 Err(e) => println!("{}: Error - {}", script, e),
             }
         }

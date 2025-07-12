@@ -1,5 +1,5 @@
-pub mod compiler;
 pub mod cache;
+pub mod compiler;
 
-pub use compiler::RuntimeCompiler;
 pub use cache::{CacheManager, CompilationCache};
+pub use compiler::RuntimeCompiler;

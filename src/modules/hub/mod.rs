@@ -1,12 +1,12 @@
 use crate::modules::core::unknown_handler::TransliterationMetadata;
 use thiserror::Error;
 
-pub mod tokens;
-pub mod token_converters;
 pub mod manual_converter;
+pub mod token_converters;
 pub mod token_string_impl;
-pub use tokens::{AbugidaToken, AlphabetToken, HubToken, HubTokenSequence};
+pub mod tokens;
 pub use token_converters::TokenToStringConverter;
+pub use tokens::{AbugidaToken, AlphabetToken, HubToken, HubTokenSequence};
 
 #[derive(Error, Debug, Clone)]
 pub enum HubError {
@@ -65,8 +65,14 @@ pub struct HubResult {
 /// Core hub trait for token-based bidirectional conversion
 pub trait HubTrait {
     /// Three conversion methods - simplified for clarity
-    fn abugida_to_alphabet_tokens(&self, tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError>;
-    fn alphabet_to_abugida_tokens(&self, tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError>;
+    fn abugida_to_alphabet_tokens(
+        &self,
+        tokens: &HubTokenSequence,
+    ) -> Result<HubTokenSequence, HubError>;
+    fn alphabet_to_abugida_tokens(
+        &self,
+        tokens: &HubTokenSequence,
+    ) -> Result<HubTokenSequence, HubError>;
     fn identity_transform(&self, tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
         // Default implementation - just clone
         Ok(tokens.clone())
@@ -130,12 +136,18 @@ impl Hub {
 }
 
 impl HubTrait for Hub {
-    fn abugida_to_alphabet_tokens(&self, tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
+    fn abugida_to_alphabet_tokens(
+        &self,
+        tokens: &HubTokenSequence,
+    ) -> Result<HubTokenSequence, HubError> {
         // Use manual implementation for proper implicit 'a' handling
         manual_converter::ManualHubConverter::abugida_to_alphabet(tokens)
     }
-    
-    fn alphabet_to_abugida_tokens(&self, tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
+
+    fn alphabet_to_abugida_tokens(
+        &self,
+        tokens: &HubTokenSequence,
+    ) -> Result<HubTokenSequence, HubError> {
         // Use manual implementation for proper implicit 'a' handling
         manual_converter::ManualHubConverter::alphabet_to_abugida(tokens)
     }

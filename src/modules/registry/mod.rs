@@ -360,7 +360,7 @@ impl SchemaRegistryTrait for SchemaRegistry {
         if let Some(schema) = self.schemas.get(script_name) {
             return Some(schema);
         }
-        
+
         // If not found, try alias lookup
         self.find_schema_by_alias(script_name)
     }
