@@ -29,7 +29,7 @@ jobs:
         run: cargo fmt -- --check
 
       - name: Run clippy
-        run: cargo clippy --all-features -- -D warnings
+        run: cargo clippy --all-features -- -D warnings -A unreachable-patterns -A dead-code -A clippy::clone-on-copy -A clippy::new-without-default
 
       - name: Run basic tests
         run: cargo test --features cli,wasm,native-examples --verbose

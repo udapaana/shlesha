@@ -30,7 +30,7 @@ mappings:
     ConsonantG: "g"
     ConsonantGh: "gh"
     ConsonantNg: ["~N", "N^"]  # prefer "~N" over "N^" for output
-    ConsonantC: "ch"  # canonical form
+    ConsonantC: "c"   # canonical form
     ConsonantCh: ["ch", "Ch", "chh"]  # prefer "ch" for output
     ConsonantJ: "j"
     ConsonantJh: "jh"
