@@ -131,9 +131,8 @@ use aho_corasick::AhoCorasick;
                 println!("cargo:rerun-if-changed={}", path.display());
 
                 let content = fs::read_to_string(&path)?;
-                let schema: ScriptSchema = serde_yaml::from_str(&content).map_err(|e| {
-                    format!("Failed to parse YAML schema {}: {e}", path.display())
-                })?;
+                let schema: ScriptSchema = serde_yaml::from_str(&content)
+                    .map_err(|e| format!("Failed to parse YAML schema {}: {e}", path.display()))?;
 
                 // Add schema to collection for Hub generation
                 schemas.push(schema.clone());
