@@ -35,9 +35,7 @@ mappings:
     VowelSignAi: "ై"    # ai
     VowelSignO: ["ొ", "ో"]    # o (short and long, prefer ొ for output)
     VowelSignAu: "ౌ"    # au
-    # Add missing signs to complete coverage
-    VowelSignVocalicL: "ె"    # placeholder - Telugu doesn't have this
-    VowelSignVocalicLl: "ె"    # placeholder - Telugu doesn't have this
+    # Telugu doesn't have vocalic L signs - these will be preserved as tokens
 
   consonants:
     # Velar
@@ -96,10 +94,7 @@ mappings:
     MarkAvagraha: "ఽ"    # avagraha
     # Add missing marks to complete coverage
     MarkNukta: "఼"    # Telugu nukta (U+0C3C)
-    MarkUdatta: "ం"    # placeholder - Telugu doesn't have Vedic marks
-    MarkAnudatta: "ం"    # placeholder - Telugu doesn't have Vedic marks
-    MarkDoubleSvarita: "ం"    # placeholder - Telugu doesn't have Vedic marks
-    MarkTripleSvarita: "ం"    # placeholder - Telugu doesn't have Vedic marks
+    # Telugu doesn't have Vedic accent marks - these will be preserved as tokens
 
   special:
     # Telugu-specific characters mapped to closest equivalents

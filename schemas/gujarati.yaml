@@ -16,8 +16,7 @@ mappings:
     VowelUu: "ઊ"
     VowelVocalicR: "ઋ"
     VowelVocalicRr: "ૠ"
-    VowelVocalicL: "ઋ"  # placeholder - Gujarati doesn't have distinct ḷ
-    VowelVocalicLl: "ૠ"  # placeholder
+    # Gujarati doesn't have distinct vocalic L characters - these will be preserved as tokens
     VowelE: "એ"
     VowelAi: "ઐ"
     VowelO: "ઓ"
@@ -31,8 +30,7 @@ mappings:
     VowelSignUu: "ૂ"
     VowelSignVocalicR: "ૃ"
     VowelSignVocalicRr: "ૄ"
-    VowelSignVocalicL: "ૃ"  # placeholder
-    VowelSignVocalicLl: "ૄ"  # placeholder
+    # Gujarati doesn't have distinct vocalic L signs - these will be preserved as tokens
     VowelSignE: "ે"
     VowelSignAi: "ૈ"
     VowelSignO: "ો"
