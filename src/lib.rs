@@ -644,17 +644,8 @@ mod tests {
         let result = transliterator
             .transliterate("dharmaqx", "iast", "devanagari")
             .unwrap();
-        // q converts to क़् (composed form), x passes through unchanged
-        let expected = format!(
-            "{}{}{}{}{}{}",
-            "ध",
-            "र्",
-            "म",
-            "\u{0958}", // क़ (composed qa)
-            "्",         // virama
-            "x"
-        );
-        assert_eq!(result, expected);
+        // q and x are not part of IAST, so they pass through unchanged
+        assert_eq!(result, "धर्मqx");
 
         // Test metadata collection with unknown characters
         let result = transliterator
