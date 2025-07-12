@@ -1,6 +1,4 @@
 use serde::{Deserialize, Serialize};
-use std::fmt;
-use std::str::FromStr;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum AbugidaToken {

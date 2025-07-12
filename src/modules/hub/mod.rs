@@ -117,6 +117,7 @@ pub trait HubTrait {
 
 /// Central hub implementing token-based conversions
 pub struct Hub {
+    #[allow(dead_code)]
     generated_hub: crate::generated::GeneratedHub,
 }
 

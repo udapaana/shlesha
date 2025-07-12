@@ -31,8 +31,6 @@
 
 pub mod modules;
 
-#[cfg(test)]
-mod test_token_debug;
 
 // Include generated Hub converter
 mod generated {

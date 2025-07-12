@@ -8,7 +8,9 @@ use std::path::{Path, PathBuf};
 #[derive(serde::Deserialize, Debug, Clone)]
 struct ScriptMetadata {
     name: String,
+    #[allow(dead_code)]
     script_type: String,
+    #[allow(dead_code)]
     has_implicit_a: bool,
     aliases: Option<Vec<String>>,
 }
@@ -34,10 +36,12 @@ enum TokenMapping {
 
 #[derive(serde::Deserialize, Debug, Clone)]
 struct CodegenConfig {
+    #[allow(dead_code)]
     processor_type: String,
 }
 
 impl TokenMapping {
+    #[allow(dead_code)]
     fn get_preferred(&self) -> String {
         match self {
             TokenMapping::Single(s) => s.clone(),
@@ -51,10 +55,12 @@ struct ScriptSchema {
     metadata: ScriptMetadata,
     target: Option<String>, // "alphabet_tokens" or "abugida_tokens" (optional for legacy schemas)
     mappings: TokenMappings,
+    #[allow(dead_code)]
     codegen: Option<CodegenConfig>,
 }
 
 // Convert TokenMapping mappings to legacy String mappings for compatibility
+#[allow(dead_code)]
 fn flatten_token_mappings(mappings: &FxHashMap<String, TokenMapping>) -> FxHashMap<String, String> {
     mappings.iter()
         .map(|(k, v)| (k.clone(), v.get_preferred()))
@@ -260,6 +266,7 @@ fn escape_string(s: &str) -> String {
 
 // Template-based converter generators
 
+#[allow(dead_code)]
 fn generate_roman_converter_with_template(
     handlebars: &Handlebars,
     struct_name: &str,
@@ -417,6 +424,7 @@ fn eq_helper(
     Ok(())
 }
 
+#[allow(dead_code)]
 fn generate_indic_converter_with_template(
     handlebars: &Handlebars,
     struct_name: &str,
@@ -442,6 +450,7 @@ fn generate_indic_converter_with_template(
     Ok(code)
 }
 
+#[allow(dead_code)]
 fn generate_extended_indic_converter_with_template(
     handlebars: &Handlebars,
     struct_name: &str,
@@ -466,6 +475,7 @@ fn generate_extended_indic_converter_with_template(
     Ok(code)
 }
 
+#[allow(dead_code)]
 fn generate_roman_to_devanagari_converter(
     handlebars: &Handlebars,
     schema: &ScriptSchema,
@@ -534,6 +544,7 @@ fn generate_roman_to_devanagari_converter(
     Ok(code)
 }
 
+#[allow(dead_code)]
 fn get_iso_to_devanagari_mappings() -> FxHashMap<String, String> {
     // Hardcode the hub mappings since we can't access the crate from build.rs
     // This is still better than before since we're deriving vowel signs dynamically
@@ -643,6 +654,7 @@ fn get_iso_to_devanagari_mappings() -> FxHashMap<String, String> {
     iso_to_deva_mappings
 }
 
+#[allow(dead_code)]
 fn add_vowel_sign_mappings(
     roman_to_deva_mappings: &mut FxHashMap<String, String>,
     iso_to_deva_mappings: &FxHashMap<String, String>,
