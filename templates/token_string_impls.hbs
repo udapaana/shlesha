@@ -1,0 +1,169 @@
+use std::fmt;
+use std::str::FromStr;
+use crate::modules::hub::tokens::{AbugidaToken, AlphabetToken};
+
+// Generic implementation that preserves token names as strings for bijective conversion
+impl fmt::Display for AbugidaToken {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            AbugidaToken::Unknown(c) => write!(f, "Unknown({})", c),
+            _ => {
+                // Use Debug representation and strip the enum name prefix
+                let debug_str = format!("{:?}", self);
+                if let Some(name) = debug_str.strip_prefix("AbugidaToken::") {
+                    f.write_str(name)
+                } else {
+                    f.write_str(&debug_str)
+                }
+            }
+        }
+    }
+}
+
+impl FromStr for AbugidaToken {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Handle Unknown variant specially
+        if s.starts_with("Unknown(") && s.ends_with(')') {
+            let inner = &s[8..s.len()-1];
+            if let Some(c) = inner.chars().next() {
+                if inner.chars().count() == 1 {
+                    return Ok(AbugidaToken::Unknown(c));
+                }
+            }
+            return Err(format!("Invalid Unknown token: {}", s));
+        }
+        
+        // Try to match against known variants dynamically
+        match s {
+            {{#each abugida_variants}}
+            "{{this}}" => Ok(AbugidaToken::{{this}}),
+            {{/each}}
+            _ => Err(format!("Unknown AbugidaToken: {}", s)),
+        }
+    }
+}
+
+impl fmt::Display for AlphabetToken {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            AlphabetToken::Unknown(c) => write!(f, "Unknown({})", c),
+            _ => {
+                // Use Debug representation and strip the enum name prefix
+                let debug_str = format!("{:?}", self);
+                if let Some(name) = debug_str.strip_prefix("AlphabetToken::") {
+                    f.write_str(name)
+                } else {
+                    f.write_str(&debug_str)
+                }
+            }
+        }
+    }
+}
+
+impl FromStr for AlphabetToken {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Handle Unknown variant specially
+        if s.starts_with("Unknown(") && s.ends_with(')') {
+            let inner = &s[8..s.len()-1];
+            if let Some(c) = inner.chars().next() {
+                if inner.chars().count() == 1 {
+                    return Ok(AlphabetToken::Unknown(c));
+                }
+            }
+            return Err(format!("Invalid Unknown token: {}", s));
+        }
+        
+        // Try to match against known variants dynamically
+        // Use a macro to handle all possible variants at compile time
+        // This approach avoids hardcoding and handles any future additions
+        use AlphabetToken::*;
+        
+        match s {
+            {{#each alphabet_variants}}
+            "{{this}}" => Ok({{this}}),
+            {{/each}}
+            // For any tokens not in schemas, try a generic approach
+            "VowelA" => Ok(VowelA),
+            "VowelAa" => Ok(VowelAa),
+            "VowelI" => Ok(VowelI),
+            "VowelIi" => Ok(VowelIi),
+            "VowelU" => Ok(VowelU),
+            "VowelUu" => Ok(VowelUu),
+            "VowelVocalicR" => Ok(VowelVocalicR),
+            "VowelVocalicRr" => Ok(VowelVocalicRr),
+            "VowelVocalicL" => Ok(VowelVocalicL),
+            "VowelVocalicLl" => Ok(VowelVocalicLl),
+            "VowelE" => Ok(VowelE),
+            "VowelAi" => Ok(VowelAi),
+            "VowelO" => Ok(VowelO),
+            "VowelAu" => Ok(VowelAu),
+            "ConsonantK" => Ok(ConsonantK),
+            "ConsonantKh" => Ok(ConsonantKh),
+            "ConsonantG" => Ok(ConsonantG),
+            "ConsonantGh" => Ok(ConsonantGh),
+            "ConsonantNg" => Ok(ConsonantNg),
+            "ConsonantC" => Ok(ConsonantC),
+            "ConsonantCh" => Ok(ConsonantCh),
+            "ConsonantJ" => Ok(ConsonantJ),
+            "ConsonantJh" => Ok(ConsonantJh),
+            "ConsonantNy" => Ok(ConsonantNy),
+            "ConsonantT" => Ok(ConsonantT),
+            "ConsonantTh" => Ok(ConsonantTh),
+            "ConsonantD" => Ok(ConsonantD),
+            "ConsonantDh" => Ok(ConsonantDh),
+            "ConsonantN" => Ok(ConsonantN),
+            "ConsonantTt" => Ok(ConsonantTt),
+            "ConsonantTth" => Ok(ConsonantTth),
+            "ConsonantDd" => Ok(ConsonantDd),
+            "ConsonantDdh" => Ok(ConsonantDdh),
+            "ConsonantNn" => Ok(ConsonantNn),
+            "ConsonantP" => Ok(ConsonantP),
+            "ConsonantPh" => Ok(ConsonantPh),
+            "ConsonantB" => Ok(ConsonantB),
+            "ConsonantBh" => Ok(ConsonantBh),
+            "ConsonantM" => Ok(ConsonantM),
+            "ConsonantY" => Ok(ConsonantY),
+            "ConsonantR" => Ok(ConsonantR),
+            "ConsonantL" => Ok(ConsonantL),
+            "ConsonantV" => Ok(ConsonantV),
+            "ConsonantLl" => Ok(ConsonantLl),
+            "ConsonantSh" => Ok(ConsonantSh),
+            "ConsonantSs" => Ok(ConsonantSs),
+            "ConsonantS" => Ok(ConsonantS),
+            "ConsonantH" => Ok(ConsonantH),
+            "MarkAnusvara" => Ok(MarkAnusvara),
+            "MarkVisarga" => Ok(MarkVisarga),
+            "MarkCandrabindu" => Ok(MarkCandrabindu),
+            "MarkAvagraha" => Ok(MarkAvagraha),
+            "MarkUdatta" => Ok(MarkUdatta),
+            "MarkAnudatta" => Ok(MarkAnudatta),
+            "MarkDoubleSvarita" => Ok(MarkDoubleSvarita),
+            "MarkTripleSvarita" => Ok(MarkTripleSvarita),
+            "SpecialKs" => Ok(SpecialKs),
+            "SpecialJn" => Ok(SpecialJn),
+            "ConsonantQa" => Ok(ConsonantQa),
+            "ConsonantZa" => Ok(ConsonantZa),
+            "ConsonantFa" => Ok(ConsonantFa),
+            "ConsonantGha" => Ok(ConsonantGha),
+            "ConsonantKha" => Ok(ConsonantKha),
+            "ConsonantRra" => Ok(ConsonantRra),
+            "ConsonantRrha" => Ok(ConsonantRrha),
+            "ConsonantYa" => Ok(ConsonantYa),
+            "Digit0" => Ok(Digit0),
+            "Digit1" => Ok(Digit1),
+            "Digit2" => Ok(Digit2),
+            "Digit3" => Ok(Digit3),
+            "Digit4" => Ok(Digit4),
+            "Digit5" => Ok(Digit5),
+            "Digit6" => Ok(Digit6),
+            "Digit7" => Ok(Digit7),
+            "Digit8" => Ok(Digit8),
+            "Digit9" => Ok(Digit9),
+            _ => Err(format!("Unknown AlphabetToken: {}", s)),
+        }
+    }
+}

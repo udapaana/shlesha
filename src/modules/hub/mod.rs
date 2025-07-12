@@ -4,6 +4,7 @@ use thiserror::Error;
 pub mod tokens;
 pub mod token_converters;
 pub mod manual_converter;
+pub mod token_string_impl;
 pub use tokens::{AbugidaToken, AlphabetToken, HubToken, HubTokenSequence};
 pub use token_converters::TokenToStringConverter;
 

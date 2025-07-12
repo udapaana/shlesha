@@ -197,7 +197,6 @@ pub fn register_token_converters() -> Vec<Box<dyn crate::modules::script_convert
 
     // Write generated code
     fs::write(out_dir.join("schema_generated.rs"), generated_code)?;
-
     Ok(())
 }
 
@@ -1196,3 +1195,4 @@ fn collect_all_mappings(schema: &ScriptSchema) -> FxHashMap<String, Vec<String>>
     
     mappings
 }
+

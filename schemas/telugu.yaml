@@ -95,7 +95,7 @@ mappings:
     MarkVirama: "్"    # virama/pollu
     MarkAvagraha: "ఽ"    # avagraha
     # Add missing marks to complete coverage
-    MarkNukta: "్"    # placeholder - Telugu doesn't have separate nukta
+    MarkNukta: "఼"    # Telugu nukta (U+0C3C)
     MarkUdatta: "ం"    # placeholder - Telugu doesn't have Vedic marks
     MarkAnudatta: "ం"    # placeholder - Telugu doesn't have Vedic marks
     MarkDoubleSvarita: "ం"    # placeholder - Telugu doesn't have Vedic marks

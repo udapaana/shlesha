@@ -50,26 +50,35 @@ impl {{struct_name}} {
             {{/each}}
             {{/each}}
             {{/each}}
-            _ => None,
+            _ => {
+                // Try to parse as a preserved token string representation
+                input.parse::<{{#if is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}>().ok()
+            }
         }
     }
     
-    // Convert token to preferred string representation (zero allocations!)
-    pub fn token_to_string(&self, token: &{{#if is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}) -> &'static str {
+    // Convert token to preferred string representation
+    pub fn token_to_string(&self, token: &{{#if is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}) -> String {
         match token {
             {{#each mappings}}
             // {{category}} mappings
             {{#each entries}}
-            {{#if @root.is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}::{{token}} => "{{preferred}}",
+            {{#if @root.is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}::{{token}} => "{{preferred}}".to_string(),
             {{/each}}
             {{/each}}
             {{#unless is_alphabet}}
-            AbugidaToken::Unknown(_) => "?", // Handled specially in tokens_to_string_impl
-            _ => "?", // Catch-all for AbugidaToken variants not in this schema
+            AbugidaToken::Unknown(c) => c.to_string(),
+            _ => {
+                // Token not mapped in this schema - preserve as string representation
+                format!("[{}]", token)
+            }
             {{/unless}}
             {{#if is_alphabet}}
-            AlphabetToken::Unknown(_) => "?", // Handled specially in tokens_to_string_impl
-            _ => "?", // Catch-all for AlphabetToken variants not in this schema
+            AlphabetToken::Unknown(c) => c.to_string(),
+            _ => {
+                // Token not mapped in this schema - preserve as string representation
+                format!("[{}]", token)
+            }
             {{/if}}
         }
     }
@@ -99,11 +108,30 @@ impl {{struct_name}} {
         let mut tokens = Vec::new();
         let mut pos = 0;
         
-        // Use AhoCorasick for ultra-fast pattern matching - finds all patterns at once!
         while pos < input.len() {
             let remaining = &input[pos..];
             
-            // Find the longest match starting at current position
+            // First, check if remaining string starts with a preserved token in brackets
+            let mut found_token = false;
+            
+            // Check for bracketed token notation [TokenName]
+            if remaining.starts_with('[') {
+                if let Some(end_bracket) = remaining.find(']') {
+                    let token_name = &remaining[1..end_bracket];
+                    // Try to parse the token name
+                    if let Ok(parsed_token) = token_name.parse::<{{#if is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}>() {
+                        tokens.push(HubToken::{{#if is_alphabet}}Alphabet{{else}}Abugida{{/if}}(parsed_token));
+                        pos += end_bracket + 1; // Skip past the closing bracket
+                        found_token = true;
+                    }
+                }
+            }
+            
+            if found_token {
+                continue;
+            }
+            
+            // Use AhoCorasick for ultra-fast pattern matching - finds all patterns at once!
             if let Some(mat) = {{uppercase script_name}}_MATCHER.find(remaining) {
                 if mat.start() == 0 {
                     // Pattern matches at current position - get the corresponding token
@@ -145,7 +173,7 @@ impl {{struct_name}} {
                             result.push(*ch);
                         }
                         _ => {
-                            result.push_str(self.token_to_string(alphabet_token));
+                            result.push_str(&self.token_to_string(alphabet_token));
                         }
                     }
                 }
@@ -173,7 +201,7 @@ impl {{struct_name}} {
                         AbugidaToken::VowelVocalicL | AbugidaToken::VowelVocalicLl |
                         AbugidaToken::VowelE | AbugidaToken::VowelAi | AbugidaToken::VowelO | 
                         AbugidaToken::VowelAu => {
-                            result.push_str(self.token_to_string(abugida_token));
+                            result.push_str(&self.token_to_string(abugida_token));
                         }
                         
                         // Consonants (including extended) - check what follows
@@ -192,7 +220,7 @@ impl {{struct_name}} {
                         AbugidaToken::ConsonantFa | AbugidaToken::ConsonantGha | AbugidaToken::ConsonantKha |
                         AbugidaToken::ConsonantRra | AbugidaToken::ConsonantRrha | AbugidaToken::ConsonantYa => {
                             // Output the consonant
-                            result.push_str(self.token_to_string(abugida_token));
+                            result.push_str(&self.token_to_string(abugida_token));
                             
                             // Check if this consonant needs a virama before the next token
                             let needs_virama = if i + 1 < tokens.len() {
@@ -245,7 +273,7 @@ impl {{struct_name}} {
                             
                             if needs_virama {
                                 // Add virama
-                                result.push_str(self.token_to_string(&AbugidaToken::MarkVirama));
+                                result.push_str(&self.token_to_string(&AbugidaToken::MarkVirama));
                             }
                         }
                         
@@ -255,7 +283,7 @@ impl {{struct_name}} {
                         AbugidaToken::VowelSignVocalicRr | AbugidaToken::VowelSignVocalicL |
                         AbugidaToken::VowelSignVocalicLl | AbugidaToken::VowelSignE | AbugidaToken::VowelSignAi |
                         AbugidaToken::VowelSignO | AbugidaToken::VowelSignAu => {
-                            result.push_str(self.token_to_string(abugida_token));
+                            result.push_str(&self.token_to_string(abugida_token));
                         }
                         
                         // Unknown characters - pass through unchanged
@@ -265,12 +293,12 @@ impl {{struct_name}} {
                         
                         // Virama - output explicit virama tokens directly
                         AbugidaToken::MarkVirama => {
-                            result.push_str(self.token_to_string(abugida_token));
+                            result.push_str(&self.token_to_string(abugida_token));
                         }
                         
                         // Other tokens (marks, digits, etc.) - output directly
                         _ => {
-                            result.push_str(self.token_to_string(abugida_token));
+                            result.push_str(&self.token_to_string(abugida_token));
                         }
                     }
                 }
