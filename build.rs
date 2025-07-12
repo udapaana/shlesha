@@ -10,6 +10,7 @@ struct ScriptMetadata {
     name: String,
     script_type: String,
     has_implicit_a: bool,
+    aliases: Option<Vec<String>>,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -174,9 +175,34 @@ use aho_corasick::{AhoCorasick, MatchKind};
         fs::write(out_dir.join("direct_converters_generated.rs"), direct_code)?;
     }
 
-    // Generate token-based converter registry
+    // Generate token-based converter registry with aliases
     let token_registrations = converter_registrations.iter()
-        .map(|name| format!("    Box::new({}::new()),", name))
+        .map(|name| format!("        Box::new({}::new()),", name))
+        .collect::<Vec<_>>()
+        .join("\n");
+    
+    // Generate registration with aliases
+    let token_registrations_with_aliases = schemas.iter()
+        .filter_map(|schema| {
+            let converter_name = format!("{}Converter", 
+                schema.metadata.name.chars()
+                    .next().unwrap().to_uppercase().to_string() +
+                    &schema.metadata.name[1..]
+            );
+            
+            if converter_registrations.contains(&converter_name) {
+                let aliases = schema.metadata.aliases.as_ref()
+                    .map(|aliases| aliases.iter()
+                        .map(|alias| format!("\"{}\".to_string()", alias))
+                        .collect::<Vec<_>>()
+                        .join(", "))
+                    .unwrap_or_default();
+                
+                Some(format!("        (Box::new({}::new()), vec![{}]),", converter_name, aliases))
+            } else {
+                None
+            }
+        })
         .collect::<Vec<_>>()
         .join("\n");
     
@@ -187,13 +213,20 @@ pub fn register_schema_generated_converters(_registry: &mut crate::modules::scri
     // Token-based converters are managed separately
 }}
 
-/// Get all token-based converters
+/// Get all token-based converters (legacy)
 pub fn register_token_converters() -> Vec<Box<dyn crate::modules::script_converter::TokenConverter>> {{
     vec![
 {}
     ]
 }}
-"#, token_registrations));
+
+/// Get all token-based converters with their aliases
+pub fn register_token_converters_with_aliases() -> Vec<(Box<dyn crate::modules::script_converter::TokenConverter>, Vec<String>)> {{
+    vec![
+{}
+    ]
+}}
+"#, token_registrations, token_registrations_with_aliases));
 
     // Write generated code
     fs::write(out_dir.join("schema_generated.rs"), generated_code)?;

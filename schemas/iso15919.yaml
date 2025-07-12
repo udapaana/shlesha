@@ -3,6 +3,8 @@ metadata:
   script_type: "roman"
   has_implicit_a: false
   description: "ISO 15919 transliteration standard - hub script for Roman processing"
+  aliases:
+  - iso
 
 target: "alphabet_tokens"
 

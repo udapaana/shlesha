@@ -462,7 +462,7 @@ impl Shlesha {
 
     /// Check if a specific script is supported (built-in or runtime)
     pub fn supports_script(&self, script_name: &str) -> bool {
-        self.script_converter_registry.supports_script(script_name)
+        self.script_converter_registry.supports_script_with_registry(script_name, Some(&self.registry))
             || self.registry.get_schema(script_name).is_some()
     }
 

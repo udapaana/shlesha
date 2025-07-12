@@ -169,29 +169,46 @@ impl TokenConverterRegistry {
         self.script_to_converter.insert(script_name, converter_index);
         self.converters.push(converter);
     }
+
+    pub fn register_converter_with_aliases(&mut self, converter: Box<dyn TokenConverter>, aliases: &[&str]) {
+        let converter_index = self.converters.len();
+        let script_name = converter.script_name().to_string();
+        
+        // Register primary script name
+        self.script_to_converter.insert(script_name, converter_index);
+        
+        // Register all aliases
+        for alias in aliases {
+            self.script_to_converter.insert(alias.to_string(), converter_index);
+        }
+        
+        self.converters.push(converter);
+    }
     
     pub fn convert_to_tokens(&self, script: &str, input: &str) -> Result<HubTokenSequence, ConverterError> {
+        // Try direct script name first
         if let Some(&converter_index) = self.script_to_converter.get(script) {
             let tokens = self.converters[converter_index].string_to_tokens(input);
-            Ok(tokens)
-        } else {
-            Err(ConverterError::ConversionFailed {
-                script: script.to_string(),
-                reason: format!("No token converter found for script: {}", script),
-            })
+            return Ok(tokens);
         }
+        
+        Err(ConverterError::ConversionFailed {
+            script: script.to_string(),
+            reason: format!("No token converter found for script: {}", script),
+        })
     }
     
     pub fn convert_from_tokens(&self, script: &str, tokens: &HubTokenSequence) -> Result<String, ConverterError> {
+        // Try direct script name first
         if let Some(&converter_index) = self.script_to_converter.get(script) {
             let output = self.converters[converter_index].tokens_to_string(tokens);
-            Ok(output)
-        } else {
-            Err(ConverterError::ConversionFailed {
-                script: script.to_string(),
-                reason: format!("No token converter found for script: {}", script),
-            })
+            return Ok(output);
         }
+        
+        Err(ConverterError::ConversionFailed {
+            script: script.to_string(),
+            reason: format!("No token converter found for script: {}", script),
+        })
     }
     
     pub fn supports_script(&self, script: &str) -> bool {
@@ -252,13 +269,24 @@ impl ScriptConverterRegistry {
         input: &str,
         schema_registry: Option<&crate::modules::registry::SchemaRegistry>,
     ) -> Result<HubInput, ConverterError> {
+        // Resolve script aliases using schema registry
+        let resolved_script = if let Some(registry) = schema_registry {
+            if let Some(schema) = registry.find_schema_by_alias(script) {
+                &schema.name
+            } else {
+                script
+            }
+        } else {
+            script
+        };
+
         // Try token-based converters first
-        if self.token_converters.supports_script(script) {
-            let tokens = self.token_converters.convert_to_tokens(script, input)?;
+        if self.token_converters.supports_script(resolved_script) {
+            let tokens = self.token_converters.convert_to_tokens(resolved_script, input)?;
             
             
             // Convert tokens to appropriate hub format
-            let hub_format = if self.token_converters.is_alphabet_script(script) {
+            let hub_format = if self.token_converters.is_alphabet_script(resolved_script) {
                 HubFormat::AlphabetTokens(tokens)
             } else {
                 HubFormat::AbugidaTokens(tokens)
@@ -267,12 +295,12 @@ impl ScriptConverterRegistry {
             return Ok(hub_format);
         }
 
-        // Resolve aliases first
-        let canonical_script = self.resolve_script_alias(script);
+        // Resolve aliases first (including schema registry aliases)
+        let canonical_script = self.resolve_script_alias_with_registry(script, schema_registry);
 
         // Fast lookup using HashMap cache instead of linear search
-        if let Some(&converter_index) = self.script_to_converter.get(canonical_script) {
-            return self.converters[converter_index].to_hub(canonical_script, input);
+        if let Some(&converter_index) = self.script_to_converter.get(&canonical_script) {
+            return self.converters[converter_index].to_hub(&canonical_script, input);
         }
 
         // REMOVED: Schema-based converter fallback (old string-based system)
@@ -296,8 +324,19 @@ impl ScriptConverterRegistry {
         hub_input: &HubInput,
         schema_registry: Option<&crate::modules::registry::SchemaRegistry>,
     ) -> Result<String, ConverterError> {
+        // Resolve script aliases using schema registry  
+        let resolved_script = if let Some(registry) = schema_registry {
+            if let Some(schema) = registry.find_schema_by_alias(script) {
+                &schema.name
+            } else {
+                script
+            }
+        } else {
+            script
+        };
+
         // Try token-based converters first
-        if self.token_converters.supports_script(script) {
+        if self.token_converters.supports_script(resolved_script) {
             // Extract tokens from hub format
             let tokens = match hub_input {
                 HubFormat::AlphabetTokens(tokens) => tokens,
@@ -306,16 +345,16 @@ impl ScriptConverterRegistry {
             
             
             // Convert tokens to string
-            let result = self.token_converters.convert_from_tokens(script, tokens)?;
+            let result = self.token_converters.convert_from_tokens(resolved_script, tokens)?;
             return Ok(result);
         }
 
-        // Resolve aliases first
-        let canonical_script = self.resolve_script_alias(script);
+        // Resolve aliases first (including schema registry aliases)
+        let canonical_script = self.resolve_script_alias_with_registry(script, schema_registry);
 
         // Fast lookup using HashMap cache instead of linear search
-        if let Some(&converter_index) = self.script_to_converter.get(canonical_script) {
-            return self.converters[converter_index].from_hub(canonical_script, hub_input);
+        if let Some(&converter_index) = self.script_to_converter.get(&canonical_script) {
+            return self.converters[converter_index].from_hub(&canonical_script, hub_input);
         }
 
         // REMOVED: Schema-based converter fallback (old string-based system)
@@ -390,7 +429,7 @@ impl ScriptConverterRegistry {
             });
         }
 
-        // Resolve aliases first
+        // Resolve aliases first (hardcoded only, no schema registry available here)
         let canonical_script = self.resolve_script_alias(script);
 
         // Fast lookup using HashMap cache instead of linear search
@@ -410,31 +449,52 @@ impl ScriptConverterRegistry {
 
     /// Check if a script is supported by any converter
     pub fn supports_script(&self, script: &str) -> bool {
+        self.supports_script_with_registry(script, None)
+    }
+
+    /// Check if a script is supported by any converter (with schema registry for alias resolution)
+    pub fn supports_script_with_registry(
+        &self, 
+        script: &str, 
+        schema_registry: Option<&crate::modules::registry::SchemaRegistry>
+    ) -> bool {
         // Special case: Devanagari is always supported (hub format)
         if script.to_lowercase() == "devanagari" || script.to_lowercase() == "deva" {
             return true;
         }
 
-        // Check direct script name
-        if self.script_to_converter.contains_key(script) {
+        // Check direct script name first
+        if self.script_to_converter.contains_key(script) || self.token_converters.supports_script(script) {
             return true;
         }
 
-        // Check common aliases
-        let canonical_script = self.resolve_script_alias(script);
-        if self.script_to_converter.contains_key(canonical_script) {
-            return true;
+        // Resolve script aliases using schema registry
+        let resolved_script = if let Some(registry) = schema_registry {
+            if let Some(schema) = registry.find_schema_by_alias(script) {
+                &schema.name
+            } else {
+                // Fallback to hardcoded aliases for built-in converters
+                self.resolve_script_alias(script)
+            }
+        } else {
+            // No schema registry available, use hardcoded aliases only
+            self.resolve_script_alias(script)
+        };
+
+        // Check resolved script name
+        if resolved_script != script {
+            self.script_to_converter.contains_key(resolved_script) || self.token_converters.supports_script(resolved_script)
+        } else {
+            false
         }
-        
-        // Check token-based converters
-        self.token_converters.supports_script(canonical_script)
     }
 
     /// Resolve script aliases to canonical script names
     fn resolve_script_alias<'a>(&self, script: &'a str) -> &'a str {
+        // Check hardcoded aliases first for built-in converters
         match script {
             "hk" => "harvard_kyoto",
-            "bn" => "bengali",
+            "bn" => "bengali", 
             "ta" => "tamil",
             "te" => "telugu",
             "gu" => "gujarati",
@@ -444,8 +504,31 @@ impl ScriptConverterRegistry {
             "pa" => "gurmukhi",
             "si" => "sinhala",
             "deva" => "devanagari",
+            "iso" => "iso15919",
             _ => script,
         }
+    }
+
+    /// Resolve script aliases using schema registry
+    fn resolve_script_alias_with_registry(
+        &self,
+        script: &str,
+        schema_registry: Option<&crate::modules::registry::SchemaRegistry>,
+    ) -> String {
+        // First try hardcoded aliases
+        let resolved = self.resolve_script_alias(script);
+        if resolved != script {
+            return resolved.to_string();
+        }
+
+        // If no hardcoded alias found and we have a schema registry, check for schema aliases
+        if let Some(registry) = schema_registry {
+            if let Some(schema) = registry.find_schema_by_alias(script) {
+                return schema.name.clone();
+            }
+        }
+
+        script.to_string()
     }
 
     /// Get all supported scripts across all converters
@@ -472,7 +555,7 @@ impl ScriptConverterRegistry {
             return true;
         }
 
-        // Resolve aliases first
+        // Resolve aliases first (hardcoded only, no schema registry available here)
         let canonical_script = self.resolve_script_alias(script);
 
         // Fast lookup using HashMap cache
@@ -490,7 +573,7 @@ impl ScriptConverterRegistry {
             return true;
         }
 
-        // Resolve aliases first
+        // Resolve aliases first (hardcoded only, no schema registry available here)
         let canonical_script = self.resolve_script_alias(script);
 
         // Fast lookup using HashMap cache
@@ -541,9 +624,14 @@ impl ScriptConverterRegistry {
         // Register all schema-generated converters (TOML/YAML based)
         register_schema_generated_converters(&mut registry);
 
-        // Register token-based converters
-        for converter in register_token_converters() {
-            registry.token_converters.register_converter(converter);
+        // Register token-based converters with their aliases from schemas
+        for (converter, aliases) in register_token_converters_with_aliases() {
+            if aliases.is_empty() {
+                registry.token_converters.register_converter(converter);
+            } else {
+                let alias_refs: Vec<&str> = aliases.iter().map(|s| s.as_str()).collect();
+                registry.token_converters.register_converter_with_aliases(converter, &alias_refs);
+            }
         }
 
         registry
@@ -562,7 +650,7 @@ impl ScriptConverterRegistry {
             return Ok(true);
         }
 
-        // Resolve aliases first
+        // Resolve aliases first (hardcoded only, no schema registry available here)
         let canonical_script = self.resolve_script_alias(script);
 
         // Fast lookup using HashMap cache instead of linear search
