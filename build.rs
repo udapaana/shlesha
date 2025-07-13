@@ -885,13 +885,6 @@ fn generate_token_based_converter(
         "has_multi_char_mappings": has_multi_char_mappings,
     });
 
-    if schema.metadata.name == "harvard_kyoto" {
-        std::fs::write(
-            "harvard_kyoto_template_data.json",
-            serde_json::to_string_pretty(&template_data).unwrap(),
-        )
-        .unwrap();
-    }
 
     handlebars
         .render("token_based_converter", &template_data)

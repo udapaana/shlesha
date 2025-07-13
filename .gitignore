@@ -68,6 +68,12 @@ docs/_build/
 /pkg/
 wasm-pack-v*/
 
+# Backup files
+*.bak
+
+# Debug output files
+harvard_kyoto_template_data.json
+
 # Benchmark results
 /target/benchmark_results_*.csv
 /target/*BENCHMARK*.md
