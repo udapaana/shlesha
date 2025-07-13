@@ -1,50 +1,86 @@
-# Development Principles for Shlesha Transliterator
+# Shlesha Development Principles
 
-## Core Modular Architecture
+## Core Philosophy
 
-### 1. Complete Modularity
-- Each module defines a clear interface and maintains its own todo list
-- Modules are self-contained with well-defined boundaries
-- Interface contracts must be respected at all times
+### Single Source of Truth
+- **One Way to Do Things**: There should be exactly one fundamental way to perform any operation
+- **No Redundant Implementations**: Multiple implementations of the same functionality create confusion and maintenance burden
+- **Git is Your Safety Net**: Don't keep old code "just in case" - git history preserves everything
 
-### 2. Single Module Mutability
-- Only one module is mutable at any given time
-- All other modules are marked as immutable during active development
-- This prevents conflicting changes and maintains code stability
+### Token-Based Architecture
+- **Zero-Allocation Tokens**: All transliteration operations use compile-time generated token enums
+- **Build-Time Generation**: Mappings are generated from schemas at build time, not runtime
+- **Direct Token Mappings**: No intermediate string conversions - tokens map directly to tokens
 
-### 3. Cross-Module Communication Protocol
-- Calling functions cannot directly modify other modules
-- Changes to external modules must be requested via their todo lists
-- Module switching is required to implement cross-module changes
+### Performance First
+- **Measure, Don't Guess**: All performance claims must be backed by benchmarks
+- **Zero-Cost Abstractions**: Abstractions should have no runtime overhead
+- **Compile-Time Optimization**: Push as much work as possible to compile time
 
-### 4. Interface-Only Access
-- Modules can only access other modules through their defined interfaces
+## Modular Architecture
+
+### Core Principles
+1. **Complete Modularity**: Each module defines a clear interface and maintains its own todo list
+2. **Single Module Mutability**: Only one module is mutable at any given time
+3. **Clear Module Boundaries**: Each module has a single, well-defined responsibility
+4. **Minimal Dependencies**: Modules should not be tightly coupled
+5. **Explicit Interfaces**: Use traits to define clear contracts between modules
+
+### Module Communication
+- **Interface-Only Access**: Modules can only access other modules through their defined interfaces
+- **Cross-Module Protocol**: Changes to external modules must be requested via their todo lists
 - Internal implementation details remain hidden
 - This enforces loose coupling and high cohesion
 
-### 5. Change Logging
-- All changes are logged after each commit
-- Detailed change logs enable quick rollback to previous versions
-- Commit messages should clearly describe the module and changes made
-
-### 6. Frequent Small Commits
-- Make small, focused commits frequently
-- Each commit should represent a single logical change
-- This provides granular version control and easier debugging
-
-### 7. Test-Driven Development
-- Every module must have comprehensive tests before being marked complete
-- Write tests immediately after implementing core functionality
-- Tests should cover all public interface methods and error conditions
-- Use tests to drive development and verify module contracts
-- Modules are not considered "done" until tests pass
-
 ## Implementation Guidelines
 
-- Before starting work on a module, clearly define its interface
-- Create todo lists for each module to track pending work
-- Write comprehensive tests for each module immediately after implementation
-- Use git commits strategically to checkpoint progress
-- Document interface changes that affect other modules
-- Maintain change logs for architectural decisions
-- Run tests before switching module focus
+### Hub Architecture
+- Hub converts between AbugidaToken ↔ AlphabetToken only
+- No string-based hub methods
+- All mappings generated from token schemas at build time
+
+### Error Handling
+- Use Result types for fallible operations
+- Provide meaningful error messages with context
+- Unknown tokens should be handled gracefully
+
+### Schema Management
+- Token schemas are the source of truth
+- All converters generated from schemas
+- No hardcoded mappings in Rust code
+
+### Testing Strategy
+- **Test-Driven Development**: Every module must have comprehensive tests
+- **Property-Based Testing**: Core functionality verified through property tests
+- **Token-Based Tests**: All tests use the token-based API
+- **No Legacy Test Paths**: Tests for old functionality should be deleted, not disabled
+- Modules are not considered "done" until tests pass
+
+### Technical Debt Management
+- **Delete, Don't Disable**: Remove unused code immediately
+- **Refactor Fearlessly**: Git history preserves the old implementation
+- **No TODOs Without Issues**: Every TODO must link to a tracked issue
+
+## Development Workflow
+
+### Version Control
+1. **Frequent Small Commits**: Each commit should represent a single logical change
+2. **Change Logging**: All changes are logged after each commit
+3. **Clear Commit Messages**: Should clearly describe the module and changes made
+4. **Strategic Checkpoints**: Use git commits to checkpoint progress
+
+### Benchmarking
+- Compare against established libraries (Vidyut)
+- Test realistic workloads, not micro-benchmarks
+- Track performance regressions in CI
+
+## Code Review Checklist
+
+- [ ] Does this add a second way to do something that already exists?
+- [ ] Are there any string-based hub operations that could be tokens?
+- [ ] Is there dead code that can be deleted?
+- [ ] Are error messages helpful and contextual?
+- [ ] Do benchmarks validate performance claims?
+- [ ] Are module boundaries respected?
+- [ ] Are all public interfaces properly tested?
+- [ ] Have change logs been updated?

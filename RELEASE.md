@@ -1,185 +1,302 @@
-# Release Process
+# Shlesha Release Documentation
 
-This document outlines the automated release process for Shlesha.
+## Table of Contents
+- [Quick Start](#quick-start)
+- [Release Process](#release-process)
+- [Initial Setup](#initial-setup)
+- [Release Types](#release-types)
+- [Version Management](#version-management)
+- [Platform Publishing](#platform-publishing)
+- [Verification & Testing](#verification--testing)
+- [Troubleshooting](#troubleshooting)
+- [Architecture & Design](#architecture--design)
 
-## Quick Start (Recommended)
+## Quick Start
 
-For most releases, simply run the comprehensive release script:
-
+### Automated Release (Recommended)
 ```bash
-./scripts/release.sh
+# For RC releases (from feature branch)
+./scripts/release.sh rc
+
+# For stable releases (from main branch)
+./scripts/release.sh stable
+
+# For patch releases
+./scripts/release.sh patch
 ```
 
-This script will guide you through the entire process automatically.
+The automated script handles:
+- Version bumping
+- Tag creation
+- GitHub Release creation
+- CI/CD pipeline triggering
+- Multi-platform publishing (PyPI, npm, crates.io)
 
-## Manual Process
-
-If you prefer manual control, you can run individual scripts:
-
-### 1. Test Release Readiness
-
+### Manual Process
+If you need to release manually:
 ```bash
-./scripts/test-release.sh
+# 1. Update version
+./scripts/prepare-release.sh <version>
+
+# 2. Commit and tag
+git add -A
+git commit -m "chore: release v<version>"
+git tag -a v<version> -m "Release v<version>"
+
+# 3. Push to trigger CI/CD
+git push origin main --tags
 ```
 
-### 2. Prepare Version (Optional)
+## Release Process
+
+### Pre-Release Checklist
+- [ ] All tests passing locally
+- [ ] Documentation updated
+- [ ] CHANGELOG updated
+- [ ] Version numbers synchronized across all manifests
+- [ ] No uncommitted changes
+
+### Release Workflow
+
+1. **Prepare Release**
+   ```bash
+   # Updates versions in Cargo.toml, pyproject.toml, package.json
+   ./scripts/prepare-release.sh <version>
+   ```
+
+2. **Create Release**
+   ```bash
+   # Creates GitHub release and triggers CI/CD
+   ./scripts/release.sh <release-type>
+   ```
+
+3. **Monitor Pipeline**
+   - Check GitHub Actions for build status
+   - Verify all platform publications complete
+
+4. **Post-Release Verification**
+   ```bash
+   # Verify PyPI
+   pip install shlesha==$(cat Cargo.toml | grep version | head -1 | cut -d '"' -f 2)
+   
+   # Verify npm
+   npm view shlesha version
+   
+   # Verify crates.io
+   cargo search shlesha
+   ```
+
+## Initial Setup
+
+### GitHub Configuration
+
+1. **Environments**
+   - Create `pypi` environment in Settings → Environments
+   - Create `npm` environment
+   - Add required reviewers if needed
+
+2. **Secrets**
+   ```yaml
+   NPM_TOKEN: npm access token with publish permissions
+   CARGO_REGISTRY_TOKEN: crates.io API token
+   ```
+
+3. **PyPI Trusted Publishing**
+   - Configure in PyPI project settings
+   - Add GitHub Actions as trusted publisher
+   - Repository: `udapaana/shlesha`
+   - Workflow: `release.yml`
+   - Environment: `pypi`
+
+### Local Development Setup
 
 ```bash
-./scripts/prepare-release.sh
-```
+# Install all dependencies
+./scripts/setup-dev.sh
 
-### 3. Create and Push Tags
-
-```bash
-./scripts/tag-release.sh
+# Verify setup
+./scripts/test-all.sh
 ```
 
 ## Release Types
 
-The automated scripts support several release types:
+### RC (Release Candidate)
+- Created from feature branches
+- Format: `X.Y.Z-rc.N`
+- For testing before stable release
+- Published to all platforms with RC tag
 
-### Release Candidates (RC)
-- **Purpose**: Testing on TestPyPI before stable release
-- **Tag format**: `v0.1.0-rc1`, `v0.1.0-rc2`, etc.
-- **Publishes to**: TestPyPI + npm with `@rc` tag
-- **Automatic detection**: Script detects existing RCs and increments
+### Stable Release
+- Created from main branch only
+- Format: `X.Y.Z`
+- Full production release
+- Triggers all platform publications
 
-### Stable Releases
-- **Purpose**: Production releases
-- **Tag format**: `v0.1.0`, `v0.2.0`, etc.
-- **Publishes to**: Production PyPI + npm latest
-- **Can promote**: Existing RC to stable (same version)
+### Patch Release
+- For bug fixes: `X.Y.Z` → `X.Y.(Z+1)`
+- Must be backward compatible
+- Created from main branch
 
-### Patch/Minor/Major Releases
-- **Patch**: Bug fixes (v0.1.0 → v0.1.1)
-- **Minor**: New features (v0.1.0 → v0.2.0) 
-- **Major**: Breaking changes (v0.1.0 → v1.0.0)
+### Minor Release
+- For new features: `X.Y.Z` → `X.(Y+1).0`
+- Backward compatible
+- Created from main branch
 
-## Automated Process
+### Major Release
+- For breaking changes: `X.Y.Z` → `(X+1).0.0`
+- May break backward compatibility
+- Requires migration guide
 
-### GitHub Actions Pipeline
+## Version Management
 
-When you push a tag, GitHub Actions automatically:
+### Version Synchronization
+All version numbers must be synchronized across:
+- `Cargo.toml` - Rust/Cargo version
+- `pyproject.toml` - Python package version
+- `package.json` - npm package version
 
-1. **Testing**: Runs comprehensive tests across all platforms
-2. **Building**: Creates Python wheels and WASM packages
-3. **Publishing**: 
-   - RC tags → TestPyPI + npm @rc
-   - Stable tags → Production PyPI + npm latest
-4. **Releases**: Creates GitHub release draft
+### Version Format
+- Follow Semantic Versioning (SemVer)
+- Format: `MAJOR.MINOR.PATCH[-PRERELEASE]`
+- Examples: `0.2.0`, `1.0.0-rc.1`, `2.1.3`
 
-### Trusted Publishing
+## Platform Publishing
 
-The project uses PyPI trusted publishing (no API tokens needed):
-- **TestPyPI**: Environment `dev` for RC releases
-- **Production PyPI**: Default environment for stable releases
+### PyPI (Python)
+- **Method**: Trusted Publishing via GitHub Actions
+- **Package**: `shlesha`
+- **Verification**: `pip install shlesha==VERSION`
 
-## Verification
+### npm (JavaScript/WASM)
+- **Method**: npm token authentication
+- **Package**: `shlesha`
+- **Verification**: `npm view shlesha version`
 
-After release, verify installation:
+### crates.io (Rust)
+- **Method**: Cargo token authentication
+- **Package**: `shlesha`
+- **Verification**: `cargo search shlesha`
 
-#### Python Packages
+## Verification & Testing
+
+### Pre-Release Testing
 ```bash
-# Release candidates (TestPyPI)
-pip install -i https://test.pypi.org/simple/ shlesha==0.1.0rc1
+# Run all tests
+./scripts/test-all.sh
 
-# Stable releases (PyPI)
-pip install shlesha==0.1.0
+# Test release build
+./scripts/test-release.sh
 
-# Test functionality
-python -c "import shlesha; print(shlesha.transliterate('धर्म', 'devanagari', 'iso'))"
+# Verify wheel building
+./scripts/pre-release-check.sh
 ```
 
-#### WASM Packages
+### Post-Release Verification
 ```bash
-# Release candidates
-npm install shlesha-wasm@rc
+# Test PyPI installation
+pip install shlesha==$(cat Cargo.toml | grep version | head -1 | cut -d '"' -f 2)
+python -c "import shlesha; print(shlesha.__version__)"
 
-# Stable releases  
-npm install shlesha-wasm
+# Test npm installation
+npm install shlesha@latest
+node -e "console.log(require('shlesha').version)"
 
-# Test in Node.js
-node -e "const shlesha = require('shlesha-wasm'); console.log(shlesha.transliterate('dharma', 'iso', 'devanagari'))"
+# Test cargo installation
+cargo install shlesha
+shlesha --version
 ```
 
-## Post-Release Tasks
+## Troubleshooting
 
-- [ ] Edit and publish GitHub release notes
-- [ ] Test installation from PyPI/npm
-- [ ] Update documentation if needed
-- [ ] Announce release on relevant channels
+### Common Issues
 
-## Script Reference
+1. **Version Mismatch**
+   ```bash
+   # Fix: Re-run version sync
+   ./scripts/prepare-release.sh <version>
+   ```
 
-### release.sh
-**Main release script** - Guides you through the complete process:
-- Runs tests
-- Updates versions  
-- Creates tags
-- Provides post-release guidance
+2. **PyPI Upload Fails**
+   - Check trusted publishing configuration
+   - Verify environment name matches
+   - Check PyPI project settings
 
-### test-release.sh
-**Pre-release testing** - Validates release readiness:
-- Checks git status
-- Tests Rust, Python, and WASM builds
-- Runs test suites
-- Ensures compatibility
+3. **npm Publish Fails**
+   - Verify NPM_TOKEN is set
+   - Check token permissions
+   - Ensure not publishing duplicate version
 
-### prepare-release.sh  
-**Version management** - Updates version numbers:
-- Reads current version from Cargo.toml
-- Supports manual or auto-increment
-- Creates release preparation commit
+4. **Build Failures**
+   - Check Rust toolchain version
+   - Verify all dependencies resolved
+   - Run `cargo clean` and retry
 
-### tag-release.sh
-**Tag creation** - Handles git tagging:
-- Analyzes existing tags
-- Determines next version automatically
-- Creates appropriate RC or stable tags
-- Pushes to trigger CI/CD
+### Recovery Procedures
 
-## Initial Setup
+1. **Failed Release**
+   ```bash
+   # Delete local tag
+   git tag -d v<version>
+   
+   # Delete remote tag (if pushed)
+   git push origin :refs/tags/v<version>
+   
+   # Fix issues and retry
+   ./scripts/release.sh <type>
+   ```
 
-### PyPI Trusted Publishing
+2. **Partial Publication**
+   - Check which platforms succeeded
+   - Manually publish to failed platforms
+   - Update GitHub release notes
 
-Set up trusted publishers (one-time setup):
+## Architecture & Design
 
-1. **TestPyPI** (for RC releases):
-   - Repository: `udapaana/shlesha`
-   - Workflow: `python.yml` 
-   - Environment: `dev`
+### Release Pipeline
 
-2. **Production PyPI** (for stable releases):
-   - Repository: `udapaana/shlesha`
-   - Workflow: `python.yml`
-   - Environment: `prd`
+```
+Developer → GitHub → CI/CD → Platform Publishers
+    |         |         |            |
+    |         |         |            ├── PyPI
+    |         |         |            ├── npm  
+    |         |         |            └── crates.io
+    |         |         |
+    |         |         └── Tests, Builds, Checks
+    |         |
+    |         └── Release Creation, Tagging
+    |
+    └── Version Update, Commit
+```
 
-### GitHub Environments
+### Security Model
 
-The project uses GitHub environments for deployment control:
+1. **Authentication**
+   - PyPI: Trusted Publishing (no tokens)
+   - npm: Secure token in GitHub Secrets
+   - crates.io: API token in GitHub Secrets
 
-- **dev** - Release candidates → TestPyPI + npm @rc
-- **prd** - Stable releases → Production PyPI + npm latest + crates.io
+2. **Authorization**
+   - Release environment protection
+   - Required reviewers for production
+   - Branch protection on main
 
-### Required Secrets
+3. **Audit Trail**
+   - All releases tagged in git
+   - GitHub releases for changelog
+   - Package registry history
 
-Add these to GitHub environment secrets:
+### Maintenance
 
-**dev Environment:**
-- `NPM_TOKEN` - npm publishing token for RC releases
-- `CARGO_REGISTRY_TOKEN` - crates.io token with scopes:
-  - `publish-new`, `publish-update`, `yank`
+#### Regular Tasks
+- Update dependencies monthly
+- Review and rotate tokens quarterly
+- Audit release permissions
+- Monitor for security advisories
 
-**prd Environment:**  
-- `NPM_TOKEN` - npm publishing token for stable releases
-- `CARGO_REGISTRY_TOKEN` - crates.io token (same as dev)
-
-## Versioning
-
-We follow [Semantic Versioning](https://semver.org/):
-- MAJOR version for incompatible API changes
-- MINOR version for backwards-compatible functionality
-- PATCH version for backwards-compatible bug fixes
-
-For pre-releases:
-- Release Candidate: `v0.1.0-rc1`, `v0.1.0-rc2`, etc.
+#### Scripts Reference
+- `release.sh` - Main release automation
+- `prepare-release.sh` - Version synchronization
+- `test-release.sh` - Release validation
+- `pre-release-check.sh` - Pre-flight checks
+- `publish-pypi.sh` - Manual PyPI publish
+- `publish-npm.sh` - Manual npm publish
