@@ -51,4 +51,4 @@ If bidirectional conversion becomes necessary for extended scripts, potential so
 2. Separate converters: One optimized for native text, one for Sanskrit extensions
 3. Runtime detection: Choose converter based on presence of superscripts
 
-For now, the one-way conversion limitation is an acceptable trade-off that maintains excellent performance for the common use case while still supporting the full Sanskrit phoneme inventory when needed.
+For now, the one-way conversion limitation is an acceptable trade-off that maintains performance for the common use case while still supporting the full Sanskrit phoneme inventory when needed.

@@ -357,7 +357,7 @@ Perfect for processing Sanskrit scriptures, mantras, and philosophical works whe
 Ideal for digital humanities projects processing large corpora of Sanskrit/Hindi texts.
 
 ### 3. Web Applications
-Excellent for websites offering transliteration services, where common words and phrases are requested repeatedly.
+Suitable for websites offering transliteration services, where common words and phrases are requested repeatedly.
 
 ### 4. Mobile Applications
 Reduces processing time and battery usage for transliteration-heavy mobile apps.

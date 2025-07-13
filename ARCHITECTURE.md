@@ -2,7 +2,7 @@
 
 ## Overview
 
-Shlesha implements a **zero-allocation token-based architecture** for transliteration between Sanskrit and Indic scripts. This revolutionary design achieves optimal performance through compile-time code generation while maintaining full runtime extensibility via dynamic compilation.
+Shlesha implements a token-based architecture for transliteration between Sanskrit and Indic scripts. The design uses compile-time code generation while maintaining runtime extensibility via dynamic compilation.
 
 ## Core Architectural Principles
 
@@ -33,14 +33,14 @@ Alphabet Tokens          Hub Processing           Abugida Tokens
 
 **Static Processors**: Compile-time generated pattern matching
 ```rust
-// Generated at compile time - zero allocations
+// Generated at compile time
 pub fn string_to_token(&self, input: &str) -> Option<AlphabetToken> {
     match input {
         "a" => Some(AlphabetToken::VowelA),
         "ā" => Some(AlphabetToken::VowelAa),
         "RR" => Some(AlphabetToken::VowelVocalicRr),
-        "lRR" => Some(AlphabetToken::VowelVocalicLl), // Resolves ambiguity!
-        "l̥̄" => Some(AlphabetToken::VowelVocalicLl),   // Multiple inputs → same token
+        "lRR" => Some(AlphabetToken::VowelVocalicLl),
+        "l̥̄" => Some(AlphabetToken::VowelVocalicLl),
         _ => None,
     }
 }
@@ -49,7 +49,7 @@ pub fn token_to_string(&self, token: &AlphabetToken) -> &'static str {
     match token {
         AlphabetToken::VowelA => "a",
         AlphabetToken::VowelAa => "ā", 
-        AlphabetToken::VowelVocalicLl => "lRR", // First in schema = preferred output
+        AlphabetToken::VowelVocalicLl => "lRR",
         // ...
     }
 }
@@ -57,7 +57,7 @@ pub fn token_to_string(&self, token: &AlphabetToken) -> &'static str {
 
 ### 4. Runtime Compilation System
 
-**Dynamic Processor Generation**: Same performance as static processors
+**Dynamic Processor Generation**
 ```rust
 pub struct RuntimeCompiler {
     template_engine: Handlebars,    // Reuse build.rs templates
@@ -76,7 +76,7 @@ impl RuntimeCompiler {
         // 3. Cargo build --release
         self.cargo_build(&crate_dir)?;
         
-        // 4. Load compiled dylib - same performance as static!
+        // 4. Load compiled dylib
         Ok(self.load_processor(&crate_dir)?)
     }
 }
@@ -144,8 +144,6 @@ pub enum AlphabetToken {
     
     // Digits
     Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9,
-    
-    // No Literal(String) - zero allocations!
 }
 ```
 
@@ -165,7 +163,7 @@ Input "lRR" → VowelVocalicLl → Output "lRR" ✅
 Input "l̥̄"  → VowelVocalicLl → Output "lRR" ✅ (normalized to preferred)
 ```
 
-This completely eliminates round-trip ambiguity!
+This eliminates round-trip ambiguity.
 
 ## System Components
 
@@ -178,7 +176,7 @@ impl HubTrait for Hub {
         tokens.iter().map(|token| match token {
             HubToken::Abugida(AbugidaToken::VowelA) => HubToken::Alphabet(AlphabetToken::VowelA),
             HubToken::Abugida(AbugidaToken::ConsonantK) => HubToken::Alphabet(AlphabetToken::ConsonantK),
-            // Direct 1:1 token mapping - zero allocations
+            // Direct 1:1 token mapping
         }).collect()
     }
     
@@ -214,7 +212,7 @@ impl {{struct_name}} {
         match token {
             {{#each mappings}}
             {{#each entries}}
-            {{token_type}}::{{token}} => "{{preferred}}", // Zero allocation!
+            {{token_type}}::{{token}} => "{{preferred}}",
             {{/each}}
             {{/each}}
         }
@@ -230,7 +228,7 @@ pub enum ProcessorSource {
     // Compile-time generated (built-in scripts)
     Static(&'static dyn TokenProcessor),
     
-    // Runtime compiled (same performance!)
+    // Runtime compiled
     RuntimeCompiled(Box<dyn TokenProcessor>),
     
     // Fallback only (development/testing)
@@ -241,7 +239,6 @@ impl Shlesha {
     pub fn add_runtime_schema(&mut self, schema: Schema) -> Result<(), Error> {
         match self.runtime_compiler.compile_schema(&schema) {
             Ok(compiled) => {
-                // Same performance as static processors!
                 self.processors.insert(schema.name.clone(), ProcessorSource::RuntimeCompiled(compiled));
             }
             Err(_) => {
@@ -294,9 +291,9 @@ String output       | Concatenation     | Static &str refs
 
 | Processor Type | First Load | Subsequent Use | Memory Overhead |
 |----------------|------------|----------------|-----------------|
-| **Static (Built-in)** | 0ms | 🚀 Zero-alloc | Minimal |
-| **Runtime Compiled** | ~100ms compile | 🚀 Zero-alloc | Minimal |
-| **Dynamic HashMap** | ~1ms load | 📈 Hash lookup | Higher |
+| **Static (Built-in)** | 0ms | Match statement | Minimal |
+| **Runtime Compiled** | ~100ms compile | Match statement | Minimal |
+| **Dynamic HashMap** | ~1ms load | Hash lookup | Higher |
 
 ### 3. Optimization Techniques
 
@@ -466,32 +463,32 @@ impl TokenProcessor for MyCustomProcessor {
 
 ## Design Benefits
 
-### 1. Performance Revolution
+### 1. Performance
 
-- **Zero Allocations**: Token processing without memory overhead
-- **Compile-Time Optimization**: Maximal compiler optimization
-- **Predictable Performance**: No hash lookup variance
-- **Cache Efficiency**: Compact token representation
+- Token processing without memory overhead
+- Compile-time optimization
+- No hash lookup variance
+- Compact token representation
 
-### 2. Correctness Guarantee
+### 2. Correctness
 
-- **Ambiguity Resolution**: Explicit preferred forms in schemas
-- **Type Safety**: Compile-time token validation
-- **Round-Trip Stability**: Guaranteed conversion consistency
-- **Schema Validation**: Build-time correctness checking
+- Explicit preferred forms in schemas
+- Compile-time token validation
+- Stable round-trip conversion
+- Build-time schema validation
 
 ### 3. Developer Experience
 
-- **Same API**: Transparent performance improvements
-- **Runtime Extensibility**: Full schema loading capability
-- **Fast Iteration**: Automatic recompilation on schema changes
-- **Rich Debugging**: Source-level debugging of generated code
+- Consistent API across static and runtime processors
+- Runtime schema loading capability
+- Automatic recompilation on schema changes
+- Source-level debugging of generated code
 
 ### 4. Scalability
 
-- **Infinite Scripts**: No performance penalty for additional scripts
-- **Parallel Compilation**: Independent processor generation
-- **Distributed Caching**: Shareable compiled processors
-- **Incremental Updates**: Only recompile changed schemas
+- No performance penalty for additional scripts
+- Independent processor generation
+- Shareable compiled processors
+- Only recompile changed schemas
 
-This architecture represents a fundamental breakthrough: **zero-allocation performance with unlimited extensibility** through intelligent compile-time and runtime code generation.
+This architecture provides token-based processing with runtime extensibility through compile-time and runtime code generation.

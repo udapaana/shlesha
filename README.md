@@ -1,10 +1,10 @@
-# Shlesha - High-Performance Schema-Driven Transliteration Library
+# Shlesha - Schema-Driven Transliteration Library
 
-A next-generation transliteration library built with **schema-driven architecture** for Sanskrit and Indic scripts. Shlesha delivers exceptional performance through compile-time optimization while maintaining extensibility through runtime-loadable schemas.
+A transliteration library for Sanskrit and Indic scripts using schema-driven architecture. Built with compile-time optimization and runtime schema loading.
 
-## 🚀 Quick Start for Developers
+## Quick Start
 
-**New to Shlesha?** Get up and running in one command:
+Setup command:
 
 ```bash
 ./scripts/quick-start.sh
@@ -14,25 +14,21 @@ This sets up everything: Rust environment, Python bindings, WASM support, and ru
 
 **For detailed setup instructions**, see [DEVELOPER_SETUP.md](docs/DEVELOPER_SETUP.md).
 
-**📚 Complete Documentation**: See [DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md) for all guides and references.
+**Documentation**: See [DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md) for guides and references.
 
 ---
 
-## ⚡ Performance Highlights
+## Performance
 
-Shlesha delivers **exceptional performance** competitive with the fastest transliteration libraries:
+- Faster than Aksharamukha and Dharmamitra
+- Schema-generated converters perform identically to hand-coded ones
+- See benchmarks directory for current performance metrics
 
-- **Only 1.07x - 2.96x slower than Vidyut** (industry-leading performance)
-- **10.52 MB/s** for Indic script conversions  
-- **6-10x better performance** than our original targets
-- **Dramatically faster** than Aksharamukha and Dharmamitra
-- **Schema-generated converters** perform identically to hand-coded ones
-
-## 🏗️ Revolutionary Schema-Based Architecture
+## Schema-Based Architecture
 
 ### Compile-Time Code Generation
 
-Shlesha uses a **revolutionary schema-driven approach** where converters are generated at compile-time from declarative schemas:
+Converters are generated at compile-time from declarative schemas:
 
 ```yaml
 # schemas/slp1.yaml - Generates optimized SLP1 converter
@@ -76,18 +72,18 @@ warning: Generating optimized converters with Handlebars templates...
 warning: Created 18 schema-generated converters with O(1) lookups
 ```
 
-## 🎯 Hub-and-Spoke Architecture
+## Hub-and-Spoke Architecture
 
-### Smart Multi-Hub Design
+### Multi-Hub Design
 
 - **Devanagari Hub**: Central format for Indic scripts (तमिल → देवनागरी → गुजराती)
 - **ISO-15919 Hub**: Central format for romanization schemes (ITRANS → ISO → IAST)
 - **Cross-Hub Conversion**: Seamless Indic ↔ Roman via both hubs
 - **Direct Conversion**: Bypass hubs when possible for maximum performance
 
-### Intelligent Routing
+### Routing
 
-The system automatically determines the optimal conversion path:
+The system determines the conversion path:
 
 ```rust
 // Direct passthrough - zero conversion cost
@@ -100,7 +96,7 @@ transliterator.transliterate("धर्म", "devanagari", "iso")?; // deva→is
 transliterator.transliterate("dharma", "itrans", "bengali")?; // itrans→iso→deva→bengali
 ```
 
-## 📚 Supported Scripts (15+ Scripts, 210+ Conversion Pairs)
+## Supported Scripts
 
 ### Indic Scripts (Schema-Generated)
 - **Devanagari** (`devanagari`, `deva`) - Sanskrit, Hindi, Marathi  
@@ -122,12 +118,12 @@ transliterator.transliterate("dharma", "itrans", "bengali")?; // itrans→iso→
 - **Velthuis** (`velthuis`) - TeX-compatible scheme
 - **WX** (`wx`) - ASCII-based notation
 
-### Hand-Coded Scripts (Premium Quality)
+### Hand-Coded Scripts
 - **IAST** (`iast`) - International Alphabet of Sanskrit Transliteration
 - **Kolkata** (`kolkata`) - Regional romanization scheme
 - **Grantha** (`grantha`) - Classical Sanskrit script
 
-## 🛠️ Usage Examples
+## Usage Examples
 
 ### Rust Library
 
@@ -206,9 +202,9 @@ async function demo() {
 }
 ```
 
-## 🔧 Runtime Schema Loading
+## Runtime Schema Loading
 
-**NEW**: Shlesha now supports **runtime schema loading** across all APIs, enabling you to add custom scripts without recompilation.
+Shlesha supports runtime schema loading across all APIs to add custom scripts without recompilation.
 
 ### Rust API
 
@@ -363,41 +359,33 @@ config.schemas.forEach(schema => {
 });
 ```
 
-## ⚡ Performance & Benchmarks
+## Performance & Benchmarks
 
-### Competitive Performance Analysis
+### Performance Analysis
 
-Recent benchmarks show Shlesha delivers **industry-competitive performance**:
+Shlesha uses a hub-and-spoke architecture with schema-generated converters, trading some performance for extensibility compared to direct conversion approaches.
 
-| Library | SLP1→ISO (71 chars) | ITRANS→ISO (71 chars) | Architecture |
-|---------|--------------------|-----------------------|--------------|
-| **Vidyut** | 1.75 MB/s | 1.92 MB/s | Direct conversion |
-| **Shlesha** | 0.93 MB/s | 1.04 MB/s | Schema-generated hub |
-| **Performance Ratio** | **1.89x slower** | **1.85x slower** | **Extensible** |
+### Performance Characteristics
 
-### Performance Achievements
-
-✅ **6-10x better** than original performance targets  
-✅ **Only 1.07x - 2.96x slower** than Vidyut (industry leader)  
-✅ **10.52 MB/s** for Indic script conversions  
-✅ **Dramatically faster** than Aksharamukha/Dharmamitra  
-✅ **Schema-generated = hand-coded performance**
+- Competitive with other transliteration libraries
+- Schema-generated converters match hand-coded performance
+- Optimized for both short and long text processing
 
 ### Architecture Trade-offs
 
 | Aspect | Shlesha | Vidyut |
 |--------|---------|---------|
-| **Performance** | Excellent (2-3x slower) | Best-in-class |
+| **Performance** | Hub-based | Direct conversion |
 | **Extensibility** | Runtime schemas | Compile-time only |
 | **Script Support** | 15+ (easily expandable) | Limited |
 | **Architecture** | Hub-and-spoke | Direct conversion |
 | **Bindings** | Rust/Python/WASM/CLI | Rust only |
 
-## 🏗️ Schema-Driven Development
+## Schema-Driven Development
 
 ### Adding New Scripts
 
-Adding support for new scripts is now trivial with schemas:
+Adding support for new scripts with schemas:
 
 ```yaml
 # schemas/new_script.yaml
@@ -444,15 +432,15 @@ impl {{pascal_case metadata.name}}Converter {
 }
 ```
 
-## 🧪 Quality Assurance
+## Quality Assurance
 
-### Comprehensive Test Suite
+### Test Suite
 
-- ✅ **127 passing tests** covering all functionality
-- ✅ **Schema-generated converter tests** for all 14 generated converters  
-- ✅ **Performance regression tests** ensuring schema = hand-coded speed
-- ✅ **Cross-script conversion matrix** testing all 210+ pairs
-- ✅ **Unknown character handling** with graceful degradation
+- 127 tests covering all functionality
+- Schema-generated converter tests for all 14 generated converters  
+- Performance regression tests ensuring schema = hand-coded speed
+- Cross-script conversion matrix testing all 210+ pairs
+- Unknown character handling
 
 ### Build System Validation
 
@@ -467,7 +455,7 @@ cargo test comprehensive_bidirectional_tests
 cargo run --example shlesha_vs_vidyut_benchmark
 ```
 
-## 🔧 Build Configuration & Features
+## Build Configuration & Features
 
 ### Schema Processing Features
 
@@ -498,7 +486,7 @@ let scripts = transliterator.list_supported_scripts();
 println!("Dynamically loaded: {:?}", scripts);
 ```
 
-## 🚀 Advanced Features
+## Advanced Features
 
 ### Metadata Collection
 
@@ -543,9 +531,7 @@ let deva_text = hub.iso_to_deva("dharma")?;  // ISO → Devanagari
 let result = hub.deva_to_iso_with_metadata("धर्म")?;
 ```
 
-## 📖 Documentation
-
-### Complete Documentation Suite
+## Documentation
 
 - [**Architecture Guide**](docs/ARCHITECTURE.md) - Deep dive into hub-and-spoke design
 - [**Schema Reference**](docs/SCHEMA_REFERENCE.md) - Complete schema format documentation  
@@ -572,9 +558,9 @@ cargo run --example roman_allocation_analysis
 cargo bench
 ```
 
-## 🚀 Releases
+## Releases
 
-Shlesha uses an automated release system for publishing to multiple package registries:
+Shlesha uses an automated release system for publishing to package registries:
 
 ### Quick Release
 ```bash
@@ -596,9 +582,9 @@ cargo add shlesha
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for complete release documentation.
 
-## 🤝 Contributing
+## Contributing
 
-We welcome contributions! Shlesha's schema-driven architecture makes adding new scripts easier than ever:
+Contributions are welcome. The schema-driven architecture simplifies adding new scripts:
 
 1. **Add Schema**: Create TOML/YAML mapping file
 2. **Test**: Run test suite to verify
@@ -607,11 +593,11 @@ We welcome contributions! Shlesha's schema-driven architecture makes adding new 
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Unicode Consortium** for Indic script standards
 - **ISO-15919** for romanization standardization  
@@ -619,6 +605,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Vidyut Project** for performance benchmarking standards
 - **Rust Community** for excellent tools (PyO3, wasm-pack, handlebars)
 
----
-
-**Shlesha** - *Where performance meets extensibility through intelligent schema-driven design.*

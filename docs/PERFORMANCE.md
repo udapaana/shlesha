@@ -4,37 +4,28 @@ This document explains Shlesha's performance characteristics, benchmarking metho
 
 ## Performance Overview
 
-Shlesha is designed for **high-performance transliteration** with the following characteristics:
+Shlesha is designed for transliteration with the following characteristics:
 
-### Performance Metrics (v0.1.7)
-
-Measured on the reference benchmark system:
-
-- Telugu → Devanagari: 209.69 MB/s
-- IAST → ISO-15919: 1.96x Vidyut speed (short text), 1.01x Vidyut speed (long text)
-- ITRANS → ISO-15919: 1.51x Vidyut speed (short text), 0.93x Vidyut speed (long text)  
-- SLP1 → ISO-15919: 1.18x Vidyut speed (short text), 0.65x Vidyut speed (long text)
+### Performance Characteristics
 
 Technical implementation:
 - Hash map lookups with function inlining
 - Pre-allocated string capacity
 - Compile-time code generation
+- Optimized for both short and long text processing
 
 ### Comparative Performance
 
-Relative to Vidyut (measured on identical hardware/text):
-
-| Script Conversion | Short Text | Long Text |
-|------------------|------------|-----------|
-| IAST → ISO-15919 | 1.96x | 1.01x |
-| ITRANS → ISO-15919 | 1.51x | 0.93x |
-| SLP1 → ISO-15919 | 1.18x | 0.65x |
+Shlesha's hub-and-spoke architecture trades some performance for extensibility compared to direct conversion approaches. Performance varies based on:
+- Text length (short vs long)
+- Script types (Roman vs Indic)
+- Conversion path (direct vs hub-based)
 
 ## Architecture for Performance
 
 ### 1. Schema-Driven Code Generation
 
-Shlesha generates optimized converters at **compile time**:
+Shlesha generates converters at compile time:
 
 ```yaml
 # schemas/tamil.yaml
@@ -57,15 +48,15 @@ pub fn convert_tamil_to_devanagari(input: &str) -> String {
         "ஆ" => "आ",
         // ... optimized at compile time
     };
-    // ... highly optimized conversion logic
+    // ... conversion logic
 }
 ```
 
 ### 2. Perfect Hash Functions (PHF)
 
-- **Compile-time hash map generation** for O(1) lookups
-- **Zero hash collisions** in generated maps
-- **Cache-friendly memory layout**
+- Compile-time hash map generation for O(1) lookups
+- No hash collisions in generated maps
+- Cache-friendly memory layout
 
 ### 3. Hub-and-Spoke Architecture
 
@@ -73,9 +64,9 @@ pub fn convert_tamil_to_devanagari(input: &str) -> String {
 Roman Scripts → ISO-15919 → Devanagari → Indic Scripts
 ```
 
-- **Minimal conversion steps** (maximum 2 hops)
-- **Optimized intermediate representations**
-- **Reduced complexity** compared to N×N conversion matrix
+- Minimal conversion steps (maximum 2 hops)
+- Intermediate representations
+- Reduced complexity compared to N×N conversion matrix
 
 ## Benchmarking
 

@@ -17,6 +17,12 @@
 - **Zero-Cost Abstractions**: Abstractions should have no runtime overhead
 - **Compile-Time Optimization**: Push as much work as possible to compile time
 
+### Documentation Standards
+- **Just the Facts**: Documentation should contain only factual, technical information
+- **No Self-Congratulation**: Avoid superlatives, marketing language, or self-praising terms
+- **Objective Tone**: Present features and capabilities without embellishment
+- **Focus on Utility**: Documentation exists to help users, not to sell or impress
+
 ## Modular Architecture
 
 ### Core Principles
