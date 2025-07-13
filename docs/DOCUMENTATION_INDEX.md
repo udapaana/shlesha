@@ -7,13 +7,13 @@ Complete guide to all Shlesha documentation and resources.
 | Document | Purpose | Audience |
 |----------|---------|----------|
 | [README.md](../README.md) | Project overview & quick start | All users |
-| [CONTRIBUTING.md](../CONTRIBUTING.md) | Contribution guidelines | Contributors |
-| [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md) | Development environment setup | Developers |
-| [API_REFERENCE.md](API_REFERENCE.md) | Complete API documentation | API users |
-| [SCHEMA_REFERENCE.md](SCHEMA_REFERENCE.md) | YAML schema format guide | Schema authors |
-| [PERFORMANCE.md](PERFORMANCE.md) | Performance guide & benchmarks | Performance engineers |
-| [ARCHITECTURE.md](../ARCHITECTURE.md) | System design & architecture | Architects |
-| [BINDINGS.md](BINDINGS.md) | Language bindings guide | Integration developers |
+| [CONTRIBUTING.md](guides/CONTRIBUTING.md) | Contribution guidelines | Contributors |
+| [DEVELOPER_SETUP.md](guides/DEVELOPER_SETUP.md) | Development environment setup | Developers |
+| [API_REFERENCE.md](reference/API_REFERENCE.md) | Complete API documentation | API users |
+| [SCHEMA_REFERENCE.md](reference/SCHEMA_REFERENCE.md) | YAML schema format guide | Schema authors |
+| [PERFORMANCE.md](architecture/PERFORMANCE.md) | Performance guide & benchmarks | Performance engineers |
+| [ARCHITECTURE.md](architecture/ARCHITECTURE.md) | System design & architecture | Architects |
+| [BINDINGS.md](reference/BINDINGS.md) | Language bindings guide | Integration developers |
 
 ## 📖 Documentation Structure
 
@@ -24,20 +24,20 @@ Complete guide to all Shlesha documentation and resources.
    - Basic usage examples
    - Quick start command
 
-2. **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Contribution guidelines
+2. **[CONTRIBUTING.md](guides/CONTRIBUTING.md)** - Contribution guidelines
    - Development workflow
    - Adding new scripts
    - Code standards
    - Testing requirements
 
-3. **[DEVELOPER_SETUP.md](DEVELOPER_SETUP.md)** - Environment setup
+3. **[DEVELOPER_SETUP.md](guides/DEVELOPER_SETUP.md)** - Environment setup
    - One-command setup (`./scripts/quick-start.sh`)
    - Manual setup instructions
    - Troubleshooting guides
    - Development workflow
 
 ### 🔧 Technical Reference
-4. **[API_REFERENCE.md](API_REFERENCE.md)** - Complete API docs
+4. **[API_REFERENCE.md](reference/API_REFERENCE.md)** - Complete API docs
    - Rust native API
    - Python bindings API
    - WASM/JavaScript API
@@ -45,27 +45,27 @@ Complete guide to all Shlesha documentation and resources.
    - Error handling
    - Integration examples
 
-5. **[SCHEMA_REFERENCE.md](SCHEMA_REFERENCE.md)** - Schema format guide
+5. **[SCHEMA_REFERENCE.md](reference/SCHEMA_REFERENCE.md)** - Schema format guide
    - YAML schema structure
    - Roman vs Indic script schemas
    - Complete examples
    - Validation rules
    - Best practices
 
-6. **[PERFORMANCE.md](PERFORMANCE.md)** - Performance guide
+6. **[PERFORMANCE.md](architecture/PERFORMANCE.md)** - Performance guide
    - Benchmarking methodology
    - Performance metrics
    - Optimization strategies
    - Profiling tools
    - Tuning recommendations
 
-7. **[ARCHITECTURE.md](../ARCHITECTURE.md)** - System design
+7. **[ARCHITECTURE.md](architecture/ARCHITECTURE.md)** - System design
    - Hub-and-spoke architecture
    - Performance optimizations
    - Module structure
    - Design decisions
 
-8. **[BINDINGS.md](BINDINGS.md)** - Language bindings
+8. **[BINDINGS.md](reference/BINDINGS.md)** - Language bindings
    - Python integration details
    - WASM deployment guide
    - CLI usage patterns
@@ -103,15 +103,15 @@ Complete guide to all Shlesha documentation and resources.
    - CLI examples in [API_REFERENCE.md](API_REFERENCE.md)
 
 ### For Developers
-1. Complete [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md)
-2. Study [ARCHITECTURE.md](ARCHITECTURE.md) for system design
-3. Review [API_REFERENCE.md](API_REFERENCE.md) for implementation details
+1. Complete [DEVELOPER_SETUP.md](guides/DEVELOPER_SETUP.md)
+2. Study [ARCHITECTURE.md](architecture/ARCHITECTURE.md) for system design
+3. Review [API_REFERENCE.md](reference/API_REFERENCE.md) for implementation details
 4. Run test suites with `./scripts/test-all.sh`
 
 ### For Integrators
-1. Choose your platform in [API_REFERENCE.md](API_REFERENCE.md)
+1. Choose your platform in [API_REFERENCE.md](reference/API_REFERENCE.md)
 2. Follow integration examples
-3. Review [BINDINGS.md](BINDINGS.md) for platform-specific details
+3. Review [BINDINGS.md](reference/BINDINGS.md) for platform-specific details
 4. Test with provided demo applications
 
 ## 🧩 Module Documentation
@@ -166,7 +166,7 @@ Complete guide to all Shlesha documentation and resources.
 ## 📞 Support & Contributing
 
 - **Issues**: Report via project repository
-- **Development**: Follow [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md)
+- **Development**: Follow [DEVELOPER_SETUP.md](guides/DEVELOPER_SETUP.md)
 - **Testing**: Use `./scripts/test-all.sh` before contributing
 - **Documentation**: Update this index when adding new docs
 

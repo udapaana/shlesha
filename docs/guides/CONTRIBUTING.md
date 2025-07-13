@@ -26,7 +26,7 @@ Thank you for your interest in contributing to Shlesha! This document provides g
 - Python 3.8+ (for Python bindings)
 - Node.js (for WASM bindings)
 
-See [DEVELOPER_SETUP.md](docs/DEVELOPER_SETUP.md) for detailed setup instructions.
+See [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md) for detailed setup instructions.
 
 ### Building and Testing
 
@@ -59,7 +59,7 @@ wasm-pack build --target web
    - Place new schemas in `schemas/` directory
    - Use YAML format consistently
    - Include comprehensive test cases
-   - Follow the schema format documented in [CUSTOM_SCHEMAS.md](docs/CUSTOM_SCHEMAS.md)
+   - Follow the schema format documented in [SCHEMA_REFERENCE.md](../reference/SCHEMA_REFERENCE.md)
 
 3. **Documentation:**
    - Update relevant documentation for changes
@@ -131,7 +131,7 @@ To add support for a new script:
 - Keep all documentation current with code changes
 - Use clear, concise language
 - Provide practical examples
-- Update the [DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md) for new docs
+- Update the [DOCUMENTATION_INDEX.md](../DOCUMENTATION_INDEX.md) for new docs
 
 ## Submission Guidelines
 
@@ -159,7 +159,7 @@ To add support for a new script:
 
 ## Getting Help
 
-- **Documentation:** See [docs/](docs/) directory for comprehensive guides
+- **Documentation:** See [docs/](../) directory for comprehensive guides
 - **Issues:** Create GitHub issues for bugs or feature requests
 - **Discussions:** Use GitHub discussions for questions and ideas
 

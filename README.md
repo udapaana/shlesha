@@ -12,7 +12,7 @@ Setup command:
 
 This sets up everything: Rust environment, Python bindings, WASM support, and runs all tests.
 
-**For detailed setup instructions**, see [DEVELOPER_SETUP.md](docs/DEVELOPER_SETUP.md).
+**For detailed setup instructions**, see [DEVELOPER_SETUP.md](docs/guides/DEVELOPER_SETUP.md).
 
 **Documentation**: See [DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md) for guides and references.
 
@@ -533,16 +533,16 @@ let result = hub.deva_to_iso_with_metadata("धर्म")?;
 
 ## Documentation
 
-- [**Architecture Guide**](docs/ARCHITECTURE.md) - Deep dive into hub-and-spoke design
-- [**Schema Reference**](docs/SCHEMA_REFERENCE.md) - Complete schema format documentation  
-- [**Performance Guide**](docs/PERFORMANCE.md) - Optimization techniques and benchmarks
-- [**API Reference**](docs/API_REFERENCE.md) - Complete function and type reference
-- [**Developer Setup**](docs/DEVELOPER_SETUP.md) - Development environment setup
+- [**Architecture Guide**](docs/architecture/ARCHITECTURE.md) - Deep dive into hub-and-spoke design
+- [**Schema Reference**](docs/reference/SCHEMA_REFERENCE.md) - Complete schema format documentation  
+- [**Performance Guide**](docs/architecture/PERFORMANCE.md) - Optimization techniques and benchmarks
+- [**API Reference**](docs/reference/API_REFERENCE.md) - Complete function and type reference
+- [**Developer Setup**](docs/guides/DEVELOPER_SETUP.md) - Development environment setup
 - [**Release System**](docs/RELEASE_SYSTEM.md) - Automated release workflow overview
 - [**Deployment Guide**](DEPLOYMENT.md) - Complete deployment and environment setup
 - [**crates.io RC Support**](docs/CRATES_IO_RC_SUPPORT.md) - Release candidate publishing guide
 - [**Security Setup**](docs/SECURITY_SETUP.md) - Token management and environment security
-- [**Contributing Guide**](CONTRIBUTING.md) - Guidelines for contributors
+- [**Contributing Guide**](docs/guides/CONTRIBUTING.md) - Guidelines for contributors
 
 ### Quick Reference
 
