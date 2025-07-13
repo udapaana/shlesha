@@ -175,7 +175,7 @@ For tracking performance over time:
 1. Run benchmarks before major changes
 2. Save results with timestamp:
    ```bash
-   cp target/BENCHMARK_DATA.md "benchmarks/results/$(date +%Y%m%d).md"
+   cp target/BENCHMARK_DATA.md "python_benchmarks/results/$(date +%Y%m%d).md"
    ```
 3. Compare with previous results to detect regressions
 

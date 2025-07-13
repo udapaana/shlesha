@@ -40,9 +40,9 @@ print_success "Rust benchmarks complete"
 # Run Python benchmarks
 print_status "Running Python benchmarks..."
 if command -v uv &> /dev/null; then
-    uv run python benchmarks/benchmark_python.py
+    uv run python python_benchmarks/benchmark_python.py
 else
-    python benchmarks/benchmark_python.py
+    python python_benchmarks/benchmark_python.py
 fi
 print_success "Python benchmarks complete"
 
@@ -97,7 +97,7 @@ echo -e "\n---\n" >> target/BENCHMARK_REPORT.md
 if [ -f "target/PYTHON_BENCHMARK_RESULTS.md" ]; then
     tail -n +2 target/PYTHON_BENCHMARK_RESULTS.md >> target/BENCHMARK_REPORT.md
 else
-    echo "Python benchmark results not found. Run 'python benchmarks/benchmark_python.py' first." >> target/BENCHMARK_REPORT.md
+    echo "Python benchmark results not found. Run 'python python_benchmarks/benchmark_python.py' first." >> target/BENCHMARK_REPORT.md
 fi
 
 echo -e "\n---\n" >> target/BENCHMARK_REPORT.md

@@ -172,7 +172,8 @@ shlesha/
 ├── docs/                   # Documentation
 ├── examples/               # Usage examples
 ├── tests/                  # Integration tests
-├── benchmarks/             # Performance benchmarks
+├── benches/                # Rust/Criterion benchmarks
+├── python_benchmarks/      # Python performance tests
 ├── python/                 # Python bindings
 └── scripts/                # Development scripts
 ```

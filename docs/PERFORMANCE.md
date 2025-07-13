@@ -85,7 +85,7 @@ cargo bench comparison
 RUST_LOG=debug cargo bench
 
 # Generate benchmark report
-python benchmarks/generate_benchmark_report.py
+python python_benchmarks/generate_benchmark_report.py
 ```
 
 ### Benchmark Suites
