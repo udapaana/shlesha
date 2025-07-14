@@ -885,7 +885,6 @@ fn generate_token_based_converter(
         "has_multi_char_mappings": has_multi_char_mappings,
     });
 
-
     handlebars
         .render("token_based_converter", &template_data)
         .map_err(|e| format!("Template rendering failed: {e}").into())
