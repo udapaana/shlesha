@@ -2,32 +2,12 @@
 
 use crate::modules::hub::tokens::{AbugidaToken, AlphabetToken, HubToken, HubTokenSequence};
 use crate::modules::hub::{HubError, HubTrait};
-use rustc_hash::FxHashMap;
-use once_cell::sync::Lazy;
 
 #[derive(Default)]
 pub struct GeneratedHub;
 
-// Optimized lookup tables for ultra-fast token conversion
-static ABUGIDA_TO_ALPHABET_MAP: Lazy<FxHashMap<AbugidaToken, AlphabetToken>> = Lazy::new(|| {
-    let mut map = FxHashMap::default();
-    {{#each abugida_to_alphabet_mappings}}
-    {{#unless special_handling}}
-    map.insert(AbugidaToken::{{abugida_token}}, AlphabetToken::{{alphabet_token}});
-    {{/unless}}
-    {{/each}}
-    map
-});
-
-static ALPHABET_TO_ABUGIDA_MAP: Lazy<FxHashMap<AlphabetToken, AbugidaToken>> = Lazy::new(|| {
-    let mut map = FxHashMap::default();
-    {{#each alphabet_to_abugida_mappings}}
-    {{#unless special_handling}}
-    map.insert(AlphabetToken::{{alphabet_token}}, AbugidaToken::{{abugida_token}});
-    {{/unless}}
-    {{/each}}
-    map
-});
+// Note: We use match statements instead of hashmaps for compile-time optimization
+// The compiler can optimize match statements better than runtime hashmap lookups
 
 impl GeneratedHub {
     pub fn new() -> Self {
@@ -60,7 +40,7 @@ impl HubTrait for GeneratedHub {
 {{/each}}
                         AbugidaToken::Unknown(c) => {
                             // Pass through unknown characters as alphabet tokens
-                            result.push(HubToken::Alphabet(AlphabetToken::Unknown(*c)));
+                            result.push(HubToken::Alphabet(AlphabetToken::Unknown(c.clone())));
                         }
                         _ => {
                             // For unmapped tokens, return error or skip - depends on policy
@@ -97,20 +77,9 @@ impl HubTrait for GeneratedHub {
                         }
 {{/if}}
 {{/each}}
-                        // Handle special combinations that don't exist in AbugidaToken
-                        AlphabetToken::SpecialKs => {
-                            // kṣ -> क + ्ष
-                            result.push(HubToken::Abugida(AbugidaToken::ConsonantK));
-                            result.push(HubToken::Abugida(AbugidaToken::ConsonantSs));
-                        }
-                        AlphabetToken::SpecialJn => {
-                            // jñ -> ज + ्ञ
-                            result.push(HubToken::Abugida(AbugidaToken::ConsonantJ));
-                            result.push(HubToken::Abugida(AbugidaToken::ConsonantNy));
-                        }
                         AlphabetToken::Unknown(c) => {
                             // Pass through unknown characters
-                            result.push(HubToken::Abugida(AbugidaToken::Unknown(*c)));
+                            result.push(HubToken::Abugida(AbugidaToken::Unknown(c.clone())));
                         }
                         _ => {
                             // For unmapped tokens, return error or skip - depends on policy

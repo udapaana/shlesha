@@ -1,0 +1,28 @@
+// Generated token mapping functions
+// These handle the direct token-to-token conversions
+
+impl AbugidaToken {
+    /// Map to corresponding alphabet token (if one exists)
+    pub fn to_alphabet(&self) -> Option<AlphabetToken> {
+        match self {
+{{#each abugida_to_alphabet_mappings}}
+            AbugidaToken::{{this.from}} => Some(AlphabetToken::{{this.to}}),
+{{/each}}
+            AbugidaToken::Unknown(s) => Some(AlphabetToken::Unknown(s.clone())),
+            _ => None,
+        }
+    }
+}
+
+impl AlphabetToken {
+    /// Map to corresponding abugida token (if one exists)  
+    pub fn to_abugida(&self) -> Option<AbugidaToken> {
+        match self {
+{{#each alphabet_to_abugida_mappings}}
+            AlphabetToken::{{this.from}} => Some(AbugidaToken::{{this.to}}),
+{{/each}}
+            AlphabetToken::Unknown(s) => Some(AbugidaToken::Unknown(s.clone())),
+            _ => None,
+        }
+    }
+}

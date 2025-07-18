@@ -146,9 +146,9 @@ impl {{struct_name}} {
             // No pattern matched at current position, handle single character
             if let Some(ch) = remaining.chars().next() {
                 {{#if is_alphabet}}
-                tokens.push(HubToken::Alphabet(AlphabetToken::Unknown(ch)));
+                tokens.push(HubToken::Alphabet(AlphabetToken::Unknown(ch.to_string())));
                 {{else}}
-                tokens.push(HubToken::Abugida(AbugidaToken::Unknown(ch)));
+                tokens.push(HubToken::Abugida(AbugidaToken::Unknown(ch.to_string())));
                 {{/if}}
                 pos += ch.len_utf8();
             } else {
@@ -170,7 +170,7 @@ impl {{struct_name}} {
                 HubToken::Alphabet(alphabet_token) => {
                     match alphabet_token {
                         AlphabetToken::Unknown(ch) => {
-                            result.push(*ch);
+                            result.push_str(ch);
                         }
                         _ => {
                             result.push_str(&self.token_to_string(alphabet_token));
@@ -288,7 +288,7 @@ impl {{struct_name}} {
                         
                         // Unknown characters - pass through unchanged
                         AbugidaToken::Unknown(ch) => {
-                            result.push(*ch);
+                            result.push_str(ch);
                         }
                         
                         // Virama - output explicit virama tokens directly

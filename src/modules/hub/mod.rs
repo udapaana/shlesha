@@ -1,11 +1,8 @@
 use crate::modules::core::unknown_handler::TransliterationMetadata;
 use thiserror::Error;
 
-pub mod manual_converter;
-pub mod token_converters;
-pub mod token_string_impl;
 pub mod tokens;
-pub use token_converters::TokenToStringConverter;
+pub mod trait_based_converter;
 pub use tokens::{AbugidaToken, AlphabetToken, HubToken, HubTokenSequence};
 
 #[derive(Error, Debug, Clone)]
@@ -31,12 +28,18 @@ impl HubFormat {
     pub fn to_debug_string(&self) -> String {
         match self {
             HubFormat::AbugidaTokens(tokens) => {
-                let converter = TokenToStringConverter::new();
-                converter.tokens_to_devanagari(tokens)
+                // Simple debug representation showing token names
+                tokens.iter()
+                    .map(|t| format!("{:?}", t))
+                    .collect::<Vec<_>>()
+                    .join(" ")
             }
             HubFormat::AlphabetTokens(tokens) => {
-                let converter = TokenToStringConverter::new();
-                converter.tokens_to_iso(tokens)
+                // Simple debug representation showing token names
+                tokens.iter()
+                    .map(|t| format!("{:?}", t))
+                    .collect::<Vec<_>>()
+                    .join(" ")
             }
         }
     }
@@ -140,16 +143,16 @@ impl HubTrait for Hub {
         &self,
         tokens: &HubTokenSequence,
     ) -> Result<HubTokenSequence, HubError> {
-        // Use manual implementation for proper implicit 'a' handling
-        manual_converter::ManualHubConverter::abugida_to_alphabet(tokens)
+        // Use trait-based implementation with generated mappings
+        trait_based_converter::TraitBasedConverter::abugida_to_alphabet(tokens)
     }
 
     fn alphabet_to_abugida_tokens(
         &self,
         tokens: &HubTokenSequence,
     ) -> Result<HubTokenSequence, HubError> {
-        // Use manual implementation for proper implicit 'a' handling
-        manual_converter::ManualHubConverter::alphabet_to_abugida(tokens)
+        // Use trait-based implementation with generated mappings
+        trait_based_converter::TraitBasedConverter::alphabet_to_abugida(tokens)
     }
 }
 

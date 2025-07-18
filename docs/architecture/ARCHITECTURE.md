@@ -21,13 +21,19 @@ Input String → Token Stream → Token Processing → Output String
 ```
 Alphabet Tokens          Hub Processing           Abugida Tokens
       |                       |                        |
-  VowelA     ←→         Token-to-Token         ←→    VowelA
+  VowelA     ←→         Trait-Based            ←→    VowelA
   ConsonantK ←→         Conversion             ←→    ConsonantK
-  MarkAnusvara ←→       (Zero Allocation)      ←→    MarkAnusvara
+  MarkAnusvara ←→       (Stack-Based)          ←→    MarkAnusvara
       |                       |                        |
   Harvard-Kyoto              Hub                  Devanagari
   IAST, SLP1, etc.                               Bengali, etc.
 ```
+
+The hub uses a trait-based converter that:
+- Uses token traits (is_consonant(), is_vowel(), etc.) for classification
+- Implements a stack-based algorithm for implicit 'a' handling
+- Generates mappings from schemas at build time
+- Handles consonant clusters with proper virama insertion
 
 ### 3. Build-Time Code Generation
 

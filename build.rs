@@ -1,6 +1,7 @@
 use handlebars::Handlebars;
 use rustc_hash::FxHashMap;
 use serde_json::json;
+use std::collections::BTreeSet;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -70,10 +71,248 @@ fn flatten_token_mappings(mappings: &FxHashMap<String, TokenMapping>) -> FxHashM
 
 fn main() {
     println!("cargo:rerun-if-changed=schemas/");
+    println!("cargo:rerun-if-changed=templates/");
 
+    if let Err(e) = generate_tokens_from_schemas() {
+        println!("cargo:warning=Failed to generate tokens: {e}");
+    }
+    
     if let Err(e) = generate_schema_based_converters() {
         println!("cargo:warning=Failed to generate schema-based converters: {e}");
     }
+}
+
+/// Collect all unique tokens from schemas and generate tokens.rs
+fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
+    let out_dir = PathBuf::from(env::var("OUT_DIR")?);
+    let schemas_dir = Path::new("schemas");
+    
+    // Collections for unique tokens
+    let mut abugida_vowels = BTreeSet::new();
+    let mut abugida_vowel_signs = BTreeSet::new();
+    let mut abugida_consonants = BTreeSet::new();
+    let mut abugida_marks = BTreeSet::new();
+    let mut abugida_special = BTreeSet::new();
+    let mut abugida_digits = BTreeSet::new();
+    
+    let mut alphabet_vowels = BTreeSet::new();
+    let mut alphabet_consonants = BTreeSet::new();
+    let mut alphabet_marks = BTreeSet::new();
+    let mut alphabet_special = BTreeSet::new();
+    let mut alphabet_digits = BTreeSet::new();
+    
+    // Process all YAML schemas
+    if schemas_dir.exists() {
+        for entry in fs::read_dir(schemas_dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            
+            if path.extension().and_then(|s| s.to_str()) == Some("yaml") {
+                let content = fs::read_to_string(&path)?;
+                let schema: ScriptSchema = serde_yaml::from_str(&content)
+                    .map_err(|e| format!("Failed to parse YAML schema {}: {e}", path.display()))?;
+                
+                // Skip non-token schemas
+                let target = match &schema.target {
+                    Some(t) => t,
+                    None => continue,
+                };
+                
+                let is_abugida = target == "abugida_tokens";
+                let is_alphabet = target == "alphabet_tokens";
+                
+                if !is_abugida && !is_alphabet {
+                    continue;
+                }
+                
+                // Collect tokens from each category
+                if let Some(vowels) = &schema.mappings.vowels {
+                    for token in vowels.keys() {
+                        if is_abugida {
+                            abugida_vowels.insert(token.clone());
+                        } else {
+                            alphabet_vowels.insert(token.clone());
+                        }
+                    }
+                }
+                
+                if let Some(vowel_signs) = &schema.mappings.vowel_signs {
+                    for token in vowel_signs.keys() {
+                        if is_abugida {
+                            abugida_vowel_signs.insert(token.clone());
+                        }
+                    }
+                }
+                
+                if let Some(consonants) = &schema.mappings.consonants {
+                    for token in consonants.keys() {
+                        if is_abugida {
+                            abugida_consonants.insert(token.clone());
+                        } else {
+                            alphabet_consonants.insert(token.clone());
+                        }
+                    }
+                }
+                
+                if let Some(marks) = &schema.mappings.marks {
+                    for token in marks.keys() {
+                        if is_abugida {
+                            abugida_marks.insert(token.clone());
+                        } else {
+                            alphabet_marks.insert(token.clone());
+                        }
+                    }
+                }
+                
+                if let Some(special) = &schema.mappings.special {
+                    for token in special.keys() {
+                        if is_abugida {
+                            abugida_special.insert(token.clone());
+                        } else {
+                            alphabet_special.insert(token.clone());
+                        }
+                    }
+                }
+                
+                if let Some(digits) = &schema.mappings.digits {
+                    for token in digits.keys() {
+                        if is_abugida {
+                            abugida_digits.insert(token.clone());
+                        } else {
+                            alphabet_digits.insert(token.clone());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Generate tokens.rs using template
+    let mut handlebars = Handlebars::new();
+    handlebars.register_template_file("tokens", "templates/tokens.hbs")?;
+    
+    // Generate vowel to sign mappings
+    let mut vowel_to_sign_mappings = Vec::new();
+    for vowel in &abugida_vowels {
+        if vowel == "VowelA" {
+            continue; // No sign for short 'a'
+        }
+        // Extract the vowel suffix (e.g., "Aa" from "VowelAa")
+        if let Some(suffix) = vowel.strip_prefix("Vowel") {
+            let sign_name = format!("VowelSign{}", suffix);
+            if abugida_vowel_signs.contains(&sign_name) {
+                vowel_to_sign_mappings.push(json!({
+                    "vowel": vowel,
+                    "sign": sign_name,
+                }));
+            }
+        }
+    }
+    
+    // Generate same sound mappings (tokens with same name exist in both systems)
+    let mut same_sound_mappings = Vec::new();
+    let mut abugida_to_alphabet_mappings = Vec::new();
+    let mut alphabet_to_abugida_mappings = Vec::new();
+    
+    // Collect all abugida tokens
+    let all_abugida_tokens: Vec<_> = abugida_vowels.iter()
+        .chain(abugida_consonants.iter())
+        .chain(abugida_marks.iter())
+        .chain(abugida_special.iter())
+        .chain(abugida_digits.iter())
+        .collect();
+        
+    // Collect all alphabet tokens  
+    let all_alphabet_tokens: Vec<_> = alphabet_vowels.iter()
+        .chain(alphabet_consonants.iter())
+        .chain(alphabet_marks.iter())
+        .chain(alphabet_special.iter())
+        .chain(alphabet_digits.iter())
+        .collect();
+    
+    // Generate direct mappings where token names match
+    for abugida_token in &all_abugida_tokens {
+        if all_alphabet_tokens.iter().any(|a| a == abugida_token) {
+            same_sound_mappings.push(json!({
+                "abugida": abugida_token,
+                "alphabet": abugida_token,
+            }));
+            abugida_to_alphabet_mappings.push(json!({
+                "from": abugida_token,
+                "to": abugida_token,
+            }));
+        }
+    }
+    
+    // Generate reverse mappings
+    for alphabet_token in &all_alphabet_tokens {
+        if all_abugida_tokens.iter().any(|a| a == alphabet_token) {
+            alphabet_to_abugida_mappings.push(json!({
+                "from": alphabet_token,
+                "to": alphabet_token,
+            }));
+        }
+    }
+    
+    // Add vowel sign to vowel mappings
+    for sign in &abugida_vowel_signs {
+        // Extract the vowel part from VowelSignXxx
+        if let Some(vowel_suffix) = sign.strip_prefix("VowelSign") {
+            let vowel_name = format!("Vowel{}", vowel_suffix);
+            if alphabet_vowels.contains(&vowel_name) {
+                abugida_to_alphabet_mappings.push(json!({
+                    "from": sign,
+                    "to": vowel_name,
+                }));
+            }
+        }
+    }
+    
+    // Handle special cases where tokens don't exist in one system
+    // These could be read from schema files in the future
+    let special_mappings = vec![
+        // If alphabet doesn't have long e/o, they still map to themselves for preservation
+        ("VowelEe", "VowelEe"),
+        ("VowelOo", "VowelOo"),
+        // Vocalic L often doesn't exist in many scripts
+        ("VowelVocalicL", "VowelVocalicL"),
+        ("VowelVocalicLl", "VowelVocalicLl"),
+    ];
+    
+    for (abugida, alphabet) in special_mappings {
+        if abugida_vowels.contains(&abugida.to_string()) || abugida_marks.contains(&abugida.to_string()) {
+            if !alphabet_vowels.contains(&alphabet.to_string()) && !alphabet_marks.contains(&alphabet.to_string()) {
+                // This token exists in abugida but not alphabet - it will be preserved as-is
+                abugida_to_alphabet_mappings.push(json!({
+                    "from": abugida,
+                    "to": abugida,  // Map to itself for preservation
+                }));
+            }
+        }
+    }
+
+    let template_data = json!({
+        "abugida_vowels": abugida_vowels.into_iter().collect::<Vec<_>>(),
+        "abugida_vowel_signs": abugida_vowel_signs.into_iter().collect::<Vec<_>>(),
+        "abugida_consonants": abugida_consonants.into_iter().collect::<Vec<_>>(),
+        "abugida_marks": abugida_marks.into_iter().collect::<Vec<_>>(),
+        "abugida_special": abugida_special.into_iter().collect::<Vec<_>>(),
+        "abugida_digits": abugida_digits.into_iter().collect::<Vec<_>>(),
+        "alphabet_vowels": alphabet_vowels.into_iter().collect::<Vec<_>>(),
+        "alphabet_consonants": alphabet_consonants.into_iter().collect::<Vec<_>>(),
+        "alphabet_marks": alphabet_marks.into_iter().collect::<Vec<_>>(),
+        "alphabet_special": alphabet_special.into_iter().collect::<Vec<_>>(),
+        "alphabet_digits": alphabet_digits.into_iter().collect::<Vec<_>>(),
+        "vowel_to_sign_mappings": vowel_to_sign_mappings,
+        "same_sound_mappings": same_sound_mappings,
+        "abugida_to_alphabet_mappings": abugida_to_alphabet_mappings,
+        "alphabet_to_abugida_mappings": alphabet_to_abugida_mappings,
+    });
+    
+    let tokens_code = handlebars.render("tokens", &template_data)?;
+    fs::write(out_dir.join("tokens_generated.rs"), tokens_code)?;
+    
+    Ok(())
 }
 
 fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> {
@@ -951,6 +1190,33 @@ fn generate_hub_converter(
                         "abugida_token": abugida_token,
                         "alphabet_token": if abugida_token.contains("Ll") { "VowelVocalicRr" } else { "VowelVocalicR" }
                     }));
+                }
+                // Handle long e/o tokens - if alphabet doesn't have them, map to short forms
+                "VowelEe" | "VowelSignEe" => {
+                    if all_alphabet_tokens.contains("VowelEe") {
+                        abugida_to_alphabet_mappings.push(json!({
+                            "abugida_token": abugida_token,
+                            "alphabet_token": "VowelEe"
+                        }));
+                    } else {
+                        abugida_to_alphabet_mappings.push(json!({
+                            "abugida_token": abugida_token,
+                            "alphabet_token": "VowelE"
+                        }));
+                    }
+                }
+                "VowelOo" | "VowelSignOo" => {
+                    if all_alphabet_tokens.contains("VowelOo") {
+                        abugida_to_alphabet_mappings.push(json!({
+                            "abugida_token": abugida_token,
+                            "alphabet_token": "VowelOo"
+                        }));
+                    } else {
+                        abugida_to_alphabet_mappings.push(json!({
+                            "abugida_token": abugida_token,
+                            "alphabet_token": "VowelO"
+                        }));
+                    }
                 }
                 _ => {
                     // Default: skip unknown tokens

@@ -18,9 +18,11 @@ mappings:
     VowelVocalicRr: "ౠ"    # r̥̄
     VowelVocalicL: "ఌ"    # l̥
     VowelVocalicLl: "ౡ"    # l̥̄
-    VowelE: ["ఎ", "ఏ"]    # e (short and long, prefer ఎ for output)
+    VowelE: "ఎ"    # e (short)
+    VowelEe: "ఏ"    # ē (long)
     VowelAi: "ఐ"    # ai
-    VowelO: ["ఒ", "ఓ"]    # o (short and long, prefer ఒ for output)
+    VowelO: "ఒ"    # o (short)
+    VowelOo: "ఓ"    # ō (long)
     VowelAu: "ఔ"    # au
 
   vowel_signs:
@@ -31,9 +33,11 @@ mappings:
     VowelSignUu: "ూ"    # ū
     VowelSignVocalicR: "ృ"    # r̥
     VowelSignVocalicRr: "ౄ"    # r̥̄
-    VowelSignE: ["ె", "ే"]    # e (short and long, prefer ె for output)
+    VowelSignE: "ె"    # e (short)
+    VowelSignEe: "ే"    # ē (long)
     VowelSignAi: "ై"    # ai
-    VowelSignO: ["ొ", "ో"]    # o (short and long, prefer ొ for output)
+    VowelSignO: "ొ"    # o (short) 
+    VowelSignOo: "ో"    # ō (long)
     VowelSignAu: "ౌ"    # au
     # Telugu doesn't have vocalic L signs - these will be preserved as tokens
 

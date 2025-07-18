@@ -1,0 +1,100 @@
+// Token trait implementations - generated from schemas
+// These traits define token behavior for conversion logic
+
+impl AbugidaToken {
+    pub fn is_consonant(&self) -> bool {
+        matches!(self,
+{{#each abugida_consonants}}
+            AbugidaToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
+    
+    pub fn is_vowel(&self) -> bool {
+        matches!(self,
+{{#each abugida_vowels}}
+            AbugidaToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
+    
+    pub fn is_vowel_sign(&self) -> bool {
+        matches!(self,
+{{#each abugida_vowel_signs}}
+            AbugidaToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
+    
+    pub fn is_virama(&self) -> bool {
+        matches!(self, AbugidaToken::MarkVirama)
+    }
+    
+    pub fn is_mark(&self) -> bool {
+        matches!(self,
+{{#each abugida_marks}}
+            AbugidaToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
+    
+    // Map vowel sign to its corresponding independent vowel
+    pub fn vowel_sign_to_vowel(&self) -> Option<Self> {
+        match self {
+{{#each vowel_sign_mappings}}
+            AbugidaToken::{{this.sign}} => Some(AbugidaToken::{{this.vowel}}),
+{{/each}}
+            _ => None,
+        }
+    }
+    
+    // Get corresponding alphabet token (if direct mapping exists)
+    pub fn to_alphabet(&self) -> Option<AlphabetToken> {
+        match self {
+{{#each direct_token_mappings}}
+{{#if this.abugida_to_alphabet}}
+            AbugidaToken::{{this.token}} => Some(AlphabetToken::{{this.token}}),
+{{/if}}
+{{/each}}
+            _ => None,
+        }
+    }
+}
+
+impl AlphabetToken {
+    pub fn is_consonant(&self) -> bool {
+        matches!(self,
+{{#each alphabet_consonants}}
+            AlphabetToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
+    
+    pub fn is_vowel(&self) -> bool {
+        matches!(self,
+{{#each alphabet_vowels}}
+            AlphabetToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
+    
+    pub fn is_mark(&self) -> bool {
+        matches!(self,
+{{#each alphabet_marks}}
+            AlphabetToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
+    
+    // Get corresponding abugida token (if direct mapping exists)
+    pub fn to_abugida(&self) -> Option<AbugidaToken> {
+        match self {
+{{#each direct_token_mappings}}
+{{#if this.alphabet_to_abugida}}
+            AlphabetToken::{{this.token}} => Some(AbugidaToken::{{this.token}}),
+{{/if}}
+{{/each}}
+            _ => None,
+        }
+    }
+}

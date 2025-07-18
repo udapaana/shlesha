@@ -658,6 +658,7 @@ mod tests {
             .transliterate("dharmaqx", "iast", "devanagari")
             .unwrap();
         // q and x are not part of IAST, so they pass through unchanged
+        // Note: "dharma" has implicit 'a' after both 'r' and 'm', so no virama
         assert_eq!(result, "धर्मqx");
 
         // Test metadata collection with unknown characters

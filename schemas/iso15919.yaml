@@ -21,8 +21,10 @@ mappings:
     VowelVocalicL: "l̥"
     VowelVocalicLl: "l̥̄"
     VowelE: "e"
+    VowelEe: "ē"
     VowelAi: "ai"
     VowelO: "o"
+    VowelOo: "ō"
     VowelAu: "au"
 
   consonants:
@@ -70,6 +72,12 @@ mappings:
   special:
     SpecialKs: "kṣ"
     SpecialJn: "jñ"
+    # Nukta consonants (for Perso-Arabic loanwords)
+    ConsonantQa: "q"
+    ConsonantZa: "z" 
+    ConsonantFa: "f"
+    ConsonantGha: "ġ"
+    ConsonantKha: "ḵ"
 
   digits:
     Digit0: "0"

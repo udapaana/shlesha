@@ -18,9 +18,11 @@ mappings:
     VowelVocalicRr: ॠ
     VowelVocalicL: ऌ
     VowelVocalicLl: ॡ
-    VowelE: ए
+    VowelE: ऎ    # short e
+    VowelEe: ए   # long e (traditional)
     VowelAi: ऐ
-    VowelO: ओ
+    VowelO: ऒ    # short o
+    VowelOo: ओ   # long o (traditional)
     VowelAu: औ
   vowel_signs:
     VowelSignAa: ा
@@ -32,9 +34,11 @@ mappings:
     VowelSignVocalicRr: ॄ
     VowelSignVocalicL: ॢ
     VowelSignVocalicLl: ॣ
-    VowelSignE: े
+    VowelSignE: ॆ     # short e vowel sign
+    VowelSignEe: े    # long e vowel sign (traditional)
     VowelSignAi: ै
-    VowelSignO: ो
+    VowelSignO: ॊ     # short o vowel sign
+    VowelSignOo: ो    # long o vowel sign (traditional)
     VowelSignAu: ौ
   consonants:
     ConsonantK: क
