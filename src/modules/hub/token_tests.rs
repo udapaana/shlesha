@@ -17,16 +17,13 @@ fn test_basic_token_conversion() {
         HubToken::Abugida(AbugidaToken::ConsonantK),
     ];
 
-    // This will fail until Hub converter is fully implemented
     let result = hub.abugida_to_alphabet_tokens(&input_tokens);
     match result {
-        Ok(_alphabet_tokens) => {
-            // Success case - verify tokens are converted properly
-            // TODO: Add specific token verification once mappings are complete
-        }
-        Err(HubError::MappingNotFound(_)) => {
-            // Expected for now since not all mappings are implemented
-            assert!(true);
+        Ok(alphabet_tokens) => {
+            // Verify the conversion worked correctly
+            assert_eq!(alphabet_tokens.len(), 2);
+            assert!(matches!(alphabet_tokens[0], HubToken::Alphabet(AlphabetToken::VowelA)));
+            assert!(matches!(alphabet_tokens[1], HubToken::Alphabet(AlphabetToken::ConsonantK)));
         }
         Err(e) => {
             panic!("Unexpected error: {:?}", e);

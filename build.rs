@@ -280,14 +280,12 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
     ];
     
     for (abugida, alphabet) in special_mappings {
-        if abugida_vowels.contains(&abugida.to_string()) || abugida_marks.contains(&abugida.to_string()) {
-            if !alphabet_vowels.contains(&alphabet.to_string()) && !alphabet_marks.contains(&alphabet.to_string()) {
-                // This token exists in abugida but not alphabet - it will be preserved as-is
-                abugida_to_alphabet_mappings.push(json!({
-                    "from": abugida,
-                    "to": abugida,  // Map to itself for preservation
-                }));
-            }
+        if (abugida_vowels.contains(abugida) || abugida_marks.contains(abugida)) && !alphabet_vowels.contains(alphabet) && !alphabet_marks.contains(alphabet) {
+            // This token exists in abugida but not alphabet - it will be preserved as-is
+            abugida_to_alphabet_mappings.push(json!({
+                "from": abugida,
+                "to": abugida,  // Map to itself for preservation
+            }));
         }
     }
 

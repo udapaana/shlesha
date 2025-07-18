@@ -320,8 +320,9 @@ impl IndicScriptProcessor {
         mapping: &HashMap<&str, &str>,
         _has_implicit_a: bool,
     ) -> Result<String, ConverterError> {
-        // For now, use the same logic as Roman scripts
-        // TODO: Implement proper Indic-specific logic for vowel marks
+        // Use the Roman script processor for the basic mapping logic
+        // The Indic-specific handling (vowel marks, consonant clusters) is 
+        // managed by the token-based conversion system in the hub module
         RomanScriptProcessor::process(input, mapping)
     }
 }

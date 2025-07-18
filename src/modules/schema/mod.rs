@@ -135,7 +135,7 @@ impl SchemaBuilder {
         let category_map = self
             .mappings
             .entry(category.to_string())
-            .or_insert_with(HashMap::new);
+            .or_default();
 
         let value = if inputs.len() == 1 {
             Value::String(inputs[0].to_string())

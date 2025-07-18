@@ -321,9 +321,6 @@ impl ScriptConverterRegistry {
             return self.converters[converter_index].to_hub(&canonical_script, input);
         }
 
-        // REMOVED: Schema-based converter fallback (old string-based system)
-        // TODO: Implement token-based runtime schema conversion
-
         Err(ConverterError::ConversionFailed {
             script: script.to_string(),
             reason: "No converter found for script".to_string(),
@@ -375,9 +372,6 @@ impl ScriptConverterRegistry {
         if let Some(&converter_index) = self.script_to_converter.get(&canonical_script) {
             return self.converters[converter_index].from_hub(&canonical_script, hub_input);
         }
-
-        // REMOVED: Schema-based converter fallback (old string-based system)
-        // TODO: Implement token-based runtime schema conversion
 
         Err(ConverterError::ConversionFailed {
             script: script.to_string(),
@@ -688,25 +682,14 @@ impl ScriptConverterRegistry {
 // Submodules for specific script converters
 // Shared processing logic
 pub mod processors;
-// Schema-based converter for runtime-loaded scripts
-// pub mod schema_based; // REMOVED: Old string-based system ripped out
 
 // Include generated schema-based converters
 include!(concat!(env!("OUT_DIR"), "/schema_generated.rs"));
 
 // All script converters are now schema-generated
 // Hand-coded converters (iast.rs, kolkata.rs, grantha.rs) have been migrated to schemas/
-// The ISO-15919 converter is special as it's a passthrough converter (no schema needed)
-// pub mod iso15919; // REMOVED: Old string-based system ripped out
 
-// Legacy optimized converters (replaced by schema-generated ones)
-// pub mod slp1_optimized;
 
-// Integration tests removed - use property-based tests instead
-
-// Correctness tests
-#[cfg(test)]
-// mod correctness_tests; // REMOVED: Old string-based system tests
 
 // Re-export commonly used types (primary interface)
 pub use ScriptConverterRegistry as ConverterRegistry; // Main interface for callers
@@ -714,21 +697,6 @@ pub use ScriptConverterRegistry as ConverterRegistry; // Main interface for call
 
 // Re-export individual converters (for advanced usage)
 // Schema-generated converters are automatically available (no re-export needed)
-// pub use iso15919::ISO15919Converter; // REMOVED: Old string-based system ripped out
-
-// TODO List for Script Converter Module:
-// - [ ] Handle ambiguous mappings with superscripted numerals when:
-//     - One character in source script maps to multiple characters in destination script
-//     - Multiple characters in source script map to one character in destination script
-//     - Example: Tamil ப could map to ப² (pha), ப³ (ba), or ப⁴ (bha) to disambiguate
-//     - This would help preserve information in bidirectional conversions
-// - [ ] Add support for Grantha script used for Sanskrit in Tamil Nadu
-// - [ ] Add support for Sinhala script
-// - [ ] Add support for Tibetan script
-// - [ ] Add support for Thai/Lao scripts (for Sanskrit/Pali texts)
-// - [ ] Implement contextual conversion rules for better accuracy
-// - [ ] Add script-specific validation rules
-// - [ ] Implement script detection for automatic source script identification
 
 #[cfg(test)]
 mod send_sync_tests {
@@ -754,7 +722,6 @@ mod send_sync_tests {
         assert_send_sync::<Arc<dyn ScriptConverter>>();
     }
 
-    // REMOVED: ISO15919Converter test (old string-based system ripped out)
 
     #[test]
     fn test_script_converter_registry_send_sync() {

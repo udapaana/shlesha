@@ -110,14 +110,14 @@ pub trait HubTrait {
                 let alphabet_tokens = self.abugida_to_alphabet_tokens(tokens)?;
                 Ok(HubResult {
                     output: HubFormat::AlphabetTokens(alphabet_tokens),
-                    metadata: None, // TODO: Implement metadata for token conversion
+                    metadata: None,
                 })
             }
             HubFormat::AlphabetTokens(tokens) => {
                 let abugida_tokens = self.alphabet_to_abugida_tokens(tokens)?;
                 Ok(HubResult {
                     output: HubFormat::AbugidaTokens(abugida_tokens),
-                    metadata: None, // TODO: Implement metadata for token conversion
+                    metadata: None,
                 })
             }
         }
@@ -125,16 +125,11 @@ pub trait HubTrait {
 }
 
 /// Central hub implementing token-based conversions
-pub struct Hub {
-    #[allow(dead_code)]
-    generated_hub: crate::generated::GeneratedHub,
-}
+pub struct Hub {}
 
 impl Hub {
     pub fn new() -> Self {
-        Self {
-            generated_hub: crate::generated::GeneratedHub::new(),
-        }
+        Self {}
     }
 }
 

@@ -741,9 +741,3 @@ mod tests {
     }
 }
 
-// TODO List for Registry Module:
-// - [x] Implement YAML schema file loading
-// - [x] Add schema validation
-// - [x] Implement dynamic schema registration (load from directory)
-// - [ ] Add schema versioning support (handle multiple versions)
-// - [x] Implement basic schema caching (HashMap cache)

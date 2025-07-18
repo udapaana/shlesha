@@ -28,11 +28,6 @@ extern "C" {
     fn log(s: &str);
 }
 
-// Macro for console logging (currently unused but kept for future debugging)
-#[allow(unused_macros)]
-macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
 
 /// Initialize WASM module with panic hook for better error messages
 #[wasm_bindgen(start)]
@@ -61,8 +56,6 @@ pub struct WasmUnknownToken {
 pub struct WasmTransliterationMetadata {
     source_script: String,
     target_script: String,
-    #[allow(dead_code)]
-    used_extensions: String,
     unknown_tokens: Vec<WasmUnknownToken>,
 }
 
@@ -160,7 +153,6 @@ impl WasmShlesha {
             WasmTransliterationMetadata {
                 source_script: metadata.source_script,
                 target_script: metadata.target_script,
-                used_extensions: metadata.used_extensions.to_string(),
                 unknown_tokens,
             }
         });
