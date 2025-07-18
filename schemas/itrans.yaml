@@ -65,8 +65,6 @@ mappings:
     MarkVisarga: "H"
 
   special:
-    SpecialKs: ["kSh", "ksh", "x"]  # prefer "kSh" for output
-    SpecialJn: ["j~n", "gy", "GY", "dny"]  # prefer "j~n" for output
     # SpecialOm: ["OM", "AUM"]  # prefer "OM" for output - no token yet
 
 codegen:

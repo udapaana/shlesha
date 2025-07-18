@@ -70,8 +70,6 @@ mappings:
     MarkTripleSvarita: "~~" # triple svarita
 
   special:
-    SpecialKs: "kz"    # kṣa ligature
-    SpecialJn: "jY"    # jña ligature
     # MarkDanda: "|"    # danda - no token yet
     # MarkDoubleDanda: "||"  # double danda - no token yet
 

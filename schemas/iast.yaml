@@ -64,8 +64,6 @@ mappings:
     MarkVisarga: "ḥ"
   
   special:
-    SpecialKs: "kṣ"
-    SpecialJn: "jñ"
 
   digits:
     Digit0: "0"

@@ -86,6 +86,14 @@ impl AlphabetToken {
         )
     }
     
+    pub fn is_special(&self) -> bool {
+        matches!(self,
+{{#each alphabet_special}}
+            AlphabetToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
+    
     // Get corresponding abugida token (if direct mapping exists)
     pub fn to_abugida(&self) -> Option<AbugidaToken> {
         match self {

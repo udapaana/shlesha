@@ -1,28 +1,42 @@
 use super::{AbugidaToken, AlphabetToken, HubError, HubToken, HubTokenSequence};
 
 /// Trait-based implementation of hub conversions with proper implicit 'a' handling
-/// This works with any set of generated tokens by using their traits rather than specific names
+/// Uses an optimized state machine approach instead of stack-based processing
 pub struct TraitBasedConverter;
 
 impl TraitBasedConverter {
-    /// Convert abugida tokens to alphabet tokens using trait-based approach
+    /// Convert abugida tokens to alphabet tokens using state machine approach
     pub fn abugida_to_alphabet(tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
-        let mut result = Vec::new();
-        let mut stack = Vec::new(); // Stack for managing implicit vowels
+        // Pre-allocate with estimated capacity
+        let mut result = Vec::with_capacity(tokens.len());
         
-        for token in tokens {
-            match token {
+        let mut i = 0;
+        while i < tokens.len() {
+            match &tokens[i] {
                 HubToken::Abugida(abugida_token) => {
                     if abugida_token.is_consonant() {
                         // Find corresponding alphabet consonant
-                        if let Some(alphabet_token) = Self::find_alphabet_match(abugida_token) {
-                            stack.push(HubToken::Alphabet(alphabet_token));
-                            // Push implicit 'a' vowel
-                            stack.push(HubToken::Alphabet(AlphabetToken::VowelA));
+                        if let Some(alphabet_token) = abugida_token.to_alphabet() {
+                            result.push(HubToken::Alphabet(alphabet_token));
+                            
+                            // Check if next token is virama or vowel sign
+                            let has_explicit_vowel = if i + 1 < tokens.len() {
+                                match &tokens[i + 1] {
+                                    HubToken::Abugida(next) => next.is_virama() || next.is_vowel_sign(),
+                                    _ => false,
+                                }
+                            } else {
+                                false
+                            };
+                            
+                            // Add implicit 'a' if no virama or vowel sign follows
+                            if !has_explicit_vowel {
+                                result.push(HubToken::Alphabet(AlphabetToken::VowelA));
+                            }
                         } else {
                             // No mapping - preserve as unknown
                             if let AbugidaToken::Unknown(s) = abugida_token {
-                                stack.push(HubToken::Alphabet(AlphabetToken::Unknown(s.clone())));
+                                result.push(HubToken::Alphabet(AlphabetToken::Unknown(s.clone())));
                             } else {
                                 return Err(HubError::MappingNotFound(
                                     format!("No alphabet mapping for {:?}", abugida_token)
@@ -30,203 +44,143 @@ impl TraitBasedConverter {
                             }
                         }
                     } else if abugida_token.is_virama() {
-                        // Virama suppresses the implicit 'a' - pop it from stack
-                        if let Some(HubToken::Alphabet(AlphabetToken::VowelA)) = stack.last() {
-                            stack.pop(); // Remove the implicit 'a'
-                        }
-                        // Don't output the virama itself
+                        // Virama consumed - skip it (implicit 'a' already suppressed above)
                     } else if abugida_token.is_vowel_sign() {
-                        // Vowel sign replaces the implicit 'a'
-                        if let Some(HubToken::Alphabet(AlphabetToken::VowelA)) = stack.last() {
-                            stack.pop(); // Remove the implicit 'a'
-                        }
                         // Convert vowel sign to corresponding vowel
                         if let Some(vowel) = abugida_token.sign_to_vowel() {
-                            if let Some(alphabet_vowel) = Self::find_alphabet_match(&vowel) {
-                                stack.push(HubToken::Alphabet(alphabet_vowel));
+                            if let Some(alphabet_vowel) = vowel.to_alphabet() {
+                                result.push(HubToken::Alphabet(alphabet_vowel));
                             }
                         }
                     } else if abugida_token.is_vowel() {
-                        // Flush stack and add independent vowel
-                        result.extend(stack.drain(..));
-                        
-                        if let Some(alphabet_vowel) = Self::find_alphabet_match(abugida_token) {
+                        // Independent vowel
+                        if let Some(alphabet_vowel) = abugida_token.to_alphabet() {
                             result.push(HubToken::Alphabet(alphabet_vowel));
                         } else if let AbugidaToken::Unknown(s) = abugida_token {
                             result.push(HubToken::Alphabet(AlphabetToken::Unknown(s.clone())));
                         }
                     } else if abugida_token.is_mark() {
-                        // Flush stack first
-                        result.extend(stack.drain(..));
-                        
-                        if let Some(alphabet_mark) = Self::find_alphabet_match(abugida_token) {
+                        if let Some(alphabet_mark) = abugida_token.to_alphabet() {
                             result.push(HubToken::Alphabet(alphabet_mark));
                         } else if let AbugidaToken::Unknown(s) = abugida_token {
                             result.push(HubToken::Alphabet(AlphabetToken::Unknown(s.clone())));
                         }
                     } else {
-                        // Unknown token type - flush stack and preserve
-                        result.extend(stack.drain(..));
+                        // Unknown token type - preserve
                         if let AbugidaToken::Unknown(s) = abugida_token {
                             result.push(HubToken::Alphabet(AlphabetToken::Unknown(s.clone())));
                         }
                     }
                 }
                 HubToken::Alphabet(_) => {
-                    // Already alphabet - flush stack and pass through
-                    result.extend(stack.drain(..));
-                    result.push(token.clone());
+                    // Already alphabet - pass through
+                    result.push(tokens[i].clone());
                 }
             }
+            i += 1;
         }
-        
-        // Flush any remaining tokens
-        result.extend(stack);
         
         Ok(result)
     }
     
-    /// Convert alphabet tokens to abugida tokens using stack-based approach
+    /// Convert alphabet tokens to abugida tokens using state machine approach
     pub fn alphabet_to_abugida(tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
-        let mut result = Vec::new();
-        let mut stack = Vec::new();
+        // Pre-allocate with estimated capacity (worst case: each consonant needs a virama)
+        let mut result = Vec::with_capacity(tokens.len() * 2);
         
-        for token in tokens {
-            match token {
+        let mut i = 0;
+        while i < tokens.len() {
+            match &tokens[i] {
                 HubToken::Alphabet(alphabet_token) => {
                     if alphabet_token.is_consonant() {
-                        // First, check if we need to process the previous consonant
-                        if !stack.is_empty() {
-                            // Previous consonant followed by another consonant - needs virama
-                            // Pop the implicit 'a' if it exists
-                            if let Some(HubToken::Alphabet(AlphabetToken::VowelA)) = stack.last() {
-                                stack.pop();
+                        // Convert consonant
+                        if let Some(abugida_consonant) = alphabet_token.to_abugida() {
+                            result.push(HubToken::Abugida(abugida_consonant));
+                            
+                            // Look ahead to determine if we need a virama
+                            let needs_virama = if i + 1 < tokens.len() {
+                                match &tokens[i + 1] {
+                                    HubToken::Alphabet(next) => {
+                                        if *next == AlphabetToken::VowelA {
+                                            // Explicit 'a' after consonant - skip it
+                                            i += 1;
+                                            false
+                                        } else if next.is_vowel() {
+                                            // Other vowel - will be converted to vowel sign
+                                            false
+                                        } else if next.is_consonant() || next.is_mark() {
+                                            // Consonant cluster or mark - needs virama
+                                            true
+                                        } else {
+                                            // Unknown or other - needs virama
+                                            true
+                                        }
+                                    }
+                                    _ => true, // Non-alphabet token - needs virama
+                                }
+                            } else {
+                                // End of input - final consonant needs virama
+                                true
+                            };
+                            
+                            if needs_virama {
+                                result.push(HubToken::Abugida(AbugidaToken::MarkVirama));
                             }
-                            // Add virama after the previous consonant
-                            stack.push(HubToken::Abugida(AbugidaToken::MarkVirama));
-                        }
-                        
-                        // Flush stack to result
-                        result.append(&mut stack);
-                        
-                        // Convert and push consonant
-                        if let Some(abugida_consonant) = Self::find_abugida_match(alphabet_token) {
-                            stack.push(HubToken::Abugida(abugida_consonant));
-                            // Push implicit 'a' (will be removed if followed by consonant or vowel sign)
-                            stack.push(HubToken::Alphabet(AlphabetToken::VowelA));
                         } else if let AlphabetToken::Unknown(s) = alphabet_token {
-                            stack.push(HubToken::Abugida(AbugidaToken::Unknown(s.clone())));
+                            result.push(HubToken::Abugida(AbugidaToken::Unknown(s.clone())));
                         }
                     } else if alphabet_token.is_vowel() {
-                        if *alphabet_token == AlphabetToken::VowelA {
-                            // Explicit 'a' - if stack has implicit 'a', it's already correct
-                            if stack.is_empty() || !matches!(stack.last(), Some(HubToken::Alphabet(AlphabetToken::VowelA))) {
-                                // Independent 'a' at start or after non-consonant
-                                result.append(&mut stack);
-                                if let Some(abugida_vowel) = Self::find_abugida_match(alphabet_token) {
-                                    result.push(HubToken::Abugida(abugida_vowel));
-                                }
-                            } else {
-                                // We have implicit 'a' in stack, explicit 'a' confirms it
-                                // Flush the stack with the consonant + implicit 'a'
-                                // But first remove the implicit 'a' token, as it's already inherent in the consonant
-                                if let Some(HubToken::Alphabet(AlphabetToken::VowelA)) = stack.last() {
-                                    stack.pop();
-                                }
-                                result.append(&mut stack);
+                        // Check if this vowel follows a consonant (for vowel sign conversion)
+                        let prev_was_consonant = if !result.is_empty() {
+                            match result.last() {
+                                Some(HubToken::Abugida(prev)) => prev.is_consonant(),
+                                _ => false,
                             }
                         } else {
-                            // Non-'a' vowel
-                            if !stack.is_empty() {
-                                // Pop implicit 'a' if present
-                                if let Some(HubToken::Alphabet(AlphabetToken::VowelA)) = stack.last() {
-                                    stack.pop();
-                                }
-                                // Add vowel sign
-                                if let Some(abugida_vowel) = Self::find_abugida_match(alphabet_token) {
-                                    if let Some(sign) = abugida_vowel.vowel_to_sign() {
-                                        stack.push(HubToken::Abugida(sign));
+                            false
+                        };
+                        
+                        if prev_was_consonant && *alphabet_token != AlphabetToken::VowelA {
+                            // Convert to vowel sign after consonant
+                            if let Some(abugida_vowel) = alphabet_token.to_abugida() {
+                                if let Some(sign) = abugida_vowel.vowel_to_sign() {
+                                    // Remove virama if it was added
+                                    if let Some(HubToken::Abugida(AbugidaToken::MarkVirama)) = result.last() {
+                                        result.pop();
                                     }
-                                }
-                                // Flush stack
-                                result.append(&mut stack);
-                            } else {
-                                // Independent vowel
-                                if let Some(abugida_vowel) = Self::find_abugida_match(alphabet_token) {
-                                    result.push(HubToken::Abugida(abugida_vowel));
+                                    result.push(HubToken::Abugida(sign));
                                 }
                             }
+                        } else if *alphabet_token != AlphabetToken::VowelA || !prev_was_consonant {
+                            // Independent vowel (not implicit 'a')
+                            if let Some(abugida_vowel) = alphabet_token.to_abugida() {
+                                result.push(HubToken::Abugida(abugida_vowel));
+                            }
                         }
+                        // If it's VowelA after consonant, it's implicit - already handled
                     } else if alphabet_token.is_mark() {
-                        // Marks - flush stack and add
-                        result.append(&mut stack);
-                        if let Some(abugida_mark) = Self::find_abugida_match(alphabet_token) {
+                        if let Some(abugida_mark) = alphabet_token.to_abugida() {
                             result.push(HubToken::Abugida(abugida_mark));
                         } else if let AlphabetToken::Unknown(s) = alphabet_token {
                             result.push(HubToken::Abugida(AbugidaToken::Unknown(s.clone())));
                         }
                     } else if let AlphabetToken::Unknown(s) = alphabet_token {
-                        // Unknown token - check if previous was consonant
-                        if !stack.is_empty() {
-                            // Pop implicit 'a' and add virama
-                            if let Some(HubToken::Alphabet(AlphabetToken::VowelA)) = stack.last() {
-                                stack.pop();
-                                stack.push(HubToken::Abugida(AbugidaToken::MarkVirama));
-                            }
-                        }
-                        result.append(&mut stack);
                         result.push(HubToken::Abugida(AbugidaToken::Unknown(s.clone())));
+                    } else {
+                        // Other tokens - try direct mapping
+                        if let Some(abugida_token) = alphabet_token.to_abugida() {
+                            result.push(HubToken::Abugida(abugida_token));
+                        }
                     }
                 }
                 HubToken::Abugida(_) => {
-                    // Already abugida - flush stack and pass through
-                    result.append(&mut stack);
-                    result.push(token.clone());
+                    // Already abugida - pass through
+                    result.push(tokens[i].clone());
                 }
             }
-        }
-        
-        // Process final stack
-        if !stack.is_empty() {
-            // If last token in stack is implicit 'a', remove it and add virama
-            let mut final_stack = stack;
-            
-            // Check if the last token is implicit 'a' after a consonant
-            if final_stack.len() >= 2 {
-                if let Some(HubToken::Alphabet(AlphabetToken::VowelA)) = final_stack.last() {
-                    // Check if the token before the 'a' is a consonant
-                    if let Some(HubToken::Abugida(abugida_token)) = final_stack.get(final_stack.len() - 2) {
-                        if abugida_token.is_consonant() {
-                            // Remove the implicit 'a' and add virama
-                            final_stack.pop();
-                            final_stack.push(HubToken::Abugida(AbugidaToken::MarkVirama));
-                        }
-                    }
-                }
-            } else if final_stack.len() == 1 {
-                // Single consonant at end needs virama
-                if let Some(HubToken::Abugida(abugida_token)) = final_stack.last() {
-                    if abugida_token.is_consonant() {
-                        final_stack.push(HubToken::Abugida(AbugidaToken::MarkVirama));
-                    }
-                }
-            }
-            
-            result.append(&mut final_stack);
+            i += 1;
         }
         
         Ok(result)
-    }
-    
-    // Helper to find matching alphabet token
-    fn find_alphabet_match(abugida: &AbugidaToken) -> Option<AlphabetToken> {
-        // Use the generated mapping method
-        abugida.to_alphabet()
-    }
-    
-    // Helper to find matching abugida token  
-    fn find_abugida_match(alphabet: &AlphabetToken) -> Option<AbugidaToken> {
-        // Use the generated mapping method
-        alphabet.to_abugida()
     }
 }

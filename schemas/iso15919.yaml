@@ -70,8 +70,6 @@ mappings:
     MarkAvagraha: "'"
 
   special:
-    SpecialKs: "kṣ"
-    SpecialJn: "jñ"
     # Nukta consonants (for Perso-Arabic loanwords)
     ConsonantQa: "q"
     ConsonantZa: "z" 

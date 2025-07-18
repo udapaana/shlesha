@@ -66,8 +66,6 @@ mappings:
     MarkAvagraha: "'"
 
   special:
-    SpecialKs: "kS"
-    SpecialJn: "jJ"
 
 codegen:
   processor_type: "roman_token_based"
