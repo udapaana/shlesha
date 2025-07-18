@@ -193,6 +193,6 @@ All new tasks should be added here rather than scattered across module files.
 ## Notes
 
 - Tasks are roughly ordered by priority within each section
-- Performance optimization is currently the highest priority given the 3-75x slowdown compared to specialized libraries
+- Performance optimization remains important for competitive benchmarks
 - New script support should focus on commonly requested scripts first
 - All tasks should maintain the project's focus on correctness and extensibility

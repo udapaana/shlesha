@@ -141,9 +141,6 @@ pub enum AlphabetToken {
     // Marks
     MarkAnusvara, MarkVisarga, MarkCandrabindu, MarkAvagraha,
     
-    // Special combinations
-    SpecialKs, SpecialJn,
-    
     // Extended nukta consonants
     ExtendedQ, ExtendedZ, ExtendedF, ExtendedGh, ExtendedKh,
     ExtendedRr, ExtendedRrh, ExtendedY,
@@ -187,8 +184,8 @@ impl HubTrait for Hub {
     }
     
     fn alphabet_to_abugida_tokens(&self, tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
-        // Reverse conversion with special handling for complex tokens
-        // e.g., AlphabetToken::SpecialKs → [ConsonantK, MarkVirama, ConsonantSs]
+        // Reverse conversion handling implicit vowels and virama placement
+        // e.g., consonant sequences require virama between them
     }
 }
 ```

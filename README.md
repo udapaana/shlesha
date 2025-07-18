@@ -18,11 +18,11 @@ This sets up everything: Rust environment, Python bindings, WASM support, and ru
 
 ---
 
-## Performance
+## Architecture Features
 
-- Faster than Aksharamukha and Dharmamitra
-- Schema-generated converters perform identically to hand-coded ones
-- See benchmarks directory for current performance metrics
+- Schema-generated converters with compile-time optimization
+- Zero runtime overhead from code generation
+- Token-based conversion system for memory efficiency
 
 ## Schema-Based Architecture
 

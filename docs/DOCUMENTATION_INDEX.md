@@ -7,6 +7,7 @@ Complete guide to all Shlesha documentation and resources.
 | Document | Purpose | Audience |
 |----------|---------|----------|
 | [README.md](../README.md) | Project overview & quick start | All users |
+| [CHANGELOG.md](../CHANGELOG.md) | Version history & changes | All users |
 | [CONTRIBUTING.md](guides/CONTRIBUTING.md) | Contribution guidelines | Contributors |
 | [DEVELOPER_SETUP.md](guides/DEVELOPER_SETUP.md) | Development environment setup | Developers |
 | [API_REFERENCE.md](reference/API_REFERENCE.md) | Complete API documentation | API users |
@@ -24,20 +25,25 @@ Complete guide to all Shlesha documentation and resources.
    - Basic usage examples
    - Quick start command
 
-2. **[CONTRIBUTING.md](guides/CONTRIBUTING.md)** - Contribution guidelines
+2. **[CHANGELOG.md](../CHANGELOG.md)** - Version history
+   - Recent changes and fixes
+   - Breaking changes
+   - Migration notes
+
+3. **[CONTRIBUTING.md](guides/CONTRIBUTING.md)** - Contribution guidelines
    - Development workflow
    - Adding new scripts
    - Code standards
    - Testing requirements
 
-3. **[DEVELOPER_SETUP.md](guides/DEVELOPER_SETUP.md)** - Environment setup
+4. **[DEVELOPER_SETUP.md](guides/DEVELOPER_SETUP.md)** - Environment setup
    - One-command setup (`./scripts/quick-start.sh`)
    - Manual setup instructions
    - Troubleshooting guides
    - Development workflow
 
 ### 🔧 Technical Reference
-4. **[API_REFERENCE.md](reference/API_REFERENCE.md)** - Complete API docs
+5. **[API_REFERENCE.md](reference/API_REFERENCE.md)** - Complete API docs
    - Rust native API
    - Python bindings API
    - WASM/JavaScript API
@@ -45,27 +51,27 @@ Complete guide to all Shlesha documentation and resources.
    - Error handling
    - Integration examples
 
-5. **[SCHEMA_REFERENCE.md](reference/SCHEMA_REFERENCE.md)** - Schema format guide
+6. **[SCHEMA_REFERENCE.md](reference/SCHEMA_REFERENCE.md)** - Schema format guide
    - YAML schema structure
    - Roman vs Indic script schemas
    - Complete examples
    - Validation rules
    - Best practices
 
-6. **[PERFORMANCE.md](architecture/PERFORMANCE.md)** - Performance guide
+7. **[PERFORMANCE.md](architecture/PERFORMANCE.md)** - Performance guide
    - Benchmarking methodology
    - Performance metrics
    - Optimization strategies
    - Profiling tools
    - Tuning recommendations
 
-7. **[ARCHITECTURE.md](architecture/ARCHITECTURE.md)** - System design
+8. **[ARCHITECTURE.md](architecture/ARCHITECTURE.md)** - System design
    - Hub-and-spoke architecture
    - Performance optimizations
    - Module structure
    - Design decisions
 
-8. **[BINDINGS.md](reference/BINDINGS.md)** - Language bindings
+9. **[BINDINGS.md](reference/BINDINGS.md)** - Language bindings
    - Python integration details
    - WASM deployment guide
    - CLI usage patterns
