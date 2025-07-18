@@ -82,6 +82,13 @@ mappings:
     "਼": "़"    # nukta
     "੍": "्"    # halant (virama)
 
+  vedic:
+    MarkUdatta: "॑"
+    MarkAnudatta: "॒"
+    MarkSvarita: "॑"
+    MarkDoubleSvarita: "᳚"
+    MarkTripleSvarita: "᳛"
+
   special:
     # Nukta forms (Persian/Arabic sounds)
     "ਸ਼": "श"    # śa (sha)

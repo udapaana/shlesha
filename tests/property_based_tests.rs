@@ -175,12 +175,19 @@ fn prop_round_trip_conversion(input: SanskritText) -> bool {
                         .unwrap_or_else(|_| input.text.clone());
 
                     if backward != normalized_input {
-                        // Known limitation: Harvard-Kyoto "lRR" is ambiguous
-                        // Can represent either "l̥̄" (vocalic l + macron) or "l" + "r̥̄" (consonant l + vocalic r + macron)
-                        // This will be fixed by the enum-based token system
-                        let is_known_ambiguity = (input.script == "iso"
-                            && *target_script == "harvard_kyoto")
-                            && (input.text.contains("lr̥̄") || input.text.contains("l̥̄"));
+                        // Known limitations:
+                        // 1. Harvard-Kyoto "lRR" is ambiguous
+                        // 2. ISO input 'o' vs 'ō' - both map to long o (Sanskrit phonology)
+                        // 3. ISO input 'e' vs 'ē' - both map to long e (Sanskrit phonology)
+                        let is_known_ambiguity =
+                            // Harvard-Kyoto ambiguity
+                            ((input.script == "iso" && *target_script == "harvard_kyoto")
+                                && (input.text.contains("lr̥̄") || input.text.contains("l̥̄")))
+                            // ISO vowel length normalization
+                            || (input.script == "iso"
+                                && (normalized_input.chars().zip(backward.chars()).any(|(n, b)| {
+                                    (n == 'o' && b == 'ō') || (n == 'e' && b == 'ē')
+                                })));
 
                         if !is_known_ambiguity {
                             eprintln!(

@@ -19,8 +19,10 @@ mappings:
     VowelVocalicL: "lR"
     VowelVocalicLl: ["lRR", "l̥̄"]  # This resolves the ambiguity! lRR is preferred but l̥̄ also maps
     VowelE: "e"
+    VowelEe: "e"
     VowelAi: "ai"
     VowelO: "o"
+    VowelOo: "o"
     VowelAu: "au"
 
   consonants:
@@ -64,6 +66,14 @@ mappings:
     MarkVisarga: "H"
     MarkCandrabindu: ".N"
     MarkAvagraha: "'"
+
+  vedic:
+    # Vedic accent marks
+    MarkUdatta: "'"     # acute accent
+    MarkAnudatta: "_"   # grave accent
+    MarkSvarita: "^"    # caret for svarita
+    MarkDoubleSvarita: "~"  # double svarita
+    MarkTripleSvarita: "~~" # triple svarita
 
   special:
 

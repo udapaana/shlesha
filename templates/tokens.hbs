@@ -30,6 +30,11 @@ pub enum AbugidaToken {
     {{this}},
 {{/each}}
 
+    // Vedic marks
+{{#each abugida_vedic}}
+    {{this}},
+{{/each}}
+
     // Digits
 {{#each abugida_digits}}
     {{this}},
@@ -58,6 +63,11 @@ pub enum AlphabetToken {
 
     // Special characters
 {{#each alphabet_special}}
+    {{this}},
+{{/each}}
+
+    // Vedic marks
+{{#each alphabet_vedic}}
     {{this}},
 {{/each}}
 
@@ -208,6 +218,11 @@ impl AbugidaToken {
 {{#each abugida_marks}}
             AbugidaToken::{{this}}{{#unless @last}} |{{/unless}}
 {{/each}}
+{{#if abugida_vedic}}
+{{#each abugida_vedic}}
+            | AbugidaToken::{{this}}
+{{/each}}
+{{/if}}
         )
     }
 }
@@ -247,6 +262,11 @@ impl AlphabetToken {
 {{#each alphabet_marks}}
             AlphabetToken::{{this}}{{#unless @last}} |{{/unless}}
 {{/each}}
+{{#if alphabet_vedic}}
+{{#each alphabet_vedic}}
+            | AlphabetToken::{{this}}
+{{/each}}
+{{/if}}
         )
     }
 }
@@ -278,6 +298,9 @@ impl std::fmt::Display for AbugidaToken {
 {{#each abugida_special}}
             AbugidaToken::{{this}} => write!(f, "{{this}}"),
 {{/each}}
+{{#each abugida_vedic}}
+            AbugidaToken::{{this}} => write!(f, "{{this}}"),
+{{/each}}
 {{#each abugida_digits}}
             AbugidaToken::{{this}} => write!(f, "{{this}}"),
 {{/each}}
@@ -304,6 +327,9 @@ impl std::str::FromStr for AbugidaToken {
             "{{this}}" => Ok(AbugidaToken::{{this}}),
 {{/each}}
 {{#each abugida_special}}
+            "{{this}}" => Ok(AbugidaToken::{{this}}),
+{{/each}}
+{{#each abugida_vedic}}
             "{{this}}" => Ok(AbugidaToken::{{this}}),
 {{/each}}
 {{#each abugida_digits}}
@@ -334,6 +360,9 @@ impl std::fmt::Display for AlphabetToken {
 {{#each alphabet_special}}
             AlphabetToken::{{this}} => write!(f, "{{this}}"),
 {{/each}}
+{{#each alphabet_vedic}}
+            AlphabetToken::{{this}} => write!(f, "{{this}}"),
+{{/each}}
 {{#each alphabet_digits}}
             AlphabetToken::{{this}} => write!(f, "{{this}}"),
 {{/each}}
@@ -357,6 +386,9 @@ impl std::str::FromStr for AlphabetToken {
             "{{this}}" => Ok(AlphabetToken::{{this}}),
 {{/each}}
 {{#each alphabet_special}}
+            "{{this}}" => Ok(AlphabetToken::{{this}}),
+{{/each}}
+{{#each alphabet_vedic}}
             "{{this}}" => Ok(AlphabetToken::{{this}}),
 {{/each}}
 {{#each alphabet_digits}}

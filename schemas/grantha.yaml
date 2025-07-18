@@ -85,3 +85,10 @@ mappings:
     "𑌂": "ं"       # Grantha 𑌂 → Devanagari ं (anusvara)
     "𑌃": "ः"       # Grantha 𑌃 → Devanagari ः (visarga)
     "𑍍": "्"       # Grantha 𑍍 → Devanagari ् (virama)
+
+  vedic:
+    MarkUdatta: "॑"
+    MarkAnudatta: "॒"
+    MarkSvarita: "॑"
+    MarkDoubleSvarita: "᳚"
+    MarkTripleSvarita: "᳛"

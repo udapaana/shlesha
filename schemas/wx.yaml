@@ -15,8 +15,10 @@ mappings:
     VowelU: "u"
     VowelUu: "U"
     VowelE: "e"
+    VowelEe: "e"
     VowelAi: "E"
     VowelO: "o"
+    VowelOo: "o"
     VowelAu: "O"
     VowelVocalicR: "q"
     VowelVocalicRr: "Q"
@@ -61,6 +63,14 @@ mappings:
   marks:
     MarkAnusvara: "M"
     MarkVisarga: "H"
+
+  vedic:
+    # Vedic accent marks
+    MarkUdatta: "'"     # acute accent
+    MarkAnudatta: "_"   # grave accent
+    MarkSvarita: "^"    # caret for svarita
+    MarkDoubleSvarita: "~"  # double svarita
+    MarkTripleSvarita: "~~" # triple svarita
 
   digits:
     Digit0: "0"

@@ -25,6 +25,7 @@ struct TokenMappings {
     digits: Option<FxHashMap<String, TokenMapping>>, // "Digit0" -> "0"
     special: Option<FxHashMap<String, TokenMapping>>, // "SpecialKs" -> ["kS", "kṣ"]
     extended: Option<FxHashMap<String, TokenMapping>>, // "ExtendedQ" -> "q"
+    vedic: Option<FxHashMap<String, TokenMapping>>,  // "MarkUdatta" -> "॑"
 }
 
 // Support both single string and array of strings for flexibility
@@ -94,12 +95,14 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
     let mut abugida_marks = BTreeSet::new();
     let mut abugida_special = BTreeSet::new();
     let mut abugida_digits = BTreeSet::new();
+    let mut abugida_vedic = BTreeSet::new();
 
     let mut alphabet_vowels = BTreeSet::new();
     let mut alphabet_consonants = BTreeSet::new();
     let mut alphabet_marks = BTreeSet::new();
     let mut alphabet_special = BTreeSet::new();
     let mut alphabet_digits = BTreeSet::new();
+    let mut alphabet_vedic = BTreeSet::new();
 
     // Process all YAML schemas
     if schemas_dir.exists() {
@@ -183,6 +186,16 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                 }
+
+                if let Some(vedic) = &schema.mappings.vedic {
+                    for token in vedic.keys() {
+                        if is_abugida {
+                            abugida_vedic.insert(token.clone());
+                        } else {
+                            alphabet_vedic.insert(token.clone());
+                        }
+                    }
+                }
             }
         }
     }
@@ -220,6 +233,7 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
         .chain(abugida_consonants.iter())
         .chain(abugida_marks.iter())
         .chain(abugida_special.iter())
+        .chain(abugida_vedic.iter())
         .chain(abugida_digits.iter())
         .collect();
 
@@ -229,6 +243,7 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
         .chain(alphabet_consonants.iter())
         .chain(alphabet_marks.iter())
         .chain(alphabet_special.iter())
+        .chain(alphabet_vedic.iter())
         .chain(alphabet_digits.iter())
         .collect();
 
@@ -300,11 +315,13 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
         "abugida_consonants": abugida_consonants.into_iter().collect::<Vec<_>>(),
         "abugida_marks": abugida_marks.into_iter().collect::<Vec<_>>(),
         "abugida_special": abugida_special.into_iter().collect::<Vec<_>>(),
+        "abugida_vedic": abugida_vedic.into_iter().collect::<Vec<_>>(),
         "abugida_digits": abugida_digits.into_iter().collect::<Vec<_>>(),
         "alphabet_vowels": alphabet_vowels.into_iter().collect::<Vec<_>>(),
         "alphabet_consonants": alphabet_consonants.into_iter().collect::<Vec<_>>(),
         "alphabet_marks": alphabet_marks.into_iter().collect::<Vec<_>>(),
         "alphabet_special": alphabet_special.into_iter().collect::<Vec<_>>(),
+        "alphabet_vedic": alphabet_vedic.into_iter().collect::<Vec<_>>(),
         "alphabet_digits": alphabet_digits.into_iter().collect::<Vec<_>>(),
         "vowel_to_sign_mappings": vowel_to_sign_mappings,
         "same_sound_mappings": same_sound_mappings,
@@ -1073,6 +1090,27 @@ fn generate_token_based_converter(
             .collect();
         mappings.push(json!({
             "category": "Extended",
+            "entries": entries
+        }));
+    }
+
+    if let Some(ref vedic) = schema.mappings.vedic {
+        let entries: Vec<_> = vedic
+            .iter()
+            .map(|(token, mapping)| {
+                let (preferred, all_inputs) = match mapping {
+                    TokenMapping::Single(s) => (s.clone(), vec![s.clone()]),
+                    TokenMapping::Multiple(v) => (v[0].clone(), v.clone()),
+                };
+                json!({
+                    "token": token,
+                    "preferred": preferred,
+                    "all_inputs": all_inputs
+                })
+            })
+            .collect();
+        mappings.push(json!({
+            "category": "Vedic",
             "entries": entries
         }));
     }

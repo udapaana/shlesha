@@ -91,6 +91,13 @@ mappings:
     "୍": "्"    # virama/halanta
     "ଽ": "ऽ"    # avagraha
 
+  vedic:
+    MarkUdatta: "॑"
+    MarkAnudatta: "॒"
+    MarkSvarita: "॑"
+    MarkDoubleSvarita: "᳚"
+    MarkTripleSvarita: "᳛"
+
   special:
     # Nukta forms
     "ଡ଼": "ड़"    # ṛa

@@ -85,6 +85,13 @@ mappings:
     MarkVisarga: "ஃ"
     MarkVirama: "்"
 
+  vedic:
+    MarkUdatta: "॑"
+    MarkAnudatta: "॒"
+    MarkSvarita: "॑"
+    MarkDoubleSvarita: "᳚"
+    MarkTripleSvarita: "᳛"
+
   digits:
     Digit0: "௦"
     Digit1: "௧"

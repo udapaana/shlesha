@@ -40,6 +40,13 @@ mappings:
     "ං": "ं"    # anusvara
     "ඃ": "ः"    # visarga
     "්": "्"    # virama/al-lakuna
+
+  vedic:
+    MarkUdatta: "॑"
+    MarkAnudatta: "॒"
+    MarkSvarita: "॑"
+    MarkDoubleSvarita: "᳚"
+    MarkTripleSvarita: "᳛"
   
   digits:
     "෧": "१"    # 1

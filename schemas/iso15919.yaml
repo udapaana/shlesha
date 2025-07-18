@@ -68,6 +68,14 @@ mappings:
     MarkVisarga: "ḥ"
     MarkCandrabindu: "m̐"
     MarkAvagraha: "'"
+    
+  vedic:
+    # Vedic accent marks (Unicode combining diacritics)
+    MarkUdatta: ["́", "̍"]    # combining acute accent, combining vertical line above
+    MarkAnudatta: ["̱", "̠"]   # combining macron below, combining minus sign below
+    MarkSvarita: "̀"    # combining grave accent
+    MarkDoubleSvarita: "́̀"  # combining acute + grave
+    MarkTripleSvarita: "́̀̀" # combining acute + double grave
 
   special:
     # Nukta consonants (for Perso-Arabic loanwords)

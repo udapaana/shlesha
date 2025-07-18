@@ -94,6 +94,13 @@ mappings:
     "್": "्"    # virama/halanta
     "ಽ": "ऽ"    # avagraha
 
+  vedic:
+    MarkUdatta: "॑"
+    MarkAnudatta: "॒"
+    MarkSvarita: "॑"
+    MarkDoubleSvarita: "᳚"
+    MarkTripleSvarita: "᳛"
+
   special:
     # Kannada-specific
     "ೞ": "ऴ"    # ḻa (archaic)

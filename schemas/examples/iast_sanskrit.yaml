@@ -1,8 +1,10 @@
 metadata:
-  name: "iast"
+  name: "iast_sanskrit"
   script_type: "roman"
   has_implicit_a: false
-  description: "International Alphabet of Sanskrit Transliteration"
+  description: "IAST optimized for Sanskrit (e/o are long by default)"
+  aliases:
+    - "iast_sa"
 
 target: "alphabet_tokens"
 
@@ -18,11 +20,12 @@ mappings:
     VowelVocalicRr: "ṝ"
     VowelVocalicL: "l̥"
     VowelVocalicLl: "l̥̄"
-    # VowelE: (not used in IAST - e is always long)
-    VowelEe: "e"    # e is always long in Sanskrit
+    # In Sanskrit, e and o are phonologically long
+    VowelE: "ĕ"      # short e (rare, only for Dravidian)
+    VowelEe: "e"     # long e (default in Sanskrit)
     VowelAi: "ai"
-    # VowelO: (not used in IAST - o is always long)
-    VowelOo: "o"    # o is always long in Sanskrit
+    VowelO: "ŏ"      # short o (rare, only for Dravidian)  
+    VowelOo: "o"     # long o (default in Sanskrit)
     VowelAu: "au"
   
   consonants:
@@ -66,11 +69,11 @@ mappings:
     MarkVisarga: "ḥ"
   
   vedic:
-    MarkUdatta: ["́", "̍"]    # combining acute accent, combining vertical line above
-    MarkAnudatta: ["̱", "̠"]   # combining macron below, combining minus sign below
-    MarkSvarita: "̀"
-    MarkDoubleSvarita: "́̀"
-    MarkTripleSvarita: "́̀̀"
+    MarkUdatta: ["́", "̍"]      # combining acute accent, combining vertical line above
+    MarkAnudatta: ["̱", "̠"]    # combining macron below, combining minus sign below
+    MarkSvarita: "̀"           # combining grave accent
+    MarkDoubleSvarita: "́̀"    # combining acute + grave
+    MarkTripleSvarita: "́̀̀"   # combining acute + double grave
   
   special:
 

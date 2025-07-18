@@ -100,6 +100,13 @@ mappings:
     MarkNukta: "఼"    # Telugu nukta (U+0C3C)
     # Telugu doesn't have Vedic accent marks - these will be preserved as tokens
 
+  vedic:
+    MarkUdatta: "॑"
+    MarkAnudatta: "॒"
+    MarkSvarita: "॑"
+    MarkDoubleSvarita: "᳚"
+    MarkTripleSvarita: "᳛"
+
   special:
     # Telugu-specific characters mapped to closest equivalents
     # These will be handled as unknown characters for now

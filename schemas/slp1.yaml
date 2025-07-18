@@ -19,7 +19,9 @@ mappings:
     VowelVocalicL: "x"
     VowelVocalicLl: "X"
     VowelE: "e"
+    VowelEe: "e"    # long e (same as short e in SLP1)
     VowelO: "o"
+    VowelOo: "o"    # long o (same as short o in SLP1)
     VowelAi: "E"
     VowelAu: "O"
 
@@ -63,11 +65,13 @@ mappings:
     MarkAnusvara: "M"
     MarkVisarga: "H"
     
+  vedic:
     # Vedic accent marks
-    MarkUdatta: "'"     # acute accent
-    MarkAnudatta: "_"   # grave accent  
-    MarkDoubleSvarita: "~"  # double svarita
-    MarkTripleSvarita: "~~" # triple svarita
+    MarkUdatta: "/"     # udatta (raised/high pitch)
+    MarkAnudatta: "\\\\"   # anudatta (not raised/low pitch) - escaped backslash  
+    MarkSvarita: "^"    # svarita (high falling pitch)
+    MarkDoubleSvarita: "^^"  # double svarita
+    MarkTripleSvarita: "^^^" # triple svarita
 
   special:
     # MarkDanda: "|"    # danda - no token yet

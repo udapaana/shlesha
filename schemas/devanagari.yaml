@@ -90,9 +90,10 @@ mappings:
     MarkNukta: ़
     MarkVirama: ्
     MarkAvagraha: ऽ
-  special:
+  vedic:
     MarkUdatta: ॑
     MarkAnudatta: ॒
+    MarkSvarita: ॑   # In Devanagari, svarita is often represented same as udatta
     MarkDoubleSvarita: ᳚
     MarkTripleSvarita: ᳛
   digits:

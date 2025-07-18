@@ -96,6 +96,13 @@ mappings:
     "്": "्"    # virama/chandrakkala
     "ഽ": "ऽ"    # avagraha
 
+  vedic:
+    MarkUdatta: "॑"
+    MarkAnudatta: "॒"
+    MarkSvarita: "॑"
+    MarkDoubleSvarita: "᳚"
+    MarkTripleSvarita: "᳛"
+
   special:
     # Chillu letters (pure consonants)
     "ൺ": "ण्"   # ṇ
