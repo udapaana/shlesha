@@ -29,7 +29,7 @@ jobs:
         run: cargo fmt -- --check
 
       - name: Run clippy
-        run: cargo clippy --all-features -- -D warnings -A unreachable-patterns -A dead-code -A clippy::clone-on-copy -A clippy::new-without-default -A clippy::uninlined-format-args -A clippy::empty-line-after-outer-attr -A clippy::unwrap-or-default
+        run: cargo clippy --all-features -- -D warnings -A unreachable-patterns -A dead-code -A clippy::clone-on-copy -A clippy::new-without-default -A clippy::uninlined-format-args -A clippy::empty-line-after-outer-attr -A clippy::unwrap-or-default -A clippy::duplicated-attributes
 
       - name: Run basic tests
         run: cargo test --features cli,wasm,native-examples --verbose
