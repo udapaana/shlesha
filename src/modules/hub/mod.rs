@@ -29,14 +29,16 @@ impl HubFormat {
         match self {
             HubFormat::AbugidaTokens(tokens) => {
                 // Simple debug representation showing token names
-                tokens.iter()
+                tokens
+                    .iter()
                     .map(|t| format!("{:?}", t))
                     .collect::<Vec<_>>()
                     .join(" ")
             }
             HubFormat::AlphabetTokens(tokens) => {
                 // Simple debug representation showing token names
-                tokens.iter()
+                tokens
+                    .iter()
                     .map(|t| format!("{:?}", t))
                     .collect::<Vec<_>>()
                     .join(" ")

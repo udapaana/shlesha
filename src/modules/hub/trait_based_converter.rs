@@ -9,7 +9,7 @@ impl TraitBasedConverter {
     pub fn abugida_to_alphabet(tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
         // Pre-allocate with estimated capacity
         let mut result = Vec::with_capacity(tokens.len());
-        
+
         let mut i = 0;
         while i < tokens.len() {
             match &tokens[i] {
@@ -18,17 +18,19 @@ impl TraitBasedConverter {
                         // Find corresponding alphabet consonant
                         if let Some(alphabet_token) = abugida_token.to_alphabet() {
                             result.push(HubToken::Alphabet(alphabet_token));
-                            
+
                             // Check if next token is virama or vowel sign
                             let has_explicit_vowel = if i + 1 < tokens.len() {
                                 match &tokens[i + 1] {
-                                    HubToken::Abugida(next) => next.is_virama() || next.is_vowel_sign(),
+                                    HubToken::Abugida(next) => {
+                                        next.is_virama() || next.is_vowel_sign()
+                                    }
                                     _ => false,
                                 }
                             } else {
                                 false
                             };
-                            
+
                             // Add implicit 'a' if no virama or vowel sign follows
                             if !has_explicit_vowel {
                                 result.push(HubToken::Alphabet(AlphabetToken::VowelA));
@@ -38,9 +40,10 @@ impl TraitBasedConverter {
                             if let AbugidaToken::Unknown(s) = abugida_token {
                                 result.push(HubToken::Alphabet(AlphabetToken::Unknown(s.clone())));
                             } else {
-                                return Err(HubError::MappingNotFound(
-                                    format!("No alphabet mapping for {:?}", abugida_token)
-                                ));
+                                return Err(HubError::MappingNotFound(format!(
+                                    "No alphabet mapping for {:?}",
+                                    abugida_token
+                                )));
                             }
                         }
                     } else if abugida_token.is_virama() {
@@ -79,15 +82,15 @@ impl TraitBasedConverter {
             }
             i += 1;
         }
-        
+
         Ok(result)
     }
-    
+
     /// Convert alphabet tokens to abugida tokens using state machine approach
     pub fn alphabet_to_abugida(tokens: &HubTokenSequence) -> Result<HubTokenSequence, HubError> {
         // Pre-allocate with estimated capacity (worst case: each consonant needs a virama)
         let mut result = Vec::with_capacity(tokens.len() * 2);
-        
+
         let mut i = 0;
         while i < tokens.len() {
             match &tokens[i] {
@@ -96,7 +99,7 @@ impl TraitBasedConverter {
                         // Convert consonant
                         if let Some(abugida_consonant) = alphabet_token.to_abugida() {
                             result.push(HubToken::Abugida(abugida_consonant));
-                            
+
                             // Look ahead to determine if we need a virama
                             let needs_virama = if i + 1 < tokens.len() {
                                 match &tokens[i + 1] {
@@ -122,7 +125,7 @@ impl TraitBasedConverter {
                                 // End of input - final consonant needs virama
                                 true
                             };
-                            
+
                             if needs_virama {
                                 result.push(HubToken::Abugida(AbugidaToken::MarkVirama));
                             }
@@ -139,13 +142,15 @@ impl TraitBasedConverter {
                         } else {
                             false
                         };
-                        
+
                         if prev_was_consonant && *alphabet_token != AlphabetToken::VowelA {
                             // Convert to vowel sign after consonant
                             if let Some(abugida_vowel) = alphabet_token.to_abugida() {
                                 if let Some(sign) = abugida_vowel.vowel_to_sign() {
                                     // Remove virama if it was added
-                                    if let Some(HubToken::Abugida(AbugidaToken::MarkVirama)) = result.last() {
+                                    if let Some(HubToken::Abugida(AbugidaToken::MarkVirama)) =
+                                        result.last()
+                                    {
                                         result.pop();
                                     }
                                     result.push(HubToken::Abugida(sign));
@@ -180,7 +185,7 @@ impl TraitBasedConverter {
             }
             i += 1;
         }
-        
+
         Ok(result)
     }
 }

@@ -132,10 +132,7 @@ impl SchemaBuilder {
     }
 
     pub fn add_mapping(mut self, category: &str, token: &str, inputs: &[&str]) -> Self {
-        let category_map = self
-            .mappings
-            .entry(category.to_string())
-            .or_default();
+        let category_map = self.mappings.entry(category.to_string()).or_default();
 
         let value = if inputs.len() == 1 {
             Value::String(inputs[0].to_string())

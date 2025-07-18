@@ -28,7 +28,6 @@ extern "C" {
     fn log(s: &str);
 }
 
-
 /// Initialize WASM module with panic hook for better error messages
 #[wasm_bindgen(start)]
 pub fn main() {

@@ -85,6 +85,7 @@ impl HubToken {
     }
 
     pub fn as_unknown_string(&self) -> Option<&str> {
+        #[allow(unreachable_patterns)]
         match self {
             HubToken::Abugida(AbugidaToken::Unknown(s)) | HubToken::Alphabet(AlphabetToken::Unknown(s)) => Some(s),
             _ => None,
@@ -141,6 +142,7 @@ impl HubToken {
 impl AbugidaToken {
     // Convert vowel to corresponding vowel sign
     pub fn vowel_to_sign(&self) -> Option<Self> {
+        #[allow(unreachable_patterns)]
         match self {
 {{#each vowel_to_sign_mappings}}
             AbugidaToken::{{this.vowel}} => Some(AbugidaToken::{{this.sign}}),
@@ -151,6 +153,7 @@ impl AbugidaToken {
     
     // Convert vowel sign to corresponding vowel
     pub fn sign_to_vowel(&self) -> Option<Self> {
+        #[allow(unreachable_patterns)]
         match self {
 {{#each vowel_to_sign_mappings}}
             AbugidaToken::{{this.sign}} => Some(AbugidaToken::{{this.vowel}}),
@@ -161,6 +164,7 @@ impl AbugidaToken {
     
     // Convert to corresponding alphabet token
     pub fn to_alphabet(&self) -> Option<AlphabetToken> {
+        #[allow(unreachable_patterns)]
         match self {
 {{#each abugida_to_alphabet_mappings}}
             AbugidaToken::{{this.from}} => Some(AlphabetToken::{{this.to}}),
@@ -211,6 +215,7 @@ impl AbugidaToken {
 impl AlphabetToken {
     // Convert to corresponding abugida token
     pub fn to_abugida(&self) -> Option<AbugidaToken> {
+        #[allow(unreachable_patterns)]
         match self {
 {{#each alphabet_to_abugida_mappings}}
             AlphabetToken::{{this.from}} => Some(AbugidaToken::{{this.to}}),

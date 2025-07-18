@@ -23,9 +23,18 @@ fn test_basic_token_conversion() {
             // Verify the conversion worked correctly
             // ConsonantK in abugida becomes ConsonantK + implicit 'a' in alphabet
             assert_eq!(alphabet_tokens.len(), 3);
-            assert!(matches!(alphabet_tokens[0], HubToken::Alphabet(AlphabetToken::VowelA)));
-            assert!(matches!(alphabet_tokens[1], HubToken::Alphabet(AlphabetToken::ConsonantK)));
-            assert!(matches!(alphabet_tokens[2], HubToken::Alphabet(AlphabetToken::VowelA))); // implicit 'a'
+            assert!(matches!(
+                alphabet_tokens[0],
+                HubToken::Alphabet(AlphabetToken::VowelA)
+            ));
+            assert!(matches!(
+                alphabet_tokens[1],
+                HubToken::Alphabet(AlphabetToken::ConsonantK)
+            ));
+            assert!(matches!(
+                alphabet_tokens[2],
+                HubToken::Alphabet(AlphabetToken::VowelA)
+            )); // implicit 'a'
         }
         Err(e) => {
             panic!("Unexpected error: {:?}", e);

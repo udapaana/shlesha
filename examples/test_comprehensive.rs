@@ -23,6 +23,7 @@ fn main() {
     ];
 
     // Test each script conversion
+    #[allow(clippy::never_loop)]
     for from_script in &scripts {
         for to_script in &scripts {
             if from_script != to_script {

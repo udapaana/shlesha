@@ -688,8 +688,6 @@ include!(concat!(env!("OUT_DIR"), "/schema_generated.rs"));
 
 // All script converters are now schema-generated from YAML schemas in the schemas/ directory
 
-
-
 // Re-export commonly used types (primary interface)
 pub use ScriptConverterRegistry as ConverterRegistry; // Main interface for callers
                                                       // Note: ScriptConverter, ConverterError already public in this module
@@ -720,7 +718,6 @@ mod send_sync_tests {
         assert_sync::<Arc<dyn ScriptConverter>>();
         assert_send_sync::<Arc<dyn ScriptConverter>>();
     }
-
 
     #[test]
     fn test_script_converter_registry_send_sync() {

@@ -76,7 +76,7 @@ fn main() {
     if let Err(e) = generate_tokens_from_schemas() {
         println!("cargo:warning=Failed to generate tokens: {e}");
     }
-    
+
     if let Err(e) = generate_schema_based_converters() {
         println!("cargo:warning=Failed to generate schema-based converters: {e}");
     }
@@ -86,7 +86,7 @@ fn main() {
 fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
     let out_dir = PathBuf::from(env::var("OUT_DIR")?);
     let schemas_dir = Path::new("schemas");
-    
+
     // Collections for unique tokens
     let mut abugida_vowels = BTreeSet::new();
     let mut abugida_vowel_signs = BTreeSet::new();
@@ -94,37 +94,37 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
     let mut abugida_marks = BTreeSet::new();
     let mut abugida_special = BTreeSet::new();
     let mut abugida_digits = BTreeSet::new();
-    
+
     let mut alphabet_vowels = BTreeSet::new();
     let mut alphabet_consonants = BTreeSet::new();
     let mut alphabet_marks = BTreeSet::new();
     let mut alphabet_special = BTreeSet::new();
     let mut alphabet_digits = BTreeSet::new();
-    
+
     // Process all YAML schemas
     if schemas_dir.exists() {
         for entry in fs::read_dir(schemas_dir)? {
             let entry = entry?;
             let path = entry.path();
-            
+
             if path.extension().and_then(|s| s.to_str()) == Some("yaml") {
                 let content = fs::read_to_string(&path)?;
                 let schema: ScriptSchema = serde_yaml::from_str(&content)
                     .map_err(|e| format!("Failed to parse YAML schema {}: {e}", path.display()))?;
-                
+
                 // Skip non-token schemas
                 let target = match &schema.target {
                     Some(t) => t,
                     None => continue,
                 };
-                
+
                 let is_abugida = target == "abugida_tokens";
                 let is_alphabet = target == "alphabet_tokens";
-                
+
                 if !is_abugida && !is_alphabet {
                     continue;
                 }
-                
+
                 // Collect tokens from each category
                 if let Some(vowels) = &schema.mappings.vowels {
                     for token in vowels.keys() {
@@ -135,7 +135,7 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                 }
-                
+
                 if let Some(vowel_signs) = &schema.mappings.vowel_signs {
                     for token in vowel_signs.keys() {
                         if is_abugida {
@@ -143,7 +143,7 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                 }
-                
+
                 if let Some(consonants) = &schema.mappings.consonants {
                     for token in consonants.keys() {
                         if is_abugida {
@@ -153,7 +153,7 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                 }
-                
+
                 if let Some(marks) = &schema.mappings.marks {
                     for token in marks.keys() {
                         if is_abugida {
@@ -163,7 +163,7 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                 }
-                
+
                 if let Some(special) = &schema.mappings.special {
                     for token in special.keys() {
                         if is_abugida {
@@ -173,7 +173,7 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                 }
-                
+
                 if let Some(digits) = &schema.mappings.digits {
                     for token in digits.keys() {
                         if is_abugida {
@@ -186,11 +186,11 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
-    
+
     // Generate tokens.rs using template
     let mut handlebars = Handlebars::new();
     handlebars.register_template_file("tokens", "templates/tokens.hbs")?;
-    
+
     // Generate vowel to sign mappings
     let mut vowel_to_sign_mappings = Vec::new();
     for vowel in &abugida_vowels {
@@ -208,28 +208,30 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
-    
+
     // Generate same sound mappings (tokens with same name exist in both systems)
     let mut same_sound_mappings = Vec::new();
     let mut abugida_to_alphabet_mappings = Vec::new();
     let mut alphabet_to_abugida_mappings = Vec::new();
-    
+
     // Collect all abugida tokens
-    let all_abugida_tokens: Vec<_> = abugida_vowels.iter()
+    let all_abugida_tokens: Vec<_> = abugida_vowels
+        .iter()
         .chain(abugida_consonants.iter())
         .chain(abugida_marks.iter())
         .chain(abugida_special.iter())
         .chain(abugida_digits.iter())
         .collect();
-        
-    // Collect all alphabet tokens  
-    let all_alphabet_tokens: Vec<_> = alphabet_vowels.iter()
+
+    // Collect all alphabet tokens
+    let all_alphabet_tokens: Vec<_> = alphabet_vowels
+        .iter()
         .chain(alphabet_consonants.iter())
         .chain(alphabet_marks.iter())
         .chain(alphabet_special.iter())
         .chain(alphabet_digits.iter())
         .collect();
-    
+
     // Generate direct mappings where token names match
     for abugida_token in &all_abugida_tokens {
         if all_alphabet_tokens.iter().any(|a| a == abugida_token) {
@@ -243,7 +245,7 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
             }));
         }
     }
-    
+
     // Generate reverse mappings
     for alphabet_token in &all_alphabet_tokens {
         if all_abugida_tokens.iter().any(|a| a == alphabet_token) {
@@ -253,7 +255,7 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
             }));
         }
     }
-    
+
     // Add vowel sign to vowel mappings
     for sign in &abugida_vowel_signs {
         // Extract the vowel part from VowelSignXxx
@@ -267,7 +269,7 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
-    
+
     // Handle special cases where tokens don't exist in one system
     // These could be read from schema files in the future
     let special_mappings = vec![
@@ -278,9 +280,12 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
         ("VowelVocalicL", "VowelVocalicL"),
         ("VowelVocalicLl", "VowelVocalicLl"),
     ];
-    
+
     for (abugida, alphabet) in special_mappings {
-        if (abugida_vowels.contains(abugida) || abugida_marks.contains(abugida)) && !alphabet_vowels.contains(alphabet) && !alphabet_marks.contains(alphabet) {
+        if (abugida_vowels.contains(abugida) || abugida_marks.contains(abugida))
+            && !alphabet_vowels.contains(alphabet)
+            && !alphabet_marks.contains(alphabet)
+        {
             // This token exists in abugida but not alphabet - it will be preserved as-is
             abugida_to_alphabet_mappings.push(json!({
                 "from": abugida,
@@ -306,10 +311,10 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
         "abugida_to_alphabet_mappings": abugida_to_alphabet_mappings,
         "alphabet_to_abugida_mappings": alphabet_to_abugida_mappings,
     });
-    
+
     let tokens_code = handlebars.render("tokens", &template_data)?;
     fs::write(out_dir.join("tokens_generated.rs"), tokens_code)?;
-    
+
     Ok(())
 }
 
@@ -1311,6 +1316,9 @@ fn generate_direct_converters(
         r#"
 // Auto-generated direct converters - bypass hub for maximum performance
 // DO NOT EDIT - Generated by build.rs at compile time
+
+#[allow(unreachable_patterns)]
+#[allow(dead_code)]
 
 use crate::modules::script_converter::ConverterError;
 use aho_corasick::AhoCorasick;
