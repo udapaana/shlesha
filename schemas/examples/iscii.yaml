@@ -1,0 +1,86 @@
+metadata:
+  name: "iscii"
+  script_type: "roman"
+  description: "Indian Script Code for Information Interchange (IS 13194:1991)"
+  aliases: ["is13194"]
+
+mappings:
+  # ISCII uses specific byte codes, but for transliteration we map to common representations
+  vowels:
+    "a": "a"
+    "aa": "ā"
+    "i": "i"
+    "ii": "ī"
+    "u": "u"
+    "uu": "ū"
+    "R^i": "ṛ"
+    "R^I": "ṝ"
+    "L^i": "ḷ"
+    "L^I": "ḹ"
+    "e": "e"
+    "ai": "ai"
+    "o": "o"
+    "au": "au"
+  
+  consonants:
+    # Standard consonants with aspirates
+    "ka": "k"
+    "kha": "kh"
+    "ga": "g"
+    "gha": "gh"
+    "~Na": "ṅ"
+    
+    "cha": "c"
+    "chha": "ch"
+    "ja": "j"
+    "jha": "jh"
+    "~na": "ñ"
+    
+    "Ta": "ṭ"
+    "Tha": "ṭh"
+    "Da": "ḍ"
+    "Dha": "ḍh"
+    "Na": "ṇ"
+    
+    "ta": "t"
+    "tha": "th"
+    "da": "d"
+    "dha": "dh"
+    "na": "n"
+    
+    "pa": "p"
+    "pha": "ph"
+    "ba": "b"
+    "bha": "bh"
+    "ma": "m"
+    
+    "ya": "y"
+    "ra": "r"
+    "la": "l"
+    "va": "v"
+    "wa": "v"  # Alternative for va
+    
+    "sha": "ś"
+    "Sha": "ṣ"
+    "sa": "s"
+    "ha": "h"
+    
+    # Extended consonants
+    "qa": "q"   # Urdu/Arabic
+    "Ka": "ḵ"   # Persian
+    "Ga": "ġ"   # Arabic
+    "za": "z"   # Urdu/Persian
+    "fa": "f"   # Urdu/Persian
+  
+  marks:
+    ".n": "ṃ"
+    ".h": "ḥ"
+    ".a": "ऽ"  # Avagraha
+    "^^": "्"  # Halant/Virama
+  
+  # ISCII-specific markers
+  special:
+    "INV": ""   # Invisible character
+    "ATR": ""   # Attribute marker
+    "EXT": ""   # Extension marker
+    "VD": ""    # Vedic marker

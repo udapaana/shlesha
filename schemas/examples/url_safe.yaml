@@ -1,0 +1,88 @@
+metadata:
+  name: "url_safe"
+  script_type: "roman"
+  description: "URL-safe Sanskrit transliteration for web identifiers"
+  aliases: ["web", "urlsafe"]
+
+mappings:
+  vowels:
+    "a": "a"
+    "aa": "ā"
+    "i": "i"
+    "ii": "ī"
+    "u": "u"
+    "uu": "ū"
+    "r2": "ṛ"
+    "r2r2": "ṝ"
+    "l2": "ḷ"
+    "l2l2": "ḹ"
+    "e": "e"
+    "ai": "ai"
+    "o": "o"
+    "au": "au"
+  
+  consonants:
+    # Gutturals
+    "k": "k"
+    "kh": "kh"
+    "g": "g"
+    "gh": "gh"
+    "n1": "ṅ"
+    
+    # Palatals
+    "c": "c"
+    "ch": "ch"
+    "j": "j"
+    "jh": "jh"
+    "n2": "ñ"
+    
+    # Retroflexes (using numbers)
+    "t1": "ṭ"
+    "t1h": "ṭh"
+    "d1": "ḍ"
+    "d1h": "ḍh"
+    "n3": "ṇ"
+    
+    # Dentals
+    "t": "t"
+    "th": "th"
+    "d": "d"
+    "dh": "dh"
+    "n": "n"
+    
+    # Labials
+    "p": "p"
+    "ph": "ph"
+    "b": "b"
+    "bh": "bh"
+    "m": "m"
+    
+    # Semivowels
+    "y": "y"
+    "r": "r"
+    "l": "l"
+    "v": "v"
+    
+    # Sibilants
+    "s1": "ś"
+    "s2": "ṣ"
+    "s": "s"
+    "h": "h"
+  
+  marks:
+    "m2": "ṃ"
+    "h2": "ḥ"
+    "_": "'"
+    "-": "."
+  
+  digits:
+    "0": "0"
+    "1": "1"
+    "2": "2"
+    "3": "3"
+    "4": "4"
+    "5": "5"
+    "6": "6"
+    "7": "7"
+    "8": "8"
+    "9": "9"

@@ -686,8 +686,7 @@ pub mod processors;
 // Include generated schema-based converters
 include!(concat!(env!("OUT_DIR"), "/schema_generated.rs"));
 
-// All script converters are now schema-generated
-// Hand-coded converters (iast.rs, kolkata.rs, grantha.rs) have been migrated to schemas/
+// All script converters are now schema-generated from YAML schemas in the schemas/ directory
 
 
 

@@ -1,0 +1,76 @@
+metadata:
+  name: "kyoto_harvard"
+  script_type: "roman"
+  description: "Kyoto-Harvard transliteration (reverse of Harvard-Kyoto)"
+  aliases: ["kh"]
+
+mappings:
+  vowels:
+    "a": "a"
+    "A": "ā"
+    "i": "i"
+    "I": "ī"
+    "u": "u"
+    "U": "ū"
+    "R": "ṛ"
+    "RR": "ṝ"
+    "L": "ḷ"
+    "LL": "ḹ"
+    "e": "e"
+    "ai": "ai"
+    "o": "o"
+    "au": "au"
+  
+  consonants:
+    # Gutturals
+    "k": "k"
+    "kh": "kh"
+    "g": "g"
+    "gh": "gh"
+    "G": "ṅ"
+    
+    # Palatals
+    "c": "c"
+    "ch": "ch"
+    "j": "j"
+    "jh": "jh"
+    "J": "ñ"
+    
+    # Retroflexes (uppercase in KH)
+    "T": "ṭ"
+    "Th": "ṭh"
+    "D": "ḍ"
+    "Dh": "ḍh"
+    "N": "ṇ"
+    
+    # Dentals (lowercase in KH)
+    "t": "t"
+    "th": "th"
+    "d": "d"
+    "dh": "dh"
+    "n": "n"
+    
+    # Labials
+    "p": "p"
+    "ph": "ph"
+    "b": "b"
+    "bh": "bh"
+    "m": "m"
+    
+    # Semivowels
+    "y": "y"
+    "r": "r"
+    "l": "l"
+    "v": "v"
+    
+    # Sibilants
+    "z": "ś"
+    "S": "ṣ"
+    "s": "s"
+    "h": "h"
+  
+  marks:
+    "M": "ṃ"
+    "H": "ḥ"
+    "'": "'"
+    ".": "."
