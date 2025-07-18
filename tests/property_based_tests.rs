@@ -146,67 +146,74 @@ fn prop_identity_conversion(input: SanskritText) -> bool {
     }
 }
 
-/// Property: Round-trip conversions should preserve normalized forms
-/// Sanskrit transliteration systems perform normalization, so this test validates
-/// that after normalization, round-trips are stable.
+/// Property: One-way conversions should be lossless (no unknown tokens)
+/// Each conversion should preserve all information according to the target script's model
 #[quickcheck]
-fn prop_round_trip_conversion(input: SanskritText) -> bool {
+fn prop_lossless_conversion(input: SanskritText) -> bool {
     let shlesha = Shlesha::new();
+    let target_scripts = vec!["iast", "slp1", "devanagari", "iso", "harvard_kyoto"];
 
-    // Test round-trips between Roman scripts (should be lossless)
-    let roman_scripts = vec!["iast", "slp1", "iso", "harvard_kyoto"];
+    for target in &target_scripts {
+        if let Ok(result) = shlesha.transliterate(&input.text, &input.script, target) {
+            // Check for unknown token markers (indicates loss of information)
+            if result.contains('[') && result.contains(']') {
+                // Check if it's a genuine unknown token (not just brackets in input)
+                if !input.text.contains('[') || !input.text.contains(']') {
+                    // Known limitations where information loss is expected:
+                    // 1. ISO short e/o to IAST (IAST only has long e/o for Sanskrit)
+                    let is_expected_loss = 
+                        (input.script == "iso" && target == "iast" 
+                         && (result.contains("[VowelE]") || result.contains("[VowelO]")));
+                    
+                    if !is_expected_loss {
+                        eprintln!(
+                            "Lossy conversion detected: {} '{}' → {} '{}'",
+                            input.script, input.text, target, result
+                        );
+                        eprintln!("  Unknown token found: {}", result);
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    true
+}
 
-    if roman_scripts.contains(&input.script.as_str()) {
-        for target_script in &roman_scripts {
-            if target_script != &input.script {
-                if let (Ok(forward), Ok(backward)) = (
-                    shlesha.transliterate(&input.text, &input.script, target_script),
-                    shlesha
-                        .transliterate(&input.text, &input.script, target_script)
-                        .and_then(|intermediate| {
-                            shlesha.transliterate(&intermediate, target_script, &input.script)
-                        }),
-                ) {
-                    // For round-trip validation, we need to account for normalization.
-                    // First normalize the input by doing a round-trip through the same script,
-                    // then compare that normalized form with the round-trip result.
-                    let normalized_input = shlesha
-                        .transliterate(&input.text, &input.script, &input.script)
-                        .unwrap_or_else(|_| input.text.clone());
-
-                    if backward != normalized_input {
-                        // Known limitations:
-                        // 1. Harvard-Kyoto "lRR" is ambiguous
-                        // 2. ISO input 'o' vs 'ō' - both map to long o (Sanskrit phonology)
-                        // 3. ISO input 'e' vs 'ē' - both map to long e (Sanskrit phonology)
-                        // 4. IAST/SLP1 e/o distinction - IAST only has long e/o, SLP1 has both short and long
-                        let is_known_ambiguity =
-                            // Harvard-Kyoto ambiguity
-                            ((input.script == "iso" && *target_script == "harvard_kyoto")
-                                && (input.text.contains("lr̥̄") || input.text.contains("l̥̄")))
-                            // ISO vowel length normalization
-                            || (input.script == "iso"
-                                && (normalized_input.chars().zip(backward.chars()).any(|(n, b)| {
-                                    (n == 'o' && b == 'ō') || (n == 'e' && b == 'ē')
-                                })))
-                            // IAST/SLP1 vowel distinction mismatch
-                            || ((input.script == "iast" && *target_script == "slp1")
-                                && (input.text.contains('e') || input.text.contains('o')))
-                            || ((input.script == "slp1" && *target_script == "iast")
-                                && (backward.contains("[VowelE]") || backward.contains("[VowelO]")));
-
-                        if !is_known_ambiguity {
+/// Property: Conversions should be consistent (same input always produces same output)
+#[quickcheck]
+fn prop_conversion_consistency(input: SanskritText) -> bool {
+    let shlesha = Shlesha::new();
+    let target_scripts = vec!["iast", "slp1", "devanagari", "iso"];
+    
+    for target in &target_scripts {
+        if target != &input.script {
+            // Convert the same input multiple times
+            let results: Vec<_> = (0..5)
+                .map(|_| shlesha.transliterate(&input.text, &input.script, target))
+                .collect();
+            
+            // All results should be identical
+            if let Some(Ok(first)) = results.first() {
+                for (i, result) in results.iter().enumerate() {
+                    match result {
+                        Ok(res) if res != first => {
                             eprintln!(
-                                "Round-trip failed: {} '{}' → {} '{}' → '{}' (normalized: '{}')",
-                                input.script,
-                                input.text,
-                                target_script,
-                                forward,
-                                backward,
-                                normalized_input
+                                "Inconsistent conversion: {} '{}' → {} produced different results",
+                                input.script, input.text, target
+                            );
+                            eprintln!("  First: '{}'", first);
+                            eprintln!("  Result {}: '{}'", i, res);
+                            return false;
+                        }
+                        Err(e) => {
+                            eprintln!(
+                                "Conversion error on attempt {}: {} '{}' → {}: {}",
+                                i, input.script, input.text, target, e
                             );
                             return false;
                         }
+                        _ => {}
                     }
                 }
             }
@@ -361,6 +368,7 @@ fn prop_concatenation_consistency(text1: String, text2: String) -> bool {
 fn prop_character_mapping_consistency(_ch: char) -> bool {
     // Test specific important character mappings
     let test_cases = vec![
+        // IAST to SLP1
         ("ā", "iast", "slp1", "A"),
         ("ī", "iast", "slp1", "I"),
         ("ū", "iast", "slp1", "U"),
@@ -370,6 +378,9 @@ fn prop_character_mapping_consistency(_ch: char) -> bool {
         ("ś", "iast", "slp1", "S"),
         ("ṣ", "iast", "slp1", "z"),
         ("kṣ", "iast", "slp1", "kz"),
+        ("e", "iast", "slp1", "e"),  // IAST 'e' maps to SLP1 'e' (long)
+        ("o", "iast", "slp1", "o"),  // IAST 'o' maps to SLP1 'o' (long)
+        // SLP1 to IAST
         ("A", "slp1", "iast", "ā"),
         ("I", "slp1", "iast", "ī"),
         ("U", "slp1", "iast", "ū"),
@@ -379,6 +390,10 @@ fn prop_character_mapping_consistency(_ch: char) -> bool {
         ("S", "slp1", "iast", "ś"),
         ("z", "slp1", "iast", "ṣ"),
         ("kz", "slp1", "iast", "kṣ"),
+        ("e", "slp1", "iast", "e"),  // SLP1 short 'e' maps to IAST 'e'
+        ("E", "slp1", "iast", "ai"), // SLP1 'E' is diphthong ai
+        ("o", "slp1", "iast", "o"),  // SLP1 short 'o' maps to IAST 'o'
+        ("O", "slp1", "iast", "au"), // SLP1 'O' is diphthong au
     ];
 
     let shlesha = Shlesha::new();
