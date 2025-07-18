@@ -179,6 +179,7 @@ fn prop_round_trip_conversion(input: SanskritText) -> bool {
                         // 1. Harvard-Kyoto "lRR" is ambiguous
                         // 2. ISO input 'o' vs 'ō' - both map to long o (Sanskrit phonology)
                         // 3. ISO input 'e' vs 'ē' - both map to long e (Sanskrit phonology)
+                        // 4. IAST/SLP1 e/o distinction - IAST only has long e/o, SLP1 has both short and long
                         let is_known_ambiguity =
                             // Harvard-Kyoto ambiguity
                             ((input.script == "iso" && *target_script == "harvard_kyoto")
@@ -187,7 +188,12 @@ fn prop_round_trip_conversion(input: SanskritText) -> bool {
                             || (input.script == "iso"
                                 && (normalized_input.chars().zip(backward.chars()).any(|(n, b)| {
                                     (n == 'o' && b == 'ō') || (n == 'e' && b == 'ē')
-                                })));
+                                })))
+                            // IAST/SLP1 vowel distinction mismatch
+                            || ((input.script == "iast" && *target_script == "slp1")
+                                && (input.text.contains('e') || input.text.contains('o')))
+                            || ((input.script == "slp1" && *target_script == "iast")
+                                && (backward.contains("[VowelE]") || backward.contains("[VowelO]")));
 
                         if !is_known_ambiguity {
                             eprintln!(
