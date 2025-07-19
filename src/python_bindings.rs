@@ -547,7 +547,7 @@ mod tests {
         assert_eq!(metadata.source_script, "devanagari");
         assert_eq!(metadata.target_script, "iast");
         // Should have unknown tokens for 'k' and 'r'
-        assert!(metadata.unknown_tokens.len() > 0);
+        assert!(!metadata.unknown_tokens.is_empty());
     }
 
     #[test]

@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-07-19
+
+### Added
+- Full SLP1 (Sanskrit Library Phonetic) encoding support:
+  - Short vowels: `e1` for short e (ऎ), `o1` for short o (ऒ) - Dravidian support
+  - Avagraha (ऽ) support using backtick (`) notation
+  - Proper vowel length distinctions between short and long e/o
+- General token representation system for unmapped characters
+  - Tokens without mappings in target scripts display as `[TokenName]`
+  - Enables lossless one-way conversions
+- Template escaping improvements for special characters in schemas
+
+### Changed
+- SLP1 schema updated with proper vowel mappings
+- Build process now properly escapes special characters in templates
+- Hub generation prefers Devanagari as primary abugida schema
+
+### Fixed
+- Property test expectations for SLP1 to IAST conversions
+- Template escaping issues preventing avagraha support
+- Clippy warnings in source code
+- Module naming and code quality issues
+
 ## [0.3.0] - 2024-07-18
 
 ### Added

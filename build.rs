@@ -202,6 +202,8 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
 
     // Generate tokens.rs using template
     let mut handlebars = Handlebars::new();
+    handlebars.set_strict_mode(false);
+    handlebars.register_escape_fn(handlebars::no_escape);
     handlebars.register_template_file("tokens", "templates/tokens.hbs")?;
 
     // Generate vowel to sign mappings
@@ -341,6 +343,8 @@ fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> 
 
     // Initialize Handlebars template engine - token-based only!
     let mut handlebars = Handlebars::new();
+    handlebars.set_strict_mode(false);
+    handlebars.register_escape_fn(handlebars::no_escape);
     handlebars.register_template_file(
         "token_based_converter",
         "templates/token_based_converter.hbs",
@@ -371,6 +375,7 @@ fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> 
 #[allow(clippy::new_without_default)]
 #[allow(clippy::clone_on_copy)]
 #[allow(clippy::match_like_matches_macro)]
+#[allow(clippy::duplicated_attributes)]
 
 use once_cell::sync::Lazy;
 use crate::modules::hub::HubFormat;
@@ -1179,9 +1184,16 @@ fn generate_hub_converter(
     let mut alphabet_schemas = Vec::new();
 
     // Find the abugida schema and alphabet schemas
+    // Use Devanagari as the primary abugida schema for hub generation
     for schema in schemas {
         if schema.target.as_deref() == Some("abugida_tokens") {
-            abugida_schema = Some(schema);
+            if schema.metadata.name == "devanagari" {
+                // Prefer Devanagari as the primary abugida schema
+                abugida_schema = Some(schema);
+            } else if abugida_schema.is_none() {
+                // Use other abugida schemas as fallback
+                abugida_schema = Some(schema);
+            }
         } else if schema.target.as_deref() == Some("alphabet_tokens") {
             alphabet_schemas.push(schema);
         }
@@ -1337,6 +1349,9 @@ fn collect_all_tokens(schema: &ScriptSchema) -> Vec<String> {
     }
     if let Some(ref extended) = schema.mappings.extended {
         tokens.extend(extended.keys().cloned());
+    }
+    if let Some(ref vedic) = schema.mappings.vedic {
+        tokens.extend(vedic.keys().cloned());
     }
 
     tokens

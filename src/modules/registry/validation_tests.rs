@@ -4,7 +4,7 @@
 //! beyond basic error handling.
 
 #[cfg(test)]
-mod validation_tests {
+mod tests {
     use super::super::*;
     use std::fs;
     use std::io::Write;
@@ -416,7 +416,7 @@ mappings:
         // Check that all metadata is preserved
         assert_eq!(schema.metadata.name, "metadata_test");
         assert_eq!(schema.metadata.script_type, "roman");
-        assert_eq!(schema.metadata.has_implicit_a, false);
+        assert!(!schema.metadata.has_implicit_a);
         assert_eq!(
             schema.metadata.description,
             Some("Test schema with full metadata".to_string())

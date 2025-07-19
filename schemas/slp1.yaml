@@ -18,10 +18,10 @@ mappings:
     VowelVocalicRr: "F"
     VowelVocalicL: "x"
     VowelVocalicLl: "X"
-    VowelE: "e"
-    VowelEe: "e"    # long e (same as short e in SLP1)
-    VowelO: "o"
-    VowelOo: "o"    # long o (same as short o in SLP1)
+    VowelE: "e1"    # short e (Dravidian)
+    VowelEe: "e"    # long e (standard)
+    VowelO: "o1"    # short o (Dravidian)
+    VowelOo: "o"    # long o (standard)
     VowelAi: "E"
     VowelAu: "O"
 
@@ -64,6 +64,7 @@ mappings:
   marks:
     MarkAnusvara: "M"
     MarkVisarga: "H"
+    MarkAvagraha: "`"    # avagraha (ऽ) - using backtick to avoid escaping issues
     
   vedic:
     # Vedic accent marks

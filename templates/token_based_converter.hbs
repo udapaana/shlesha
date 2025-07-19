@@ -10,7 +10,7 @@ static {{uppercase script_name}}_MATCHER: Lazy<AhoCorasick> = Lazy::new(|| {
         {{#each mappings}}
         {{#each entries}}
         {{#each all_inputs}}
-        "{{this}}",
+        "{{escape this}}",
         {{/each}}
         {{/each}}
         {{/each}}
@@ -48,7 +48,7 @@ impl {{struct_name}} {
             // {{category}} mappings
             {{#each entries}}
             {{#each all_inputs}}
-            "{{this}}" => Some({{#if @root.is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}::{{../token}}),
+            "{{escape this}}" => Some({{#if @root.is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}::{{../token}}),
             {{/each}}
             {{/each}}
             {{/each}}
@@ -65,7 +65,7 @@ impl {{struct_name}} {
             {{#each mappings}}
             // {{category}} mappings
             {{#each entries}}
-            {{#if @root.is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}::{{token}} => "{{preferred}}".to_string(),
+            {{#if @root.is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}::{{token}} => "{{escape preferred}}".to_string(),
             {{/each}}
             {{/each}}
             {{#unless is_alphabet}}

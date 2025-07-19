@@ -711,7 +711,7 @@ mod tests {
 
         // Test get_schemas_by_type
         let roman_schemas = registry.get_schemas_by_type("roman");
-        assert!(roman_schemas.len() >= 1);
+        assert!(!roman_schemas.is_empty());
 
         // Test export_summary
         let summary = registry.export_summary();

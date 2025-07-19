@@ -513,8 +513,10 @@ mod tests {
 
     #[test]
     fn test_optimization_generation() {
-        let mut config = ProfilerConfig::default();
-        config.min_sequence_frequency = 1; // Lower threshold for testing
+        let config = ProfilerConfig {
+            min_sequence_frequency: 1, // Lower threshold for testing
+            ..Default::default()
+        };
         let profiler = Profiler::with_config(config);
 
         // Record some sequences
