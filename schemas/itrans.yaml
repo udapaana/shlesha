@@ -15,10 +15,10 @@ mappings:
     VowelIi: ["ii", "I"]  # prefer "ii" over "I" for output
     VowelU: "u"
     VowelUu: ["uu", "U"]  # prefer "uu" over "U" for output
-    VowelVocalicR: "R"
-    VowelVocalicRr: "RR"
-    VowelVocalicL: "lR"  # Use only "lR" for vocalic L to avoid conflict with retroflex consonant
-    VowelVocalicLl: ["lRR", "LL"]  # prefer "lRR" over "LL" for output
+    VowelR: "R"
+    VowelRr: "RR"
+    VowelL: "lR"  # Use only "lR" for vocalic L to avoid conflict with retroflex consonant
+    VowelLl: ["lRR", "LL"]  # prefer "lRR" over "LL" for output
     VowelE: "e"
     VowelEe: "e"
     VowelAi: "ai"

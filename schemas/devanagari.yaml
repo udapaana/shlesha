@@ -14,10 +14,10 @@ mappings:
     VowelIi: ई
     VowelU: उ
     VowelUu: ऊ
-    VowelVocalicR: ऋ
-    VowelVocalicRr: ॠ
-    VowelVocalicL: ऌ
-    VowelVocalicLl: ॡ
+    VowelR: ऋ
+    VowelRr: ॠ
+    VowelL: ऌ
+    VowelLl: ॡ
     VowelE: ऎ    # short e
     VowelEe: ए   # long e (traditional)
     VowelAi: ऐ
@@ -30,10 +30,10 @@ mappings:
     VowelSignIi: ी
     VowelSignU: ु
     VowelSignUu: ू
-    VowelSignVocalicR: ृ
-    VowelSignVocalicRr: ॄ
-    VowelSignVocalicL: ॢ
-    VowelSignVocalicLl: ॣ
+    VowelSignR: ृ
+    VowelSignRr: ॄ
+    VowelSignL: ॢ
+    VowelSignLl: ॣ
     VowelSignE: ॆ     # short e vowel sign
     VowelSignEe: े    # long e vowel sign (traditional)
     VowelSignAi: ै

@@ -20,10 +20,10 @@ mappings:
     VowelAu: "ஔ"
     
     # Vocalic vowels - typically rendered as combinations in Tamil
-    VowelVocalicR: "ரி"   # ri combination
-    VowelVocalicRr: "ரீ"  # rī combination
-    VowelVocalicL: "லி"   # li combination  
-    VowelVocalicLl: "லீ"  # lī combination
+    VowelR: "ரி"   # ri combination
+    VowelRr: "ரீ"  # rī combination
+    VowelL: "லி"   # li combination  
+    VowelLl: "லீ"  # lī combination
 
   vowel_signs:
     VowelSignAa: "ா"
@@ -37,10 +37,10 @@ mappings:
     VowelSignAu: "ௌ"
     
     # Vocalic vowel signs - different from independent vowels
-    VowelSignVocalicR: "ிர"   # ri sign combination
-    VowelSignVocalicRr: "ீர"  # rī sign combination
-    VowelSignVocalicL: "ில"   # li sign combination
-    VowelSignVocalicLl: "ீல"  # lī sign combination
+    VowelSignR: "ிர"   # ri sign combination
+    VowelSignRr: "ீர"  # rī sign combination
+    VowelSignL: "ில"   # li sign combination
+    VowelSignLl: "ீல"  # lī sign combination
 
   consonants:
     ConsonantK: "க"

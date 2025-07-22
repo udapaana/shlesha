@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2025-07-22
+
+### Fixed
+- Character ordering for Vedic accents and yogavaha marks (anusvara/visarga) when converting between Roman and Indic scripts
+  - Roman scripts: vedic accent + yogavaha (e.g., "ma̍ḥ")
+  - Indic scripts: yogavaha + vedic accent (e.g., "मः॑")
+  - Ensures proper rendering in target scripts without affecting transliteration accuracy
+
+### Added
+- Token categorization methods: `is_vedic_accent()` and `is_yogavaha()` for better mark classification
+- Unit tests for mark reordering logic
+
+## [0.4.1] - 2025-07-21
+
+### Fixed
+- SLP1 short vowel support and template escaping improvements
+- Various minor bug fixes
+
 ## [0.4.0] - 2025-07-19
 
 ### Added

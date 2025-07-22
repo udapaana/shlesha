@@ -14,10 +14,10 @@ mappings:
     VowelIi: "ఈ"    # ī
     VowelU: "ఉ"    # u
     VowelUu: "ఊ"    # ū
-    VowelVocalicR: "ఋ"    # r̥
-    VowelVocalicRr: "ౠ"    # r̥̄
-    VowelVocalicL: "ఌ"    # l̥
-    VowelVocalicLl: "ౡ"    # l̥̄
+    VowelR: "ఋ"    # r̥
+    VowelRr: "ౠ"    # r̥̄
+    VowelL: "ఌ"    # l̥
+    VowelLl: "ౡ"    # l̥̄
     VowelE: "ఎ"    # e (short)
     VowelEe: "ఏ"    # ē (long)
     VowelAi: "ఐ"    # ai
@@ -31,8 +31,8 @@ mappings:
     VowelSignIi: "ీ"    # ī
     VowelSignU: "ు"    # u
     VowelSignUu: "ూ"    # ū
-    VowelSignVocalicR: "ృ"    # r̥
-    VowelSignVocalicRr: "ౄ"    # r̥̄
+    VowelSignR: "ృ"    # r̥
+    VowelSignRr: "ౄ"    # r̥̄
     VowelSignE: "ె"    # e (short)
     VowelSignEe: "ే"    # ē (long)
     VowelSignAi: "ై"    # ai

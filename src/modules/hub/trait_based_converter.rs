@@ -64,7 +64,28 @@ impl TraitBasedConverter {
                         }
                     } else if abugida_token.is_mark() {
                         if let Some(alphabet_mark) = abugida_token.to_alphabet() {
-                            result.push(HubToken::Alphabet(alphabet_mark));
+                            let current_token = HubToken::Alphabet(alphabet_mark);
+                            
+                            // In Roman scripts, vedic accents come before yogavaha marks
+                            // If we're converting from Indic (where it's yogavaha + accent)
+                            // to Roman (where it's accent + yogavaha), check if this is a vedic accent
+                            // and the previous token was yogavaha
+                            if current_token.is_vedic_accent() && !result.is_empty() {
+                                if let Some(last_token) = result.last() {
+                                    if last_token.is_yogavaha() {
+                                        // Pop the yogavaha, push vedic accent, then push yogavaha back
+                                        let yogavaha = result.pop().unwrap();
+                                        result.push(current_token);
+                                        result.push(yogavaha);
+                                    } else {
+                                        result.push(current_token);
+                                    }
+                                } else {
+                                    result.push(current_token);
+                                }
+                            } else {
+                                result.push(current_token);
+                            }
                         } else if let AbugidaToken::Unknown(s) = abugida_token {
                             result.push(HubToken::Alphabet(AlphabetToken::Unknown(s.clone())));
                         }
@@ -165,7 +186,28 @@ impl TraitBasedConverter {
                         // If it's VowelA after consonant, it's implicit - already handled
                     } else if alphabet_token.is_mark() {
                         if let Some(abugida_mark) = alphabet_token.to_abugida() {
-                            result.push(HubToken::Abugida(abugida_mark));
+                            let current_token = HubToken::Abugida(abugida_mark);
+                            
+                            // In Indic scripts, yogavaha marks come before vedic accents
+                            // If we're converting from Roman (where it's accent + yogavaha)
+                            // to Indic (where it's yogavaha + accent), we need to check ahead
+                            if current_token.is_vedic_accent() && i + 1 < tokens.len() {
+                                if let HubToken::Alphabet(next_token) = &tokens[i + 1] {
+                                    if next_token.is_yogavaha() {
+                                        // Convert and push yogavaha first
+                                        if let Some(abugida_yogavaha) = next_token.to_abugida() {
+                                            result.push(HubToken::Abugida(abugida_yogavaha));
+                                        }
+                                        // Then push the vedic accent
+                                        result.push(current_token);
+                                        // Skip the next token since we already processed it
+                                        i += 2;
+                                        continue;
+                                    }
+                                }
+                            }
+                            
+                            result.push(current_token);
                         } else if let AlphabetToken::Unknown(s) = alphabet_token {
                             result.push(HubToken::Abugida(AbugidaToken::Unknown(s.clone())));
                         }

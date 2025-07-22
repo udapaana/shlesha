@@ -20,10 +20,10 @@ mappings:
     VowelO: "o"
     VowelOo: "o"
     VowelAu: "O"
-    VowelVocalicR: "q"
-    VowelVocalicRr: "Q"
-    VowelVocalicL: "L"
-    VowelVocalicLl: "lY"
+    VowelR: "q"
+    VowelRr: "Q"
+    VowelL: "L"
+    VowelLl: "lY"
 
   consonants:
     ConsonantK: "k"

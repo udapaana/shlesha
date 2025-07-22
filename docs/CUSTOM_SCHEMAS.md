@@ -32,47 +32,81 @@ The schema-based converter acts as a fallback when hardcoded converters don't su
 ### Basic Structure
 
 ```yaml
-name: "my_custom_encoding"
-version: "1.0.0"
-script_type: "romanized"  # or "indic"/"brahmic"
-description: "Description of the encoding"
-author: "Author Name"
-
 metadata:
-  has_implicit_a: false    # true for Indic scripts
-  direction: "ltr"         # text direction
-  case_sensitive: true     # case sensitivity
+  name: "my_custom_encoding"
+  script_type: "roman"  # or "brahmic"
+  has_implicit_a: false  # true for Brahmic scripts
+  description: "Description of the encoding"
+  author: "Author Name"  # optional
+  version: "1.0.0"       # optional
+
+target: "alphabet_tokens"  # or "abugida_tokens" for Brahmic scripts
 
 mappings:
   consonants:
-    "k": "क"
-    "g": "ग"
+    ConsonantK: "k"      # Token name -> character(s)
+    ConsonantKh: "kh"
+    ConsonantG: "g"
     # ... more mappings
   
   vowels:
-    "a": "अ"
-    "i": "इ"
+    VowelA: "a"
+    VowelAa: "ā"
+    VowelI: "i"
+    # ... more mappings
+  
+  marks:
+    MarkAnusvara: "ṃ"
+    MarkVisarga: "ḥ"
+    # ... more mappings
+  
+  digits:
+    Digit0: "0"
+    Digit1: "1"
     # ... more mappings
 
-validation:
-  patterns: {}  # Optional validation rules
+codegen:
+  processor_type: "roman_token_based"  # or "brahmic_token_based"
 ```
 
 ### Script Types
 
-- **`romanized`**: Scripts without implicit vowels (routes through ISO-15919 hub)
-- **`indic`/`brahmic`**: Scripts with implicit vowels (routes through Devanagari hub)
+- **`roman`**: Scripts without implicit vowels (uses alphabet tokens)
+- **`brahmic`**: Scripts with implicit vowels (uses abugida tokens)
+
+### Target Field
+
+The `target` field specifies which internal token system your schema maps to. This determines how the transliteration engine interprets and processes your mappings:
+
+- **`alphabet_tokens`**: For alphabetic scripts (Roman, Greek, Cyrillic, etc.)
+  - Each character represents a distinct sound
+  - No inherent vowels in consonants
+  - Examples: IAST, ISO-15919, Harvard-Kyoto, SLP1
+  
+- **`abugida_tokens`**: For abugida scripts (Brahmic family)
+  - Consonants have inherent vowels (usually 'a')
+  - Vowel signs modify the inherent vowel
+  - Requires virama/halant to remove inherent vowel
+  - Examples: Devanagari, Tamil, Telugu, Bengali
+
+The choice of target affects how your mappings are processed during transliteration.
 
 ### Mapping Categories
 
-The `mappings` section can contain any categorization:
-- `consonants`: Consonant characters
-- `vowels`: Vowel characters  
-- `digits`: Numeric characters
-- `punctuation`: Punctuation marks
-- `special`: Special characters
+The `mappings` section uses predefined categories with specific token names:
 
-Categories are flattened internally, so organization is for clarity only.
+#### Token Naming Convention
+- **Consonants**: `ConsonantK`, `ConsonantKh`, `ConsonantG`, etc.
+- **Vowels**: `VowelA`, `VowelAa`, `VowelI`, `VowelIi`, etc.
+- **Marks**: `MarkAnusvara`, `MarkVisarga`, `MarkCandrabindu`, etc.
+- **Digits**: `Digit0`, `Digit1`, `Digit2`, etc.
+- **Vedic**: `MarkUdatta`, `MarkAnudatta`, etc.
+- **Vowel Signs** (for abugida scripts): `VowelSignAa`, `VowelSignI`, etc.
+
+Mappings can be:
+- Single character: `ConsonantK: "k"`
+- Multi-character: `ConsonantKh: "kh"`
+- Array of alternatives: `MarkUdatta: ["́", "̍"]`
 
 ## Usage
 
@@ -108,81 +142,102 @@ let scripts = transliterator.list_supported_scripts();
 
 ## Examples
 
-### Simple ASCII-to-Devanagari Mapping
+### Simple Roman Script Example
 
 ```yaml
-name: "simple_ascii"
-version: "1.0.0"
-script_type: "romanized"
-description: "Simple ASCII to Devanagari mapping"
-author: "User"
-
 metadata:
+  name: "simple_ascii"
+  script_type: "roman"
   has_implicit_a: false
-  direction: "ltr"
-  case_sensitive: false
+  description: "Simple ASCII transliteration"
+
+target: "alphabet_tokens"
 
 mappings:
-  basic:
-    "a": "अ"
-    "k": "क"
-    "r": "र"
-    "m": "म"
+  vowels:
+    VowelA: "a"
+    VowelAa: "aa"
+    VowelI: "i"
+    VowelIi: "ii"
+  
+  consonants:
+    ConsonantK: "k"
+    ConsonantKh: "kh"
+    ConsonantG: "g"
+    ConsonantGh: "gh"
+    ConsonantR: "r"
+    ConsonantM: "m"
+  
+  marks:
+    MarkAnusvara: "m"
+    MarkVisarga: "h"
+
+codegen:
+  processor_type: "roman_token_based"
 ```
 
 Usage:
 ```rust
 transliterator.load_schema("simple_ascii.yaml")?;
 let result = transliterator.transliterate("karma", "simple_ascii", "devanagari")?;
-// Result: "कअर्मअ" (character-by-character mapping)
+// Result: "कर्म" (proper token-based mapping)
 ```
 
 ### Legacy Encoding Support
 
 ```yaml
-name: "legacy_encoding"
-version: "1.0.0"
-script_type: "romanized"
-description: "Legacy system encoding"
-author: "Migration Team"
-
 metadata:
+  name: "legacy_encoding"
+  script_type: "roman"
   has_implicit_a: false
-  
+  description: "Legacy system encoding"
+  author: "Migration Team"
+
+target: "alphabet_tokens"
+
 mappings:
   consonants:
-    "K": "क"
-    "G": "ग"
-    "CH": "च"  # Multi-character input
-    "JH": "झ"
+    ConsonantK: "K"
+    ConsonantG: "G"
+    ConsonantC: "CH"  # Multi-character mapping
+    ConsonantJh: "JH"
     
   vowels:
-    "A": "आ"
-    "I": "ई"
+    VowelA: "a"
+    VowelAa: "A"     # Uppercase for long vowel
+    VowelI: "i"
+    VowelIi: "I"
+  
+  marks:
+    MarkVirama: "&"  # Custom virama representation
+
+codegen:
+  processor_type: "roman_token_based"
 ```
 
 ## Conversion Behavior
 
-### Character-Level Mapping
+### Token-Based Mapping
 
-Custom schemas perform character-level mapping:
-- Each character/string in the input is looked up in the mappings
-- Multi-character mappings are supported (e.g., "ch" → "च")
-- Unknown characters pass through unchanged
-- Longer mappings are tried first
+Custom schemas use token-based mapping:
+- Input text is parsed into linguistic tokens (vowels, consonants, marks)
+- Each token is mapped according to the schema definitions
+- Multi-character mappings are supported (e.g., "kh" for aspirated consonants)
+- The system understands linguistic units rather than just characters
+- Proper handling of vowel signs, virama, and other diacritics
 
 ### Hub Routing
 
-Custom scripts route through the hub system:
+Custom scripts route through the token-based hub system:
 
-1. **Romanized scripts** (`script_type: "romanized"`):
+1. **Roman scripts** (`script_type: "roman"`):
    ```
-   Custom → ISO-15919 → Hub Processing → Target
+   Custom → Alphabet Tokens → Hub Processing → Target
    ```
 
-2. **Indic scripts** (`script_type: "indic"`):
+2. **Brahmic scripts** (`script_type: "brahmic"`):
    ```
-   Custom → Devanagari → Hub Processing → Target
+   Custom → Abugida Tokens → Hub Processing → Target
    ```
 
 ### Bidirectional Support
@@ -269,9 +324,9 @@ result = transliterator.transliterate("text", "my_encoding", "devanagari")
 
 ### Current Limitations
 
-1. **No linguistic rules**: Only character-level mapping, no context awareness
+1. **Token set limitations**: Must use predefined token names
 2. **Performance overhead**: Schema cloning and rebuilding per conversion
-3. **No validation**: Limited schema validation during loading
+3. **Basic validation**: Only validates required fields and script types
 4. **Memory usage**: All schemas kept in memory permanently
 
 ### Best Practices

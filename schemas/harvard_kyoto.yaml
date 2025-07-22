@@ -14,10 +14,10 @@ mappings:
     VowelIi: "I"
     VowelU: "u"
     VowelUu: "U"
-    VowelVocalicR: "R"
-    VowelVocalicRr: ["RR", "r̥̄"]  # Multiple inputs, first is preferred output
-    VowelVocalicL: "lR"
-    VowelVocalicLl: ["lRR", "l̥̄"]  # This resolves the ambiguity! lRR is preferred but l̥̄ also maps
+    VowelR: "R"
+    VowelRr: ["RR", "r̥̄"]  # Multiple inputs, first is preferred output
+    VowelL: "lR"
+    VowelLl: ["lRR", "l̥̄"]  # This resolves the ambiguity! lRR is preferred but l̥̄ also maps
     VowelE: "e"
     VowelEe: "e"
     VowelAi: "ai"

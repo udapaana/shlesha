@@ -146,6 +146,20 @@ impl HubToken {
     pub fn is_virama(&self) -> bool {
         matches!(self, HubToken::Abugida(AbugidaToken::MarkVirama))
     }
+    
+    pub fn is_vedic_accent(&self) -> bool {
+        match self {
+            HubToken::Abugida(token) => token.is_vedic_accent(),
+            HubToken::Alphabet(token) => token.is_vedic_accent(),
+        }
+    }
+    
+    pub fn is_yogavaha(&self) -> bool {
+        match self {
+            HubToken::Abugida(token) => token.is_yogavaha(),
+            HubToken::Alphabet(token) => token.is_yogavaha(),
+        }
+    }
 }
 
 // Token relationship mappings
@@ -225,6 +239,22 @@ impl AbugidaToken {
 {{/if}}
         )
     }
+    
+    pub fn is_vedic_accent(&self) -> bool {
+        matches!(self,
+{{#each abugida_vedic}}
+            AbugidaToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
+    
+    pub fn is_yogavaha(&self) -> bool {
+        matches!(self,
+{{#each abugida_marks}}
+            AbugidaToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
 }
 
 impl AlphabetToken {
@@ -267,6 +297,22 @@ impl AlphabetToken {
             | AlphabetToken::{{this}}
 {{/each}}
 {{/if}}
+        )
+    }
+    
+    pub fn is_vedic_accent(&self) -> bool {
+        matches!(self,
+{{#each alphabet_vedic}}
+            AlphabetToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
+        )
+    }
+    
+    pub fn is_yogavaha(&self) -> bool {
+        matches!(self,
+{{#each alphabet_marks}}
+            AlphabetToken::{{this}}{{#unless @last}} |{{/unless}}
+{{/each}}
         )
     }
 }

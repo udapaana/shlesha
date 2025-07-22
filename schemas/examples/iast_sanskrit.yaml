@@ -16,10 +16,10 @@ mappings:
     VowelIi: "ī"
     VowelU: "u"
     VowelUu: "ū"
-    VowelVocalicR: "ṛ"
-    VowelVocalicRr: "ṝ"
-    VowelVocalicL: "l̥"
-    VowelVocalicLl: "l̥̄"
+    VowelR: "ṛ"
+    VowelRr: "ṝ"
+    VowelL: "l̥"
+    VowelLl: "l̥̄"
     # In Sanskrit, e and o are phonologically long
     VowelE: "ĕ"      # short e (rare, only for Dravidian)
     VowelEe: "e"     # long e (default in Sanskrit)

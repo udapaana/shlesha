@@ -14,10 +14,10 @@ mappings:
     VowelIi: "I"
     VowelU: "u"
     VowelUu: "U"
-    VowelVocalicR: "f"
-    VowelVocalicRr: "F"
-    VowelVocalicL: "x"
-    VowelVocalicLl: "X"
+    VowelR: "f"
+    VowelRr: "F"
+    VowelL: "x"
+    VowelLl: "X"
     VowelE: "e1"    # short e (Dravidian)
     VowelEe: "e"    # long e (standard)
     VowelO: "o1"    # short o (Dravidian)

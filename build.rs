@@ -294,8 +294,8 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
         ("VowelEe", "VowelEe"),
         ("VowelOo", "VowelOo"),
         // Vocalic L often doesn't exist in many scripts
-        ("VowelVocalicL", "VowelVocalicL"),
-        ("VowelVocalicLl", "VowelVocalicLl"),
+        ("VowelL", "VowelL"),
+        ("VowelLl", "VowelLl"),
     ];
 
     for (abugida, alphabet) in special_mappings {
@@ -1237,11 +1237,11 @@ fn generate_hub_converter(
                         "special_handling": "drop"
                     }));
                 }
-                "VowelSignVocalicL" | "VowelSignVocalicLl" | "VowelVocalicL" | "VowelVocalicLl" => {
+                "VowelSignL" | "VowelSignLl" | "VowelL" | "VowelLl" => {
                     // These might not exist in all scripts, map to closest equivalent
                     abugida_to_alphabet_mappings.push(json!({
                         "abugida_token": abugida_token,
-                        "alphabet_token": if abugida_token.contains("Ll") { "VowelVocalicRr" } else { "VowelVocalicR" }
+                        "alphabet_token": if abugida_token.contains("Ll") { "VowelRr" } else { "VowelR" }
                     }));
                 }
                 // Handle long e/o tokens - if alphabet doesn't have them, map to short forms

@@ -14,10 +14,10 @@ mappings:
     VowelIi: ["ii", "I"]  # prefer "ii" over "I" for output
     VowelU: "u"
     VowelUu: ["uu", "U"]  # prefer "uu" over "U" for output
-    VowelVocalicR: ".r"
-    VowelVocalicRr: ".R"
-    VowelVocalicL: ".ll"
-    VowelVocalicLl: ".LL"
+    VowelR: ".r"
+    VowelRr: ".R"
+    VowelL: ".ll"
+    VowelLl: ".LL"
     VowelE: "e"
     VowelEe: "e"
     VowelAi: "ai"

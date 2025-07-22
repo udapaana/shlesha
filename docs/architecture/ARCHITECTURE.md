@@ -44,9 +44,9 @@ pub fn string_to_token(&self, input: &str) -> Option<AlphabetToken> {
     match input {
         "a" => Some(AlphabetToken::VowelA),
         "ā" => Some(AlphabetToken::VowelAa),
-        "RR" => Some(AlphabetToken::VowelVocalicRr),
-        "lRR" => Some(AlphabetToken::VowelVocalicLl),
-        "l̥̄" => Some(AlphabetToken::VowelVocalicLl),
+        "RR" => Some(AlphabetToken::VowelRr),
+        "lRR" => Some(AlphabetToken::VowelLl),
+        "l̥̄" => Some(AlphabetToken::VowelLl),
         _ => None,
     }
 }
@@ -55,7 +55,7 @@ pub fn token_to_string(&self, token: &AlphabetToken) -> &'static str {
     match token {
         AlphabetToken::VowelA => "a",
         AlphabetToken::VowelAa => "ā", 
-        AlphabetToken::VowelVocalicLl => "lRR",
+        AlphabetToken::VowelLl => "lRR",
         // ...
     }
 }
@@ -98,12 +98,12 @@ impl RuntimeCompiler {
 pub enum AbugidaToken {
     // Vowels (independent)
     VowelA, VowelAa, VowelI, VowelIi, VowelU, VowelUu,
-    VowelVocalicR, VowelVocalicRr, VowelVocalicL, VowelVocalicLl,
+    VowelR, VowelRr, VowelL, VowelLl,
     VowelE, VowelAi, VowelO, VowelAu,
     
     // Vowel signs (dependent) 
     VowelSignAa, VowelSignI, VowelSignIi, VowelSignU, VowelSignUu,
-    VowelSignVocalicR, VowelSignVocalicRr, VowelSignVocalicL, VowelSignVocalicLl,
+    VowelSignR, VowelSignRr, VowelSignL, VowelSignLl,
     VowelSignE, VowelSignAi, VowelSignO, VowelSignAu,
     
     // Consonants
@@ -131,7 +131,7 @@ pub enum AbugidaToken {
 pub enum AlphabetToken {
     // Vowels
     VowelA, VowelAa, VowelI, VowelIi, VowelU, VowelUu,
-    VowelVocalicR, VowelVocalicRr, VowelVocalicL, VowelVocalicLl,
+    VowelR, VowelRr, VowelL, VowelLl,
     VowelE, VowelAi, VowelO, VowelAu,
     
     // Consonants  
@@ -156,14 +156,14 @@ pub enum AlphabetToken {
 ```yaml
 mappings:
   vowels:
-    VowelVocalicLl: ["lRR", "l̥̄"]  # Multiple inputs → same token
-    VowelVocalicRr: ["RR", "r̥̄"]   # First = preferred output
+    VowelLl: ["lRR", "l̥̄"]  # Multiple inputs → same token
+    VowelRr: ["RR", "r̥̄"]   # First = preferred output
 ```
 
 **Conversion Flow**:
 ```
-Input "lRR" → VowelVocalicLl → Output "lRR" ✅
-Input "l̥̄"  → VowelVocalicLl → Output "lRR" ✅ (normalized to preferred)
+Input "lRR" → VowelLl → Output "lRR" ✅
+Input "l̥̄"  → VowelLl → Output "lRR" ✅ (normalized to preferred)
 ```
 
 This eliminates round-trip ambiguity.

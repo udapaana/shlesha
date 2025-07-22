@@ -199,8 +199,8 @@ impl {{struct_name}} {
                         // Independent vowels - output directly
                         AbugidaToken::VowelA | AbugidaToken::VowelAa | AbugidaToken::VowelI |
                         AbugidaToken::VowelIi | AbugidaToken::VowelU | AbugidaToken::VowelUu |
-                        AbugidaToken::VowelVocalicR | AbugidaToken::VowelVocalicRr |
-                        AbugidaToken::VowelVocalicL | AbugidaToken::VowelVocalicLl |
+                        AbugidaToken::VowelR | AbugidaToken::VowelRr |
+                        AbugidaToken::VowelL | AbugidaToken::VowelLl |
                         AbugidaToken::VowelE | AbugidaToken::VowelAi | AbugidaToken::VowelO | 
                         AbugidaToken::VowelAu => {
                             result.push_str(&self.token_to_string(abugida_token));
@@ -232,9 +232,9 @@ impl {{struct_name}} {
                                             // Vowel signs - no virama needed (consonant takes vowel)
                                             AbugidaToken::VowelSignAa | AbugidaToken::VowelSignI |
                                             AbugidaToken::VowelSignIi | AbugidaToken::VowelSignU |
-                                            AbugidaToken::VowelSignUu | AbugidaToken::VowelSignVocalicR |
-                                            AbugidaToken::VowelSignVocalicRr | AbugidaToken::VowelSignVocalicL |
-                                            AbugidaToken::VowelSignVocalicLl | AbugidaToken::VowelSignE |
+                                            AbugidaToken::VowelSignUu | AbugidaToken::VowelSignR |
+                                            AbugidaToken::VowelSignRr | AbugidaToken::VowelSignL |
+                                            AbugidaToken::VowelSignLl | AbugidaToken::VowelSignE |
                                             AbugidaToken::VowelSignAi | AbugidaToken::VowelSignO |
                                             AbugidaToken::VowelSignAu => false,
                                             
@@ -281,9 +281,9 @@ impl {{struct_name}} {
                         
                         // Vowel signs - output directly
                         AbugidaToken::VowelSignAa | AbugidaToken::VowelSignI | AbugidaToken::VowelSignIi |
-                        AbugidaToken::VowelSignU | AbugidaToken::VowelSignUu | AbugidaToken::VowelSignVocalicR |
-                        AbugidaToken::VowelSignVocalicRr | AbugidaToken::VowelSignVocalicL |
-                        AbugidaToken::VowelSignVocalicLl | AbugidaToken::VowelSignE | AbugidaToken::VowelSignAi |
+                        AbugidaToken::VowelSignU | AbugidaToken::VowelSignUu | AbugidaToken::VowelSignR |
+                        AbugidaToken::VowelSignRr | AbugidaToken::VowelSignL |
+                        AbugidaToken::VowelSignLl | AbugidaToken::VowelSignE | AbugidaToken::VowelSignAi |
                         AbugidaToken::VowelSignO | AbugidaToken::VowelSignAu => {
                             result.push_str(&self.token_to_string(abugida_token));
                         }
