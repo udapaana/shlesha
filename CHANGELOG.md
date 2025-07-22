@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Sharada script support (`sharada`, `shrd`) - Historical script of Kashmir, crucial for Vedic manuscripts
+  - Full consonant, vowel, and mark mappings
+  - Vedic accent support using standard Devanagari accent marks
+  - Proper character ordering for yogavaha and vedic marks
+- Tibetan script support (`tibetan`, `tibt`, `bo`) - Important for Buddhist Vedic transmission
+  - Complete Sanskrit transliteration mappings
+  - Aspirated consonants (གྷ, ཛྷ, ཌྷ, དྷ, བྷ) for accurate Sanskrit representation
+  - Vedic accent support using standard combining marks
+- Thai script support (`thai`, `th`) - Adapted from Grantha for Buddhist Vedic texts
+  - Sanskrit consonant and vowel mappings using Thai characters
+  - Vedic accent approximation using Thai tone marks
+  - Special handling for vowel signs (pre-consonantal เ, ไ, โ)
+- Token debug schemas (`abugida_tokens.yaml`, `alphabet_tokens.yaml`) for development
+  - Document all possible tokens in the conversion system
+  - Useful for understanding the token-based architecture
+
 ## [0.4.2] - 2025-07-22
 
 ### Fixed

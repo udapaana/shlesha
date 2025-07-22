@@ -109,6 +109,9 @@ transliterator.transliterate("dharma", "itrans", "bengali")?; // itrans→iso→
 - **Odia** (`odia`, `od`) - Odia/Oriya script
 - **Gurmukhi** (`gurmukhi`, `pa`) - Punjabi script
 - **Sinhala** (`sinhala`, `si`) - Sinhala script
+- **Sharada** (`sharada`, `shrd`) - Historical script of Kashmir, crucial for Vedic manuscripts
+- **Tibetan** (`tibetan`, `tibt`, `bo`) - Important for Buddhist Vedic transmission
+- **Thai** (`thai`, `th`) - Adapted from Grantha for Buddhist Vedic texts
 
 ### Romanization Schemes (Schema-Generated)
 - **ISO-15919** (`iso15919`, `iso`) - International standard

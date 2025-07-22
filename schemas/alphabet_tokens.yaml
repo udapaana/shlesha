@@ -1,0 +1,98 @@
+metadata:
+  name: "alphabet_tokens"
+  script_type: "roman"
+  has_implicit_a: false
+  description: "Debug output showing alphabet tokens - useful for understanding token flow"
+  aliases:
+  - alphabet_debug
+
+target: "iso15919"
+
+mappings:
+  vowels:
+    VowelA: "[VowelA]"
+    VowelAa: "[VowelAa]"
+    VowelI: "[VowelI]"
+    VowelIi: "[VowelIi]"
+    VowelU: "[VowelU]"
+    VowelUu: "[VowelUu]"
+    VowelR: "[VowelR]"
+    VowelRr: "[VowelRr]"
+    VowelL: "[VowelL]"
+    VowelLl: "[VowelLl]"
+    VowelE: "[VowelE]"
+    VowelEe: "[VowelEe]"
+    VowelAi: "[VowelAi]"
+    VowelO: "[VowelO]"
+    VowelOo: "[VowelOo]"
+    VowelAu: "[VowelAu]"
+
+  consonants:
+    ConsonantK: "[ConsonantK]"
+    ConsonantKh: "[ConsonantKh]"
+    ConsonantG: "[ConsonantG]"
+    ConsonantGh: "[ConsonantGh]"
+    ConsonantNg: "[ConsonantNg]"
+    ConsonantC: "[ConsonantC]"
+    ConsonantCh: "[ConsonantCh]"
+    ConsonantJ: "[ConsonantJ]"
+    ConsonantJh: "[ConsonantJh]"
+    ConsonantNy: "[ConsonantNy]"
+    ConsonantT: "[ConsonantT]"
+    ConsonantTh: "[ConsonantTh]"
+    ConsonantD: "[ConsonantD]"
+    ConsonantDh: "[ConsonantDh]"
+    ConsonantN: "[ConsonantN]"
+    ConsonantTt: "[ConsonantTt]"
+    ConsonantTth: "[ConsonantTth]"
+    ConsonantDd: "[ConsonantDd]"
+    ConsonantDdh: "[ConsonantDdh]"
+    ConsonantNn: "[ConsonantNn]"
+    ConsonantP: "[ConsonantP]"
+    ConsonantPh: "[ConsonantPh]"
+    ConsonantB: "[ConsonantB]"
+    ConsonantBh: "[ConsonantBh]"
+    ConsonantM: "[ConsonantM]"
+    ConsonantY: "[ConsonantY]"
+    ConsonantR: "[ConsonantR]"
+    ConsonantL: "[ConsonantL]"
+    ConsonantV: "[ConsonantV]"
+    ConsonantLl: "[ConsonantLl]"
+    ConsonantSh: "[ConsonantSh]"
+    ConsonantSs: "[ConsonantSs]"
+    ConsonantS: "[ConsonantS]"
+    ConsonantH: "[ConsonantH]"
+    ConsonantQa: "[ConsonantQa]"
+    ConsonantZa: "[ConsonantZa]"
+    ConsonantFa: "[ConsonantFa]"
+    ConsonantGha: "[ConsonantGha]"
+    ConsonantKha: "[ConsonantKha]"
+
+  marks:
+    MarkAnusvara: "[MarkAnusvara]"
+    MarkVisarga: "[MarkVisarga]"
+    MarkCandrabindu: "[MarkCandrabindu]"
+    MarkAvagraha: "[MarkAvagraha]"
+    MarkUdatta: "[MarkUdatta]"
+    MarkAnudatta: "[MarkAnudatta]"
+    MarkSvarita: "[MarkSvarita]"
+    MarkDoubleSvarita: "[MarkDoubleSvarita]"
+    MarkTripleSvarita: "[MarkTripleSvarita]"
+
+  special:
+    # No special tokens in AlphabetToken
+
+  digits:
+    Digit0: "[Digit0]"
+    Digit1: "[Digit1]"
+    Digit2: "[Digit2]"
+    Digit3: "[Digit3]"
+    Digit4: "[Digit4]"
+    Digit5: "[Digit5]"
+    Digit6: "[Digit6]"
+    Digit7: "[Digit7]"
+    Digit8: "[Digit8]"
+    Digit9: "[Digit9]"
+
+codegen:
+  processor_type: "roman_converter"

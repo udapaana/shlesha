@@ -336,6 +336,42 @@ result = transliterator.transliterate("text", "my_encoding", "devanagari")
 3. **Test thoroughly**: Verify all expected character mappings work
 4. **Document schemas**: Include clear descriptions and examples
 
+## Built-in Schemas for Vedic Texts
+
+### Recently Added Scripts
+
+The following scripts have been added specifically for Vedic text support:
+
+1. **Sharada** (`sharada`, `shrd`)
+   - Historical script of Kashmir
+   - Crucial for Vedic manuscript preservation
+   - Full Vedic accent support
+   - Proper yogavaha and accent ordering
+
+2. **Tibetan** (`tibetan`, `tibt`, `bo`)
+   - Important for Buddhist Vedic transmission
+   - Complete Sanskrit transliteration support
+   - Aspirated consonants for accurate Sanskrit
+   - Vedic accent marks using standard combiners
+
+3. **Thai** (`thai`, `th`)
+   - Adapted from Grantha for Buddhist texts
+   - Sanskrit consonant and vowel mappings
+   - Tone marks for Vedic accent approximation
+   - Pre-consonantal vowel handling
+
+### Debug Schemas
+
+Two special schemas are provided for debugging the token-based architecture:
+
+1. **abugida_tokens.yaml** - Shows all Abugida (Brahmic) tokens
+2. **alphabet_tokens.yaml** - Shows all Alphabet (Roman) tokens
+
+These output token names instead of characters (e.g., `[ConsonantK][VowelA]`), useful for:
+- Understanding the conversion pipeline
+- Debugging character ordering issues
+- Learning the token architecture
+
 ## Future Enhancements
 
 ### Planned Features

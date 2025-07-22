@@ -1,0 +1,133 @@
+metadata:
+  name: "tibetan"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Tibetan (བོད་སྐད་) script - important for Buddhist Vedic transmission"
+  aliases:
+  - tibt
+  - bo
+
+target: "abugida_tokens"
+
+mappings:
+  vowels:
+    VowelA: "ཨ"      # a
+    VowelAa: "ཨཱ"     # ā
+    VowelI: "ཨི"      # i
+    VowelIi: "ཨཱི"     # ī
+    VowelU: "ཨུ"      # u
+    VowelUu: "ཨཱུ"     # ū
+    VowelR: "རྀ"      # ṛ
+    VowelRr: "རཱྀ"     # ṝ
+    VowelL: "ལྀ"      # ḷ
+    VowelLl: "ལཱྀ"     # ḹ
+    VowelE: "ཨེ"      # e
+    VowelEe: "ཨེ"     # ē (same as short e in Tibetan)
+    VowelAi: "ཨཻ"     # ai
+    VowelO: "ཨོ"      # o
+    VowelOo: "ཨོ"     # ō (same as short o in Tibetan)
+    VowelAu: "ཨཽ"     # au
+
+  vowel_signs:
+    VowelSignAa: "ཱ"     # ā
+    VowelSignI: "ི"      # i
+    VowelSignIi: "ཱི"     # ī
+    VowelSignU: "ུ"      # u
+    VowelSignUu: "ཱུ"     # ū
+    VowelSignR: "ྲྀ"     # ṛ
+    VowelSignRr: "ྲཱྀ"    # ṝ
+    VowelSignL: "ླྀ"     # ḷ
+    VowelSignLl: "ླཱྀ"    # ḹ
+    VowelSignE: "ེ"      # e
+    VowelSignEe: "ེ"     # ē (same as short e)
+    VowelSignAi: "ཻ"     # ai
+    VowelSignO: "ོ"      # o
+    VowelSignOo: "ོ"     # ō (same as short o)
+    VowelSignAu: "ཽ"     # au
+
+  consonants:
+    # Velar
+    ConsonantK: "ཀ"      # ka
+    ConsonantKh: "ཁ"     # kha
+    ConsonantG: "ག"      # ga
+    ConsonantGh: "གྷ"    # gha
+    ConsonantNg: "ང"     # ṅa
+    
+    # Palatal
+    ConsonantC: "ཙ"      # ca
+    ConsonantCh: "ཚ"     # cha
+    ConsonantJ: "ཛ"      # ja
+    ConsonantJh: "ཛྷ"    # jha
+    ConsonantNy: "ཉ"     # ña
+    
+    # Retroflex
+    ConsonantT: "ཊ"      # ṭa
+    ConsonantTh: "ཋ"     # ṭha
+    ConsonantD: "ཌ"      # ḍa
+    ConsonantDh: "ཌྷ"    # ḍha
+    ConsonantN: "ཎ"      # ṇa
+    
+    # Dental
+    ConsonantTt: "ཏ"     # ta
+    ConsonantTth: "ཐ"    # tha
+    ConsonantDd: "ད"     # da
+    ConsonantDdh: "དྷ"   # dha
+    ConsonantNn: "ན"     # na
+    
+    # Labial
+    ConsonantP: "པ"      # pa
+    ConsonantPh: "ཕ"     # pha
+    ConsonantB: "བ"      # ba
+    ConsonantBh: "བྷ"    # bha
+    ConsonantM: "མ"      # ma
+    
+    # Semivowels and liquids
+    ConsonantY: "ཡ"      # ya
+    ConsonantR: "ར"      # ra
+    ConsonantL: "ལ"      # la
+    ConsonantV: "ཝ"      # va (wa in Tibetan)
+    ConsonantLl: "ལ༹"    # ḷa (Vedic retroflex l - using ལ with ༹)
+    
+    # Sibilants and aspirate
+    ConsonantSh: "ཤ"     # śa
+    ConsonantSs: "ཥ"     # ṣa
+    ConsonantS: "ས"      # sa
+    ConsonantH: "ཧ"      # ha
+
+  marks:
+    MarkAnusvara: "ཾ"     # anusvāra
+    MarkVisarga: "ཿ"      # visarga
+    MarkCandrabindu: "ྃ"   # candrabindu
+    MarkVirama: "྄"       # virāma/halanta
+    MarkAvagraha: "྅"      # avagraha
+    MarkNukta: "༹"        # nukta (for foreign sounds)
+    # Tibetan-specific marks
+    MarkJihvamuliya: "ྈ"   # jihvāmūlīya (Vedic)
+    MarkUpadhmaniya: "ྉ"   # upadhmānīya (Vedic)
+
+  vedic:
+    # Vedic accent marks - Tibetan uses combining marks
+    MarkUdatta: "॑"        # udātta (using Devanagari)
+    MarkAnudatta: "॒"      # anudātta (using Devanagari)
+    MarkSvarita: "॑"       # svarita (same as udātta)
+    MarkDoubleSvarita: "᳚"
+    MarkTripleSvarita: "᳛"
+
+  special:
+    # Additional characters for Sanskrit transliteration
+    # Note: Most special characters are handled by base consonants + nukta
+
+  digits:
+    Digit0: "༠"    # 0
+    Digit1: "༡"    # 1
+    Digit2: "༢"    # 2
+    Digit3: "༣"    # 3
+    Digit4: "༤"    # 4
+    Digit5: "༥"    # 5
+    Digit6: "༦"    # 6
+    Digit7: "༧"    # 7
+    Digit8: "༨"    # 8
+    Digit9: "༩"    # 9
+
+codegen:
+  processor_type: "indic_token_based"
