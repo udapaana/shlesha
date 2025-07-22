@@ -65,7 +65,7 @@ impl TraitBasedConverter {
                     } else if abugida_token.is_mark() {
                         if let Some(alphabet_mark) = abugida_token.to_alphabet() {
                             let current_token = HubToken::Alphabet(alphabet_mark);
-                            
+
                             // In Roman scripts, vedic accents come before yogavaha marks
                             // If we're converting from Indic (where it's yogavaha + accent)
                             // to Roman (where it's accent + yogavaha), check if this is a vedic accent
@@ -187,7 +187,7 @@ impl TraitBasedConverter {
                     } else if alphabet_token.is_mark() {
                         if let Some(abugida_mark) = alphabet_token.to_abugida() {
                             let current_token = HubToken::Abugida(abugida_mark);
-                            
+
                             // In Indic scripts, yogavaha marks come before vedic accents
                             // If we're converting from Roman (where it's accent + yogavaha)
                             // to Indic (where it's yogavaha + accent), we need to check ahead
@@ -206,7 +206,7 @@ impl TraitBasedConverter {
                                     }
                                 }
                             }
-                            
+
                             result.push(current_token);
                         } else if let AlphabetToken::Unknown(s) = alphabet_token {
                             result.push(HubToken::Abugida(AbugidaToken::Unknown(s.clone())));

@@ -91,7 +91,7 @@ fn test_unknown_token_handling() {
 #[test]
 fn test_mark_reordering_abugida_to_alphabet() {
     let hub = Hub::new();
-    
+
     // Test case: Abugida tokens [ConsonantM, MarkVisarga, MarkUdatta]
     // Should become [ConsonantM, VowelA (implicit), MarkUdatta, MarkVisarga] in alphabet
     let input_tokens = vec![
@@ -99,28 +99,40 @@ fn test_mark_reordering_abugida_to_alphabet() {
         HubToken::Abugida(AbugidaToken::MarkVisarga),
         HubToken::Abugida(AbugidaToken::MarkUdatta),
     ];
-    
+
     let result = hub.abugida_to_alphabet_tokens(&input_tokens);
     match result {
         Ok(output_tokens) => {
             println!("Abugida to Alphabet tokens: {:?}", output_tokens);
-            
+
             // Should have: ConsonantM, implicit VowelA, MarkUdatta, MarkVisarga
             // When converting from Indic to Roman, vedic accents come before yogavaha marks
             assert_eq!(output_tokens.len(), 4);
-            assert!(matches!(output_tokens[0], HubToken::Alphabet(AlphabetToken::ConsonantM)));
-            assert!(matches!(output_tokens[1], HubToken::Alphabet(AlphabetToken::VowelA)));
-            assert!(matches!(output_tokens[2], HubToken::Alphabet(AlphabetToken::MarkUdatta)));
-            assert!(matches!(output_tokens[3], HubToken::Alphabet(AlphabetToken::MarkVisarga)));
+            assert!(matches!(
+                output_tokens[0],
+                HubToken::Alphabet(AlphabetToken::ConsonantM)
+            ));
+            assert!(matches!(
+                output_tokens[1],
+                HubToken::Alphabet(AlphabetToken::VowelA)
+            ));
+            assert!(matches!(
+                output_tokens[2],
+                HubToken::Alphabet(AlphabetToken::MarkUdatta)
+            ));
+            assert!(matches!(
+                output_tokens[3],
+                HubToken::Alphabet(AlphabetToken::MarkVisarga)
+            ));
         }
         Err(e) => panic!("Conversion failed: {:?}", e),
     }
 }
 
-#[test] 
+#[test]
 fn test_mark_reordering_alphabet_to_abugida() {
     let hub = Hub::new();
-    
+
     // Test case: Alphabet tokens [ConsonantM, VowelA, MarkUdatta, MarkVisarga]
     // Should become [ConsonantM, MarkVisarga, MarkUdatta] in abugida (yogavaha before vedic)
     let input_tokens = vec![
@@ -129,17 +141,26 @@ fn test_mark_reordering_alphabet_to_abugida() {
         HubToken::Alphabet(AlphabetToken::MarkUdatta),
         HubToken::Alphabet(AlphabetToken::MarkVisarga),
     ];
-    
+
     let result = hub.alphabet_to_abugida_tokens(&input_tokens);
     match result {
         Ok(output_tokens) => {
             println!("Alphabet to Abugida tokens: {:?}", output_tokens);
-            
+
             // Should have: ConsonantM (no virama as followed by VowelA), MarkVisarga, MarkUdatta
             assert_eq!(output_tokens.len(), 3);
-            assert!(matches!(output_tokens[0], HubToken::Abugida(AbugidaToken::ConsonantM)));
-            assert!(matches!(output_tokens[1], HubToken::Abugida(AbugidaToken::MarkVisarga)));
-            assert!(matches!(output_tokens[2], HubToken::Abugida(AbugidaToken::MarkUdatta)));
+            assert!(matches!(
+                output_tokens[0],
+                HubToken::Abugida(AbugidaToken::ConsonantM)
+            ));
+            assert!(matches!(
+                output_tokens[1],
+                HubToken::Abugida(AbugidaToken::MarkVisarga)
+            ));
+            assert!(matches!(
+                output_tokens[2],
+                HubToken::Abugida(AbugidaToken::MarkUdatta)
+            ));
         }
         Err(e) => panic!("Conversion failed: {:?}", e),
     }
