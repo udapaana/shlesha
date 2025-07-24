@@ -116,7 +116,9 @@ fn generate_tokens_from_schemas() -> Result<(), Box<dyn std::error::Error>> {
                     .map_err(|e| format!("Failed to parse YAML schema {}: {e}", path.display()))?;
 
                 // Skip debug schemas
-                if schema.metadata.name == "abugida_tokens" || schema.metadata.name == "alphabet_tokens" {
+                if schema.metadata.name == "abugida_tokens"
+                    || schema.metadata.name == "alphabet_tokens"
+                {
                     continue;
                 }
 
