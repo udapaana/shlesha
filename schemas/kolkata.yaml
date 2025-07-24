@@ -18,10 +18,8 @@ mappings:
     VowelR: "ṛ"
     VowelRr: "ṝ"
     VowelL: "ḷ"
-    VowelE: "e"
     VowelEe: "e"
     VowelAi: "ai"
-    VowelO: "o"
     VowelOo: "o"
     VowelAu: "au"
 
@@ -66,11 +64,11 @@ mappings:
     
   vedic:
     # Vedic accent marks (Unicode combining diacritics)
-    MarkUdatta: ["́", "̍"]    # combining acute accent, combining vertical line above
-    MarkAnudatta: ["̱", "̠"]   # combining macron below, combining minus sign below
+    MarkVerticalLineAbove: ["́", "̍"]    # combining acute accent, combining vertical line above
+    MarkLineBelow: ["̱", "̠"]   # combining macron below, combining minus sign below
     MarkSvarita: "̀"    # combining grave accent
-    MarkDoubleSvarita: "́̀"  # combining acute + grave
-    MarkTripleSvarita: "́̀̀" # combining acute + double grave
+    MarkDoubleVerticalAbove: "́̀"  # combining acute + grave
+    MarkTripleVerticalAbove: "́̀̀" # combining acute + double grave
 
   special:
 

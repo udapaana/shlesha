@@ -19,10 +19,8 @@ mappings:
     VowelRr: "RR"
     VowelL: "lR"  # Use only "lR" for vocalic L to avoid conflict with retroflex consonant
     VowelLl: ["lRR", "LL"]  # prefer "lRR" over "LL" for output
-    VowelE: "e"
     VowelEe: "e"
     VowelAi: "ai"
-    VowelO: "o"
     VowelOo: "o"
     VowelAu: "au"
 
@@ -68,11 +66,11 @@ mappings:
 
   vedic:
     # Vedic accent marks
-    MarkUdatta: "'"     # acute accent
-    MarkAnudatta: "_"   # grave accent
+    MarkVerticalLineAbove: "'"     # acute accent
+    MarkLineBelow: "_"   # grave accent
     MarkSvarita: "^"    # caret for svarita
-    MarkDoubleSvarita: "~"  # double svarita
-    MarkTripleSvarita: "~~" # triple svarita
+    MarkDoubleVerticalAbove: "~"  # double svarita
+    MarkTripleVerticalAbove: "~~" # triple svarita
 
   special:
     # SpecialOm: ["OM", "AUM"]  # prefer "OM" for output - no token yet

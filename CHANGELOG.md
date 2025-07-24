@@ -5,13 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.5.0] - 2025-01-23
 
 ### Added
-- Sharada script support (`sharada`, `shrd`) - Historical script of Kashmir, crucial for Vedic manuscripts
-  - Full consonant, vowel, and mark mappings
-  - Vedic accent support using standard Devanagari accent marks
-  - Proper character ordering for yogavaha and vedic marks
+- Grantha script support (`grantha`) - Historical script of Tamil Nadu for Sanskrit
+  - Complete character mappings including Grantha-specific marks
+  - Full Vedic accent support with additional marks (kampa, prachaya, etc.)
+- Nine additional historical Vedic scripts:
+  - Sharada (`sharada`, `shrd`) - Historical script of Kashmir
+  - Siddham (`siddham`) - Buddhist/tantric script
+  - Modi (`modi`) - Maharashtra historical script
+  - Newa/Newari (`newa`) - Nepal historical script with OM symbol
+  - Bhaiksuki (`bhaiksuki`) - Buddhist manuscript script
+  - Kaithi (`kaithi`) - North Indian historical script
+  - Takri (`takri`) - Western Himalayan script
+  - Dogra (`dogra`) - Jammu & Kashmir script
+  - Nandinagari (`nandinagari`) - South Indian Sanskrit script
+- Visual-based Vedic accent token names to resolve Unicode ambiguities:
+  - `MarkVerticalLineAbove` for ॑ (U+0951)
+  - `MarkLineBelow` for ॒ (U+0952)
+  - `MarkDoubleVerticalAbove` for ᳚ (U+1CDA)
+  - `MarkTripleVerticalAbove` for ᳛ (U+1CDB)
+- Documentation for Vedic accent Unicode ambiguities (`docs/VEDIC_ACCENTS.md`)
 - Tibetan script support (`tibetan`, `tibt`, `bo`) - Important for Buddhist Vedic transmission
   - Complete Sanskrit transliteration mappings
   - Aspirated consonants (གྷ, ཛྷ, ཌྷ, དྷ, བྷ) for accurate Sanskrit representation
@@ -20,9 +35,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Sanskrit consonant and vowel mappings using Thai characters
   - Vedic accent approximation using Thai tone marks
   - Special handling for vowel signs (pre-consonantal เ, ไ, โ)
-- Token debug schemas (`abugida_tokens.yaml`, `alphabet_tokens.yaml`) for development
-  - Document all possible tokens in the conversion system
-  - Useful for understanding the token-based architecture
+
+### Changed
+- All built-in schemas now use visual token names for Vedic accents instead of linguistic names
+- Updated documentation to explain visual token naming approach
+- Fixed duplicate character mappings in multiple schemas
+
+### Fixed
+- Short e/o vowel mapping convention - only map if script has distinct characters
+- Vedic accent mappings to reflect actual usage vs Unicode naming
+- Duplicate character mappings causing unreachable pattern warnings
+
+### Removed
+- Unused GeneratedHub implementation (~150 lines of dead code)
+- Legacy linguistic token names (MarkUdatta, MarkSvarita, etc.) from built-in schemas
 
 ## [0.4.2] - 2025-07-22
 

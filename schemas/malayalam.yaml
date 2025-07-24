@@ -97,11 +97,11 @@ mappings:
     "ഽ": "ऽ"    # avagraha
 
   vedic:
-    MarkUdatta: "॑"
-    MarkAnudatta: "॒"
-    MarkSvarita: "॑"
-    MarkDoubleSvarita: "᳚"
-    MarkTripleSvarita: "᳛"
+    # MarkVerticalLineAbove: (unmarked - udatta is the default tone)
+    MarkLineBelow: "॒"
+    MarkVerticalLineAbove: "॑"
+    MarkDoubleVerticalAbove: "᳚"
+    MarkTripleVerticalAbove: "᳛"
 
   special:
     # Chillu letters (pure consonants)

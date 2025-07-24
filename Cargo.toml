@@ -1,8 +1,8 @@
 [package]
 name = "shlesha"
-version = "0.4.2"
+version = "0.5.0"
 edition = "2021"
-authors = ["Shlesha Contributors"]
+authors = ["udapaana"]
 description = "High-performance extensible transliteration library with hub-and-spoke architecture"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/udapaana/shlesha"

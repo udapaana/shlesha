@@ -70,12 +70,11 @@ mappings:
     MarkAvagraha: "'"
     
   vedic:
-    # Vedic accent marks (Unicode combining diacritics)
-    MarkUdatta: ["́", "̍"]    # combining acute accent, combining vertical line above
-    MarkAnudatta: ["̱", "̠"]   # combining macron below, combining minus sign below
-    MarkSvarita: "̀"    # combining grave accent
-    MarkDoubleSvarita: "́̀"  # combining acute + grave
-    MarkTripleSvarita: "́̀̀" # combining acute + double grave
+    # Visual-based tokens mapped to combining diacritics
+    MarkVerticalLineAbove: ["́", "̍"]    # combining acute accent, combining vertical line above
+    MarkLineBelow: ["̱", "̠"]           # combining macron below, combining minus sign below
+    MarkDoubleVerticalAbove: "́̀"       # combining acute + grave  
+    MarkTripleVerticalAbove: "́̀̀"      # combining acute + double grave
 
   special:
     # Nukta consonants (for Perso-Arabic loanwords)

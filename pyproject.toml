@@ -6,7 +6,7 @@ build-backend = "maturin"
 name = "shlesha"
 description = "High-performance extensible transliteration library for Sanskrit and Indic scripts"
 authors = [
-    {name = "Shlesha Contributors"},
+    {name = "udapaana"},
 ]
 license = {text = "MIT OR Apache-2.0"}
 keywords = ["transliteration", "sanskrit", "indic", "devanagari", "unicode"]

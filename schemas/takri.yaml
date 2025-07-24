@@ -1,0 +1,128 @@
+metadata:
+  name: "takri"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Takri script - Historical script of the Western Himalayas used for Dogri and Pahari languages"
+  aliases:
+  - takr
+
+target: "abugida_tokens"
+
+mappings:
+  vowels:
+    VowelA: "𑚀"
+    VowelAa: "𑚁"
+    VowelI: "𑚂"
+    VowelIi: "𑚃"
+    VowelU: "𑚄"
+    VowelUu: "𑚅"
+    VowelEe: "𑚆"
+    VowelAi: "𑚇"
+    VowelOo: "𑚈"
+    VowelAu: "𑚉"
+
+  vowel_signs:
+    VowelSignAa: "𑚭"
+    VowelSignI: "𑚮"
+    VowelSignIi: "𑚯"
+    VowelSignU: "𑚰"
+    VowelSignUu: "𑚱"
+    VowelSignEe: "𑚲"
+    VowelSignAi: "𑚳"
+    VowelSignOo: "𑚴"
+    VowelSignAu: "𑚵"
+
+  consonants:
+    # Velar stops
+    ConsonantK: "𑚊"
+    ConsonantKh: "𑚋"
+    ConsonantG: "𑚌"
+    ConsonantGh: "𑚍"
+    ConsonantNg: "𑚎"
+    
+    # Palatal stops
+    ConsonantC: "𑚏"
+    ConsonantCh: "𑚐"
+    ConsonantJ: "𑚑"
+    ConsonantJh: "𑚒"
+    ConsonantNy: "𑚓"
+    
+    # Retroflex stops
+    ConsonantTt: "𑚔"
+    ConsonantTth: "𑚕"
+    ConsonantDd: "𑚖"
+    ConsonantDdh: "𑚗"
+    ConsonantNn: "𑚘"
+    
+    # Dental stops
+    ConsonantT: "𑚙"
+    ConsonantTh: "𑚚"
+    ConsonantD: "𑚛"
+    ConsonantDh: "𑚜"
+    ConsonantN: "𑚝"
+    
+    # Labial stops
+    ConsonantP: "𑚞"
+    ConsonantPh: "𑚟"
+    ConsonantB: "𑚠"
+    ConsonantBh: "𑚡"
+    ConsonantM: "𑚢"
+    
+    # Semivowels
+    ConsonantY: "𑚣"
+    ConsonantR: "𑚤"
+    ConsonantL: "𑚥"
+    ConsonantV: "𑚦"
+    
+    # Sibilants
+    ConsonantSh: "𑚧"
+    ConsonantS: "𑚨"
+    
+    # Aspirate
+    ConsonantH: "𑚩"
+    
+    # Additional consonants
+    ConsonantRr: "𑚪"  # RRA
+    ConsonantSs: "𑚫"  # SSA
+
+  marks:
+    MarkAnusvara: "𑚬"
+    MarkVisarga: "𑚷"
+    MarkVirama: "𑚶"
+    MarkNukta: "𑚸"
+
+  vedic:
+    # Using Devanagari Vedic marks as Takri uses them
+    MarkVerticalLineAbove: "॑"
+    MarkLineBelow: "॒"
+    MarkDoubleVerticalAbove: "᳚"
+    MarkTripleVerticalAbove: "᳛᳛"
+    # Additional Vedic marks
+    MarkKampa: "\u1CD0"      # ᳐
+    MarkPrachaya: "\u1CD2"   # ᳒
+    MarkNihshvasa: "\u1CD3"  # ᳓
+    MarkYajurDirghaSvarita: "\u1CDC"  # ᳜
+    MarkRigPushpika: "\u1CE9"  # ᳩ
+    MarkSamaAryamana: "\u1CF2"  # ᳲ
+    MarkSamaVairaja: "\u1CF3"   # ᳳ
+
+  digits:
+    Digit0: "𑛀"
+    Digit1: "𑛁"
+    Digit2: "𑛂"
+    Digit3: "𑛃"
+    Digit4: "𑛄"
+    Digit5: "𑛅"
+    Digit6: "𑛆"
+    Digit7: "𑛇"
+    Digit8: "𑛈"
+    Digit9: "𑛉"
+
+  punctuation:
+    # Takri punctuation
+    PuncDanda: "।"
+    PuncDoubleDanda: "॥"
+    PuncAbbreviation: "॰"
+
+codegen:
+  processor_type: "indic_converter"

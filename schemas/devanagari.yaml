@@ -91,11 +91,10 @@ mappings:
     MarkVirama: ्
     MarkAvagraha: ऽ
   vedic:
-    MarkUdatta: "॑"
-    MarkAnudatta: "॒"
-    MarkSvarita: "॑"   # In Devanagari, svarita is often represented same as udatta
-    MarkDoubleSvarita: "᳚"
-    MarkTripleSvarita: "᳛"
+    MarkVerticalLineAbove: "॑"    # ॑ (U+0951)
+    MarkLineBelow: "॒"           # ॒ (U+0952)
+    MarkDoubleVerticalAbove: "᳚"  # ᳚ (U+1CDA)
+    MarkTripleVerticalAbove: "᳛"  # ᳛ (U+1CDB)
   digits:
     Digit0: ०
     Digit1: १

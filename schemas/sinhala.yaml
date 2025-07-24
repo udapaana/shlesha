@@ -42,11 +42,11 @@ mappings:
     "්": "्"    # virama/al-lakuna
 
   vedic:
-    MarkUdatta: "॑"
-    MarkAnudatta: "॒"
-    MarkSvarita: "॑"
-    MarkDoubleSvarita: "᳚"
-    MarkTripleSvarita: "᳛"
+    # MarkVerticalLineAbove: (unmarked - udatta is the default tone)
+    MarkLineBelow: "॒"
+    MarkVerticalLineAbove: "॑"
+    MarkDoubleVerticalAbove: "᳚"
+    MarkTripleVerticalAbove: "᳛"
   
   digits:
     "෧": "१"    # 1

@@ -18,10 +18,8 @@ mappings:
     VowelRr: ["RR", "r̥̄"]  # Multiple inputs, first is preferred output
     VowelL: "lR"
     VowelLl: ["lRR", "l̥̄"]  # This resolves the ambiguity! lRR is preferred but l̥̄ also maps
-    VowelE: "e"
     VowelEe: "e"
     VowelAi: "ai"
-    VowelO: "o"
     VowelOo: "o"
     VowelAu: "au"
 
@@ -69,11 +67,11 @@ mappings:
 
   vedic:
     # Vedic accent marks
-    MarkUdatta: "'"     # acute accent
-    MarkAnudatta: "_"   # grave accent
+    MarkVerticalLineAbove: "/"     # forward slash for udatta
+    MarkLineBelow: "_"   # grave accent
     MarkSvarita: "^"    # caret for svarita
-    MarkDoubleSvarita: "~"  # double svarita
-    MarkTripleSvarita: "~~" # triple svarita
+    MarkDoubleVerticalAbove: "~"  # double svarita
+    MarkTripleVerticalAbove: "~~" # triple svarita
 
   special:
 

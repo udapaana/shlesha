@@ -96,11 +96,10 @@ mappings:
     MarkUpadhmaniya: "[MarkUpadhmaniya]"
 
   vedic:
-    MarkUdatta: "[MarkUdatta]"
-    MarkAnudatta: "[MarkAnudatta]"
-    MarkSvarita: "[MarkSvarita]"
-    MarkDoubleSvarita: "[MarkDoubleSvarita]"
-    MarkTripleSvarita: "[MarkTripleSvarita]"
+    MarkVerticalLineAbove: "[MarkVerticalLineAbove]"    # ॑ (U+0951)
+    MarkLineBelow: "[MarkLineBelow]"                    # ॒ (U+0952)
+    MarkDoubleVerticalAbove: "[MarkDoubleVerticalAbove]" # ᳚ (U+1CDA)
+    MarkTripleVerticalAbove: "[MarkTripleVerticalAbove]" # ᳛ (U+1CDB)
 
   special:
     SpecialKs: "[SpecialKs]"

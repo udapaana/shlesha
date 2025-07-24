@@ -101,11 +101,11 @@ mappings:
     # Telugu doesn't have Vedic accent marks - these will be preserved as tokens
 
   vedic:
-    MarkUdatta: "॑"
-    MarkAnudatta: "॒"
-    MarkSvarita: "॑"
-    MarkDoubleSvarita: "᳚"
-    MarkTripleSvarita: "᳛"
+    # MarkVerticalLineAbove: (unmarked - udatta is the default tone)
+    MarkLineBelow: "॒"
+    MarkVerticalLineAbove: "॑"
+    MarkDoubleVerticalAbove: "᳚"
+    MarkTripleVerticalAbove: "᳛"
 
   special:
     # Telugu-specific characters mapped to closest equivalents

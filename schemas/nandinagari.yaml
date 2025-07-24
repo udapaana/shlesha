@@ -1,0 +1,143 @@
+metadata:
+  name: "nandinagari"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Nandinagari script - Historical South Indian script used for Sanskrit manuscripts"
+  aliases:
+  - nand
+
+target: "abugida_tokens"
+
+mappings:
+  vowels:
+    VowelA: "𑦠"
+    VowelAa: "𑦡"
+    VowelI: "𑦢"
+    VowelIi: "𑦣"
+    VowelU: "𑦤"
+    VowelUu: "𑦥"
+    VowelR: "𑦦"
+    VowelRr: "𑦧"
+    VowelL: "𑦨"
+    VowelLl: "𑦩"
+    VowelEe: "𑦪"
+    VowelAi: "𑦫"
+    VowelOo: "𑦬"
+    VowelAu: "𑦭"
+
+  vowel_signs:
+    VowelSignAa: "𑧑"
+    VowelSignI: "𑧒"
+    VowelSignIi: "𑧓"
+    VowelSignU: "𑧔"
+    VowelSignUu: "𑧕"
+    VowelSignR: "𑧖"
+    VowelSignRr: "𑧗"
+    VowelSignL: "𑧘"
+    VowelSignLl: "𑧙"
+    VowelSignEe: "𑧚"
+    VowelSignAi: "𑧛"
+    VowelSignOo: "𑧜"
+    VowelSignAu: "𑧝"
+
+  consonants:
+    # Velar stops
+    ConsonantK: "𑦮"
+    ConsonantKh: "𑦯"
+    ConsonantG: "𑦰"
+    ConsonantGh: "𑦱"
+    ConsonantNg: "𑦲"
+    
+    # Palatal stops
+    ConsonantC: "𑦳"
+    ConsonantCh: "𑦴"
+    ConsonantJ: "𑦵"
+    ConsonantJh: "𑦶"
+    ConsonantNy: "𑦷"
+    
+    # Retroflex stops
+    ConsonantTt: "𑦸"
+    ConsonantTth: "𑦹"
+    ConsonantDd: "𑦺"
+    ConsonantDdh: "𑦻"
+    ConsonantNn: "𑦼"
+    
+    # Dental stops
+    ConsonantT: "𑦽"
+    ConsonantTh: "𑦾"
+    ConsonantD: "𑦿"
+    ConsonantDh: "𑧀"
+    ConsonantN: "𑧁"
+    
+    # Labial stops
+    ConsonantP: "𑧂"
+    ConsonantPh: "𑧃"
+    ConsonantB: "𑧄"
+    ConsonantBh: "𑧅"
+    ConsonantM: "𑧆"
+    
+    # Semivowels
+    ConsonantY: "𑧇"
+    ConsonantR: "𑧈"
+    ConsonantL: "𑧉"
+    ConsonantV: "𑧊"
+    
+    # Sibilants
+    ConsonantSh: "𑧋"
+    ConsonantSs: "𑧌"
+    ConsonantS: "𑧍"
+    
+    # Aspirate
+    ConsonantH: "𑧎"
+    
+    # Retroflex liquid
+    ConsonantLl: "𑧏"
+
+  marks:
+    MarkAnusvara: "𑧞"
+    MarkVisarga: "𑧟"
+    MarkCandrabindu: "𑧠"
+    MarkVirama: "𑧡"
+    MarkNukta: "𑧢"
+    MarkAvagraha: "𑧣"
+
+  vedic:
+    # Using Devanagari Vedic marks as Nandinagari uses them
+    MarkVerticalLineAbove: "॑"
+    MarkLineBelow: "॒"
+    MarkDoubleVerticalAbove: "᳚"
+    MarkTripleVerticalAbove: "᳛᳛"
+    # Additional Vedic marks
+    MarkKampa: "\u1CD0"      # ᳐
+    MarkPrachaya: "\u1CD2"   # ᳒
+    MarkNihshvasa: "\u1CD3"  # ᳓
+    MarkYajurDirghaSvarita: "\u1CDC"  # ᳜
+    MarkRigPushpika: "\u1CE9"  # ᳩ
+    MarkSamaAryamana: "\u1CF2"  # ᳲ
+    MarkSamaVairaja: "\u1CF3"   # ᳳ
+
+  digits:
+    Digit0: "𑧰"
+    Digit1: "𑧱"
+    Digit2: "𑧲"
+    Digit3: "𑧳"
+    Digit4: "𑧴"
+    Digit5: "𑧵"
+    Digit6: "𑧶"
+    Digit7: "𑧷"
+    Digit8: "𑧸"
+    Digit9: "𑧹"
+
+  punctuation:
+    # Nandinagari punctuation
+    PuncDanda: "।"
+    PuncDoubleDanda: "॥"
+    PuncAbbreviation: "॰"
+    
+  special:
+    # Nandinagari special marks
+    MarkGap: "𑧤"  # Gap filler
+    MarkHeadstroke: "𑧥"  # Headstroke
+
+codegen:
+  processor_type: "indic_converter"

@@ -1,0 +1,138 @@
+metadata:
+  name: "modi"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Modi script - Historical script of Maharashtra used for Marathi and Sanskrit"
+  aliases:
+  - mod
+
+target: "abugida_tokens"
+
+mappings:
+  vowels:
+    VowelA: "𑘀"
+    VowelAa: "𑘁"
+    VowelI: "𑘂"
+    VowelIi: "𑘃"
+    VowelU: "𑘄"
+    VowelUu: "𑘅"
+    VowelR: "𑘆"
+    VowelRr: "𑘇"
+    VowelL: "𑘈"
+    VowelLl: "𑘉"
+    VowelEe: "𑘊"
+    VowelAi: "𑘋"
+    VowelOo: "𑘌"
+    VowelAu: "𑘍"
+
+  vowel_signs:
+    VowelSignAa: "𑘰"
+    VowelSignI: "𑘱"
+    VowelSignIi: "𑘲"
+    VowelSignU: "𑘳"
+    VowelSignUu: "𑘴"
+    VowelSignR: "𑘵"
+    VowelSignRr: "𑘶"
+    VowelSignL: "𑘷"
+    VowelSignLl: "𑘸"
+    VowelSignEe: "𑘹"
+    VowelSignAi: "𑘺"
+    VowelSignOo: "𑘻"
+    VowelSignAu: "𑘼"
+
+  consonants:
+    # Velar stops
+    ConsonantK: "𑘎"
+    ConsonantKh: "𑘏"
+    ConsonantG: "𑘐"
+    ConsonantGh: "𑘑"
+    ConsonantNg: "𑘒"
+    
+    # Palatal stops
+    ConsonantC: "𑘓"
+    ConsonantCh: "𑘔"
+    ConsonantJ: "𑘕"
+    ConsonantJh: "𑘖"
+    ConsonantNy: "𑘗"
+    
+    # Retroflex stops
+    ConsonantTt: "𑘘"
+    ConsonantTth: "𑘙"
+    ConsonantDd: "𑘚"
+    ConsonantDdh: "𑘛"
+    ConsonantNn: "𑘜"
+    
+    # Dental stops
+    ConsonantT: "𑘝"
+    ConsonantTh: "𑘞"
+    ConsonantD: "𑘟"
+    ConsonantDh: "𑘠"
+    ConsonantN: "𑘡"
+    
+    # Labial stops
+    ConsonantP: "𑘢"
+    ConsonantPh: "𑘣"
+    ConsonantB: "𑘤"
+    ConsonantBh: "𑘥"
+    ConsonantM: "𑘦"
+    
+    # Semivowels
+    ConsonantY: "𑘧"
+    ConsonantR: "𑘨"
+    ConsonantL: "𑘩"
+    ConsonantV: "𑘪"
+    
+    # Sibilants
+    ConsonantSh: "𑘫"
+    ConsonantSs: "𑘬"
+    ConsonantS: "𑘭"
+    
+    # Aspirate
+    ConsonantH: "𑘮"
+    
+    # Retroflex liquid
+    ConsonantLl: "𑘯"
+
+  marks:
+    MarkAnusvara: "𑘽"
+    MarkVisarga: "𑘾"
+    MarkCandrabindu: "𑘿"
+    MarkVirama: "𑙀"
+    MarkNukta: "𑙁"
+    MarkAvagraha: "𑙂"
+
+  vedic:
+    # Using Devanagari Vedic marks as Modi uses them
+    MarkVerticalLineAbove: "॑"
+    MarkLineBelow: "॒"
+    MarkDoubleVerticalAbove: "᳚"
+    MarkTripleVerticalAbove: "᳛᳛"
+    # Additional Vedic marks
+    MarkKampa: "\u1CD0"      # ᳐
+    MarkPrachaya: "\u1CD2"   # ᳒
+    MarkNihshvasa: "\u1CD3"  # ᳓
+    MarkYajurDirghaSvarita: "\u1CDC"  # ᳜
+    MarkRigPushpika: "\u1CE9"  # ᳩ
+    MarkSamaAryamana: "\u1CF2"  # ᳲ
+    MarkSamaVairaja: "\u1CF3"   # ᳳ
+
+  digits:
+    Digit0: "𑙐"
+    Digit1: "𑙑"
+    Digit2: "𑙒"
+    Digit3: "𑙓"
+    Digit4: "𑙔"
+    Digit5: "𑙕"
+    Digit6: "𑙖"
+    Digit7: "𑙗"
+    Digit8: "𑙘"
+    Digit9: "𑙙"
+
+  punctuation:
+    # Modi punctuation
+    PuncDanda: "।"
+    PuncDoubleDanda: "॥"
+    PuncAbbreviation: "॰"
+
+codegen:
+  processor_type: "indic_converter"

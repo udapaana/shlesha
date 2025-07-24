@@ -89,8 +89,23 @@ codegen:                             # Optional: code generation options
 - `VowelU`, `VowelUu` - Short and long 'u'
 - `VowelR`, `VowelRr` - Vocalic r
 - `VowelL`, `VowelLl` - Vocalic l
-- `VowelE`, `VowelAi` - 'e' and 'ai'
-- `VowelO`, `VowelAu` - 'o' and 'au'
+- `VowelE`, `VowelEe` - Short and long 'e'
+- `VowelO`, `VowelOo` - Short and long 'o'
+- `VowelAi`, `VowelAu` - Diphthongs 'ai' and 'au'
+
+**Important Note on Short e/o:** Only map `VowelE` and `VowelO` if the script itself has distinct characters for short e and o sounds. For example:
+- Telugu has distinct characters for short e (ఎ) and long e (ఏ), so both should be mapped
+- Devanagari has short e (ऎ) and o (ऒ) as well as long e (ए) and o (ओ)
+- Scripts like Grantha/Sharada that only have long e/o sounds should only map `VowelEe` and `VowelOo`
+- Do not map tokens that don't exist in the script - they can be handled via runtime schemas if needed
+
+**Important Note on Vedic Accent Marks:** Built-in schemas use visual token names to avoid Unicode naming confusion:
+- Use `MarkVerticalLineAbove` for ॑ (U+0951) 
+- Use `MarkLineBelow` for ॒ (U+0952)
+- Use `MarkDoubleVerticalAbove` for ᳚ (U+1CDA)
+- Use `MarkTripleVerticalAbove` for ᳛ (U+1CDB)
+
+Avoid using linguistic names like `MarkUdatta` or `MarkSvarita` in built-in schemas, as the same visual mark can represent different linguistic functions across Vedic traditions. See [VEDIC_ACCENTS.md](VEDIC_ACCENTS.md) for details.
 
 ### Consonant Tokens
 - **Velars**: `ConsonantK`, `ConsonantKh`, `ConsonantG`, `ConsonantGh`, `ConsonantNg`
@@ -119,10 +134,11 @@ codegen:                             # Optional: code generation options
 ### Digit Tokens
 - `Digit0` through `Digit9`
 
-### Vedic Accent Tokens
-- `MarkUdatta` - High tone
-- `MarkAnudatta` - Low tone
-- `MarkSvarita` - Falling tone
+### Vedic Accent Tokens (Visual Names)
+- `MarkVerticalLineAbove` - Vertical line above (॑)
+- `MarkLineBelow` - Line below (॒)
+- `MarkDoubleVerticalAbove` - Double vertical above (᳚)
+- `MarkTripleVerticalAbove` - Triple vertical above (᳛)
 
 ### For Abugida Scripts Only
 - **Vowel Signs**: `VowelSignAa`, `VowelSignI`, `VowelSignIi`, etc.

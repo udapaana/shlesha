@@ -354,7 +354,6 @@ fn generate_schema_based_converters() -> Result<(), Box<dyn std::error::Error>> 
         "token_based_converter",
         "templates/token_based_converter.hbs",
     )?;
-    handlebars.register_template_file("hub_converter", "templates/hub_converter.hbs")?;
     handlebars.register_template_file("direct_converter", "templates/direct_converter.hbs")?;
 
     // Register helper functions for templates
@@ -439,10 +438,7 @@ use aho_corasick::AhoCorasick;
         }
     }
 
-    // Generate Hub converter from token-based schemas separately
-    if let Ok(hub_code) = generate_hub_converter(&handlebars, &schemas) {
-        fs::write(out_dir.join("hub_generated.rs"), hub_code)?;
-    }
+    // Hub converter is no longer needed - using trait_based_converter instead
 
     // Generate direct converters for common script pairs to bypass hub overhead
     if let Ok(direct_code) = generate_direct_converters(&handlebars, &schemas) {
@@ -1178,188 +1174,6 @@ fn generate_token_based_converter(
     handlebars
         .render("token_based_converter", &template_data)
         .map_err(|e| format!("Template rendering failed: {e}").into())
-}
-
-/// Generate Hub converter from token-based schemas
-fn generate_hub_converter(
-    handlebars: &Handlebars,
-    schemas: &[ScriptSchema],
-) -> Result<String, Box<dyn std::error::Error>> {
-    let mut abugida_schema = None;
-    let mut alphabet_schemas = Vec::new();
-
-    // Find the abugida schema and alphabet schemas
-    // Use Devanagari as the primary abugida schema for hub generation
-    for schema in schemas {
-        if schema.target.as_deref() == Some("abugida_tokens") {
-            if schema.metadata.name == "devanagari" {
-                // Prefer Devanagari as the primary abugida schema
-                abugida_schema = Some(schema);
-            } else if abugida_schema.is_none() {
-                // Use other abugida schemas as fallback
-                abugida_schema = Some(schema);
-            }
-        } else if schema.target.as_deref() == Some("alphabet_tokens") {
-            alphabet_schemas.push(schema);
-        }
-    }
-
-    let abugida_schema = abugida_schema.ok_or("No abugida_tokens schema found")?;
-    if alphabet_schemas.is_empty() {
-        return Err("No alphabet_tokens schemas found".into());
-    }
-
-    // Build token mappings from the schemas
-    let mut abugida_to_alphabet_mappings = Vec::new();
-    let mut alphabet_to_abugida_mappings = Vec::new();
-
-    // Get all tokens from the abugida schema
-    let all_abugida_tokens = collect_all_tokens(abugida_schema);
-
-    // Get union of all tokens from ALL alphabet schemas
-    let mut all_alphabet_tokens = std::collections::HashSet::new();
-    for schema in &alphabet_schemas {
-        let tokens = collect_all_tokens(schema);
-        all_alphabet_tokens.extend(tokens);
-    }
-
-    // Create mappings for all abugida tokens
-    for abugida_token in &all_abugida_tokens {
-        if all_alphabet_tokens.contains(abugida_token) {
-            // Direct mapping exists
-            abugida_to_alphabet_mappings.push(json!({
-                "abugida_token": abugida_token,
-                "alphabet_token": abugida_token
-            }));
-        } else {
-            // Special handling for tokens that don't have direct equivalents
-            match abugida_token.as_str() {
-                "MarkVirama" => {
-                    // Virama should be dropped in Roman scripts (it's implicit in consonant clusters)
-                    // We'll handle this in the template with special logic
-                    abugida_to_alphabet_mappings.push(json!({
-                        "abugida_token": abugida_token,
-                        "special_handling": "drop"
-                    }));
-                }
-                "VowelSignL" | "VowelSignLl" | "VowelL" | "VowelLl" => {
-                    // These might not exist in all scripts, map to closest equivalent
-                    abugida_to_alphabet_mappings.push(json!({
-                        "abugida_token": abugida_token,
-                        "alphabet_token": if abugida_token.contains("Ll") { "VowelRr" } else { "VowelR" }
-                    }));
-                }
-                // Handle long e/o tokens - if alphabet doesn't have them, map to short forms
-                "VowelEe" | "VowelSignEe" => {
-                    if all_alphabet_tokens.contains("VowelEe") {
-                        abugida_to_alphabet_mappings.push(json!({
-                            "abugida_token": abugida_token,
-                            "alphabet_token": "VowelEe"
-                        }));
-                    } else {
-                        abugida_to_alphabet_mappings.push(json!({
-                            "abugida_token": abugida_token,
-                            "alphabet_token": "VowelE"
-                        }));
-                    }
-                }
-                "VowelOo" | "VowelSignOo" => {
-                    if all_alphabet_tokens.contains("VowelOo") {
-                        abugida_to_alphabet_mappings.push(json!({
-                            "abugida_token": abugida_token,
-                            "alphabet_token": "VowelOo"
-                        }));
-                    } else {
-                        abugida_to_alphabet_mappings.push(json!({
-                            "abugida_token": abugida_token,
-                            "alphabet_token": "VowelO"
-                        }));
-                    }
-                }
-                _ => {
-                    // Default: skip unknown tokens
-                    abugida_to_alphabet_mappings.push(json!({
-                        "abugida_token": abugida_token,
-                        "special_handling": "skip"
-                    }));
-                }
-            }
-        }
-    }
-
-    // Create reverse mappings for all alphabet tokens
-    for alphabet_token in &all_alphabet_tokens {
-        if all_abugida_tokens.contains(alphabet_token) {
-            alphabet_to_abugida_mappings.push(json!({
-                "alphabet_token": alphabet_token,
-                "abugida_token": alphabet_token
-            }));
-        } else {
-            // Special handling for alphabet tokens that don't have abugida equivalents
-            alphabet_to_abugida_mappings.push(json!({
-                "alphabet_token": alphabet_token,
-                "special_handling": "skip"
-            }));
-        }
-    }
-
-    let template_data = json!({
-        "abugida_to_alphabet_mappings": abugida_to_alphabet_mappings,
-        "alphabet_to_abugida_mappings": alphabet_to_abugida_mappings,
-    });
-
-    let mut hub_code = handlebars.render("hub_converter", &template_data).map_err(
-        |e| -> Box<dyn std::error::Error> {
-            format!("Hub template rendering failed: {}", e).into()
-        },
-    )?;
-
-    // Add clippy allow attributes to the generated hub code
-    hub_code = format!(
-        r#"
-#[allow(unused_imports)]
-#[allow(unreachable_patterns)]
-#[allow(dead_code)]
-#[allow(clippy::new_without_default)]
-#[allow(clippy::clone_on_copy)]
-
-{}"#,
-        hub_code
-    );
-
-    Ok(hub_code)
-}
-
-/// Collect all token names from a schema
-fn collect_all_tokens(schema: &ScriptSchema) -> Vec<String> {
-    let mut tokens = Vec::new();
-
-    if let Some(ref vowels) = schema.mappings.vowels {
-        tokens.extend(vowels.keys().cloned());
-    }
-    if let Some(ref vowel_signs) = schema.mappings.vowel_signs {
-        tokens.extend(vowel_signs.keys().cloned());
-    }
-    if let Some(ref consonants) = schema.mappings.consonants {
-        tokens.extend(consonants.keys().cloned());
-    }
-    if let Some(ref marks) = schema.mappings.marks {
-        tokens.extend(marks.keys().cloned());
-    }
-    if let Some(ref digits) = schema.mappings.digits {
-        tokens.extend(digits.keys().cloned());
-    }
-    if let Some(ref special) = schema.mappings.special {
-        tokens.extend(special.keys().cloned());
-    }
-    if let Some(ref extended) = schema.mappings.extended {
-        tokens.extend(extended.keys().cloned());
-    }
-    if let Some(ref vedic) = schema.mappings.vedic {
-        tokens.extend(vedic.keys().cloned());
-    }
-
-    tokens
 }
 
 /// Generate direct converters for common script pairs to bypass hub overhead

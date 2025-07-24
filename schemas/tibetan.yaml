@@ -21,11 +21,9 @@ mappings:
     VowelRr: "རཱྀ"     # ṝ
     VowelL: "ལྀ"      # ḷ
     VowelLl: "ལཱྀ"     # ḹ
-    VowelE: "ཨེ"      # e
-    VowelEe: "ཨེ"     # ē (same as short e in Tibetan)
+    VowelEe: "ཨེ"     # e/ē (no distinction in Tibetan)
     VowelAi: "ཨཻ"     # ai
-    VowelO: "ཨོ"      # o
-    VowelOo: "ཨོ"     # ō (same as short o in Tibetan)
+    VowelOo: "ཨོ"     # o/ō (no distinction in Tibetan)
     VowelAu: "ཨཽ"     # au
 
   vowel_signs:
@@ -38,11 +36,9 @@ mappings:
     VowelSignRr: "ྲཱྀ"    # ṝ
     VowelSignL: "ླྀ"     # ḷ
     VowelSignLl: "ླཱྀ"    # ḹ
-    VowelSignE: "ེ"      # e
-    VowelSignEe: "ེ"     # ē (same as short e)
+    VowelSignEe: "ེ"     # e/ē (no distinction)
     VowelSignAi: "ཻ"     # ai
-    VowelSignO: "ོ"      # o
-    VowelSignOo: "ོ"     # ō (same as short o)
+    VowelSignOo: "ོ"     # o/ō (no distinction)
     VowelSignAu: "ཽ"     # au
 
   consonants:
@@ -107,11 +103,11 @@ mappings:
 
   vedic:
     # Vedic accent marks - Tibetan uses combining marks
-    MarkUdatta: "॑"        # udātta (using Devanagari)
-    MarkAnudatta: "॒"      # anudātta (using Devanagari)
-    MarkSvarita: "॑"       # svarita (same as udātta)
-    MarkDoubleSvarita: "᳚"
-    MarkTripleSvarita: "᳛"
+    # MarkVerticalLineAbove: (unmarked - udatta is the default tone)        # udātta (using Devanagari)
+    MarkLineBelow: "॒"      # anudātta (using Devanagari)
+    MarkVerticalLineAbove: "॑"       # svarita (same as udātta)
+    MarkDoubleVerticalAbove: "᳚"
+    MarkTripleVerticalAbove: "᳛"
 
   special:
     # Additional characters for Sanskrit transliteration

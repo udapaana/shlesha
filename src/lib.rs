@@ -31,11 +31,6 @@
 
 pub mod modules;
 
-// Include generated Hub converter
-mod generated {
-    include!(concat!(env!("OUT_DIR"), "/hub_generated.rs"));
-}
-
 // ToString/FromStr implementations are now in modules/hub/token_string_impl.rs
 
 // Import hub trait to use the hub

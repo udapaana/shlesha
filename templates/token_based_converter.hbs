@@ -60,6 +60,7 @@ impl {{struct_name}} {
     }
     
     // Convert token to preferred string representation
+    #[allow(unreachable_patterns)]
     pub fn token_to_string(&self, token: &{{#if is_alphabet}}AlphabetToken{{else}}AbugidaToken{{/if}}) -> String {
         match token {
             {{#each mappings}}

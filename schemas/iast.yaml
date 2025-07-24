@@ -66,11 +66,11 @@ mappings:
     MarkVisarga: "ḥ"
   
   vedic:
-    MarkUdatta: ["́", "̍"]    # combining acute accent, combining vertical line above
-    MarkAnudatta: ["̱", "̠"]   # combining macron below, combining minus sign below
+    MarkVerticalLineAbove: ["́", "̍"]    # combining acute accent, combining vertical line above
+    MarkLineBelow: ["̱", "̠"]   # combining macron below, combining minus sign below
     MarkSvarita: "̀"
-    MarkDoubleSvarita: "́̀"
-    MarkTripleSvarita: "́̀̀"
+    MarkDoubleVerticalAbove: "́̀"
+    MarkTripleVerticalAbove: "́̀̀"
   
   special:
 

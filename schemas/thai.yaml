@@ -22,11 +22,9 @@ mappings:
     VowelRr: "ฤๅ"     # ṝ
     VowelL: "ฦ"       # ḷ
     VowelLl: "ฦๅ"     # ḹ
-    VowelE: "เอ"      # e
-    VowelEe: "เอ"     # ē (same as short e)
+    VowelEe: "เอ"     # e/ē (no distinction in Thai)
     VowelAi: "ไอ"     # ai
-    VowelO: "โอ"      # o
-    VowelOo: "โอ"     # ō (same as short o)
+    VowelOo: "โอ"     # o/ō (no distinction in Thai)
     VowelAu: "เอา"    # au
 
   vowel_signs:
@@ -39,18 +37,16 @@ mappings:
     VowelSignRr: "ฺฤๅ"    # ṝ (with phinthu)
     VowelSignL: "ฺฦ"      # ḷ (with phinthu)
     VowelSignLl: "ฺฦๅ"    # ḹ (with phinthu)
-    VowelSignE: "เ"       # e (pre-consonantal)
-    VowelSignEe: "เ"      # ē (same as short e)
+    VowelSignEe: "เ"      # e/ē (pre-consonantal, no distinction)
     VowelSignAi: "ไ"      # ai (pre-consonantal)
-    VowelSignO: "โ"       # o (pre-consonantal)
-    VowelSignOo: "โ"      # ō (same as short o)
+    VowelSignOo: "โ"      # o/ō (pre-consonantal, no distinction)
     VowelSignAu: "เา"     # au
 
   consonants:
     # Velar
     ConsonantK: "ค"       # ka
     ConsonantKh: "ข"      # kha
-    ConsonantG: "ค"       # ga (using ค, no distinct ga)
+    # ConsonantG: "ค"     # ga - Thai has no distinct ga, uses ค (same as ka)
     ConsonantGh: "ฆ"      # gha
     ConsonantNg: "ง"      # ṅa
     
@@ -98,7 +94,7 @@ mappings:
   marks:
     MarkAnusvara: "ํ"      # anusvāra (nikhahit)
     MarkVisarga: "ะ"       # visarga (using short a)
-    MarkCandrabindu: "ํ"    # candrabindu (same as anusvara)
+    # MarkCandrabindu: "ํ"  # candrabindu - Thai uses same mark as anusvara
     MarkVirama: "์"        # virāma (thanthakhat)
     MarkAvagraha: "ฯ"       # avagraha (paiyannoi)
     MarkNukta: "๎"         # nukta (yamakkan - rarely used)
@@ -108,11 +104,11 @@ mappings:
 
   vedic:
     # Vedic accent marks - Thai doesn't have native support, using tone marks
-    MarkUdatta: "่"         # udātta (using mai ek)
-    MarkAnudatta: "้"       # anudātta (using mai tho)
+    MarkVerticalLineAbove: "่"         # udātta (using mai ek)
+    MarkLineBelow: "้"       # anudātta (using mai tho)
     MarkSvarita: "๊"        # svarita (using mai tri)
-    MarkDoubleSvarita: "๋"  # double svarita (using mai chattawa)
-    MarkTripleSvarita: "๋๋"  # triple svarita (double mai chattawa)
+    MarkDoubleVerticalAbove: "๋"  # double svarita (using mai chattawa)
+    MarkTripleVerticalAbove: "๋๋"  # triple svarita (double mai chattawa)
 
   special:
     # Additional characters - Thai uses base characters

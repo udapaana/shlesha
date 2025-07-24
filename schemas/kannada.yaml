@@ -121,8 +121,8 @@ mappings:
     Digit9: "೯"
 
   vedic:
-    MarkUdatta: "॑"     # Borrowed from Devanagari
-    MarkAnudatta: "॒"   # Borrowed from Devanagari
+    MarkVerticalLineAbove: "॑"     # Borrowed from Devanagari
+    MarkLineBelow: "॒"   # Borrowed from Devanagari
     MarkSvarita: "॓"    # Borrowed from Devanagari
 
 codegen:

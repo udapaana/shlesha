@@ -92,11 +92,11 @@ mappings:
     "ଽ": "ऽ"    # avagraha
 
   vedic:
-    MarkUdatta: "॑"
-    MarkAnudatta: "॒"
-    MarkSvarita: "॑"
-    MarkDoubleSvarita: "᳚"
-    MarkTripleSvarita: "᳛"
+    # MarkVerticalLineAbove: (unmarked - udatta is the default tone)
+    MarkLineBelow: "॒"
+    MarkVerticalLineAbove: "॑"
+    MarkDoubleVerticalAbove: "᳚"
+    MarkTripleVerticalAbove: "᳛"
 
   special:
     # Nukta forms

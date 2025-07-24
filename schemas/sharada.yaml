@@ -2,131 +2,146 @@ metadata:
   name: "sharada"
   script_type: "brahmic"
   has_implicit_a: true
-  description: "Sharada (𑆯𑆳𑆫𑆢𑆳) script - historical script of Kashmir, crucial for Vedic manuscripts"
+  description: "Sharada script - Historical script of Kashmir used for Sanskrit and Kashmiri"
   aliases:
+  - shar
   - shrd
 
 target: "abugida_tokens"
 
 mappings:
   vowels:
-    VowelA: "𑆃"     # a
-    VowelAa: "𑆄"    # ā
-    VowelI: "𑆅"     # i
-    VowelIi: "𑆆"    # ī
-    VowelU: "𑆇"     # u
-    VowelUu: "𑆈"    # ū
-    VowelR: "𑆉"     # ṛ
-    VowelRr: "𑆊"    # ṝ
-    VowelL: "𑆋"     # ḷ
-    VowelLl: "𑆌"    # ḹ
-    VowelE: "𑆍"     # e
-    VowelEe: "𑆍"    # ē (same as short e in Sharada)
-    VowelAi: "𑆎"    # ai
-    VowelO: "𑆏"     # o
-    VowelOo: "𑆏"    # ō (same as short o in Sharada)
-    VowelAu: "𑆐"    # au
+    VowelA: "𑆃"
+    VowelAa: "𑆄"
+    VowelI: "𑆅"
+    VowelIi: "𑆆"
+    VowelU: "𑆇"
+    VowelUu: "𑆈"
+    VowelR: "𑆉"
+    VowelRr: "𑆊"
+    VowelL: "𑆋"
+    VowelLl: "𑆌"
+    VowelEe: "𑆍"
+    VowelAi: "𑆎"
+    VowelOo: "𑆏"
+    VowelAu: "𑆐"
 
   vowel_signs:
-    VowelSignAa: "𑆳"    # ā
-    VowelSignI: "𑆴"     # i
-    VowelSignIi: "𑆵"    # ī
-    VowelSignU: "𑆶"     # u
-    VowelSignUu: "𑆷"    # ū
-    VowelSignR: "𑆸"     # ṛ
-    VowelSignRr: "𑆹"    # ṝ
-    VowelSignL: "𑆺"     # ḷ
-    VowelSignLl: "𑆻"    # ḹ
-    VowelSignE: "𑆼"     # e
-    VowelSignEe: "𑆼"    # ē (same as short e)
-    VowelSignAi: "𑆽"    # ai
-    VowelSignO: "𑆾"     # o
-    VowelSignOo: "𑆾"    # ō (same as short o)
-    VowelSignAu: "𑆿"    # au
+    VowelSignAa: "𑆳"
+    VowelSignI: "𑆴"
+    VowelSignIi: "𑆵"
+    VowelSignU: "𑆶"
+    VowelSignUu: "𑆷"
+    VowelSignR: "𑆸"
+    VowelSignRr: "𑆹"
+    VowelSignL: "𑆺"
+    VowelSignLl: "𑆻"
+    VowelSignEe: "𑆼"
+    VowelSignAi: "𑆽"
+    VowelSignOo: "𑆾"
+    VowelSignAu: "𑆿"
 
   consonants:
-    # Velar
-    ConsonantK: "𑆑"     # ka
-    ConsonantKh: "𑆒"    # kha
-    ConsonantG: "𑆓"     # ga
-    ConsonantGh: "𑆔"    # gha
-    ConsonantNg: "𑆕"    # ṅa
+    # Velar stops
+    ConsonantK: "𑆑"
+    ConsonantKh: "𑆒"
+    ConsonantG: "𑆓"
+    ConsonantGh: "𑆔"
+    ConsonantNg: "𑆕"
     
-    # Palatal
-    ConsonantC: "𑆖"     # ca
-    ConsonantCh: "𑆗"    # cha
-    ConsonantJ: "𑆘"     # ja
-    ConsonantJh: "𑆙"    # jha
-    ConsonantNy: "𑆚"    # ña
+    # Palatal stops
+    ConsonantC: "𑆖"
+    ConsonantCh: "𑆗"
+    ConsonantJ: "𑆘"
+    ConsonantJh: "𑆙"
+    ConsonantNy: "𑆚"
     
-    # Retroflex
-    ConsonantT: "𑆛"     # ṭa
-    ConsonantTh: "𑆜"    # ṭha
-    ConsonantD: "𑆝"     # ḍa
-    ConsonantDh: "𑆞"    # ḍha
-    ConsonantN: "𑆟"     # ṇa
+    # Retroflex stops
+    ConsonantTt: "𑆛"
+    ConsonantTth: "𑆜"
+    ConsonantDd: "𑆝"
+    ConsonantDdh: "𑆞"
+    ConsonantN: "𑆟"
     
-    # Dental
-    ConsonantTt: "𑆠"    # ta
-    ConsonantTth: "𑆡"   # tha
-    ConsonantDd: "𑆢"    # da
-    ConsonantDdh: "𑆣"   # dha
-    ConsonantNn: "𑆤"    # na
+    # Dental stops
+    ConsonantT: "𑆠"
+    ConsonantTh: "𑆡"
+    ConsonantD: "𑆢"
+    ConsonantDh: "𑆣"
+    ConsonantNn: "𑆤"
     
-    # Labial
-    ConsonantP: "𑆥"     # pa
-    ConsonantPh: "𑆦"    # pha
-    ConsonantB: "𑆧"     # ba
-    ConsonantBh: "𑆨"    # bha
-    ConsonantM: "𑆩"     # ma
+    # Labial stops
+    ConsonantP: "𑆥"
+    ConsonantPh: "𑆦"
+    ConsonantB: "𑆧"
+    ConsonantBh: "𑆨"
+    ConsonantM: "𑆩"
     
-    # Semivowels and liquids
-    ConsonantY: "𑆪"     # ya
-    ConsonantR: "𑆫"     # ra
-    ConsonantL: "𑆬"     # la
-    ConsonantV: "𑆮"     # va
-    ConsonantLl: "𑆭"    # ḷa (Vedic retroflex l)
+    # Semivowels
+    ConsonantY: "𑆪"
+    ConsonantR: "𑆫"
+    ConsonantL: "𑆬"
+    ConsonantV: "𑆮"
     
-    # Sibilants and aspirate
-    ConsonantSh: "𑆯"    # śa
-    ConsonantSs: "𑆰"    # ṣa
-    ConsonantS: "𑆱"     # sa
-    ConsonantH: "𑆲"     # ha
+    # Sibilants
+    ConsonantSh: "𑆯"
+    ConsonantSs: "𑆰"
+    ConsonantS: "𑆱"
+    
+    # Aspirate
+    ConsonantH: "𑆲"
+    
+    # Retroflex liquid
+    ConsonantLl: "𑆭"
 
   marks:
-    MarkAnusvara: "𑆁"    # anusvāra
-    MarkVisarga: "𑆂"     # visarga
-    MarkCandrabindu: "𑆀"  # candrabindu
-    MarkVirama: "𑇀"      # virāma/halanta
-    MarkAvagraha: "𑆽"     # avagraha (using 𑆽)
-    MarkNukta: "𑆳़"       # nukta (combining with ā for example)
-    # Sharada-specific marks
-    MarkJihvamuliya: "𑇍"  # jihvāmūlīya (Vedic)
-    MarkUpadhmaniya: "𑇎"  # upadhmānīya (Vedic)
+    MarkAnusvara: "𑆁"
+    MarkVisarga: "𑆂"
+    MarkCandrabindu: "𑆀"
+    MarkVirama: "𑇀"
+    MarkNukta: "𑇊"
+    MarkAvagraha: "𑇁"
+    # Vedic-specific marks in Sharada
+    MarkJihvamuliya: "𑇅"
+    MarkUpadhmaniya: "𑇆"
 
   vedic:
-    # Vedic accent marks - Sharada uses same as Devanagari
-    MarkUdatta: "॑"       # udātta
-    MarkAnudatta: "॒"     # anudātta  
-    MarkSvarita: "॑"      # svarita (same as udātta)
-    MarkDoubleSvarita: "᳚"
-    MarkTripleSvarita: "᳛"
-
-  special:
-    # Additional Sharada characters
-    # Note: ConsonantQa, ConsonantZa, ConsonantFa are already defined as core tokens
+    # Using Devanagari Vedic marks as Sharada uses them
+    # MarkVerticalLineAbove: (unmarked in Devanagari - udatta is the default tone)
+    MarkLineBelow: "॒"
+    MarkVerticalLineAbove: "॑"   # In modern Devanagari, ॑ marks svarita (high tone)
+    MarkDoubleVerticalAbove: "᳚"
+    MarkTripleVerticalAbove: "᳛"
+    # Additional Vedic marks
+    MarkKampa: "\u1CD0"      # ᳐
+    MarkPrachaya: "\u1CD2"   # ᳒
+    MarkNihshvasa: "\u1CD3"  # ᳓
+    MarkYajurDirghaSvarita: "\u1CDC"  # ᳜
+    MarkRigPushpika: "\u1CE9"  # ᳩ
+    MarkSamaAryamana: "\u1CF2"  # ᳲ
+    MarkSamaVairaja: "\u1CF3"   # ᳳ
 
   digits:
-    Digit0: "𑇐"    # 0
-    Digit1: "𑇑"    # 1
-    Digit2: "𑇒"    # 2
-    Digit3: "𑇓"    # 3
-    Digit4: "𑇔"    # 4
-    Digit5: "𑇕"    # 5
-    Digit6: "𑇖"    # 6
-    Digit7: "𑇗"    # 7
-    Digit8: "𑇘"    # 8
-    Digit9: "𑇙"    # 9
+    Digit0: "𑇐"
+    Digit1: "𑇑"
+    Digit2: "𑇒"
+    Digit3: "𑇓"
+    Digit4: "𑇔"
+    Digit5: "𑇕"
+    Digit6: "𑇖"
+    Digit7: "𑇗"
+    Digit8: "𑇘"
+    Digit9: "𑇙"
+
+  punctuation:
+    # Sharada punctuation
+    PuncDanda: "।"
+    PuncDoubleDanda: "॥"
+    PuncAbbreviation: "॰"
+    
+  special:
+    # Sharada OM symbol
+    OmSymbol: "𑇄"
 
 codegen:
-  processor_type: "indic_token_based"
+  processor_type: "indic_converter"

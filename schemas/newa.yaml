@@ -1,0 +1,143 @@
+metadata:
+  name: "newa"
+  script_type: "brahmic"
+  has_implicit_a: true
+  description: "Newa (Prachalit Nepal) script - Historical script of Nepal used for Sanskrit and Newari"
+  aliases:
+  - newari
+  - prachalit
+
+target: "abugida_tokens"
+
+mappings:
+  vowels:
+    VowelA: "𑐀"
+    VowelAa: "𑐁"
+    VowelI: "𑐂"
+    VowelIi: "𑐃"
+    VowelU: "𑐄"
+    VowelUu: "𑐅"
+    VowelR: "𑐆"
+    VowelRr: "𑐇"
+    VowelL: "𑐈"
+    VowelLl: "𑐉"
+    VowelEe: "𑐊"
+    VowelAi: "𑐋"
+    VowelOo: "𑐌"
+    VowelAu: "𑐍"
+
+  vowel_signs:
+    VowelSignAa: "𑐵"
+    VowelSignI: "𑐶"
+    VowelSignIi: "𑐷"
+    VowelSignU: "𑐸"
+    VowelSignUu: "𑐹"
+    VowelSignR: "𑐺"
+    VowelSignRr: "𑐻"
+    VowelSignL: "𑐼"
+    VowelSignLl: "𑐽"
+    VowelSignEe: "𑐾"
+    VowelSignAi: "𑐿"
+    VowelSignOo: "𑑀"
+    VowelSignAu: "𑑁"
+
+  consonants:
+    # Velar stops
+    ConsonantK: "𑐎"
+    ConsonantKh: "𑐏"
+    ConsonantG: "𑐐"
+    ConsonantGh: "𑐑"
+    ConsonantNg: "𑐒"
+    
+    # Palatal stops
+    ConsonantC: "𑐔"
+    ConsonantCh: "𑐕"
+    ConsonantJ: "𑐖"
+    ConsonantJh: "𑐗"
+    ConsonantNy: "𑐘"
+    
+    # Retroflex stops
+    ConsonantTt: "𑐚"
+    ConsonantTth: "𑐛"
+    ConsonantDd: "𑐜"
+    ConsonantDdh: "𑐝"
+    ConsonantNn: "𑐞"
+    
+    # Dental stops
+    ConsonantT: "𑐟"
+    ConsonantTh: "𑐠"
+    ConsonantD: "𑐡"
+    ConsonantDh: "𑐢"
+    ConsonantN: "𑐣"
+    
+    # Labial stops
+    ConsonantP: "𑐥"
+    ConsonantPh: "𑐦"
+    ConsonantB: "𑐧"
+    ConsonantBh: "𑐨"
+    ConsonantM: "𑐩"
+    
+    # Semivowels
+    ConsonantY: "𑐫"
+    ConsonantR: "𑐬"
+    ConsonantL: "𑐮"
+    ConsonantV: "𑐰"
+    
+    # Sibilants
+    ConsonantSh: "𑐱"
+    ConsonantSs: "𑐲"
+    ConsonantS: "𑐳"
+    
+    # Aspirate
+    ConsonantH: "𑐴"
+    
+    # Retroflex liquid
+    ConsonantLl: "𑐭"
+
+  marks:
+    MarkAnusvara: "𑑂"
+    MarkVisarga: "𑑃"
+    MarkCandrabindu: "𑑄"
+    MarkVirama: "𑑅"
+    MarkNukta: "𑑆"
+    MarkAvagraha: "𑑇"
+
+  vedic:
+    # Using Devanagari Vedic marks as Newa uses them
+    MarkVerticalLineAbove: "॑"
+    MarkLineBelow: "॒"
+    MarkDoubleVerticalAbove: "᳚"
+    MarkTripleVerticalAbove: "᳛᳛"
+    # Additional Vedic marks
+    MarkKampa: "\u1CD0"      # ᳐
+    MarkPrachaya: "\u1CD2"   # ᳒
+    MarkNihshvasa: "\u1CD3"  # ᳓
+    MarkYajurDirghaSvarita: "\u1CDC"  # ᳜
+    MarkRigPushpika: "\u1CE9"  # ᳩ
+    MarkSamaAryamana: "\u1CF2"  # ᳲ
+    MarkSamaVairaja: "\u1CF3"   # ᳳ
+
+  digits:
+    Digit0: "𑑐"
+    Digit1: "𑑑"
+    Digit2: "𑑒"
+    Digit3: "𑑓"
+    Digit4: "𑑔"
+    Digit5: "𑑕"
+    Digit6: "𑑖"
+    Digit7: "𑑗"
+    Digit8: "𑑘"
+    Digit9: "𑑙"
+
+  punctuation:
+    # Newa punctuation
+    PuncDanda: "।"
+    PuncDoubleDanda: "॥"
+    PuncAbbreviation: "॰"
+    
+  special:
+    # Newa OM symbol
+    OmSymbol: "𑑉"
+
+codegen:
+  processor_type: "indic_converter"

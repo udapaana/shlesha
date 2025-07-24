@@ -68,11 +68,11 @@ mappings:
     
   vedic:
     # Vedic accent marks
-    MarkUdatta: "/"     # udatta (raised/high pitch)
-    MarkAnudatta: "\\\\"   # anudatta (not raised/low pitch) - escaped backslash  
+    MarkVerticalLineAbove: "/"     # udatta (raised/high pitch)
+    MarkLineBelow: "\\\\"   # anudatta (not raised/low pitch) - escaped backslash  
     MarkSvarita: "^"    # svarita (high falling pitch)
-    MarkDoubleSvarita: "^^"  # double svarita
-    MarkTripleSvarita: "^^^" # triple svarita
+    MarkDoubleVerticalAbove: "^^"  # double svarita
+    MarkTripleVerticalAbove: "^^^" # triple svarita
 
   special:
     # MarkDanda: "|"    # danda - no token yet
