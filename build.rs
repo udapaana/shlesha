@@ -517,6 +517,56 @@ pub fn register_token_converters_with_aliases() -> Vec<(Box<dyn crate::modules::
 }}
 "#));
 
+    // Generate script type helper functions
+    let mut brahmic_scripts = Vec::new();
+    let mut roman_scripts = Vec::new();
+
+    for schema in &schemas {
+        match schema.metadata.script_type.as_str() {
+            "brahmic" => {
+                brahmic_scripts.push(format!("\"{}\"", schema.metadata.name.to_lowercase()));
+                if let Some(aliases) = &schema.metadata.aliases {
+                    for alias in aliases {
+                        brahmic_scripts.push(format!("\"{}\"", alias.to_lowercase()));
+                    }
+                }
+            }
+            "roman" => {
+                roman_scripts.push(format!("\"{}\"", schema.metadata.name.to_lowercase()));
+                if let Some(aliases) = &schema.metadata.aliases {
+                    for alias in aliases {
+                        roman_scripts.push(format!("\"{}\"", alias.to_lowercase()));
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
+    let script_helpers = format!(
+        r#"
+/// Check if a script is an Indic/Brahmic script
+pub fn is_indic_script(script: &str) -> bool {{
+    matches!(
+        script.to_lowercase().as_str(),
+        {}
+    )
+}}
+
+/// Check if a script is a Roman script
+pub fn is_roman_script(script: &str) -> bool {{
+    matches!(
+        script.to_lowercase().as_str(),
+        {}
+    )
+}}
+"#,
+        brahmic_scripts.join("\n            | "),
+        roman_scripts.join("\n            | ")
+    );
+
+    generated_code.push_str(&script_helpers);
+
     // Write generated code
     fs::write(out_dir.join("schema_generated.rs"), generated_code)?;
     Ok(())
@@ -1223,6 +1273,21 @@ use once_cell::sync::Lazy;
         ("slp1", "devanagari"),
         ("iast", "telugu"),
         ("slp1", "telugu"),
+        ("iast", "bengali"),
+        ("iast", "tamil"),
+        ("iast", "kannada"),
+        ("iast", "gujarati"),
+        // New Vedic scripts - high priority ones
+        ("iast", "grantha"),
+        ("iast", "sharada"),
+        ("iast", "nandinagari"),
+        ("iast", "newa"),
+        ("iast", "siddham"),
+        ("iast", "modi"),
+        ("iast", "bhaiksuki"),
+        ("iast", "kaithi"),
+        ("iast", "takri"),
+        ("iast", "dogra"),
     ];
 
     // Find schemas by name

@@ -211,37 +211,12 @@ impl Shlesha {
 
     /// Check if a script is a Roman transliteration scheme
     fn is_roman_script(&self, script: &str) -> bool {
-        matches!(
-            script.to_lowercase().as_str(),
-            "slp1"
-                | "iast"
-                | "itrans"
-                | "harvard_kyoto"
-                | "hk"
-                | "velthuis"
-                | "wx"
-                | "iso15919"
-                | "iso"
-        )
+        modules::script_converter::is_roman_script(script)
     }
 
     /// Check if a script is an Indic script
     fn is_indic_script(&self, script: &str) -> bool {
-        matches!(
-            script.to_lowercase().as_str(),
-            "devanagari"
-                | "deva"
-                | "bengali"
-                | "telugu"
-                | "tamil"
-                | "kannada"
-                | "malayalam"
-                | "gujarati"
-                | "gurmukhi"
-                | "odia"
-                | "sinhala"
-                | "grantha"
-        )
+        modules::script_converter::is_indic_script(script)
     }
 
     /// Transliterate text with metadata collection for unknown tokens
