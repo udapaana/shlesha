@@ -30,7 +30,7 @@ serde_json = "1.0"
 serde_yaml = "0.9"
 toml = "0.8"
 
-# Runtime compilation dependencies  
+# Runtime compilation dependencies
 handlebars = "6.0"
 tempfile = "3.8"
 blake3 = "1.5"
@@ -108,4 +108,17 @@ required-features = ["native-examples"]
 
 [[example]]
 name = "shlesha_vs_vidyut_benchmark"
+required-features = ["native-examples"]
+
+# Examples that require profiler module (not available for WASM)
+[[example]]
+name = "profiler_cli"
+required-features = ["native-examples"]
+
+[[example]]
+name = "profile_guided_optimization_demo"
+required-features = ["native-examples"]
+
+[[example]]
+name = "profile_simple"
 required-features = ["native-examples"]

@@ -1,3 +1,7 @@
+// Runtime compilation is not supported in WASM environments
+// This module requires filesystem access, process spawning (cargo), and dynamic library loading
+#![cfg(not(target_arch = "wasm32"))]
+
 use handlebars::Handlebars;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -221,7 +225,7 @@ pub extern "C" fn convert_string_to_tokens(input: *const std::os::raw::c_char) -
 
 #[no_mangle]
 pub extern "C" fn convert_tokens_to_string(tokens: *const std::os::raw::c_char) -> *mut std::os::raw::c_char {{
-    // Implementation for FFI interface  
+    // Implementation for FFI interface
     std::ptr::null_mut()
 }}
 "#,

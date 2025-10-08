@@ -44,8 +44,10 @@ pub mod python_bindings;
 pub mod wasm_bindings;
 
 use modules::hub::Hub;
+#[cfg(not(target_arch = "wasm32"))]
 use modules::profiler::{OptimizationCache, Profiler, ProfilerConfig};
 use modules::registry::{SchemaRegistry, SchemaRegistryTrait};
+#[cfg(not(target_arch = "wasm32"))]
 use modules::runtime::RuntimeCompiler;
 use modules::schema::{Schema as RuntimeSchema, SchemaBuilder};
 use modules::script_converter::ScriptConverterRegistry;
@@ -81,9 +83,12 @@ pub struct Shlesha {
     hub: Hub,
     script_converter_registry: ScriptConverterRegistry,
     registry: SchemaRegistry,
+    #[cfg(not(target_arch = "wasm32"))]
     runtime_compiler: Option<RuntimeCompiler>,
     processors: std::collections::HashMap<String, ProcessorSource>,
+    #[cfg(not(target_arch = "wasm32"))]
     profiler: Option<Profiler>,
+    #[cfg(not(target_arch = "wasm32"))]
     optimization_cache: OptimizationCache,
 }
 
@@ -102,16 +107,16 @@ impl Shlesha {
             // If loading fails (e.g., in tests or different working directory), continue with placeholder
         }
 
-        // Try to initialize runtime compiler (graceful fallback if it fails)
-        let runtime_compiler = RuntimeCompiler::new().ok();
-
         Self {
             hub: Hub::new(),
             script_converter_registry,
             registry,
-            runtime_compiler,
+            #[cfg(not(target_arch = "wasm32"))]
+            runtime_compiler: RuntimeCompiler::new().ok(),
             processors: std::collections::HashMap::new(),
+            #[cfg(not(target_arch = "wasm32"))]
             profiler: None,
+            #[cfg(not(target_arch = "wasm32"))]
             optimization_cache: OptimizationCache::new(),
         }
     }
@@ -123,23 +128,31 @@ impl Shlesha {
         from: &str,
         to: &str,
     ) -> Result<String, Box<dyn std::error::Error>> {
-        use std::time::Instant;
-        let start_time = Instant::now();
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            use std::time::Instant;
+            let start_time = Instant::now();
 
-        // Try optimized conversion first if available
-        let result = self
-            .optimization_cache
-            .apply_optimization(text, from, to, |text| {
-                self.transliterate_internal(text, from, to)
-            });
+            // Try optimized conversion first if available
+            let result = self
+                .optimization_cache
+                .apply_optimization(text, from, to, |text| {
+                    self.transliterate_internal(text, from, to)
+                });
 
-        // Record profiling data if enabled
-        if let Some(ref profiler) = self.profiler {
-            let processing_time = start_time.elapsed();
-            profiler.record_conversion(from, to, text, processing_time);
+            // Record profiling data if enabled
+            if let Some(ref profiler) = self.profiler {
+                let processing_time = start_time.elapsed();
+                profiler.record_conversion(from, to, text, processing_time);
+            }
+
+            result
         }
 
-        result
+        #[cfg(target_arch = "wasm32")]
+        {
+            self.transliterate_internal(text, from, to)
+        }
     }
 
     /// Internal transliteration method (the original implementation)
@@ -343,37 +356,38 @@ impl Shlesha {
         &mut self,
         schema: RuntimeSchema,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        match &mut self.runtime_compiler {
-            Some(compiler) => {
-                match compiler.compile_schema(&schema) {
-                    Ok(compiled) => {
-                        // Same performance as static processors!
-                        self.processors.insert(
-                            schema.metadata.name.clone(),
-                            ProcessorSource::RuntimeCompiled(Box::new(compiled)),
-                        );
-                    }
-                    Err(_) => {
-                        // Graceful fallback to registry-based processing
-                        let registry_schema = self.convert_runtime_schema_to_registry(&schema);
-                        let _ = self
-                            .registry
-                            .add_schema(schema.metadata.name.clone(), registry_schema);
-                        self.processors
-                            .insert(schema.metadata.name.clone(), ProcessorSource::Dynamic);
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            match &mut self.runtime_compiler {
+                Some(compiler) => {
+                    match compiler.compile_schema(&schema) {
+                        Ok(compiled) => {
+                            // Same performance as static processors!
+                            self.processors.insert(
+                                schema.metadata.name.clone(),
+                                ProcessorSource::RuntimeCompiled(Box::new(compiled)),
+                            );
+                            return Ok(());
+                        }
+                        Err(_) => {
+                            // Graceful fallback to registry-based processing
+                        }
                     }
                 }
-            }
-            None => {
-                // No runtime compiler available, fall back to registry
-                let registry_schema = self.convert_runtime_schema_to_registry(&schema);
-                let _ = self
-                    .registry
-                    .add_schema(schema.metadata.name.clone(), registry_schema);
-                self.processors
-                    .insert(schema.metadata.name.clone(), ProcessorSource::Dynamic);
+                None => {
+                    // No runtime compiler available, fall back to registry
+                }
             }
         }
+
+        // WASM or fallback: Use registry-based processing
+        let registry_schema = self.convert_runtime_schema_to_registry(&schema);
+        let _ = self
+            .registry
+            .add_schema(schema.metadata.name.clone(), registry_schema);
+        self.processors
+            .insert(schema.metadata.name.clone(), ProcessorSource::Dynamic);
+
         Ok(())
     }
 
@@ -480,29 +494,36 @@ impl Shlesha {
             hub: Hub::new(),
             script_converter_registry,
             registry,
+            #[cfg(not(target_arch = "wasm32"))]
             runtime_compiler: None, // Initialize later if needed
             processors: std::collections::HashMap::new(),
+            #[cfg(not(target_arch = "wasm32"))]
             profiler: None,
+            #[cfg(not(target_arch = "wasm32"))]
             optimization_cache: OptimizationCache::new(),
         }
     }
 
     /// Enable profiling with default configuration
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn enable_profiling(&mut self) {
         self.profiler = Some(Profiler::new());
     }
 
     /// Enable profiling with custom configuration
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn enable_profiling_with_config(&mut self, config: ProfilerConfig) {
         self.profiler = Some(Profiler::with_config(config));
     }
 
     /// Disable profiling
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn disable_profiling(&mut self) {
         self.profiler = None;
     }
 
     /// Get profiling statistics
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn get_profile_stats(
         &self,
     ) -> Option<rustc_hash::FxHashMap<(String, String), modules::profiler::ProfileStats>> {
@@ -510,6 +531,7 @@ impl Shlesha {
     }
 
     /// Generate optimized lookup tables from current profiles
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn generate_optimizations(&self) -> Vec<modules::profiler::OptimizedLookupTable> {
         self.profiler
             .as_ref()
@@ -518,11 +540,13 @@ impl Shlesha {
     }
 
     /// Load an optimization table for hot-reloading
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn load_optimization(&self, optimization: modules::profiler::OptimizedLookupTable) {
         self.optimization_cache.load(optimization);
     }
 
     /// Save current profiles to disk
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn save_profiles(&self) {
         if let Some(ref profiler) = self.profiler {
             profiler.save_profiles();
@@ -530,6 +554,7 @@ impl Shlesha {
     }
 
     /// Create Shlesha instance with profiling enabled
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn with_profiling() -> Self {
         let mut instance = Self::new();
         instance.enable_profiling();

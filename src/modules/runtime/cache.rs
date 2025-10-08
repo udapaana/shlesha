@@ -1,3 +1,7 @@
+// Runtime compilation and caching are not supported in WASM environments
+// This module requires filesystem access, dynamic library loading, and process spawning
+#![cfg(not(target_arch = "wasm32"))]
+
 use blake3::Hasher;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

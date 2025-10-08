@@ -1,5 +1,7 @@
 pub mod core;
 pub mod hub;
+// Profiler uses std::time which is not available in WASM
+#[cfg(not(target_arch = "wasm32"))]
 pub mod profiler;
 pub mod registry;
 pub mod runtime;
