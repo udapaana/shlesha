@@ -1,6 +1,6 @@
 [package]
 name = "shlesha"
-version = "0.5.2"
+version = "0.5.3"
 edition = "2021"
 authors = ["udapaana"]
 description = "High-performance extensible transliteration library with hub-and-spoke architecture"
