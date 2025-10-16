@@ -16,15 +16,15 @@ mappings:
     VowelUu: "ū"
     VowelR: "ṛ"
     VowelRr: "ṝ"
-    VowelL: "l̥"
-    VowelLl: "l̥̄"
+    VowelL: "ḷ"
+    VowelLl: "ḹ"
     # VowelE: (not used in IAST - e is always long)
-    VowelEe: "e"    # e is always long in Sanskrit
+    VowelEe: "e" # e is always long in Sanskrit
     VowelAi: "ai"
     # VowelO: (not used in IAST - o is always long)
-    VowelOo: "o"    # o is always long in Sanskrit
+    VowelOo: "o" # o is always long in Sanskrit
     VowelAu: "au"
-  
+
   consonants:
     ConsonantK: "k"
     ConsonantKh: "kh"
@@ -60,18 +60,20 @@ mappings:
     ConsonantSs: "ṣ"
     ConsonantS: "s"
     ConsonantH: "h"
-  
+
   marks:
-    MarkAnusvara: "ṃ"
+    MarkAnusvara: ["ṁ", "ṃ"] # ṁ is standard IAST, but ṃ is commonly used
     MarkVisarga: "ḥ"
-  
+    MarkCandrabindu: "m̐"
+    MarkAvagraha: "'"
+
   vedic:
-    MarkVerticalLineAbove: ["́", "̍"]    # combining acute accent, combining vertical line above
-    MarkLineBelow: ["̱", "̠"]   # combining macron below, combining minus sign below
+    MarkVerticalLineAbove: ["́", "̍"] # combining acute accent, combining vertical line above
+    MarkLineBelow: ["̱", "̠"] # combining macron below, combining minus sign below
     MarkSvarita: "̀"
     MarkDoubleVerticalAbove: "́̀"
     MarkTripleVerticalAbove: "́̀̀"
-  
+
   special:
 
   digits:
