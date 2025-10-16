@@ -12,7 +12,8 @@ fn test_iast_to_slp1_direct_conversion() {
         ("ū", "U"),
         ("ṛ", "f"),
         ("ṝ", "F"),
-        ("ṃ", "M"),
+        ("ṁ", "M"),
+        ("ṃ", "M"), // Also accept underdot variant
         ("ḥ", "H"),
         ("ś", "S"),
         ("ṣ", "z"),
@@ -24,7 +25,8 @@ fn test_iast_to_slp1_direct_conversion() {
         ("kṣ", "kz"),
         ("ai", "E"),
         ("au", "O"),
-        ("saṃskṛtam", "saMskftam"),
+        ("saṁskṛtam", "saMskftam"),
+        ("saṃskṛtam", "saMskftam"), // Also accept underdot variant
         ("dharmakṣetre", "Darmakzetre"),
         ("namaskāram", "namaskAram"),
     ];
@@ -54,7 +56,7 @@ fn test_slp1_to_iast_reverse_conversion() {
         ("U", "ū"),
         ("f", "ṛ"),
         ("F", "ṝ"),
-        ("M", "ṃ"),
+        ("M", "ṁ"),
         ("H", "ḥ"),
         ("S", "ś"),
         ("z", "ṣ"),
@@ -66,7 +68,7 @@ fn test_slp1_to_iast_reverse_conversion() {
         ("kz", "kṣ"),
         ("E", "ai"),
         ("O", "au"),
-        ("saMskftam", "saṃskṛtam"),
+        ("saMskftam", "saṁskṛtam"),
         ("Darmakzetre", "dharmakṣetre"),
         ("namaskAram", "namaskāram"),
     ];
@@ -90,7 +92,7 @@ fn test_iast_slp1_roundtrip() {
     let shlesha = Shlesha::new();
 
     let test_inputs = vec![
-        "saṃskṛtam",
+        "saṁskṛtam",
         "dharmakṣetre",
         "namaskāram",
         "bhagavadgītā",
@@ -98,7 +100,7 @@ fn test_iast_slp1_roundtrip() {
         "ī",
         "ū",
         "ṛ",
-        "ṃ",
+        "ṁ",
         "ḥ",
         "ś",
         "ṣ",
@@ -145,7 +147,7 @@ fn test_simple_conversions() {
     );
 
     // Test that IAST to ISO works (this should work)
-    let iast_to_iso = shlesha.transliterate("saṃskṛtam", "iast", "iso").unwrap();
+    let iast_to_iso = shlesha.transliterate("saṁskṛtam", "iast", "iso").unwrap();
     println!("IAST → ISO: '{}'", iast_to_iso);
     assert!(iast_to_iso.contains("saṁ"), "Should contain ISO anusvara");
     assert!(iast_to_iso.contains("r̥"), "Should contain ISO vocalic r");
