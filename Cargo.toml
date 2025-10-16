@@ -67,7 +67,7 @@ quickcheck_macros = "1.0"
 
 # Target-specific dependencies for non-WASM builds
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
-criterion = { version = "0.6", features = ["html_reports"] }
+criterion = { version = "0.7", features = ["html_reports"] }
 vidyut-lipi = "0.2.0"
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
