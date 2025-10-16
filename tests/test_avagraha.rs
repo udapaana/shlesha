@@ -34,19 +34,17 @@ fn test_slp1_avagraha() {
 fn test_avagraha_across_scripts() {
     let shlesha = Shlesha::new();
 
-    // Test SLP1 to IAST (should preserve as [MarkAvagraha])
+    // Test SLP1 to IAST (now converts to apostrophe since IAST has avagraha)
     let result = shlesha.transliterate("`", "slp1", "iast").unwrap();
     assert_eq!(
-        result, "[MarkAvagraha]",
-        "SLP1 avagraha to IAST should show as token"
+        result, "'",
+        "SLP1 avagraha to IAST should convert to apostrophe"
     );
 
-    // Test IAST to SLP1 with [MarkAvagraha] notation
-    let result = shlesha
-        .transliterate("[MarkAvagraha]", "iast", "slp1")
-        .unwrap();
+    // Test IAST to SLP1 with apostrophe
+    let result = shlesha.transliterate("'", "iast", "slp1").unwrap();
     assert_eq!(
         result, "`",
-        "IAST token notation should convert to SLP1 backtick"
+        "IAST apostrophe should convert to SLP1 backtick"
     );
 }
