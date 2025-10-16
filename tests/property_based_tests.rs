@@ -38,7 +38,7 @@ fn generate_iast_text(g: &mut Gen) -> String {
         "ṭ", "ṭh", "ḍ", "ḍh", "ṇ", // Sibilants
         "ś", "ṣ", // Nasals
         "ṅ", "ñ", // Marks
-        "ṃ", "ḥ", // Special combinations
+        "ṁ", "ḥ", // Special combinations
         "kṣ", "jñ",
     ];
 
@@ -387,7 +387,7 @@ fn prop_character_mapping_consistency(_ch: char) -> bool {
         ("I", "slp1", "iast", "ī"),
         ("U", "slp1", "iast", "ū"),
         ("f", "slp1", "iast", "ṛ"),
-        ("M", "slp1", "iast", "ṃ"),
+        ("M", "slp1", "iast", "ṁ"),
         ("H", "slp1", "iast", "ḥ"),
         ("S", "slp1", "iast", "ś"),
         ("z", "slp1", "iast", "ṣ"),
