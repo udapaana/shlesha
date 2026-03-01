@@ -15,8 +15,10 @@ mappings:
     VowelU: "உ"
     VowelUu: "ஊ"
     VowelE: "எ"
+    VowelEe: "ஏ"
     VowelAi: "ஐ"
     VowelO: "ஒ"
+    VowelOo: "ஓ"
     VowelAu: "ஔ"
     
     # Vocalic vowels - typically rendered as combinations in Tamil
@@ -32,8 +34,10 @@ mappings:
     VowelSignU: "ு"
     VowelSignUu: "ூ"
     VowelSignE: "ெ"
+    VowelSignEe: "ே"
     VowelSignAi: "ை"
     VowelSignO: "ொ"
+    VowelSignOo: "ோ"
     VowelSignAu: "ௌ"
     
     # Vocalic vowel signs - different from independent vowels

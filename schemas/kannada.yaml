@@ -20,8 +20,10 @@ mappings:
     VowelL: "ಌ"
     VowelLl: "ೡ"
     VowelE: "ಎ"
+    VowelEe: "ಏ"
     VowelAi: "ಐ"
     VowelO: "ಒ"
+    VowelOo: "ಓ"
     VowelAu: "ಔ"
 
   vowel_signs:
