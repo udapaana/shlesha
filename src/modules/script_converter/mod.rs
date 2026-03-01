@@ -1,5 +1,6 @@
 use crate::modules::core::unknown_handler::{TransliterationMetadata, TransliterationResult};
 use crate::modules::hub::{HubError, HubInput};
+use crate::modules::registry::SchemaRegistryTrait;
 use rustc_hash::FxHashMap;
 use thiserror::Error;
 
@@ -321,10 +322,113 @@ impl ScriptConverterRegistry {
             return self.converters[converter_index].to_hub(&canonical_script, input);
         }
 
+        // Fallback: use runtime schema from registry as source
+        if let Some(registry) = schema_registry {
+            let lookup_name = if canonical_script != script {
+                canonical_script.as_str()
+            } else {
+                resolved_script
+            };
+            if let Some(schema) = registry.get_schema(lookup_name) {
+                return self.to_hub_from_runtime_schema(input, schema);
+            }
+            // Also try the original script name
+            if let Some(schema) = registry.get_schema(script) {
+                return self.to_hub_from_runtime_schema(input, schema);
+            }
+        }
+
         Err(ConverterError::ConversionFailed {
             script: script.to_string(),
             reason: "No converter found for script".to_string(),
         })
+    }
+
+    /// Convert input text to hub tokens using a runtime-loaded schema as the source.
+    ///
+    /// The schema's `mappings` field maps token names (e.g. "VowelA") to script
+    /// characters (e.g. "a").  We invert this to build a char→token_name table,
+    /// then use longest-match parsing and `FromStr` on the generated token enums
+    /// to produce a proper `HubInput`.
+    fn to_hub_from_runtime_schema(
+        &self,
+        input: &str,
+        schema: &crate::modules::registry::Schema,
+    ) -> Result<HubInput, ConverterError> {
+        use std::str::FromStr;
+
+        // Build reverse mapping: script_char → token_name
+        // Mappings in the registry are already flattened (one preferred value per token).
+        // Schemas can also carry multiple alternatives via their original YAML lists, but
+        // after flattening only the first (preferred) value is stored.  That is sufficient
+        // for source parsing because users writing in a particular scheme use the canonical
+        // form.  For aliases we accept alternate representations via the schema cache.
+        let mut reverse: rustc_hash::FxHashMap<&str, &str> = rustc_hash::FxHashMap::default();
+        for (token_name, char_value) in &schema.mappings {
+            // Insert; last-write-wins for duplicate char values (rare but harmless)
+            reverse.insert(char_value.as_str(), token_name.as_str());
+        }
+
+        // Sort candidate keys by descending byte length so we always try the
+        // longest match first (greedy / maximal munch).
+        let mut candidates: Vec<(&str, &str)> = reverse.iter().map(|(&k, &v)| (k, v)).collect();
+        candidates.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
+
+        let is_alphabet = schema.metadata.script_type == "roman"
+            || schema.target == "alphabet_tokens"
+            || schema.target == "iso15919";
+
+        let mut tokens: HubTokenSequence = Vec::new();
+        let bytes = input.as_bytes();
+        let len = input.len();
+        let mut pos = 0usize;
+
+        while pos < len {
+            let mut matched = false;
+            for &(pat, token_name) in &candidates {
+                let pat_len = pat.len();
+                if pos + pat_len <= len && &bytes[pos..pos + pat_len] == pat.as_bytes() {
+                    // Parse the token name into the appropriate enum
+                    let hub_token = if is_alphabet {
+                        match AlphabetToken::from_str(token_name) {
+                            Ok(t) => HubToken::Alphabet(t),
+                            Err(_) => {
+                                // Unknown token name – treat the matched chars as unknown
+                                HubToken::Alphabet(AlphabetToken::Unknown(pat.to_string()))
+                            }
+                        }
+                    } else {
+                        match AbugidaToken::from_str(token_name) {
+                            Ok(t) => HubToken::Abugida(t),
+                            Err(_) => HubToken::Abugida(AbugidaToken::Unknown(pat.to_string())),
+                        }
+                    };
+                    tokens.push(hub_token);
+                    pos += pat_len;
+                    matched = true;
+                    break;
+                }
+            }
+
+            if !matched {
+                // Consume one Unicode scalar and emit an Unknown token
+                let rest = &input[pos..];
+                let ch = rest.chars().next().unwrap();
+                let unknown_str = ch.to_string();
+                if is_alphabet {
+                    tokens.push(HubToken::Alphabet(AlphabetToken::Unknown(unknown_str)));
+                } else {
+                    tokens.push(HubToken::Abugida(AbugidaToken::Unknown(unknown_str)));
+                }
+                pos += ch.len_utf8();
+            }
+        }
+
+        if is_alphabet {
+            Ok(HubFormat::AlphabetTokens(tokens))
+        } else {
+            Ok(HubFormat::AbugidaTokens(tokens))
+        }
     }
 
     /// Convert text from hub format to any supported script (reverse conversion)
