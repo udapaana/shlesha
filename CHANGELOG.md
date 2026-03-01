@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.4] - 2026-02-28
+
+### Added
+- **Baraha script support** (`baraha`, aliases: `baraha_north`, `baraha_south`) — popular
+  South Indian romanisation scheme with case-based retroflex/dental distinction
+  (uppercase T/D/N/C/S/P/B/G/K/J/Sh for retroflex, lowercase for dental), long vowel
+  aliases (A/aa, I/ee, U/oo), Anusvara (M), Visarga (H), Candrabindu (~m), Avagraha (~),
+  and basic Vedic accent marks.
+- **Runtime source schema support** — schemas loaded at runtime via
+  `load_schema_from_string()` or `load_schema_from_file()` can now be used as the
+  *source* (input) script, not just the target. Uses inverted mappings with greedy
+  longest-match parsing.
+
+### Fixed
+- **Kannada (#47)**: Added missing independent long vowels `VowelEe` (ಏ U+0C8F) and
+  `VowelOo` (ಓ U+0C93). Previously these output literal `[VowelEe]`/`[VowelOo]`
+  placeholders. Short vowels (ಎ/ಒ) and dependent vowel signs were already correct.
+- **Tamil (#46)**: Added missing independent vowels `VowelEe` (ஏ) and `VowelOo` (ஓ),
+  and dependent vowel signs `VowelSignEe` (ே U+0BC7) and `VowelSignOo` (ோ U+0BCB).
+  Previously these leaked as `[VowelSignEe]`/`[VowelSignOo]` placeholders.
+
 ## [0.5.1] - 2025-01-24
 
 ### Fixed
