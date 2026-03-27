@@ -46,7 +46,7 @@ mappings:
     # Velar
     ConsonantK: "ค"       # ka
     ConsonantKh: "ข"      # kha
-    # ConsonantG: "ค"     # ga - Thai has no distinct ga, uses ค (same as ka)
+    ConsonantG: "ค²"     # ga - superscript notation (no distinct Thai character)
     ConsonantGh: "ฆ"      # gha
     ConsonantNg: "ง"      # ṅa
     

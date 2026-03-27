@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo build)",
+      "Bash(cargo test --test dynamic_script_discovery_tests)",
+      "Bash(git tag -f v0.5.4 HEAD)",
+      "Bash(git push origin v0.5.4 --force)"
+    ]
+  }
+}
