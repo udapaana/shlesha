@@ -55,19 +55,19 @@ mappings:
     ConsonantJh: "𑌝"
     ConsonantNy: "𑌞"
     
-    # Retroflex stops
-    ConsonantTt: "𑌟"
-    ConsonantTth: "𑌠"
-    ConsonantDd: "𑌡"
-    ConsonantDdh: "𑌢"
-    ConsonantNn: "𑌣"
+    # Retroflex stops (single-letter tokens are retroflex per hub convention)
+    ConsonantT: "𑌟"
+    ConsonantTh: "𑌠"
+    ConsonantD: "𑌡"
+    ConsonantDh: "𑌢"
+    ConsonantN: "𑌣"
     
-    # Dental stops
-    ConsonantT: "𑌤"
-    ConsonantTh: "𑌥"
-    ConsonantD: "𑌦"
-    ConsonantDh: "𑌧"
-    ConsonantN: "𑌨"
+    # Dental stops (doubled tokens are dental per hub convention)
+    ConsonantTt: "𑌤"
+    ConsonantTth: "𑌥"
+    ConsonantDd: "𑌦"
+    ConsonantDdh: "𑌧"
+    ConsonantNn: "𑌨"
     
     # Labial stops
     ConsonantP: "𑌪"

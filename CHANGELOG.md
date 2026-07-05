@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Grantha**: Retroflex and dental stop series were swapped. The single-letter
+  consonant tokens (`ConsonantT/Th/D/Dh/N`) are retroflex (ṭ ṭh ḍ ḍh ṇ) and the
+  doubled tokens (`ConsonantTt/Tth/Dd/Ddh/Nn`) are dental (t th d dh n) per the hub
+  convention shared with Devanagari, Kannada, etc. In `schemas/grantha.yaml` these
+  were assigned to the wrong glyphs, so `ṭa` rendered as 𑌤 (GRANTHA LETTER TA,
+  dental) and `ta` rendered as 𑌟 (GRANTHA LETTER TTA, retroflex). Round-trips still
+  succeeded because the swap was internally consistent. Added `tests/grantha_test.rs`
+  pinning the exact glyphs to prevent regression.
+
 ## [0.5.5] - 2026-02-28
 
 ### Added
