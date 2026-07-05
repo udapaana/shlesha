@@ -155,7 +155,7 @@ impl TransliterationResult {
 
                 // Sort tokens by position (reverse order to not affect positions)
                 let mut tokens = metadata.unknown_tokens.clone();
-                tokens.sort_by(|a, b| b.position.cmp(&a.position));
+                tokens.sort_by_key(|b| std::cmp::Reverse(b.position));
 
                 let mut result = self.output.clone();
                 for token in tokens {
