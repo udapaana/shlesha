@@ -611,7 +611,7 @@ fn generate_roman_converter_with_template(
 ) -> Result<String, Box<dyn std::error::Error>> {
     // Sort by length (longest first) for proper matching
     let mut sorted_mappings: Vec<_> = mappings.iter().collect();
-    sorted_mappings.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
+    sorted_mappings.sort_by_key(|b| std::cmp::Reverse(b.0.len()));
 
     // Prepare ALL reverse mappings for template (not just multi-character ones)
     // Note: reverse mapping means ISO → source_script, so ISO should be the key
@@ -621,7 +621,7 @@ fn generate_roman_converter_with_template(
         .collect();
 
     // Sort by length (longest first) for proper matching priority
-    reverse_mappings.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
+    reverse_mappings.sort_by_key(|b| std::cmp::Reverse(b.0.len()));
 
     // Create reverse mappings with preference for canonical forms
     let mut reverse_priority_mappings: FxHashMap<&str, &str> = FxHashMap::default();
@@ -859,7 +859,7 @@ fn generate_roman_to_devanagari_converter(
 
     // Sort by length (longest first) for proper matching
     let mut sorted_mappings: Vec<_> = roman_to_deva_mappings.iter().collect();
-    sorted_mappings.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
+    sorted_mappings.sort_by_key(|b| std::cmp::Reverse(b.0.len()));
 
     // Convert to template format - use the original String keys
     let mappings_for_template = &roman_to_deva_mappings;

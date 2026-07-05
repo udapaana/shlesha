@@ -372,7 +372,7 @@ impl ScriptConverterRegistry {
         // Sort candidate keys by descending byte length so we always try the
         // longest match first (greedy / maximal munch).
         let mut candidates: Vec<(&str, &str)> = reverse.iter().map(|(&k, &v)| (k, v)).collect();
-        candidates.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
+        candidates.sort_by_key(|b| std::cmp::Reverse(b.0.len()));
 
         let is_alphabet = schema.metadata.script_type == "roman"
             || schema.target == "alphabet_tokens"
